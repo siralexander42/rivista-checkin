@@ -41,10 +41,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // =============================================================================
     
     function handleScroll() {
-        const heroBottom = hero ? hero.getBoundingClientRect().bottom : 0;
+        const cremonaSection = document.querySelector('#cremona');
+        const cremonaTop = cremonaSection ? cremonaSection.getBoundingClientRect().top : 0;
         
-        // Mostra il pulsante flottante quando si esce dalla hero
-        if (heroBottom < 0) {
+        // Mostra il pulsante flottante quando si raggiunge la sezione Cremona
+        if (cremonaTop <= window.innerHeight / 2) {
             floatingBtn.style.display = 'flex';
             setTimeout(() => {
                 floatingBtn.style.opacity = '1';
@@ -54,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
             floatingBtn.style.opacity = '0';
             floatingBtn.style.transform = 'scale(0.8) translateY(20px)';
             setTimeout(() => {
-                if (heroBottom >= 0) {
+                if (cremonaTop > window.innerHeight / 2) {
                     floatingBtn.style.display = 'none';
                 }
             }, 300);
