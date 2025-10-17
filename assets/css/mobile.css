@@ -724,15 +724,26 @@
     }
 
     .garda-map-container {
-        padding: 15px;
+        border-radius: 16px;
     }
 
-    .garda-map {
-        max-height: 300px;
+    .google-map {
+        height: 400px;
     }
 
-    .marker-label {
-        font-size: 10px;
+    .custom-marker .marker-icon {
+        width: 40px;
+        height: 40px;
+        border-width: 2px;
+    }
+
+    .marker-emoji {
+        font-size: 20px;
+    }
+
+    .marker-tooltip {
+        font-size: 0.75rem;
+        padding: 6px 12px;
     }
 
     .map-popup {
