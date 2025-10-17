@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHECK-IN | La rivista del viaggio</title>
+    <link rel="stylesheet" href="assets/css/loading.css">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/carnival.css">
+    <link rel="stylesheet" href="assets/css/cremona-scroll.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- LOADING SCREEN -->
+    <div class="loading-screen" id="loadingScreen">
+        <img src="assets/images/checkin-testata-hd.svg" alt="CHECK-IN" class="loading-logo">
+        
+        <!-- Tabellone aeroporto vintage -->
+        <div class="departure-board">
+            <div class="board-header">
+                <span class="board-icon">✈</span>
+                <span>IMBARCHI</span>
+                <span class="board-icon">✈</span>
+            </div>
+            
+            <!-- Voli fittizi superiori (sfocati) -->
+            <div class="board-row blurred">
+                <span class="board-flight">AZ 1247</span>
+                <span class="board-destination">LONDRA HEATHROW</span>
+                <span class="board-time">14:35</span>
+                <span class="board-gate">GATE 12</span>
+                <span class="board-status status-boarding">IMBARCO</span>
+            </div>
+            <div class="board-row blurred">
+                <span class="board-flight">AF 9823</span>
+                <span class="board-destination">PARIGI CDG</span>
+                <span class="board-time">15:10</span>
+                <span class="board-gate">GATE 8</span>
+                <span class="board-status status-ontime">IN ORARIO</span>
+            </div>
+            
+            <!-- Scritta centrale principale -->
+            <div class="board-text main-message">
+                <div class="flip-letter" data-letter="S" data-flips="S,E,I,7,S">S</div>
+                <div class="flip-letter" data-letter="E" data-flips="E,A,O,3,E">E</div>
+                <div class="flip-letter" data-letter="I" data-flips="I,U,N,8,I">I</div>
+                <div class="flip-letter-space"></div>
+                <div class="flip-letter" data-letter="P" data-flips="P,L,M,9,P">P</div>
+                <div class="flip-letter" data-letter="R" data-flips="R,T,K,2,R">R</div>
+                <div class="flip-letter" data-letter="O" data-flips="O,A,E,6,O">O</div>
+                <div class="flip-letter" data-letter="N" data-flips="N,M,L,1,N">N</div>
+                <div class="flip-letter" data-letter="T" data-flips="T,S,R,4,T">T</div>
+                <div class="flip-letter" data-letter="O" data-flips="O,I,U,5,O">O</div>
+                <div class="flip-letter-space"></div>
+                <div class="flip-letter" data-letter="A" data-flips="A,E,I,9,A">A</div>
+                <div class="flip-letter-space"></div>
+                <div class="flip-letter" data-letter="P" data-flips="P,B,D,7,P">P</div>
+                <div class="flip-letter" data-letter="A" data-flips="A,O,U,3,A">A</div>
+                <div class="flip-letter" data-letter="R" data-flips="R,S,T,8,R">R</div>
+                <div class="flip-letter" data-letter="T" data-flips="T,V,W,2,T">T</div>
+                <div class="flip-letter" data-letter="I" data-flips="I,O,E,6,I">I</div>
+                <div class="flip-letter" data-letter="R" data-flips="R,N,M,1,R">R</div>
+                <div class="flip-letter" data-letter="E" data-flips="E,A,O,4,E">E</div>
+                <div class="flip-letter" data-letter="?" data-flips="?,!,.,5,?">?</div>
+            </div>
+            
+            <!-- Voli fittizi inferiori (sfocati) -->
+            <div class="board-row blurred">
+                <span class="board-flight">BA 2891</span>
+                <span class="board-destination">NEW YORK JFK</span>
+                <span class="board-time">16:20</span>
+                <span class="board-gate">GATE 23</span>
+                <span class="board-status status-delayed">RITARDO</span>
+            </div>
+            <div class="board-row blurred">
+                <span class="board-flight">IB 5634</span>
+                <span class="board-destination">MADRID BARAJAS</span>
+                <span class="board-time">16:55</span>
+                <span class="board-gate">GATE 15</span>
+                <span class="board-status status-boarding">IMBARCO</span>
+            </div>
+        </div>
+        
+        <div class="loading-progress">
+            <div class="loading-bar" id="loadingBar"></div>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <img src="assets/images/checkin-testata-hd.svg" alt="CHECK-IN" class="nav-logo">
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero-simple" id="hero">
+        <div class="hero-backgrounds">
+            <div class="hero-bg active" style="background-image: url('assets/images/tofana_1.jpg')"></div>
+            <div class="hero-bg" style="background-image: url('https://www.italiaatavola.net/images/contenutiarticoli/Alta_Badia_costume_ladino_by_IDM_Suedtirol_Alex_Moling.jpeg')"></div>
+            <div class="hero-bg" style="background-image: url('https://www.italiaatavola.net/images/contenutiarticoli/Alta_Badia_Munts_dl_altonn_foto_byAlexMoling.jpg')"></div>
+            <div class="hero-bg" style="background-image: url('https://www.italiaatavola.net/images/contenutiarticoli/corvara.webp')"></div>
+        </div>
+        <div class="hero-container">
+            <span class="hero-eyebrow">CHECK-IN / Novembre 2024</span>
+            <h1>Alta Badia</h1>
+            <p class="hero-subtitle" data-text="Tre settimane di eventi per vivere l'autunno sulle Dolomiti"></p>
+            <p class="hero-description">
+                Dalla tradizione ladina agli eventi culturali, dalle degustazioni gourmet 
+                ai paesaggi mozzafiato. Un viaggio tra sapori, cultura e bellezza 
+                nel cuore delle Dolomiti patrimonio UNESCO.
+            </p>
+            <div class="scroll-indicator">
+                <span>Scorri per esplorare</span>
+                <div class="scroll-arrow">↓</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CREMONA SCROLL EXPERIENCE - STILE APPLE -->
+    <section class="cremona-scroll-section">
+        <div class="cremona-container">
+            <!-- TESTO SCROLLABILE A SINISTRA -->
+            <div class="cremona-text-scroll">
+                <div class="cremona-text-block" data-image="1">
+                    <span class="cremona-tag">Destinazioni</span>
+                    <h2 class="cremona-title">Cremona:<br>La città che suona e cucina</h2>
+                    <p class="cremona-intro">
+                        Cremona è una città che conserva un'identità profondamente radicata nella tradizione e nell'artigianato, 
+                        dove la storia si intreccia con il paesaggio e la cultura del cibo.
+                    </p>
+                </div>
+
+                <div class="cremona-text-block" data-image="2">
+                    <h3>Un patrimonio che nasce dal suono</h3>
+                    <p>
+                        La tradizione della liuteria classica cremonese, riconosciuta nel 2012 come Patrimonio Immateriale dell'Umanità dall'Unesco, 
+                        resta il suo tratto distintivo. Nelle botteghe del centro storico, oltre centocinquanta maestri continuano a praticare 
+                        un mestiere che si trasmette per osservazione e pratica.
+                    </p>
+                    <p class="cremona-highlight">
+                        Il Museo del Violino ospita strumenti originali di Stradivari, Amati e Guarneri.
+                    </p>
+                </div>
+
+                <div class="cremona-text-block" data-image="3">
+                    <h3>Il Duomo e il Torrazzo</h3>
+                    <p>
+                        Il centro di Cremona conserva una struttura urbana compatta, costruita attorno alla Piazza del Comune. 
+                        Il Duomo di Santa Maria Assunta, iniziato nel XII secolo, è considerato uno degli esempi più completi 
+                        di architettura romanico-gotica dell'Italia settentrionale.
+                    </p>
+                    <p class="cremona-highlight">
+                        Il Torrazzo - con i suoi 112 metri di altezza - è la torre campanaria medievale più alta d'Europa in laterizi.
+                    </p>
+                </div>
+
+                <div class="cremona-text-block" data-image="4">
+                    <h3>Il gusto della tradizione</h3>
+                    <p>
+                        Non si può parlare di Cremona senza citare il torrone, dolce simbolo della città. Secondo la leggenda, 
+                        nacque nel 1441 in occasione delle nozze tra Bianca Maria Visconti e Francesco Sforza.
+                    </p>
+                    <p>
+                        Ma il gusto cremonese non si ferma al dolce. Da provare anche i marubini in brodo, i bolliti misti con mostarda 
+                        e i celebri salumi della bassa, tra cui il salame Cremona IGP.
+                    </p>
+                </div>
+
+                <div class="cremona-text-block" data-image="5">
+                    <h3>Il Po e la pianura</h3>
+                    <p>
+                        La vicinanza al fiume Po ha determinato il carattere agricolo e paesaggistico del territorio cremonese. 
+                        Le sponde, oggi percorse da una rete di ciclabili e sentieri naturalistici, rappresentano una risorsa 
+                        ancora in parte inesplorata per il turismo sostenibile.
+                    </p>
+                    <p class="cremona-highlight">
+                        La Ciclovia del Po attraversa ambienti golenali di pregio naturalistico come la Lanca di Gerole, 
+                        habitat di aironi e cicogne.
+                    </p>
+                </div>
+
+                <div class="cremona-text-block" data-image="1">
+                    <h3>Una città laboratorio di saper fare</h3>
+                    <p>
+                        Cremona continua a essere una città che si riconosce nel mestiere, più che nella vetrina. 
+                        La liuteria, la gastronomia e l'artigianato rappresentano non solo tradizione, ma anche un modello 
+                        economico basato sulla qualità e sulla trasmissione dei saperi.
+                    </p>
+                    <a href="https://www.italiaatavola.net/check-in/2025/10/12/tra-marubini-violini-alla-scoperta-di-cremona-citta-che-suona-cucina/114881/" 
+                       class="cremona-cta" target="_blank">
+                        Scopri di più su Cremona →
+                    </a>
+                </div>
+            </div>
+
+            <!-- IMMAGINI FISSE A DESTRA -->
+            <div class="cremona-images-sticky">
+                <div class="cremona-image-wrapper">
+                    <img src="https://www.italiaatavola.net/images/contenutiarticoli/SH_CREMONA.jpg" 
+                         alt="Cremona"
+                         class="cremona-img active"
+                         data-index="1">
+                    <img src="https://www.italiaatavola.net/images/contenutiarticoli/SH_CREMONA_museo_violino.jpg" 
+                         alt="Museo del Violino"
+                         class="cremona-img"
+                         data-index="2">
+                    <img src="https://www.italiaatavola.net/images/contenutiarticoli/SH_CREMONA_duomo_torrazzo.jpg" 
+                         alt="Duomo e Torrazzo"
+                         class="cremona-img"
+                         data-index="3">
+                    <img src="https://www.italiaatavola.net/images/contenutiarticoli/SH_CREMONA_festa_del_torrone.jpg" 
+                         alt="Festa del Torrone"
+                         class="cremona-img"
+                         data-index="4">
+                    <img src="https://www.italiaatavola.net/images/contenutiarticoli/SH_CREMONA_FIUME_PO.jpg" 
+                         alt="Fiume Po"
+                         class="cremona-img"
+                         data-index="5">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRIMA SEZIONE PINNED: Repubblica Ceca -->
+    <section class="story-section">
+        <div class="story-container">
+            <!-- COLONNA SINISTRA: TESTO FISSO -->
+            <div class="story-text">
+                <span class="category-tag">Destinazioni</span>
+                <h2>Repubblica Ceca:<br>La magia del Natale</h2>
+                <p class="lead-text">
+                    Praga si trasforma in un villaggio incantato quando arriva novembre. 
+                    I mercatini natalizi illuminano le strade medievali, l'aroma di vino 
+                    speziato riempie l'aria e la città rivela il suo lato più magico.
+                </p>
+                <div class="story-details">
+                    <div class="detail-item">
+                        <strong>150+</strong>
+                        <span>Mercatini</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>30 giorni</strong>
+                        <span>Di festa</span>
+                    </div>
+                </div>
+                <a href="#" class="btn-primary">Leggi la storia completa →</a>
+            </div>
+            
+            <!-- COLONNA DESTRA: IMMAGINI CHE SCORRONO -->
+            <div class="story-images">
+                <div class="image-scroll-wrapper" data-story="1">
+                    <div class="scroll-image">
+                        <img src="https://www.italiaatavola.net/images/contenutiarticoli/praga_natale_1.jpg" 
+                             alt="Praga Natale"
+                             onerror="this.src='https://images.unsplash.com/photo-1513407030348-c983a97b98d8?w=800'">
+                        <div class="image-caption">Praga: la magia del Natale</div>
+                    </div>
+                    <div class="scroll-image">
+                        <img src="https://images.unsplash.com/photo-1607863380325-3b8e7e1d4a7b?w=800" 
+                             alt="Brno"
+                             onerror="this.src='https://images.unsplash.com/photo-1541849546-216549ae216d?w=800'">
+                        <div class="image-caption">Brno: seconda città della Repubblica Ceca</div>
+                    </div>
+                    <div class="scroll-image">
+                        <img src="https://images.unsplash.com/photo-1576924542107-494d0ff8b33a?w=800" 
+                             alt="České Budějovice"
+                             onerror="this.src='https://images.unsplash.com/photo-1519046904884-53103b34b206?w=800'">
+                        <div class="image-caption">České Budějovice: la capitale della Boemia del Sud</div>
+                    </div>
+                </div>
+                <!-- Controlli immagini -->
+                <div class="image-controls">
+                    <button class="control-btn prev-btn" data-story="1">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                    </button>
+                    <div class="image-dots" data-story="1">
+                        <span class="dot active" data-index="0"></span>
+                        <span class="dot" data-index="1"></span>
+                        <span class="dot" data-index="2"></span>
+                    </div>
+                    <button class="control-btn next-btn" data-story="1">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECONDA SEZIONE PINNED: Massimo Cosmo -->
+    <section class="story-section dark">
+        <div class="story-container">
+            <!-- COLONNA SINISTRA: TESTO FISSO -->
+            <div class="story-text">
+                <span class="category-tag">Enogastronomia</span>
+                <h2>Massimo Cosmo:<br>Napoli conquista Prato</h2>
+                <p class="lead-text">
+                    Lo chef napoletano porta la sua passione e la tradizione partenopea 
+                    nel cuore della Toscana. Un viaggio tra sapori autentici, ingredienti 
+                    selezionati e l'amore per la cucina che non conosce confini.
+                </p>
+                <blockquote>
+                    "La vera cucina napoletana è un atto d'amore che si rinnova ogni giorno"
+                    <cite>— Massimo Cosmo</cite>
+                </blockquote>
+                <a href="#" class="btn-primary">Scopri il ristorante →</a>
+            </div>
+            
+            <!-- COLONNA DESTRA: IMMAGINI CHE SCORRONO -->
+            <div class="story-images">
+                <div class="image-scroll-wrapper" data-story="2">
+                    <div class="scroll-image">
+                        <img src="assets/images/cosmo_prato.jpg" 
+                             alt="Massimo Cosmo"
+                             onerror="this.src='https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=800'">
+                        <div class="image-caption">Chef Massimo Cosmo</div>
+                    </div>
+                    <div class="scroll-image">
+                        <img src="assets/images/cosmo_prato.jpg" 
+                             alt="Pizza napoletana"
+                             onerror="this.src='https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800'">
+                        <div class="image-caption">Pizza napoletana DOC</div>
+                    </div>
+                    <div class="scroll-image">
+                        <img src="assets/images/cosmo_prato.jpg" 
+                             alt="Cucina"
+                             onerror="this.src='https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800'">
+                        <div class="image-caption">La cucina del ristorante</div>
+                    </div>
+                </div>
+                <!-- Controlli immagini -->
+                <div class="image-controls">
+                    <button class="control-btn prev-btn" data-story="2">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                    </button>
+                    <div class="image-dots" data-story="2">
+                        <span class="dot active" data-index="0"></span>
+                        <span class="dot" data-index="1"></span>
+                        <span class="dot" data-index="2"></span>
+                    </div>
+                    <button class="control-btn next-btn" data-story="2">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WIDGET CARNEVALE DI VENEZIA - ULTRA FIGO -->
+    <section class="carnival-hero-widget">
+        <div class="carnival-hero-bg">
+            <div class="carnival-hero-slide active" style="background-image: url('https://www.italiaatavola.net/images/contenutiarticoli/Machera%20Bauta%20Carnevale%20Venezia.jpg');"></div>
+            <div class="carnival-hero-slide" style="background-image: url('https://www.italiaatavola.net/images/contenutiarticoli/venezia_1_2_3_4.jpg');"></div>
+            <div class="carnival-hero-slide" style="background-image: url('https://www.italiaatavola.net/images/contenutiarticoli/carnevale_1_2.jpg');"></div>
+        </div>
+        <div class="carnival-hero-overlay"></div>
+        <div class="carnival-hero-content">
+            <div class="carnival-hero-text">
+                <span class="carnival-hero-tag">
+                    <span class="tag-icon">✦</span>
+                    <span>Speciale</span>
+                </span>
+                <h1 class="carnival-hero-title">
+                    <span class="word">Carnevale</span>
+                    <span class="word">di</span>
+                    <span class="word">Venezia</span>
+                </h1>
+                <p class="carnival-hero-subtitle">
+                    Maschere millenarie, sfilate sul Canal Grande e la magia della Serenissima. 
+                    Un viaggio tra arte, tradizione e bellezza senza tempo.
+                </p>
+                <div class="carnival-hero-stats">
+                    <div class="stat-box">
+                        <div class="stat-number">1094</div>
+                        <div class="stat-label">Anno di origine</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">700+</div>
+                        <div class="stat-label">Anni di tradizione</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">175k</div>
+                        <div class="stat-label">Visitatori al giorno</div>
+                    </div>
+                </div>
+                <a href="carnevale-venezia.html" class="carnival-hero-btn">
+                    <span>Scopri la storia completa</span>
+                    <svg class="btn-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+        <div class="carnival-hero-indicators">
+            <button class="indicator active" data-slide="0"></button>
+            <button class="indicator" data-slide="1"></button>
+            <button class="indicator" data-slide="2"></button>
+        </div>
+    </section>
+
+    <!-- TERZA SEZIONE PINNED: La Capuccina -->
+    <section class="story-section">
+        <div class="story-container">
+            <!-- COLONNA SINISTRA: TESTO FISSO -->
+            <div class="story-text">
+                <span class="category-tag">Ospitalità</span>
+                <h2>La Capuccina:<br>Un casale del '500</h2>
+                <p class="lead-text">
+                    Nel cuore del Novarese, un casale storico del Cinquecento si 
+                    trasforma in un'oasi di charme e benessere. Dove il passato 
+                    incontra il comfort moderno in un'esperienza indimenticabile.
+                </p>
+                <ul class="features-list">
+                    <li>✓ Suite storiche restaurate</li>
+                    <li>✓ Spa con trattamenti esclusivi</li>
+                    <li>✓ Ristorante gourmet</li>
+                    <li>✓ Giardini all'italiana</li>
+                </ul>
+                <a href="#" class="btn-primary">Scopri la struttura →</a>
+            </div>
+            
+            <!-- COLONNA DESTRA: IMMAGINI CHE SCORRONO -->
+            <div class="story-images">
+                <div class="image-scroll-wrapper" data-story="3">
+                    <div class="scroll-image">
+                        <img src="assets/images/capuccina.jpg" 
+                             alt="La Capuccina"
+                             onerror="this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800'">
+                        <div class="image-caption">Il casale storico</div>
+                    </div>
+                    <div class="scroll-image">
+                        <img src="assets/images/capuccina.jpg" 
+                             alt="Suite"
+                             onerror="this.src='https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800'">
+                        <div class="image-caption">Suite con affreschi originali</div>
+                    </div>
+                    <div class="scroll-image">
+                        <img src="assets/images/capuccina.jpg" 
+                             alt="Spa"
+                             onerror="this.src='https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800'">
+                        <div class="image-caption">Area benessere</div>
+                    </div>
+                </div>
+                <!-- Controlli immagini -->
+                <div class="image-controls">
+                    <button class="control-btn prev-btn" data-story="3">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                    </button>
+                    <div class="image-dots" data-story="3">
+                        <span class="dot active" data-index="0"></span>
+                        <span class="dot" data-index="1"></span>
+                        <span class="dot" data-index="2"></span>
+                    </div>
+                    <button class="control-btn next-btn" data-story="3">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GRIGLIA ARTICOLI -->
+    <section class="articles-grid" id="all-articles">
+        <div class="grid-container">
+            <h2 class="section-title">Tutte le storie</h2>
+            <div class="articles-wrapper">
+                <!-- Popolato da JavaScript con articoli RSS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="main-footer">
+        <div class="footer-container">
+            <img src="assets/images/checkin-testata-hd.svg" alt="CHECK-IN" class="footer-logo">
+            <nav class="footer-nav">
+                <a href="#">Chi Siamo</a>
+                <a href="#">Contatti</a>
+                <a href="#">Privacy</a>
+            </nav>
+            <p class="copyright">© 2025 CHECK-IN - Italia a Tavola. Tutti i diritti riservati.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Loading screen - progressione controllata
+        (function() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            const loadingBar = document.getElementById('loadingBar');
+            
+            let progress = 0;
+            const duration = 4000; // 4 secondi totali
+            const steps = 80; // 80 step
+            const increment = 100 / steps;
+            
+            const interval = setInterval(() => {
+                progress += increment;
+                if (progress > 100) progress = 100;
+                
+                loadingBar.style.width = progress + '%';
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    // Aspetta un momento sulla barra piena
+                    setTimeout(() => {
+                        loadingScreen.classList.add('fade-out');
+                        setTimeout(() => {
+                            loadingScreen.remove();
+                        }, 800);
+                    }, 400);
+                }
+            }, duration / steps);
+        })();
+    </script>
+    <script src="assets/js/loading.js"></script>
+    <script src="assets/js/rss-loader.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/carnival.js"></script>
+    <script src="assets/js/cremona-scroll.js"></script>
+</body>
+</html>

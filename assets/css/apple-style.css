@@ -1,0 +1,648 @@
+/* ==============================================
+   STILE APPLE - CHECK-IN RIVISTA DIGITALE
+   ============================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-blue: #333382;
+    --primary-light-blue: #D3E4FC;
+    --primary-dark: #1a1a2e;
+    --accent-blue: #4a5aff;
+    --text-light: #f5f5f5;
+    --text-dark: #1d1d1f;
+    --text-gray: #86868b;
+    --bg-light: #ffffff;
+    --bg-dark: #000000;
+    
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    
+    --transition-smooth: cubic-bezier(0.28, 0.11, 0.32, 1);
+    --transition-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: var(--font-family);
+    background: var(--bg-light);
+    color: var(--text-dark);
+    overflow-x: hidden;
+    line-height: 1.5;
+}
+
+/* ==============================================
+   NAVBAR FIXED
+   ============================================== */
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    transition: all 0.3s var(--transition-smooth);
+}
+
+.navbar.scrolled {
+    background: rgba(255, 255, 255, 0.85);
+}
+
+.nav-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.nav-logo img {
+    height: 35px;
+    width: auto;
+}
+
+.nav-links {
+    display: flex;
+    gap: 40px;
+}
+
+.nav-links a {
+    color: var(--text-dark);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    transition: opacity 0.3s;
+    position: relative;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--primary-blue);
+    transition: width 0.3s var(--transition-smooth);
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+.nav-menu-btn {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.nav-menu-btn span {
+    width: 22px;
+    height: 2px;
+    background: var(--text-dark);
+    transition: all 0.3s;
+}
+
+/* ==============================================
+   HERO SECTION
+   ============================================== */
+
+.hero {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding-top: 60px;
+}
+
+.hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 50%, rgba(51, 51, 130, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 30%, rgba(211, 228, 252, 0.12) 0%, transparent 50%),
+        linear-gradient(180deg, #ffffff 0%, #f5f7fa 100%);
+    z-index: 0;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.hero-title {
+    font-size: clamp(48px, 10vw, 96px);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--text-dark);
+    margin-bottom: 24px;
+}
+
+.hero-title span {
+    display: block;
+}
+
+.hero-subtitle {
+    font-size: clamp(18px, 3vw, 28px);
+    font-weight: 400;
+    color: var(--text-gray);
+    letter-spacing: -0.01em;
+    margin-bottom: 60px;
+}
+
+.reveal-text {
+    opacity: 0;
+    transform: translateY(40px);
+    animation: revealText 1s var(--transition-smooth) forwards;
+}
+
+.reveal-text:nth-child(1) { animation-delay: 0.2s; }
+.reveal-text:nth-child(2) { animation-delay: 0.4s; }
+.reveal-text:nth-child(3) { animation-delay: 0.6s; }
+
+@keyframes revealText {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hero-scroll-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    animation: fadeIn 1s forwards 1.5s;
+}
+
+.scroll-line {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(180deg, transparent, var(--primary-blue));
+    animation: scrollLine 2s ease-in-out infinite;
+}
+
+@keyframes scrollLine {
+    0%, 100% { transform: scaleY(0.3); opacity: 0.3; }
+    50% { transform: scaleY(1); opacity: 1; }
+}
+
+.hero-scroll-indicator span {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-gray);
+}
+
+/* ==============================================
+   GALLERY SECTION - STILE APPLE
+   ============================================== */
+
+.gallery-section {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 0;
+    position: relative;
+    background: #f5f7fa;
+}
+
+.gallery-container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    padding: 0 60px;
+}
+
+.gallery-track {
+    display: flex;
+    gap: 40px;
+    transition: transform 0.8s var(--transition-smooth);
+    will-change: transform;
+}
+
+.gallery-item {
+    min-width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    opacity: 0;
+    transform: scale(0.95);
+    transition: all 0.8s var(--transition-smooth);
+}
+
+.gallery-item.active {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.gallery-image {
+    position: relative;
+    aspect-ratio: 4/3;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.08),
+        0 40px 80px rgba(0, 0, 0, 0.06);
+}
+
+.gallery-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--transition-smooth);
+}
+
+.gallery-item:hover .gallery-image img {
+    transform: scale(1.05);
+}
+
+.gallery-content {
+    padding: 40px;
+}
+
+.gallery-category {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--primary-blue);
+    margin-bottom: 16px;
+}
+
+.gallery-title {
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--text-dark);
+    margin-bottom: 20px;
+}
+
+.gallery-description {
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--text-gray);
+    margin-bottom: 32px;
+}
+
+.gallery-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--accent-blue);
+    text-decoration: none;
+    transition: gap 0.3s var(--transition-smooth);
+}
+
+.gallery-link:hover {
+    gap: 12px;
+}
+
+.gallery-link svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Controlli Gallery */
+.gallery-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 60px;
+}
+
+.gallery-nav {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s var(--transition-smooth);
+}
+
+.gallery-nav:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.gallery-nav:active {
+    transform: scale(0.95);
+}
+
+.gallery-nav svg {
+    color: var(--text-dark);
+}
+
+.gallery-dots {
+    display: flex;
+    gap: 8px;
+}
+
+.gallery-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.3s var(--transition-smooth);
+}
+
+.gallery-dot.active {
+    width: 32px;
+    border-radius: 4px;
+    background: var(--primary-blue);
+}
+
+/* ==============================================
+   SEZIONI GRID
+   ============================================== */
+
+.sections-grid {
+    padding: 120px 20px;
+    background: white;
+}
+
+.section-header {
+    max-width: 1200px;
+    margin: 0 auto 80px;
+    text-align: center;
+}
+
+.section-header h2 {
+    font-size: clamp(40px, 6vw, 64px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--text-dark);
+    margin-bottom: 16px;
+}
+
+.section-header p {
+    font-size: 21px;
+    color: var(--text-gray);
+    letter-spacing: -0.01em;
+}
+
+.sections-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+.section-card {
+    background: #f5f7fa;
+    border-radius: 24px;
+    padding: 48px 32px;
+    cursor: pointer;
+    transition: all 0.4s var(--transition-smooth);
+    position: relative;
+    overflow: hidden;
+}
+
+.section-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary-blue), var(--primary-light-blue));
+    opacity: 0;
+    transition: opacity 0.4s var(--transition-smooth);
+}
+
+.section-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 
+        0 20px 40px rgba(51, 51, 130, 0.15),
+        0 40px 80px rgba(51, 51, 130, 0.1);
+}
+
+.section-card:hover::before {
+    opacity: 1;
+}
+
+.section-card:hover .section-info h3,
+.section-card:hover .section-info p,
+.section-card:hover .section-arrow {
+    color: white;
+}
+
+.section-visual {
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 1;
+}
+
+.section-count {
+    font-size: 72px;
+    font-weight: 800;
+    color: rgba(51, 51, 130, 0.08);
+    line-height: 1;
+    transition: color 0.4s;
+}
+
+.section-card:hover .section-count {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.section-info {
+    position: relative;
+    z-index: 1;
+}
+
+.section-info h3 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+    transition: color 0.4s;
+}
+
+.section-info p {
+    font-size: 15px;
+    color: var(--text-gray);
+    margin-bottom: 20px;
+    transition: color 0.4s;
+}
+
+.section-arrow {
+    font-size: 24px;
+    color: var(--primary-blue);
+    transition: all 0.4s var(--transition-smooth);
+}
+
+.section-card:hover .section-arrow {
+    transform: translateX(8px);
+}
+
+/* ==============================================
+   FOOTER
+   ============================================== */
+
+.footer {
+    background: var(--bg-dark);
+    color: var(--text-light);
+    padding: 80px 20px 40px;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+}
+
+.footer-logo img {
+    height: 40px;
+    width: auto;
+    filter: brightness(0) invert(1);
+}
+
+.footer-links {
+    display: flex;
+    gap: 32px;
+}
+
+.footer-links a {
+    color: var(--text-gray);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s;
+}
+
+.footer-links a:hover {
+    color: var(--text-light);
+}
+
+.footer-copy {
+    padding-top: 40px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
+    text-align: center;
+}
+
+.footer-copy p {
+    font-size: 12px;
+    color: var(--text-gray);
+}
+
+/* ==============================================
+   ANIMAZIONI GLOBALI
+   ============================================== */
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+/* ==============================================
+   RESPONSIVE
+   ============================================== */
+
+@media (max-width: 1024px) {
+    .gallery-item {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    
+    .nav-links {
+        display: none;
+    }
+    
+    .nav-menu-btn {
+        display: flex;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero {
+        height: 80vh;
+    }
+    
+    .hero-title {
+        font-size: 48px;
+    }
+    
+    .gallery-container {
+        padding: 0 20px;
+    }
+    
+    .gallery-content {
+        padding: 20px;
+    }
+    
+    .sections-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .section-card {
+        padding: 32px 24px;
+    }
+}
+
+/* ==============================================
+   SCROLL SMOOTH & PERFORMANCE
+   ============================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+.gpu-accelerated {
+    transform: translateZ(0);
+    will-change: transform;
+}

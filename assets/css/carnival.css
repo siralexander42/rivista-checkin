@@ -1,0 +1,1101 @@
+/* ==============================================
+   CARNEVALE HERO WIDGET - ULTRA FIGO
+   ============================================== */
+
+.carnival-hero-widget {
+    position: relative;
+    height: 100vh;
+    min-height: 800px;
+    overflow: hidden;
+    background: #000;
+}
+
+/* Background Slideshow */
+.carnival-hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
+.carnival-hero-slide {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 2s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: scale(1.1);
+    will-change: transform, opacity;
+    transform: translateZ(0); /* Force hardware acceleration */
+}
+
+.carnival-hero-slide.active {
+    opacity: 1;
+    animation: kenBurns 20s ease-in-out infinite;
+}
+
+@keyframes kenBurns {
+    0%, 100% {
+        transform: scale(1.1) translateX(0) translateZ(0);
+    }
+    50% {
+        transform: scale(1.15) translateX(-10px) translateZ(0);
+    }
+}
+
+/* Overlay con gradiente dinamico */
+.carnival-hero-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: 
+        linear-gradient(
+            135deg,
+            rgba(10, 10, 15, 0.95) 0%,
+            rgba(26, 26, 46, 0.85) 40%,
+            rgba(51, 51, 130, 0.5) 70%,
+            transparent 100%
+        );
+    animation: overlayPulse 8s ease-in-out infinite;
+}
+
+@keyframes overlayPulse {
+    0%, 100% {
+        background: linear-gradient(
+            135deg,
+            rgba(10, 10, 15, 0.95) 0%,
+            rgba(26, 26, 46, 0.85) 40%,
+            rgba(51, 51, 130, 0.5) 70%,
+            transparent 100%
+        );
+    }
+    50% {
+        background: linear-gradient(
+            135deg,
+            rgba(10, 10, 15, 0.9) 0%,
+            rgba(26, 26, 46, 0.8) 40%,
+            rgba(51, 51, 130, 0.6) 70%,
+            transparent 100%
+        );
+    }
+}
+
+/* Content */
+.carnival-hero-content {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    padding: 0 4rem;
+}
+
+.carnival-hero-text {
+    max-width: 800px;
+    animation: fadeInUp 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s backwards;
+}
+
+/* Tag */
+.carnival-hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #fff;
+    background: rgba(51, 51, 130, 0.6);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(211, 228, 252, 0.3);
+    border-radius: 50px;
+    margin-bottom: 2rem;
+    will-change: box-shadow;
+    transform: translateZ(0);
+    animation: glow 4s ease-in-out infinite;
+}
+
+.tag-icon {
+    font-size: 1.2rem;
+    will-change: transform;
+    transform: translateZ(0);
+    animation: rotate 6s linear infinite;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes glow {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(211, 228, 252, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 40px rgba(211, 228, 252, 0.6);
+    }
+}
+
+/* Title con animazione word-by-word */
+.carnival-hero-title {
+    font-size: clamp(3.5rem, 10vw, 7rem);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    margin: 0 0 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 1.5rem;
+}
+
+.carnival-hero-title .word {
+    display: inline-block;
+    background: linear-gradient(
+        135deg,
+        #fff 0%,
+        #D3E4FC 30%,
+        #fff 50%,
+        #D3E4FC 70%,
+        #fff 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    will-change: background-position;
+    transform: translateZ(0);
+    animation: shimmer 6s linear infinite;
+    text-shadow: 0 0 40px rgba(211, 228, 252, 0.3);
+}
+
+.carnival-hero-title .word:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.carnival-hero-title .word:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes shimmer {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+}
+
+/* Subtitle */
+.carnival-hero-subtitle {
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
+    font-weight: 400;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 3rem;
+    max-width: 650px;
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Stats boxes */
+.carnival-hero-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.stat-box {
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: default;
+}
+
+.stat-box:hover {
+    background: rgba(51, 51, 130, 0.2);
+    border-color: rgba(211, 228, 252, 0.4);
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(51, 51, 130, 0.3);
+}
+
+.stat-number {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #D3E4FC;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 30px rgba(211, 228, 252, 0.6);
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #D3E4FC 0%, #ffffff 50%, #D3E4FC 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    display: inline-block;
+}
+
+.stat-number::after {
+    content: attr(data-target);
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    animation: countUp 2s ease-out forwards;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* CTA Button */
+.carnival-hero-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem 3rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(135deg, #333382 0%, #5555a5 100%);
+    border: 2px solid rgba(211, 228, 252, 0.3);
+    border-radius: 60px;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+        0 10px 40px rgba(51, 51, 130, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.carnival-hero-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #5555a5 0%, #D3E4FC 100%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.carnival-hero-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.carnival-hero-btn:hover::before {
+    opacity: 1;
+}
+
+.carnival-hero-btn:hover::after {
+    width: 300px;
+    height: 300px;
+}
+
+.carnival-hero-btn span,
+.carnival-hero-btn .btn-arrow {
+    position: relative;
+    z-index: 1;
+}
+
+.carnival-hero-btn:hover {
+    transform: translateX(10px);
+    box-shadow: 
+        0 20px 60px rgba(51, 51, 130, 0.7),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    border-color: #D3E4FC;
+}
+
+.btn-arrow {
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.carnival-hero-btn:hover .btn-arrow {
+    transform: translateX(8px);
+}
+
+/* Indicators */
+.carnival-hero-indicators {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 4;
+    display: flex;
+    gap: 1rem;
+}
+
+.indicator {
+    width: 40px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.indicator::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background: #D3E4FC;
+    transition: width 0.4s ease;
+}
+
+.indicator.active {
+    background: rgba(211, 228, 252, 0.5);
+}
+
+.indicator.active::before {
+    width: 100%;
+    animation: indicatorProgress 6s linear;
+}
+
+@keyframes indicatorProgress {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+.indicator:hover {
+    background: rgba(211, 228, 252, 0.6);
+    transform: scaleY(1.5);
+}
+
+/* Responsive */
+@media (max-width: 968px) {
+    .carnival-hero-widget {
+        min-height: 100vh;
+    }
+    
+    .carnival-hero-content {
+        padding: 0 2rem;
+    }
+    
+    .carnival-hero-stats {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .carnival-hero-title {
+        gap: 0 1rem;
+    }
+    
+    .carnival-hero-indicators {
+        bottom: 2rem;
+    }
+}
+
+/* Animazioni entrata */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==============================================
+   CARNEVALE WIDGET - COMPATTO (OLD - REMOVE)
+   ============================================== */
+
+.carnival-widget {
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.carnival-widget::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(51, 51, 130, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(211, 228, 252, 0.08) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.carnival-widget-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+}
+
+.carnival-widget-image {
+    position: relative;
+    height: 500px;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(51, 51, 130, 0.3);
+}
+
+.carnival-widget-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.carnival-widget:hover .carnival-widget-image img {
+    transform: scale(1.08);
+}
+
+.carnival-widget-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(51, 51, 130, 0.4) 0%,
+        rgba(10, 10, 15, 0.3) 50%,
+        rgba(211, 228, 252, 0.2) 100%
+    );
+    mix-blend-mode: multiply;
+    transition: opacity 0.4s ease;
+}
+
+.carnival-widget:hover .carnival-widget-overlay {
+    opacity: 0.8;
+}
+
+.carnival-widget-content {
+    padding: 2rem 0;
+}
+
+.carnival-widget-tag {
+    display: inline-block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #D3E4FC;
+    padding: 0.5rem 1rem;
+    background: rgba(51, 51, 130, 0.2);
+    border: 1px solid rgba(211, 228, 252, 0.3);
+    border-radius: 20px;
+    margin-bottom: 1.5rem;
+}
+
+.carnival-widget-content h2 {
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0 0 1.5rem;
+    background: linear-gradient(135deg, #fff 0%, #D3E4FC 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.carnival-widget-content p {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 2rem;
+}
+
+.carnival-widget-features {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+}
+
+.carnival-widget-features span {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    color: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s ease;
+}
+
+.carnival-widget-features span:hover {
+    background: rgba(51, 51, 130, 0.3);
+    border-color: rgba(211, 228, 252, 0.4);
+    transform: translateY(-2px);
+}
+
+.carnival-widget-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, #333382 0%, #5555a5 100%);
+    border: 2px solid transparent;
+    border-radius: 50px;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 30px rgba(51, 51, 130, 0.4);
+}
+
+.carnival-widget-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #5555a5 0%, #D3E4FC 100%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.carnival-widget-btn span {
+    position: relative;
+    z-index: 1;
+}
+
+.carnival-widget-btn svg {
+    position: relative;
+    z-index: 1;
+    transition: transform 0.3s ease;
+}
+
+.carnival-widget-btn:hover {
+    transform: translateX(5px);
+    box-shadow: 0 20px 50px rgba(51, 51, 130, 0.6);
+    border-color: #D3E4FC;
+}
+
+.carnival-widget-btn:hover::before {
+    opacity: 1;
+}
+
+.carnival-widget-btn:hover svg {
+    transform: translateX(5px);
+}
+
+/* RESPONSIVE */
+@media (max-width: 968px) {
+    .carnival-widget-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .carnival-widget-image {
+        height: 400px;
+    }
+}
+
+/* ==============================================
+   CARNEVALE DI VENEZIA - APPLE STYLE
+   ============================================== */
+
+.carnival-section {
+    position: relative;
+    background: #000;
+    color: #fff;
+}
+
+/* HERO SECTION */
+.carnival-hero {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.carnival-background {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #1a1a2e 0%, #0a0a0f 50%, #16213e 100%);
+    animation: gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift {
+    0%, 100% { filter: hue-rotate(0deg); }
+    50% { filter: hue-rotate(30deg); }
+}
+
+.carnival-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 2rem;
+    animation: fadeInUp 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.carnival-eyebrow {
+    display: inline-block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #D3E4FC;
+    margin-bottom: 1rem;
+    opacity: 0;
+    animation: fadeIn 1s 0.3s forwards;
+}
+
+.carnival-title {
+    font-size: clamp(3rem, 12vw, 8rem);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    margin: 0 0 1.5rem;
+    background: linear-gradient(135deg, #fff 0%, #D3E4FC 50%, #333382 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    opacity: 0;
+    animation: fadeInScale 1.2s 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.carnival-subtitle {
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    color: rgba(255, 255, 255, 0.8);
+    max-width: 600px;
+    margin: 0 auto;
+    opacity: 0;
+    animation: fadeIn 1s 0.8s forwards;
+}
+
+.scroll-hint {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    opacity: 0;
+    animation: fadeIn 1s 1.2s forwards, floatUpDown 3s 2s ease-in-out infinite;
+}
+
+.scroll-hint span {
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    color: rgba(255, 255, 255, 0.6);
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.scroll-line {
+    width: 2px;
+    height: 40px;
+    background: linear-gradient(to bottom, #D3E4FC, transparent);
+    margin: 0 auto;
+    animation: scrollLine 2s ease-in-out infinite;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes floatUpDown {
+    0%, 100% { transform: translate(-50%, 0); }
+    50% { transform: translate(-50%, -10px); }
+}
+
+@keyframes scrollLine {
+    0% { transform: scaleY(0); transform-origin: top; }
+    50% { transform: scaleY(1); transform-origin: top; }
+    51% { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+}
+
+/* PANELS SECTION */
+.carnival-panels {
+    position: relative;
+}
+
+.carnival-panel {
+    position: relative;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: #000;
+    overflow: hidden;
+}
+
+.carnival-panel.reverse {
+    direction: rtl;
+}
+
+.carnival-panel.reverse > * {
+    direction: ltr;
+}
+
+.panel-image {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    overflow: hidden;
+}
+
+.panel-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(51, 51, 130, 0.3) 0%,
+        rgba(10, 10, 15, 0.4) 50%,
+        rgba(211, 228, 252, 0.2) 100%
+    );
+    mix-blend-mode: multiply;
+    transition: opacity 0.8s ease;
+}
+
+.carnival-panel:hover .panel-overlay {
+    opacity: 0.7;
+}
+
+.panel-image::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        circle at 50% 50%,
+        transparent 0%,
+        rgba(0, 0, 0, 0.3) 100%
+    );
+    z-index: 1;
+}
+
+.panel-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem;
+    background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.panel-text::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(211, 228, 252, 0.3),
+        transparent
+    );
+}
+
+.panel-text-content {
+    max-width: 500px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.carnival-panel.visible .panel-text-content {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.panel-number {
+    display: inline-block;
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: #D3E4FC;
+    margin-bottom: 1.5rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid rgba(211, 228, 252, 0.3);
+    border-radius: 20px;
+    background: rgba(211, 228, 252, 0.05);
+}
+
+.panel-text-content h2 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0 0 1.5rem;
+    background: linear-gradient(135deg, #fff 0%, #D3E4FC 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.panel-text-content p {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 2rem;
+}
+
+.panel-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-item strong {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #D3E4FC;
+    margin-bottom: 0.5rem;
+    line-height: 1;
+}
+
+.stat-item span {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.4;
+}
+
+blockquote {
+    font-size: 1.25rem;
+    font-style: italic;
+    font-weight: 300;
+    line-height: 1.6;
+    color: #D3E4FC;
+    padding-left: 2rem;
+    border-left: 3px solid #333382;
+    margin: 2rem 0;
+}
+
+.carnival-features {
+    list-style: none;
+    padding: 0;
+    margin: 2rem 0 0;
+}
+
+.carnival-features li {
+    font-size: 1.125rem;
+    color: rgba(255, 255, 255, 0.85);
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.3s ease;
+}
+
+.carnival-features li:hover {
+    color: #D3E4FC;
+    padding-left: 1rem;
+    border-bottom-color: rgba(211, 228, 252, 0.3);
+}
+
+.taste-note {
+    background: rgba(51, 51, 130, 0.15);
+    border-left: 3px solid #333382;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-top: 2rem;
+}
+
+.taste-note strong {
+    color: #D3E4FC;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.tech-badges {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+}
+
+.badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: rgba(51, 51, 130, 0.2);
+    border: 1px solid rgba(211, 228, 252, 0.3);
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #D3E4FC;
+    transition: all 0.3s ease;
+}
+
+.badge:hover {
+    background: rgba(51, 51, 130, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(211, 228, 252, 0.2);
+}
+
+/* FINAL CTA */
+.carnival-cta {
+    position: relative;
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #1a1a2e 0%, #0a0a0f 100%);
+    overflow: hidden;
+}
+
+.carnival-cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+        radial-gradient(circle at 20% 50%, rgba(51, 51, 130, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 50%, rgba(211, 228, 252, 0.1) 0%, transparent 50%);
+    animation: pulseGlow 8s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.1); }
+}
+
+.cta-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 2rem;
+}
+
+.cta-content h2 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #fff 0%, #D3E4FC 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.cta-content p {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 3rem;
+}
+
+.btn-carnival {
+    display: inline-block;
+    padding: 1.25rem 3rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, #333382 0%, #5555a5 100%);
+    border: 2px solid transparent;
+    border-radius: 50px;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 30px rgba(51, 51, 130, 0.3);
+}
+
+.btn-carnival::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #5555a5 0%, #D3E4FC 100%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.btn-carnival:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 50px rgba(51, 51, 130, 0.5);
+    border-color: #D3E4FC;
+}
+
+.btn-carnival:hover::before {
+    opacity: 1;
+}
+
+.btn-carnival span {
+    position: relative;
+    z-index: 1;
+}
+
+/* RESPONSIVE */
+@media (max-width: 968px) {
+    .carnival-panel {
+        grid-template-columns: 1fr;
+        min-height: auto;
+    }
+    
+    .panel-image {
+        height: 50vh;
+        background-attachment: scroll;
+    }
+    
+    .panel-text {
+        padding: 3rem 2rem;
+    }
+    
+    .panel-stats {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}
+
+/* SCROLL ANIMATIONS */
+.carnival-panel {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.carnival-panel.visible {
+    opacity: 1;
+    transform: translateY(0);
+}

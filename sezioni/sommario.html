@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHECK-IN | Sommario</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/sommario.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="sommario-page">
+    <!-- Header con navigazione principale -->
+    <header class="sommario-header">
+        <div class="header-content">
+            <button class="back-button" onclick="history.back()">
+                <span class="back-arrow">←</span>
+                <span>TORNA ALLA COPERTINA</span>
+            </button>
+            
+            <img src="../assets/images/checkin-testata-hd.svg" alt="CHECK-IN" class="header-logo">
+            
+            <div class="issue-info">
+                <span class="issue-date">Ottobre 2025</span>
+                <span class="issue-number">N° 148</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sommario principale con layout a depliant -->
+    <main class="sommario-main">
+        <!-- Pannello sinistro - Sezioni principali -->
+        <section class="sommario-panel left-panel">
+            <div class="panel-content">
+                <h2 class="panel-title">ESPLORA</h2>
+                
+                <div class="section-grid">
+                    <!-- Sezione Viaggi -->
+                    <div class="section-card large" data-section="viaggi">
+                        <div class="card-background">
+                            <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600&h=400&fit=crop" alt="Viaggi">
+                            <div class="card-overlay"></div>
+                        </div>
+                        <div class="card-content">
+                            <div class="section-icon">✈️</div>
+                            <h3 class="section-title">VIAGGI</h3>
+                            <p class="section-description">Destinazioni esclusive e itinerari d'autore per scoprire l'Italia e l'Europa</p>
+                            <div class="article-count">12 articoli</div>
+                        </div>
+                        <div class="card-action">
+                            <span>SCOPRI</span>
+                            <div class="action-arrow">→</div>
+                        </div>
+                    </div>
+
+                    <!-- Sezione Enogastronomia -->
+                    <div class="section-card medium" data-section="enogastronomia">
+                        <div class="card-background">
+                            <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop" alt="Enogastronomia">
+                            <div class="card-overlay"></div>
+                        </div>
+                        <div class="card-content">
+                            <div class="section-icon">🍷</div>
+                            <h3 class="section-title">ENOGASTRONOMIA</h3>
+                            <p class="section-description">I sapori autentici del territorio</p>
+                            <div class="article-count">8 articoli</div>
+                        </div>
+                        <div class="card-action">
+                            <span>ASSAPORA</span>
+                            <div class="action-arrow">→</div>
+                        </div>
+                    </div>
+
+                    <!-- Sezione Ospitalità -->
+                    <div class="section-card medium" data-section="ospitalita">
+                        <div class="card-background">
+                            <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop" alt="Ospitalità">
+                            <div class="card-overlay"></div>
+                        </div>
+                        <div class="card-content">
+                            <div class="section-icon">🏨</div>
+                            <h3 class="section-title">OSPITALITÀ</h3>
+                            <p class="section-description">Eccellenza nell'accoglienza italiana</p>
+                            <div class="article-count">6 articoli</div>
+                        </div>
+                        <div class="card-action">
+                            <span>SOGGIORNA</span>
+                            <div class="action-arrow">→</div>
+                        </div>
+                    </div>
+
+                    <!-- Sezione Cultura -->
+                    <div class="section-card small" data-section="cultura">
+                        <div class="card-background">
+                            <img src="https://images.unsplash.com/photo-1471919743851-c4df8b6ee dd8?w=300&h=200&fit=crop" alt="Cultura">
+                            <div class="card-overlay"></div>
+                        </div>
+                        <div class="card-content">
+                            <div class="section-icon">🎭</div>
+                            <h3 class="section-title">CULTURA</h3>
+                            <p class="section-description">Arte, tradizioni e eventi</p>
+                            <div class="article-count">4 articoli</div>
+                        </div>
+                        <div class="card-action">
+                            <span>SCOPRI</span>
+                            <div class="action-arrow">→</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pannello centrale - Articoli in evidenza -->
+        <section class="sommario-panel center-panel">
+            <div class="panel-content">
+                <h2 class="panel-title">IN EVIDENZA</h2>
+                
+                <div class="featured-articles">
+                    <!-- Articolo principale -->
+                    <article class="featured-main" data-article="repubblica-ceca-natale">
+                        <div class="article-image">
+                            <img src="https://www.italiaatavola.net/images/contenutiarticoli/praga_natale.jpg" alt="Repubblica Ceca Natale">
+                            <div class="article-badge">COPERTINA</div>
+                        </div>
+                        <div class="article-content">
+                            <span class="article-category">VIAGGI</span>
+                            <h3 class="article-title">La magia del Natale in Repubblica Ceca comincia già a novembre</h3>
+                            <p class="article-excerpt">
+                                Dalle piazze di Praga alle città della Moravia, l'Avvento trasforma la Repubblica Ceca 
+                                in un viaggio fra luci, cori e profumi. Un Paese che vive il Natale come un rito 
+                                collettivo, autentico e sorprendentemente vitale.
+                            </p>
+                            <div class="article-meta">
+                                <span class="author">Redazione Italia a Tavola</span>
+                                <span class="reading-time">5 min di lettura</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Articoli secondari -->
+                    <div class="featured-secondary">
+                        <article class="featured-item" data-article="san-candido-inverno">
+                            <div class="item-image">
+                                <img src="https://images.unsplash.com/photo-1551524164-6cf2ac00de6e?w=300&h=200&fit=crop" alt="San Candido">
+                            </div>
+                            <div class="item-content">
+                                <span class="item-category">OSPITALITÀ</span>
+                                <h4 class="item-title">San Candido tra design e benessere alpino</h4>
+                                <div class="item-meta">
+                                    <span class="reading-time">3 min</span>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="featured-item" data-article="sicurezza-hotel">
+                            <div class="item-image">
+                                <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=300&h=200&fit=crop" alt="Hotel Design">
+                            </div>
+                            <div class="item-content">
+                                <span class="item-category">HORECA</span>
+                                <h4 class="item-title">Sicurezza in hotel come elemento d'arredo</h4>
+                                <div class="item-meta">
+                                    <span class="reading-time">4 min</span>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="featured-item" data-article="mercatini-europa">
+                            <div class="item-image">
+                                <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=300&h=200&fit=crop" alt="Mercatini Europa">
+                            </div>
+                            <div class="item-content">
+                                <span class="item-category">VIAGGI</span>
+                                <h4 class="item-title">Mercatini di Natale da non perdere in Europa</h4>
+                                <div class="item-meta">
+                                    <span class="reading-time">6 min</span>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pannello destro - Rubriche e Speciali -->
+        <section class="sommario-panel right-panel">
+            <div class="panel-content">
+                <h2 class="panel-title">RUBRICHE</h2>
+                
+                <div class="rubriche-list">
+                    <div class="rubrica-item">
+                        <div class="rubrica-icon">💼</div>
+                        <div class="rubrica-content">
+                            <h4 class="rubrica-title">CHECK-IN BUSINESS</h4>
+                            <p class="rubrica-description">Trend e innovazioni nel settore turistico</p>
+                        </div>
+                    </div>
+
+                    <div class="rubrica-item">
+                        <div class="rubrica-icon">🌱</div>
+                        <div class="rubrica-content">
+                            <h4 class="rubrica-title">TURISMO SOSTENIBILE</h4>
+                            <p class="rubrica-description">Viaggiare nel rispetto dell'ambiente</p>
+                        </div>
+                    </div>
+
+                    <div class="rubrica-item">
+                        <div class="rubrica-icon">👨‍🍳</div>
+                        <div class="rubrica-content">
+                            <h4 class="rubrica-title">CHEF IN VIAGGIO</h4>
+                            <p class="rubrica-description">Storie di cucina dal mondo</p>
+                        </div>
+                    </div>
+
+                    <div class="rubrica-item">
+                        <div class="rubrica-icon">🏛️</div>
+                        <div class="rubrica-content">
+                            <h4 class="rubrica-title">PATRIMONIO UNESCO</h4>
+                            <p class="rubrica-description">Tesori italiani da scoprire</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sezione Newsletter -->
+                <div class="newsletter-section">
+                    <h3 class="newsletter-title">RESTA AGGIORNATO</h3>
+                    <p class="newsletter-description">
+                        Ricevi ogni settimana le migliori storie di viaggio e cultura
+                    </p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="La tua email" class="newsletter-input">
+                        <button type="submit" class="newsletter-button">ISCRIVITI</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer con social e info -->
+    <footer class="sommario-footer">
+        <div class="footer-content">
+            <div class="social-links">
+                <a href="#" class="social-link">Facebook</a>
+                <a href="#" class="social-link">Instagram</a>
+                <a href="#" class="social-link">Twitter</a>
+                <a href="#" class="social-link">LinkedIn</a>
+            </div>
+            <div class="footer-info">
+                <span>© 2025 CHECK-IN - Italia a Tavola</span>
+                <span>Rivista digitale di turismo e cultura</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/navigation.js"></script>
+    <script src="../assets/js/animations.js"></script>
+    <script src="../assets/js/sommario.js"></script>
+</body>
+</html>
