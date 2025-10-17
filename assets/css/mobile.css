@@ -715,12 +715,19 @@
         padding: 60px 20px;
     }
 
-    .map-header h2 {
-        font-size: 1.75rem;
+    .map-title-word {
+        font-size: clamp(1.8rem, 8vw, 3rem);
+        letter-spacing: -1px;
     }
 
-    .map-header p {
+    .map-title-line {
+        gap: 12px;
+    }
+
+    .map-subtitle {
         font-size: 1rem;
+        flex-direction: column;
+        gap: 8px;
     }
 
     .garda-map-container {
