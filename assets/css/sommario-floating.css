@@ -67,14 +67,14 @@
 }
 
 .hero-sommario-dropdown.show-initial {
-    animation: showAndHide 5s ease-in-out forwards;
+    animation: showAndHide 6.5s ease-in-out forwards;
 }
 
 @keyframes showAndHide {
     0% {
         transform: translateY(-100%);
     }
-    10%, 90% {
+    8%, 92% {
         transform: translateY(0);
     }
     100% {

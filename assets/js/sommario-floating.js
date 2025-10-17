@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!toggleHero || !dropdownHero || !floatingBtn || !floatingMenu) return;
     
     // =============================================================================
-    // MOSTRA DROPDOWN AUTOMATICAMENTE PER 5 SECONDI ALL'AVVIO
+    // MOSTRA DROPDOWN AUTOMATICAMENTE PER 6.5 SECONDI ALL'AVVIO
     // =============================================================================
     
     setTimeout(() => {
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Rimuovi la classe dopo l'animazione
         setTimeout(() => {
             dropdownHero.classList.remove('show-initial');
-        }, 5000);
+        }, 6500); // Aumentato da 5000 a 6500ms (1.5 secondi in più)
     }, 1500); // Inizia dopo 1.5 secondi (dopo il caricamento)
     
     // =============================================================================
