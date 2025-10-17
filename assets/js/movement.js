@@ -77,32 +77,21 @@ document.addEventListener('DOMContentLoaded', function() {
     let activePopup = null;
     let activeMarker = null;
 
-    // Funzione per posizionare il popup vicino al marker
+    // Funzione per posizionare il popup sempre a destra del marker
     function positionPopup(popup, markerElement) {
         const container = mapContainer.getBoundingClientRect();
         const marker = markerElement.getBoundingClientRect();
-        const popupWidth = 300;
+        const popupWidth = 320;
         const popupHeight = popup.offsetHeight || 380;
         
         // Calcola posizione relativa al container
-        let left = marker.left - container.left + marker.width / 2;
+        let left = marker.left - container.left + marker.width + 30; // Sempre 30px a destra del marker
         let top = marker.top - container.top;
-        
-        // Sposta il popup a destra o sinistra del marker
-        if (left > container.width / 2) {
-            // Marker sulla destra, popup a sinistra
-            left = left - popupWidth - 30;
-        } else {
-            // Marker sulla sinistra, popup a destra
-            left = left + 30;
-        }
         
         // Centra verticalmente rispetto al marker
         top = top - popupHeight / 2 + marker.height / 2;
         
-        // Assicurati che il popup rimanga dentro il container
-        if (left < 10) left = 10;
-        if (left + popupWidth > container.width - 10) left = container.width - popupWidth - 10;
+        // Assicurati che il popup rimanga dentro il container verticalmente
         if (top < 10) top = 10;
         if (top + popupHeight > container.height - 10) top = container.height - popupHeight - 10;
         
