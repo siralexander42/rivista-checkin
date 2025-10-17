@@ -115,11 +115,28 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Posiziona il popup a destra del marker
             const markerRect = this.getBoundingClientRect();
-            const popupWidth = 320;
+            const popupWidth = 280;
+            const windowHeight = window.innerHeight;
             
-            // Posizione: 30px a destra del marker, centrato verticalmente
-            popup.style.left = `${markerRect.right + 30}px`;
-            popup.style.top = `${markerRect.top + markerRect.height / 2}px`;
+            // Calcola posizione base: 20px a destra del marker
+            let leftPos = markerRect.right + 20;
+            let topPos = markerRect.top + (markerRect.height / 2);
+            
+            // Se esce dallo schermo a destra, metti a sinistra del marker
+            if (leftPos + popupWidth > window.innerWidth - 20) {
+                leftPos = markerRect.left - popupWidth - 20;
+            }
+            
+            // Assicurati che non esca dallo schermo verticalmente
+            const popupHeight = popup.offsetHeight || 350;
+            if (topPos - (popupHeight / 2) < 20) {
+                topPos = 20 + (popupHeight / 2);
+            } else if (topPos + (popupHeight / 2) > windowHeight - 20) {
+                topPos = windowHeight - 20 - (popupHeight / 2);
+            }
+            
+            popup.style.left = `${leftPos}px`;
+            popup.style.top = `${topPos}px`;
             popup.style.transform = 'translateY(-50%)';
         });
     });
