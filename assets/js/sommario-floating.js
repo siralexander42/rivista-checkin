@@ -6,6 +6,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     
     const toggleHero = document.querySelector('.sommario-toggle-hero');
+    const toggleLabel = document.querySelector('.sommario-toggle-label');
     const dropdownHero = document.querySelector('.hero-sommario-dropdown');
     const floatingBtn = document.querySelector('.floating-sommario-btn');
     const floatingMenu = document.querySelector('.floating-sommario-menu');
@@ -22,6 +23,15 @@ document.addEventListener('DOMContentLoaded', function() {
         e.stopPropagation();
         dropdownHero.classList.toggle('active');
         toggleHero.classList.toggle('active');
+        
+        // Nascondi/mostra la label
+        if (toggleLabel) {
+            if (dropdownHero.classList.contains('active')) {
+                toggleLabel.style.opacity = '0';
+            } else {
+                toggleLabel.style.opacity = '1';
+            }
+        }
     });
     
     // =============================================================================
