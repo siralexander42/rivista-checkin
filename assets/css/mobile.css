@@ -712,19 +712,23 @@
     }
 
     .movement-footer {
-        padding: 60px 30px;
+        padding: 40px 20px;
     }
 
     .map-header h2 {
-        font-size: 1.75rem;
+        font-size: 1.5rem;
     }
 
     .map-header p {
-        font-size: 1rem;
+        font-size: 0.9rem;
     }
 
     .garda-map-container {
-        padding: 20px;
+        padding: 15px;
+    }
+
+    .garda-map {
+        max-height: 300px;
     }
 
     .marker-label {
@@ -732,24 +736,25 @@
     }
 
     .map-popup {
-        width: 280px;
-        max-width: calc(100vw - 60px);
+        width: 260px;
+        max-width: calc(100vw - 40px);
     }
 
     .map-popup img {
-        height: 150px;
+        height: 140px;
     }
 
     .popup-content {
-        padding: 15px;
+        padding: 12px;
     }
 
     .popup-content h4 {
-        font-size: 1.125rem;
+        font-size: 1rem;
     }
 
     .popup-content p {
-        font-size: 0.875rem;
+        font-size: 0.8rem;
+        margin-bottom: 12px;
     }
 }
 
