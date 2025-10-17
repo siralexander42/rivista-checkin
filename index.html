@@ -821,36 +821,6 @@
     </footer>
 
     <!-- JavaScript -->
-    <script>
-        // Loading screen - progressione controllata
-        (function() {
-            const loadingScreen = document.getElementById('loadingScreen');
-            const loadingBar = document.getElementById('loadingBar');
-            
-            let progress = 0;
-            const duration = 3000; // 3 secondi totali (ridotto da 4)
-            const steps = 80; // 80 step
-            const increment = 100 / steps;
-            
-            const interval = setInterval(() => {
-                progress += increment;
-                if (progress > 100) progress = 100;
-                
-                loadingBar.style.width = progress + '%';
-                
-                if (progress >= 100) {
-                    clearInterval(interval);
-                    // Aspetta un momento sulla barra piena
-                    setTimeout(() => {
-                        loadingScreen.classList.add('fade-out');
-                        setTimeout(() => {
-                            loadingScreen.remove();
-                        }, 800);
-                    }, 400);
-                }
-            }, duration / steps);
-        })();
-    </script>
     <script src="assets/js/loading.js"></script>
     <script src="assets/js/rss-loader.js"></script>
     <script src="assets/js/main.js"></script>
