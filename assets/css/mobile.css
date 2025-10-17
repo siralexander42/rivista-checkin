@@ -117,11 +117,6 @@
         max-width: 100%;
     }
     
-    /* Wrapper per non spezzare "A PARTIRE?" - SOLO su mobile */
-    .word-nowrap {
-        display: contents; /* Su desktop usa contents per non rompere il layout */
-    }
-    
     /* ==============================================
        HERO SECTION
        ============================================== */
@@ -577,11 +572,10 @@
    SMALL MOBILE (max 480px)
    ============================================== */
 @media (max-width: 480px) {
-    /* Wrapper per non spezzare "A PARTIRE?" su mobile */
-    .word-nowrap {
-        display: inline-flex !important;
-        white-space: nowrap;
-        gap: 0.15rem;
+    /* Mostra break solo su mobile per "A PARTIRE?" */
+    .mobile-break {
+        display: block;
+        width: 100%;
     }
     
     .hero-container h1 {

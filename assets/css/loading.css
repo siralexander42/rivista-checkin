@@ -154,6 +154,11 @@
     border-radius: 8px;
 }
 
+/* Nascondi break su desktop */
+.mobile-break {
+    display: none;
+}
+
 .flip-letter {
     width: 26px;
     height: 38px;
