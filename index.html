@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="assets/css/carnival.css">
     <link rel="stylesheet" href="assets/css/cremona-scroll.css">
     <link rel="stylesheet" href="assets/css/garda-magazine.css">
+    <link rel="stylesheet" href="assets/css/sommario-floating.css">
     <link rel="stylesheet" href="assets/css/mobile.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -123,10 +124,53 @@
                 <div class="scroll-arrow">↓</div>
             </div>
         </div>
+        
+        <!-- SOMMARIO FISSO NELLA HERO -->
+        <div class="hero-sommario">
+            <h3>In questo numero</h3>
+            <ul class="sommario-list">
+                <li class="sommario-item">
+                    <a href="#cremona" class="sommario-link">
+                        <span class="sommario-icon">🎻</span>
+                        <span class="sommario-text">Cremona: Città che suona</span>
+                    </a>
+                </li>
+                <li class="sommario-item">
+                    <a href="#repubblica-ceca" class="sommario-link">
+                        <span class="sommario-icon">🎄</span>
+                        <span class="sommario-text">Repubblica Ceca: Mercatini</span>
+                    </a>
+                </li>
+                <li class="sommario-item">
+                    <a href="#massimo-cosmo" class="sommario-link">
+                        <span class="sommario-icon">🍕</span>
+                        <span class="sommario-text">Massimo Cosmo a Prato</span>
+                    </a>
+                </li>
+                <li class="sommario-item">
+                    <a href="#lago-garda" class="sommario-link">
+                        <span class="sommario-icon">⛵</span>
+                        <span class="sommario-text">Lago di Garda in movimento</span>
+                    </a>
+                </li>
+                <li class="sommario-item">
+                    <a href="#carnevale-venezia" class="sommario-link">
+                        <span class="sommario-icon">🎭</span>
+                        <span class="sommario-text">Carnevale di Venezia 2025</span>
+                    </a>
+                </li>
+                <li class="sommario-item">
+                    <a href="#capuccina" class="sommario-link">
+                        <span class="sommario-icon">🏰</span>
+                        <span class="sommario-text">La Capuccina: Un casale storico</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
     </section>
 
     <!-- CREMONA SCROLL EXPERIENCE - STILE APPLE -->
-    <section class="cremona-scroll-section">
+    <section class="cremona-scroll-section" id="cremona">
         <div class="cremona-container">
             <!-- TESTO SCROLLABILE A SINISTRA -->
             <div class="cremona-text-scroll">
@@ -231,7 +275,7 @@
     </section>
 
     <!-- PRIMA SEZIONE PINNED: Repubblica Ceca -->
-    <section class="story-section">
+    <section class="story-section" id="repubblica-ceca">
         <div class="story-container">
             <!-- COLONNA SINISTRA: TESTO FISSO -->
             <div class="story-text">
@@ -300,7 +344,7 @@
     </section>
 
     <!-- SECONDA SEZIONE PINNED: Massimo Cosmo -->
-    <section class="story-section dark">
+    <section class="story-section dark" id="massimo-cosmo">
         <div class="story-container">
             <!-- COLONNA SINISTRA: TESTO FISSO -->
             <div class="story-text">
@@ -363,7 +407,7 @@
     </section>
 
     <!-- LAGO DI GARDA - MOVIMENTO BLOCK -->
-    <section class="garda-movement-section">
+    <section class="garda-movement-section" id="lago-garda">
         <div class="movement-hero">
             <div class="movement-image-stack">
                 <div class="movement-img active" style="background-image: url('https://www.italiaatavola.net/images/contenutiarticoli/leali.jpg');"></div>
@@ -585,7 +629,7 @@
     </section>
 
     <!-- WIDGET CARNEVALE DI VENEZIA - ULTRA FIGO -->
-    <section class="carnival-hero-widget">
+    <section class="carnival-hero-widget" id="carnevale-venezia">
         <div class="carnival-hero-bg">
             <div class="carnival-hero-slide active" style="background-image: url('https://www.italiaatavola.net/images/contenutiarticoli/Machera%20Bauta%20Carnevale%20Venezia.jpg');"></div>
             <div class="carnival-hero-slide" style="background-image: url('https://www.italiaatavola.net/images/contenutiarticoli/venezia_1_2_3_4.jpg');"></div>
@@ -637,7 +681,7 @@
     </section>
 
     <!-- TERZA SEZIONE PINNED: La Capuccina -->
-    <section class="story-section">
+    <section class="story-section" id="capuccina">
         <div class="story-container">
             <!-- COLONNA SINISTRA: TESTO FISSO -->
             <div class="story-text">
@@ -711,6 +755,54 @@
         </div>
     </section>
 
+    <!-- PULSANTE FLOTTANTE SOMMARIO -->
+    <button class="floating-sommario-btn" aria-label="Apri sommario">
+        📑
+    </button>
+
+    <!-- MENU FLOTTANTE SOMMARIO -->
+    <div class="floating-sommario-menu">
+        <h3>In questo numero</h3>
+        <ul class="sommario-list">
+            <li class="sommario-item">
+                <a href="#cremona" class="sommario-link">
+                    <span class="sommario-icon">🎻</span>
+                    <span class="sommario-text">Cremona: Città che suona</span>
+                </a>
+            </li>
+            <li class="sommario-item">
+                <a href="#repubblica-ceca" class="sommario-link">
+                    <span class="sommario-icon">🎄</span>
+                    <span class="sommario-text">Repubblica Ceca: Mercatini</span>
+                </a>
+            </li>
+            <li class="sommario-item">
+                <a href="#massimo-cosmo" class="sommario-link">
+                    <span class="sommario-icon">🍕</span>
+                    <span class="sommario-text">Massimo Cosmo a Prato</span>
+                </a>
+            </li>
+            <li class="sommario-item">
+                <a href="#lago-garda" class="sommario-link">
+                    <span class="sommario-icon">⛵</span>
+                    <span class="sommario-text">Lago di Garda in movimento</span>
+                </a>
+            </li>
+            <li class="sommario-item">
+                <a href="#carnevale-venezia" class="sommario-link">
+                    <span class="sommario-icon">🎭</span>
+                    <span class="sommario-text">Carnevale di Venezia 2025</span>
+                </a>
+            </li>
+            <li class="sommario-item">
+                <a href="#capuccina" class="sommario-link">
+                    <span class="sommario-icon">🏰</span>
+                    <span class="sommario-text">La Capuccina: Un casale storico</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
     <!-- FOOTER -->
     <footer class="main-footer">
         <div class="footer-container">
@@ -761,5 +853,6 @@
     <script src="assets/js/carnival.js"></script>
     <script src="assets/js/cremona-scroll.js"></script>
     <script src="assets/js/movement.js"></script>
+    <script src="assets/js/sommario-floating.js"></script>
 </body>
 </html>
