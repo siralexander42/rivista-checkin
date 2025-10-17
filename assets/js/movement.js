@@ -107,13 +107,20 @@ document.addEventListener('DOMContentLoaded', function() {
             // Chiudi il popup precedente
             closeActivePopup();
 
-            // Apri il nuovo popup (il CSS posiziona automaticamente a destra)
+            // Apri il nuovo popup e posizionalo a destra del marker
             popup.classList.add('active');
             this.classList.add('active');
             activePopup = popup;
             activeMarker = this;
             
-            // Non serve più posizionare manualmente - il CSS lo fa con left: calc(100% + 30px)
+            // Posiziona il popup a destra del marker
+            const markerRect = this.getBoundingClientRect();
+            const popupWidth = 320;
+            
+            // Posizione: 30px a destra del marker, centrato verticalmente
+            popup.style.left = `${markerRect.right + 30}px`;
+            popup.style.top = `${markerRect.top + markerRect.height / 2}px`;
+            popup.style.transform = 'translateY(-50%)';
         });
     });
 

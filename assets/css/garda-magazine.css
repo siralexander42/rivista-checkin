@@ -547,12 +547,9 @@
 }
 
 /* Popup Cards - Design Cartoon più compatto */
-/* Popup Informazioni Locale - Sempre a destra */
+/* Popup Informazioni Locale - Posizionamento fisso a destra */
 .map-popup {
-    position: absolute;
-    left: calc(100% + 30px);
-    top: 50%;
-    transform: translateY(-50%);
+    position: fixed;
     background: rgba(26, 26, 26, 0.98);
     backdrop-filter: blur(20px);
     border-radius: 20px;
