@@ -715,17 +715,41 @@
         padding: 60px 30px;
     }
 
-    .movement-footer-content {
-        flex-direction: column;
-        gap: 40px;
+    .map-header h2 {
+        font-size: 1.75rem;
     }
 
-    .stat-number {
-        font-size: 3rem;
+    .map-header p {
+        font-size: 1rem;
     }
 
-    .movement-cta-text {
-        font-size: 1.5rem;
+    .garda-map-container {
+        padding: 20px;
+    }
+
+    .marker-label {
+        font-size: 10px;
+    }
+
+    .map-popup {
+        width: 280px;
+        max-width: calc(100vw - 60px);
+    }
+
+    .map-popup img {
+        height: 150px;
+    }
+
+    .popup-content {
+        padding: 15px;
+    }
+
+    .popup-content h4 {
+        font-size: 1.125rem;
+    }
+
+    .popup-content p {
+        font-size: 0.875rem;
     }
 }
 

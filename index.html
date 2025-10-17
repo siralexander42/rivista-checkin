@@ -432,21 +432,197 @@
         </div>
 
         <div class="movement-footer">
-            <div class="movement-footer-content">
-                <div class="movement-stat">
-                    <span class="stat-number">50+</span>
-                    <span class="stat-label">Ristoranti</span>
+            <div class="map-header">
+                <h2>Esplora il Lago di Garda</h2>
+                <p>Passa il mouse sui marker per scoprire i luoghi</p>
+            </div>
+            
+            <div class="garda-map-container">
+                <!-- SVG Map del Lago di Garda -->
+                <svg class="garda-map" viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Lago di Garda shape -->
+                    <path class="lake-shape" d="M200,50 Q220,60 225,80 L240,150 Q245,200 240,250 L235,350 Q230,420 220,470 Q210,520 200,560 Q190,520 180,470 Q170,420 165,350 L160,250 Q155,200 160,150 L175,80 Q180,60 200,50 Z" 
+                          fill="url(#lakeGradient)" stroke="#4da6ff" stroke-width="2"/>
+                    
+                    <!-- Gradiente per il lago -->
+                    <defs>
+                        <linearGradient id="lakeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:#6db3f2;stop-opacity:0.8" />
+                            <stop offset="100%" style="stop-color:#1e69b8;stop-opacity:0.9" />
+                        </linearGradient>
+                        
+                        <filter id="glow">
+                            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    
+                    <!-- Marker locations -->
+                    <!-- Ristorante Leali - Salò (sud-ovest) -->
+                    <g class="map-marker" data-location="salo" data-type="restaurant">
+                        <circle cx="170" cy="420" r="8" class="marker-pulse"/>
+                        <circle cx="170" cy="420" r="6" class="marker-dot"/>
+                        <text x="170" cy="410" class="marker-label">Salò</text>
+                    </g>
+                    
+                    <!-- Hotel Bella Riva - Gardone (ovest) -->
+                    <g class="map-marker" data-location="gardone" data-type="hotel">
+                        <circle cx="160" cy="350" r="8" class="marker-pulse"/>
+                        <circle cx="160" cy="350" r="6" class="marker-dot"/>
+                        <text x="160" y="340" class="marker-label">Gardone</text>
+                    </g>
+                    
+                    <!-- Ristorante Esplanade - Desenzano (sud) -->
+                    <g class="map-marker" data-location="desenzano" data-type="restaurant">
+                        <circle cx="195" cy="480" r="8" class="marker-pulse"/>
+                        <circle cx="195" cy="480" r="6" class="marker-dot"/>
+                        <text x="195" y="470" class="marker-label">Desenzano</text>
+                    </g>
+                    
+                    <!-- Hotel Lido Palace - Riva del Garda (nord) -->
+                    <g class="map-marker" data-location="riva" data-type="hotel">
+                        <circle cx="200" cy="80" r="8" class="marker-pulse"/>
+                        <circle cx="200" cy="80" r="6" class="marker-dot"/>
+                        <text x="200" y="70" class="marker-label">Riva</text>
+                    </g>
+                    
+                    <!-- Ristorante Al Pescatore - Peschiera (sud-est) -->
+                    <g class="map-marker" data-location="peschiera" data-type="restaurant">
+                        <circle cx="220" cy="520" r="8" class="marker-pulse"/>
+                        <circle cx="220" cy="520" r="6" class="marker-dot"/>
+                        <text x="220" y="510" class="marker-label">Peschiera</text>
+                    </g>
+                    
+                    <!-- Hotel Villa Cortine - Sirmione (sud) -->
+                    <g class="map-marker" data-location="sirmione" data-type="hotel">
+                        <circle cx="205" cy="510" r="8" class="marker-pulse"/>
+                        <circle cx="205" cy="510" r="6" class="marker-dot"/>
+                        <text x="205" y="500" class="marker-label">Sirmione</text>
+                    </g>
+                    
+                    <!-- Ristorante Agli Angeli - Gardone -->
+                    <g class="map-marker" data-location="gardone2" data-type="restaurant">
+                        <circle cx="165" cy="320" r="8" class="marker-pulse"/>
+                        <circle cx="165" cy="320" r="6" class="marker-dot"/>
+                        <text x="165" y="310" class="marker-label">Toscolano</text>
+                    </g>
+                    
+                    <!-- Hotel Lefay - Gargnano (ovest) -->
+                    <g class="map-marker" data-location="gargnano" data-type="hotel">
+                        <circle cx="168" cy="250" r="8" class="marker-pulse"/>
+                        <circle cx="168" cy="250" r="6" class="marker-dot"/>
+                        <text x="168" y="240" class="marker-label">Gargnano</text>
+                    </g>
+                </svg>
+                
+                <!-- Popup Cards -->
+                <div class="map-popup" id="popup-salo" data-location="salo">
+                    <div class="popup-header">
+                        <span class="popup-category restaurant">Ristorante</span>
+                        <button class="popup-close">×</button>
+                    </div>
+                    <img src="https://www.italiaatavola.net/images/contenutiarticoli/leali.jpg" alt="Fratelli Leali">
+                    <div class="popup-content">
+                        <h4>Fratelli Leali - Salò</h4>
+                        <p>I fratelli Leali tornano alle origini con alta cucina che diventa quotidianità. Un ritorno maturo e consapevole.</p>
+                        <a href="#" class="popup-link">Leggi l'articolo →</a>
+                    </div>
                 </div>
-                <div class="movement-stat">
-                    <span class="stat-number">100+</span>
-                    <span class="stat-label">Hotel</span>
+                
+                <div class="map-popup" id="popup-gardone" data-location="gardone">
+                    <div class="popup-header">
+                        <span class="popup-category hotel">Hotel</span>
+                        <button class="popup-close">×</button>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400" alt="Hotel Bella Riva">
+                    <div class="popup-content">
+                        <h4>Grand Hotel Bella Riva</h4>
+                        <p>Eleganza storica affacciata sul lago. Un'icona dell'ospitalità gardesana dal 1920.</p>
+                        <a href="#" class="popup-link">Scopri di più →</a>
+                    </div>
                 </div>
-                <div class="movement-stat">
-                    <span class="stat-number">25</span>
-                    <span class="stat-label">Borghi</span>
+                
+                <div class="map-popup" id="popup-desenzano" data-location="desenzano">
+                    <div class="popup-header">
+                        <span class="popup-category restaurant">Ristorante</span>
+                        <button class="popup-close">×</button>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400" alt="Esplanade">
+                    <div class="popup-content">
+                        <h4>Esplanade - Desenzano</h4>
+                        <p>Cucina contemporanea con vista mozzafiato. Lo chef Moretti reinventa la tradizione del lago.</p>
+                        <a href="#" class="popup-link">Leggi l'articolo →</a>
+                    </div>
+                </div>
+                
+                <div class="map-popup" id="popup-riva" data-location="riva">
+                    <div class="popup-header">
+                        <span class="popup-category hotel">Hotel</span>
+                        <button class="popup-close">×</button>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400" alt="Lido Palace">
+                    <div class="popup-content">
+                        <h4>Lido Palace - Riva del Garda</h4>
+                        <p>Lusso contemporaneo tra le montagne. Spa award-winning e ristorante stellato.</p>
+                        <a href="#" class="popup-link">Scopri di più →</a>
+                    </div>
+                </div>
+                
+                <div class="map-popup" id="popup-peschiera" data-location="peschiera">
+                    <div class="popup-header">
+                        <span class="popup-category restaurant">Ristorante</span>
+                        <button class="popup-close">×</button>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400" alt="Al Pescatore">
+                    <div class="popup-content">
+                        <h4>Al Pescatore - Peschiera</h4>
+                        <p>Pesce di lago nella sua essenza. Una famiglia che da tre generazioni racconta il Garda nel piatto.</p>
+                        <a href="#" class="popup-link">Leggi l'articolo →</a>
+                    </div>
+                </div>
+                
+                <div class="map-popup" id="popup-sirmione" data-location="sirmione">
+                    <div class="popup-header">
+                        <span class="popup-category hotel">Hotel</span>
+                        <button class="popup-close">×</button>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=400" alt="Villa Cortine">
+                    <div class="popup-content">
+                        <h4>Villa Cortine Palace - Sirmione</h4>
+                        <p>Dimora storica immersa in un parco secolare. L'eleganza senza tempo sul lago.</p>
+                        <a href="#" class="popup-link">Scopri di più →</a>
+                    </div>
+                </div>
+                
+                <div class="map-popup" id="popup-gardone2" data-location="gardone2">
+                    <div class="popup-header">
+                        <span class="popup-category restaurant">Ristorante</span>
+                        <button class="popup-close">×</button>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?w=400" alt="Agli Angeli">
+                    <div class="popup-content">
+                        <h4>Agli Angeli - Toscolano Maderno</h4>
+                        <p>Tradizione bresciana rivisitata. Materie prime del territorio e vini selezionati.</p>
+                        <a href="#" class="popup-link">Leggi l'articolo →</a>
+                    </div>
+                </div>
+                
+                <div class="map-popup" id="popup-gargnano" data-location="gargnano">
+                    <div class="popup-header">
+                        <span class="popup-category hotel">Hotel</span>
+                        <button class="popup-close">×</button>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400" alt="Lefay Resort">
+                    <div class="popup-content">
+                        <h4>Lefay Resort - Gargnano</h4>
+                        <p>Eco-luxury resort con vista panoramica. Benessere e sostenibilità in perfetta armonia.</p>
+                        <a href="#" class="popup-link">Scopri di più →</a>
+                    </div>
                 </div>
             </div>
-            <p class="movement-cta-text">Scopri il lago in movimento</p>
         </div>
     </section>
 
