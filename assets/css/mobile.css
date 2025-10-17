@@ -665,6 +665,68 @@
         height: 30px;
         font-size: 1rem;
     }
+
+    /* ==============================================
+       LAGO DI GARDA - MOVIMENTO - MOBILE
+       ============================================== */
+    .movement-hero {
+        min-height: 500px;
+        height: 70vh;
+    }
+
+    .movement-title-container {
+        padding: 0 30px;
+    }
+
+    .movement-main-title {
+        font-size: clamp(2.5rem, 10vw, 5rem);
+        letter-spacing: -2px;
+    }
+
+    .movement-subtitle {
+        font-size: 1rem;
+    }
+
+    .movement-grid {
+        grid-template-columns: 1fr;
+        padding: 60px 30px;
+        gap: 30px;
+    }
+
+    .movement-card-number {
+        font-size: 3rem;
+        top: 20px;
+        right: 20px;
+    }
+
+    .movement-card-image {
+        height: 250px;
+    }
+
+    .movement-card-content {
+        padding: 30px;
+    }
+
+    .movement-card-content h3 {
+        font-size: 1.5rem;
+    }
+
+    .movement-footer {
+        padding: 60px 30px;
+    }
+
+    .movement-footer-content {
+        flex-direction: column;
+        gap: 40px;
+    }
+
+    .stat-number {
+        font-size: 3rem;
+    }
+
+    .movement-cta-text {
+        font-size: 1.5rem;
+    }
 }
 
 /* ==============================================
@@ -680,3 +742,4 @@
         height: 80vh;
     }
 }
+

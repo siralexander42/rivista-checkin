@@ -1,0 +1,304 @@
+/* =============================================================================
+   LAGO DI GARDA - MOVIMENTO BLOCK
+   Design System basato su dinamismo e movimento continuo
+   ============================================================================= */
+
+/* --- Color Palette --- */
+:root {
+    --movement-dark: #0a0a0a;
+    --movement-accent: #ff3366;
+    --movement-light: #f5f5f5;
+    --movement-gray: #666666;
+}
+
+/* --- Base Section Styling --- */
+.garda-movement-section {
+    background: var(--movement-dark);
+    padding: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--movement-light);
+    overflow: hidden;
+    position: relative;
+}
+
+/* =============================================================================
+   HERO WITH ANIMATED IMAGE STACK
+   ============================================================================= */
+
+.movement-hero {
+    position: relative;
+    height: 100vh;
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.movement-image-stack {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
+.movement-img {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out, transform 8s ease-out;
+    transform: scale(1);
+}
+
+.movement-img.active {
+    opacity: 0.6;
+    transform: scale(1.1);
+    animation: zoomPulse 8s ease-in-out infinite;
+}
+
+@keyframes zoomPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.movement-title-container {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 0 40px;
+}
+
+.movement-pre {
+    display: block;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: var(--movement-accent);
+    font-weight: 600;
+    margin-bottom: 30px;
+    animation: fadeInUp 1s ease-out 0.2s both;
+}
+
+.movement-main-title {
+    font-size: clamp(4rem, 12vw, 10rem);
+    font-weight: 900;
+    line-height: 0.9;
+    margin: 0 0 40px 0;
+    letter-spacing: -4px;
+    text-transform: uppercase;
+}
+
+.movement-word {
+    display: block;
+    animation: fadeInUp 1s ease-out both;
+}
+
+.movement-word:nth-child(1) { animation-delay: 0.4s; }
+.movement-word:nth-child(2) { animation-delay: 0.6s; }
+.movement-word:nth-child(3) { animation-delay: 0.8s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.movement-subtitle {
+    font-size: 1.25rem;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+    letter-spacing: 1px;
+    animation: fadeInUp 1s ease-out 1s both;
+}
+
+/* =============================================================================
+   MOVEMENT GRID - CARD LAYOUT
+   ============================================================================= */
+
+.movement-grid {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 120px 60px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 40px;
+}
+
+/* =============================================================================
+   MOVEMENT CARDS
+   ============================================================================= */
+
+.movement-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+.movement-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--movement-accent);
+    box-shadow: 0 20px 60px rgba(255, 51, 102, 0.3);
+}
+
+.movement-card-number {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    font-size: 4rem;
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.05);
+    line-height: 1;
+    z-index: 1;
+    transition: color 0.4s ease;
+}
+
+.movement-card:hover .movement-card-number {
+    color: rgba(255, 51, 102, 0.2);
+}
+
+.movement-card-image {
+    height: 300px;
+    overflow: hidden;
+    position: relative;
+}
+
+.movement-card-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 50%, rgba(10, 10, 10, 0.9) 100%);
+}
+
+.movement-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.movement-card:hover .movement-card-image img {
+    transform: scale(1.1);
+}
+
+.movement-card-content {
+    padding: 40px;
+    position: relative;
+}
+
+.movement-card-content h3 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0 0 20px 0;
+    letter-spacing: -0.5px;
+    color: var(--movement-light);
+}
+
+.movement-card-content p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0 0 25px 0;
+}
+
+.movement-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.movement-tags span {
+    font-size: 0.75rem;
+    padding: 6px 14px;
+    background: rgba(255, 51, 102, 0.1);
+    border: 1px solid rgba(255, 51, 102, 0.3);
+    color: var(--movement-accent);
+    border-radius: 20px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.movement-card:hover .movement-tags span {
+    background: var(--movement-accent);
+    color: var(--movement-dark);
+    border-color: var(--movement-accent);
+}
+
+/* =============================================================================
+   MOVEMENT FOOTER - STATS & CTA
+   ============================================================================= */
+
+.movement-footer {
+    background: linear-gradient(135deg, var(--movement-accent) 0%, #ff6b8a 100%);
+    padding: 80px 60px;
+    text-align: center;
+}
+
+.movement-footer-content {
+    max-width: 900px;
+    margin: 0 auto 50px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 60px;
+}
+
+.movement-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stat-number {
+    font-size: 4rem;
+    font-weight: 900;
+    color: var(--movement-dark);
+    line-height: 1;
+    margin-bottom: 10px;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(10, 10, 10, 0.7);
+    font-weight: 600;
+}
+
+.movement-cta-text {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--movement-dark);
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+/* =============================================================================
+   AOS ANIMATION SUPPORT
+   ============================================================================= */
+
+[data-aos] {
+    opacity: 0;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+[data-aos].aos-animate {
+    opacity: 1;
+}
+
+[data-aos="fade-up"] {
+    transform: translateY(40px);
+}
+
+[data-aos="fade-up"].aos-animate {
+    transform: translateY(0);
+}
