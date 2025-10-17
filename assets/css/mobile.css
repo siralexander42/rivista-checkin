@@ -117,11 +117,9 @@
         max-width: 100%;
     }
     
-    /* Wrapper per non spezzare "A PARTIRE?" */
+    /* Wrapper per non spezzare "A PARTIRE?" - SOLO su mobile */
     .word-nowrap {
-        display: inline-flex;
-        white-space: nowrap;
-        gap: 0.15rem;
+        display: contents; /* Su desktop usa contents per non rompere il layout */
     }
     
     /* ==============================================
@@ -579,6 +577,13 @@
    SMALL MOBILE (max 480px)
    ============================================== */
 @media (max-width: 480px) {
+    /* Wrapper per non spezzare "A PARTIRE?" su mobile */
+    .word-nowrap {
+        display: inline-flex !important;
+        white-space: nowrap;
+        gap: 0.15rem;
+    }
+    
     .hero-container h1 {
         font-size: 2rem;
     }
