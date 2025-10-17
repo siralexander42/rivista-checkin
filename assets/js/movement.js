@@ -77,28 +77,6 @@ document.addEventListener('DOMContentLoaded', function() {
     let activePopup = null;
     let activeMarker = null;
 
-    // Funzione per posizionare il popup sempre a destra del marker
-    function positionPopup(popup, markerElement) {
-        const container = mapContainer.getBoundingClientRect();
-        const marker = markerElement.getBoundingClientRect();
-        const popupWidth = 320;
-        const popupHeight = popup.offsetHeight || 380;
-        
-        // Calcola posizione relativa al container
-        let left = marker.left - container.left + marker.width + 30; // Sempre 30px a destra del marker
-        let top = marker.top - container.top;
-        
-        // Centra verticalmente rispetto al marker
-        top = top - popupHeight / 2 + marker.height / 2;
-        
-        // Assicurati che il popup rimanga dentro il container verticalmente
-        if (top < 10) top = 10;
-        if (top + popupHeight > container.height - 10) top = container.height - popupHeight - 10;
-        
-        popup.style.left = `${left}px`;
-        popup.style.top = `${top}px`;
-    }
-
     // Chiudi popup attivo
     function closeActivePopup() {
         if (activePopup) {
@@ -111,35 +89,31 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Aggiungi event listener ai marker custom - CLICK invece di hover
+        // Aggiungi event listener ai marker custom - CLICK invece di hover
     customMarkers.forEach(marker => {
         marker.addEventListener('click', function(e) {
             e.stopPropagation();
             const location = this.getAttribute('data-location');
             const popup = document.getElementById(`popup-${location}`);
             
-            if (popup) {
-                // Se stesso marker, chiudi
-                if (activeMarker === this) {
-                    closeActivePopup();
-                    return;
-                }
-                
+            if (!popup) return;
+
+            // Se clicco sullo stesso marker, chiudi
+            if (activePopup === popup) {
                 closeActivePopup();
-                activePopup = popup;
-                activeMarker = this;
-                
-                // Aggiungi classe active al marker
-                this.classList.add('active');
-                
-                // Posiziona e mostra il popup
-                positionPopup(popup, this);
-                
-                // Piccolo delay per permettere il calcolo dell'altezza
-                setTimeout(() => {
-                    popup.classList.add('active');
-                }, 10);
+                return;
             }
+
+            // Chiudi il popup precedente
+            closeActivePopup();
+
+            // Apri il nuovo popup (il CSS posiziona automaticamente a destra)
+            popup.classList.add('active');
+            this.classList.add('active');
+            activePopup = popup;
+            activeMarker = this;
+            
+            // Non serve più posizionare manualmente - il CSS lo fa con left: calc(100% + 30px)
         });
     });
 

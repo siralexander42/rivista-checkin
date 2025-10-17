@@ -712,16 +712,12 @@
     }
 
     .movement-footer {
-        padding: 60px 20px;
+        padding: 30px 20px 40px;
     }
 
-    .map-title-word {
+    .typewriter-title {
         font-size: clamp(1.8rem, 8vw, 3rem);
-        letter-spacing: -1px;
-    }
-
-    .map-title-line {
-        gap: 12px;
+        letter-spacing: 2px;
     }
 
     .map-subtitle {
