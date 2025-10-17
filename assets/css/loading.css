@@ -368,8 +368,9 @@
     color: var(--accent);
     filter: drop-shadow(0 0 8px var(--accent));
     z-index: 2;
-    animation: flyAcross 2.5s ease-in-out forwards;
+    animation: flyAcross 2.5s linear forwards;
     transform-origin: center;
+    transform: rotate(90deg); /* Ruota per puntare a destra */
 }
 
 @keyframes flightTrail {
@@ -379,14 +380,23 @@
 
 @keyframes flyAcross {
     0% {
-        left: -32px;
-        transform: rotate(-5deg);
+        left: -40px;
+        transform: rotate(90deg) translateY(-2px);
     }
-    50% {
-        transform: rotate(0deg);
+    20% {
+        transform: rotate(90deg) translateY(2px);
+    }
+    40% {
+        transform: rotate(90deg) translateY(-1px);
+    }
+    60% {
+        transform: rotate(90deg) translateY(1px);
+    }
+    80% {
+        transform: rotate(90deg) translateY(-1px);
     }
     100% {
-        left: calc(100% + 32px);
-        transform: rotate(5deg);
+        left: calc(100% + 40px);
+        transform: rotate(90deg) translateY(0px);
     }
 }
