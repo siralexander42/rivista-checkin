@@ -7,11 +7,28 @@
    TOGGLE FRECCIA TRA LOGO E HERO
    ============================================== */
 
-.sommario-toggle-hero {
+.sommario-toggle-wrapper {
     position: absolute;
     top: 70px;
     left: 50%;
     transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    z-index: 100;
+}
+
+.sommario-toggle-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.6);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.sommario-toggle-hero {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -22,14 +39,13 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    z-index: 100;
     transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
 .sommario-toggle-hero:hover {
     background: rgba(255, 255, 255, 0.15);
-    transform: translateX(-50%) scale(1.1);
+    transform: scale(1.1);
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
 }
 

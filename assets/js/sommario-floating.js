@@ -14,20 +14,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!toggleHero || !dropdownHero || !floatingBtn || !floatingMenu) return;
     
     // =============================================================================
-    // MOSTRA DROPDOWN AUTOMATICAMENTE PER 6.5 SECONDI ALL'AVVIO
-    // =============================================================================
-    
-    setTimeout(() => {
-        dropdownHero.classList.add('show-initial');
-        
-        // Rimuovi la classe dopo l'animazione
-        setTimeout(() => {
-            dropdownHero.classList.remove('show-initial');
-        }, 6500); // Aumentato da 5000 a 6500ms (1.5 secondi in più)
-    }, 1500); // Inizia dopo 1.5 secondi (dopo il caricamento)
-    
-    // =============================================================================
     // TOGGLE DROPDOWN HERO (FRECCIA TRA LOGO E COVER)
+    // Nessuna animazione automatica all'avvio
     // =============================================================================
     
     toggleHero.addEventListener('click', function(e) {
