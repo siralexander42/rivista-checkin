@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Posiziona il popup a destra del marker
             const markerRect = this.getBoundingClientRect();
-            const popupWidth = 280;
+            const popupWidth = 320;
             const windowHeight = window.innerHeight;
             
             // Calcola posizione base: 20px a destra del marker
@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Assicurati che non esca dallo schermo verticalmente
-            const popupHeight = popup.offsetHeight || 350;
+            const popupHeight = popup.offsetHeight || 400;
             if (topPos - (popupHeight / 2) < 20) {
                 topPos = 20 + (popupHeight / 2);
             } else if (topPos + (popupHeight / 2) > windowHeight - 20) {
