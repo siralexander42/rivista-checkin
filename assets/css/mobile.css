@@ -1,0 +1,620 @@
+/* ==============================================
+   MOBILE OPTIMIZATION - RESPONSIVE DESIGN
+   Ottimizzazioni specifiche per dispositivi mobili
+   ============================================== */
+
+/* ==============================================
+   TABLET (768px - 1024px)
+   ============================================== */
+@media (max-width: 1024px) {
+    /* Hero */
+    .hero-container {
+        padding: 2rem;
+    }
+    
+    .hero-container h1 {
+        font-size: clamp(3rem, 10vw, 5rem);
+    }
+    
+    /* Story sections */
+    .story-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        padding: 2rem;
+    }
+    
+    .story-text {
+        order: 1;
+    }
+    
+    .story-images {
+        order: 2;
+        height: 50vh;
+    }
+}
+
+/* ==============================================
+   MOBILE (max 768px)
+   ============================================== */
+@media (max-width: 768px) {
+    
+    /* Disabilita fullpage scroll su mobile */
+    html {
+        overflow-y: auto !important;
+        height: auto !important;
+    }
+    
+    body {
+        overflow-y: auto !important;
+        height: auto !important;
+    }
+    
+    .fp-section {
+        position: relative !important;
+        height: auto !important;
+        min-height: 100vh;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: none !important;
+    }
+    
+    /* ==============================================
+       NAVBAR
+       ============================================== */
+    .main-nav {
+        padding: 0.75rem 0;
+    }
+    
+    .nav-logo {
+        height: 35px;
+    }
+    
+    /* ==============================================
+       LOADING SCREEN
+       ============================================== */
+    .loading-logo {
+        max-width: 280px;
+    }
+    
+    .departure-board {
+        width: 95%;
+        padding: 0 0.5rem;
+    }
+    
+    .board-row {
+        font-size: 0.7rem;
+        padding: 0.5rem 0.75rem;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .board-destination {
+        font-size: 0.65rem;
+    }
+    
+    .flip-letter {
+        width: 18px;
+        height: 28px;
+        font-size: 0.95rem;
+    }
+    
+    .flip-letter-space {
+        width: 8px;
+    }
+    
+    .board-header {
+        font-size: 1rem;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .board-text.main-message {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.15rem;
+        padding: 0 0.5rem;
+        max-width: 100%;
+    }
+    
+    /* ==============================================
+       HERO SECTION
+       ============================================== */
+    .hero-simple {
+        height: 100vh;
+        min-height: 600px;
+    }
+    
+    .hero-container {
+        padding: 1.5rem;
+        border-radius: 20px;
+    }
+    
+    .hero-eyebrow {
+        font-size: 0.65rem;
+        letter-spacing: 0.3em;
+        margin-bottom: 1rem;
+    }
+    
+    .hero-container h1 {
+        font-size: clamp(2.5rem, 12vw, 4rem);
+        margin-bottom: 1rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 0.95rem;
+        margin-bottom: 0.75rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
+        line-height: 1.5;
+        max-width: 100%;
+        white-space: normal !important;
+        display: block !important;
+        border-right: none !important;
+    }
+    
+    /* Rimuovi cursore su mobile durante typing */
+    .hero-subtitle.typing {
+        border-right: none !important;
+        animation: none !important;
+    }
+    
+    .hero-subtitle.typed {
+        border-right: none !important;
+    }
+    
+    .hero-description {
+        font-size: 0.9rem;
+        line-height: 1.5;
+        margin-bottom: 1.5rem;
+    }
+    
+    .scroll-indicator {
+        margin-top: 2rem;
+    }
+    
+    .scroll-indicator span {
+        font-size: 0.8rem;
+    }
+    
+    /* ==============================================
+       CREMONA SCROLL SECTION - MOBILE
+       ============================================== */
+    .cremona-scroll-section {
+        height: auto !important;
+        min-height: 100vh;
+        overflow-y: visible !important;
+    }
+    
+    .cremona-container {
+        grid-template-columns: 1fr;
+        gap: 0;
+        padding: 0;
+        height: auto;
+    }
+    
+    .cremona-text-scroll {
+        padding: 2rem 1.5rem;
+        order: 2;
+    }
+    
+    .cremona-text-block {
+        min-height: auto;
+        padding: 1.5rem 0;
+        margin-bottom: 2rem;
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    .cremona-images-sticky {
+        position: relative;
+        height: 50vh;
+        order: 1;
+        padding: 2rem 1.5rem;
+    }
+    
+    .cremona-image-wrapper {
+        height: 100%;
+    }
+    
+    .cremona-tag {
+        font-size: 0.65rem;
+        padding: 0.4rem 1.2rem;
+        margin-bottom: 1rem;
+    }
+    
+    .cremona-title {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+    
+    .cremona-intro {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 1.25rem;
+    }
+    
+    .cremona-text-block h3 {
+        font-size: 1.5rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .cremona-text-block p {
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+    
+    .cremona-highlight {
+        font-size: 1rem;
+        padding: 1rem 1.25rem;
+        margin: 1.25rem 0;
+    }
+    
+    .cremona-cta {
+        padding: 0.875rem 1.75rem;
+        font-size: 0.95rem;
+        margin-top: 1.25rem;
+    }
+    
+    /* ==============================================
+       STORY SECTIONS (Mercatini, etc)
+       ============================================== */
+    .story-section {
+        height: auto !important;
+        min-height: 100vh;
+        padding: 3rem 0;
+    }
+    
+    .story-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        padding: 0 1.5rem;
+    }
+    
+    .story-text {
+        order: 2;
+        padding: 0;
+    }
+    
+    .story-images {
+        order: 1;
+        height: 60vh;
+        max-height: 500px;
+    }
+    
+    .category-tag {
+        font-size: 0.65rem;
+        padding: 0.4rem 1.2rem;
+    }
+    
+    .story-text h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+    
+    .lead-text {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+    }
+    
+    .story-details {
+        flex-direction: row;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .detail-item strong {
+        font-size: 2rem;
+    }
+    
+    .detail-item span {
+        font-size: 0.85rem;
+    }
+    
+    .btn-primary {
+        padding: 0.875rem 2rem;
+        font-size: 0.95rem;
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+    
+    /* Gallery controls */
+    .image-controls {
+        margin-top: 1rem;
+        gap: 1rem;
+    }
+    
+    .control-btn {
+        width: 42px;
+        height: 42px;
+    }
+    
+    .image-scroll-wrapper {
+        height: 100%;
+    }
+    
+    .scroll-image {
+        height: 100%;
+    }
+    
+    .scroll-image img {
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .image-caption {
+        font-size: 0.85rem;
+        padding: 0.75rem;
+    }
+    
+    /* ==============================================
+       CARNIVAL WIDGET - MOBILE COMPLETAMENTE RIDISEGNATO
+       ============================================== */
+    .carnival-hero-widget {
+        height: auto !important;
+        min-height: 100vh;
+        padding: 0 !important;
+        position: relative !important;
+        display: flex !important;
+        flex-direction: column;
+    }
+    
+    /* Background immagini - PIÙ GRANDE */
+    .carnival-hero-bg {
+        position: relative !important;
+        height: 55vh;
+        min-height: 400px;
+        max-height: 600px;
+        flex-shrink: 0;
+    }
+    
+    .carnival-hero-slide {
+        position: absolute !important;
+        height: 100%;
+        width: 100%;
+        top: 0;
+        left: 0;
+        background-size: cover !important;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+    }
+    
+    .carnival-hero-overlay {
+        position: absolute !important;
+        height: 100%;
+        width: 100%;
+        background: linear-gradient(
+            180deg,
+            rgba(10, 10, 15, 0.3) 0%,
+            rgba(10, 10, 15, 0.6) 60%,
+            rgba(10, 10, 15, 0.95) 100%
+        ) !important;
+        animation: none !important;
+    }
+    
+    /* Content sotto */
+    .carnival-hero-content {
+        position: relative !important;
+        padding: 0 !important;
+        display: block !important;
+        height: auto !important;
+        inset: auto !important;
+        flex: 1;
+    }
+    
+    .carnival-hero-text {
+        max-width: 100%;
+        padding: 2.5rem 1.5rem 3rem;
+        background: var(--dark);
+        margin-top: -60px;
+        position: relative;
+        z-index: 5;
+        border-radius: 24px 24px 0 0;
+        min-height: 45vh;
+    }
+    
+    /* Tag */
+    .carnival-hero-tag {
+        font-size: 0.7rem;
+        padding: 0.5rem 1.3rem;
+        margin-bottom: 1.25rem;
+    }
+    
+    /* Titolo */
+    .carnival-hero-title {
+        font-size: 2.25rem !important;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+    
+    /* Subtitle */
+    .carnival-hero-subtitle {
+        font-size: 1.1rem;
+        margin-bottom: 1.25rem;
+        line-height: 1.5;
+    }
+    
+    /* Description */
+    .carnival-hero-description {
+        font-size: 0.95rem;
+        line-height: 1.7;
+        margin-bottom: 1.75rem;
+    }
+    
+    /* Stats in griglia 2x2 */
+    /* Nascondi indicatori carosello su mobile */
+    .carnival-hero-indicators {
+        display: none !important;
+    }
+    
+    .carnival-hero-stats {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin: 2rem 0;
+    }
+    
+    .carnival-stat-item {
+        padding: 1.25rem 1rem;
+        background: rgba(211, 228, 252, 0.1);
+        border-radius: 16px;
+        border: 1px solid rgba(211, 228, 252, 0.2);
+        text-align: center;
+    }
+    
+    .carnival-stat-number {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        display: block;
+        font-weight: 700;
+    }
+    
+    .carnival-stat-label {
+        font-size: 0.8rem;
+    }
+    
+    /* Countdown mobile */
+    .carnival-hero-countdown {
+        gap: 0.5rem;
+        margin: 1.5rem 0;
+        justify-content: center;
+    }
+    
+    .carnival-countdown-item {
+        min-width: 65px;
+        padding: 0.75rem 0.5rem;
+    }
+    
+    .carnival-countdown-number {
+        font-size: 1.5rem;
+    }
+    
+    .carnival-countdown-label {
+        font-size: 0.7rem;
+    }
+    
+    /* CTA */
+    .carnival-hero-cta {
+        padding: 1rem 2rem;
+        font-size: 0.95rem;
+        width: 100%;
+        justify-content: center;
+        margin-top: 1.5rem;
+    }
+    
+    /* Nascondi elementi decorativi */
+    .carnival-hero-decorative {
+        display: none !important;
+    }
+    
+    /* ==============================================
+       ARTICLES GRID
+       ============================================== */
+    .articles-grid {
+        padding: 3rem 1.5rem !important;
+        height: auto !important;
+        min-height: 100vh;
+    }
+    
+    .grid-container {
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important;
+    }
+    
+    .article-card {
+        min-height: 400px;
+    }
+    
+    .article-card h3 {
+        font-size: 1.5rem;
+    }
+    
+    .article-card p {
+        font-size: 0.9rem;
+    }
+    
+    /* ==============================================
+       UTILITIES
+       ============================================== */
+    
+    /* Nascondere elementi non essenziali su mobile */
+    .scroll-indicator {
+        display: none;
+    }
+    
+    /* Touch-friendly sizing */
+    button,
+    .btn-primary,
+    .carnival-cta,
+    .cremona-cta,
+    a.btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    /* Spaziatura ottimizzata */
+    section {
+        padding-top: 70px; /* Compensare navbar */
+    }
+    
+    /* Immagini responsive */
+    img {
+        width: 100%;
+        height: auto;
+    }
+}
+
+/* ==============================================
+   SMALL MOBILE (max 480px)
+   ============================================== */
+@media (max-width: 480px) {
+    .hero-container h1 {
+        font-size: 2rem;
+    }
+    
+    .cremona-title,
+    .story-text h2,
+    .carnival-title {
+        font-size: 1.75rem;
+    }
+    
+    .story-details {
+        gap: 1.5rem;
+    }
+    
+    .detail-item strong {
+        font-size: 1.75rem;
+    }
+    
+    .carnival-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .board-row {
+        font-size: 0.6rem;
+    }
+    
+    .flip-letter {
+        width: 20px;
+        height: 30px;
+        font-size: 1rem;
+    }
+}
+
+/* ==============================================
+   LANDSCAPE MOBILE
+   ============================================== */
+@media (max-width: 768px) and (orientation: landscape) {
+    .hero-simple,
+    .story-images {
+        height: 100vh;
+    }
+    
+    .carnival-visual {
+        height: 80vh;
+    }
+}
