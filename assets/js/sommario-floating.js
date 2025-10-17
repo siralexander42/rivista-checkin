@@ -15,6 +15,41 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!toggleHero || !dropdownHero || !floatingBtn || !floatingMenu) return;
     
     // =============================================================================
+    // GESTIONE SOTTOMENU ESPANDIBILI
+    // =============================================================================
+    
+    function initSubmenuHandlers() {
+        const itemsWithSubmenu = document.querySelectorAll('.sommario-item:has(.sommario-submenu)');
+        
+        itemsWithSubmenu.forEach(item => {
+            const mainLink = item.querySelector('.sommario-link');
+            const expandBtn = item.querySelector('.sommario-expand');
+            const submenu = item.querySelector('.sommario-submenu');
+            
+            if (expandBtn && submenu) {
+                // Click sul pulsante + espande/chiude
+                expandBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    item.classList.toggle('expanded');
+                });
+                
+                // Click sul testo va alla pagina
+                mainLink.addEventListener('click', function(e) {
+                    // Se clicchi sul link (non sul +), naviga normalmente
+                    if (e.target === expandBtn || expandBtn.contains(e.target)) {
+                        e.preventDefault();
+                    }
+                    // Altrimenti lascia che il link funzioni normalmente
+                });
+            }
+        });
+    }
+    
+    // Inizializza i gestori per i sottomenu
+    initSubmenuHandlers();
+    
+    // =============================================================================
     // TOGGLE DROPDOWN HERO (FRECCIA TRA LOGO E COVER)
     // Nessuna animazione automatica all'avvio
     // =============================================================================
