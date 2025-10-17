@@ -116,8 +116,16 @@ document.addEventListener('DOMContentLoaded', function() {
             // Posiziona il popup rispetto al container della mappa
             const mapContainerRect = mapContainer.getBoundingClientRect();
             const markerRect = this.getBoundingClientRect();
-            const popupWidth = 300;
-            const popupHeight = popup.offsetHeight || 380;
+            const popupWidth = 280;
+            
+            // Mostra temporaneamente per calcolare altezza reale
+            popup.style.opacity = '0';
+            popup.style.visibility = 'visible';
+            popup.style.pointerEvents = 'none';
+            const popupHeight = popup.offsetHeight;
+            popup.style.opacity = '';
+            popup.style.visibility = '';
+            popup.style.pointerEvents = '';
             
             // Posizione relativa al map container
             let leftPos = markerRect.left - mapContainerRect.left + markerRect.width + 20;
@@ -128,9 +136,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 leftPos = markerRect.left - mapContainerRect.left - popupWidth - 20;
             }
             
-            // Limiti verticali
-            if (topPos < 0) topPos = 10;
-            if (topPos + popupHeight > mapContainerRect.height) {
+            // Se esce anche a sinistra, centralo sopra il marker
+            if (leftPos < 10) {
+                leftPos = markerRect.left - mapContainerRect.left - (popupWidth / 2) + (markerRect.width / 2);
+                topPos = markerRect.top - mapContainerRect.top - popupHeight - 15;
+            }
+            
+            // Limiti verticali - con margini di sicurezza
+            if (topPos < 10) topPos = 10;
+            if (topPos + popupHeight > mapContainerRect.height - 10) {
                 topPos = mapContainerRect.height - popupHeight - 10;
             }
             

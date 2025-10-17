@@ -749,25 +749,31 @@
     }
 
     .map-popup {
-        width: 280px;
+        width: 260px;
         max-width: calc(100vw - 40px);
     }
 
-    .map-popup img {
-        height: 160px;
+    .popup-image {
+        height: 90px !important;
     }
 
-    .popup-content {
-        padding: 16px;
+    .popup-body {
+        padding: 0 12px 12px 12px !important;
     }
 
-    .popup-content h4 {
-        font-size: 1.1rem;
+    .popup-title {
+        font-size: 0.95rem !important;
     }
 
-    .popup-content p {
-        font-size: 0.85rem;
-        margin-bottom: 14px;
+    .popup-description {
+        font-size: 0.72rem !important;
+        margin-bottom: 8px !important;
+        line-height: 1.35 !important;
+    }
+
+    .popup-cta {
+        font-size: 0.68rem !important;
+        padding: 8px 12px !important;
     }
 }
 
