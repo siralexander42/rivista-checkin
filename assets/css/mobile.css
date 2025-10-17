@@ -117,6 +117,13 @@
         max-width: 100%;
     }
     
+    /* Wrapper per non spezzare "A PARTIRE?" */
+    .word-nowrap {
+        display: inline-flex;
+        white-space: nowrap;
+        gap: 0.15rem;
+    }
+    
     /* ==============================================
        HERO SECTION
        ============================================== */
