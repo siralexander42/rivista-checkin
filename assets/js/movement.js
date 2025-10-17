@@ -116,8 +116,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Posiziona il popup rispetto al container della mappa
             const mapContainerRect = mapContainer.getBoundingClientRect();
             const markerRect = this.getBoundingClientRect();
-            const popupWidth = 280;
-            const popupHeight = popup.offsetHeight || 350;
+            const popupWidth = 300;
+            const popupHeight = popup.offsetHeight || 380;
             
             // Posizione relativa al map container
             let leftPos = markerRect.left - mapContainerRect.left + markerRect.width + 20;
