@@ -1,66 +1,127 @@
 /* ==============================================
    SOMMARIO FLOTTANTE - FLOATING INDEX
+   Design ultra-minimal ed elegante
    ============================================== */
 
-/* Sommario fisso nella Hero */
-.hero-sommario {
-    position: absolute;
-    bottom: 80px;
-    right: 60px;
-    background: linear-gradient(145deg, rgba(10, 10, 15, 0.95) 0%, rgba(20, 20, 30, 0.98) 100%);
-    backdrop-filter: blur(30px);
-    border-radius: 24px;
-    padding: 32px;
-    width: 320px;
-    box-shadow: 
-        0 20px 60px rgba(0, 0, 0, 0.5),
-        0 0 0 1px rgba(255, 255, 255, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    z-index: 10;
-    animation: fadeInUp 0.8s ease-out 1.5s both;
-}
+/* ==============================================
+   TOGGLE FRECCIA TRA LOGO E HERO
+   ============================================== */
 
-.hero-sommario h3 {
-    font-size: 1.1rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: #ffffff;
-    margin: 0 0 20px 0;
-    padding-bottom: 16px;
-    border-bottom: 2px solid rgba(211, 228, 252, 0.3);
+.sommario-toggle-hero {
+    position: absolute;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 100;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
-.hero-sommario h3::before {
-    content: '📑';
-    font-size: 1.3rem;
+.sommario-toggle-hero:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateX(-50%) scale(1.1);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+}
+
+.sommario-toggle-hero svg {
+    width: 20px;
+    height: 20px;
+    stroke: #ffffff;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.sommario-toggle-hero.active svg {
+    transform: rotate(180deg);
+}
+
+/* ==============================================
+   SOMMARIO DROPDOWN NELLA HERO
+   ============================================== */
+
+.hero-sommario-dropdown {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.98) 0%, rgba(10, 10, 15, 0.95) 100%);
+    backdrop-filter: blur(40px);
+    padding: 140px 0 60px 0;
+    transform: translateY(-100%);
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 50;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.hero-sommario-dropdown.active {
+    transform: translateY(0);
+}
+
+.hero-sommario-dropdown.show-initial {
+    animation: showAndHide 5s ease-in-out forwards;
+}
+
+@keyframes showAndHide {
+    0% {
+        transform: translateY(-100%);
+    }
+    10%, 90% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-100%);
+    }
+}
+
+.sommario-dropdown-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 40px;
+}
+
+.sommario-dropdown-content h3 {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0 0 24px 0;
+    text-align: center;
 }
 
 .sommario-list {
     list-style: none;
     padding: 0;
     margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 12px;
 }
 
 .sommario-item {
-    margin-bottom: 12px;
+    margin: 0;
 }
 
 .sommario-link {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 12px;
-    color: rgba(255, 255, 255, 0.85);
+    display: block;
+    padding: 20px 24px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.7);
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     font-weight: 500;
+    letter-spacing: 0.3px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
@@ -72,30 +133,25 @@
     left: 0;
     top: 0;
     height: 100%;
-    width: 3px;
-    background: linear-gradient(180deg, #d3e4fc 0%, #85aae5 100%);
+    width: 2px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.3) 100%);
     transform: scaleY(0);
     transition: transform 0.3s ease;
 }
 
 .sommario-link:hover {
-    background: rgba(211, 228, 252, 0.1);
-    border-color: rgba(211, 228, 252, 0.3);
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
     color: #ffffff;
-    transform: translateX(4px);
+    transform: translateY(-2px);
 }
 
 .sommario-link:hover::before {
     transform: scaleY(1);
 }
 
-.sommario-icon {
-    font-size: 1.2rem;
-    flex-shrink: 0;
-}
-
 .sommario-text {
-    flex: 1;
+    display: block;
 }
 
 /* ==============================================
@@ -106,46 +162,46 @@
     position: fixed;
     bottom: 30px;
     right: 30px;
-    width: 64px;
-    height: 64px;
-    background: linear-gradient(135deg, #d3e4fc 0%, #85aae5 100%);
-    border: none;
+    width: 56px;
+    height: 56px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 50%;
     box-shadow: 
-        0 8px 24px rgba(211, 228, 252, 0.4),
-        0 4px 12px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        0 8px 24px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
     cursor: pointer;
     z-index: 1000;
     display: none; /* Nascosto di default, mostrato dopo scroll */
     align-items: center;
     justify-content: center;
-    font-size: 1.8rem;
     transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    animation: pulse 2s ease-in-out infinite;
+}
+
+.floating-sommario-btn svg {
+    width: 24px;
+    height: 24px;
+    stroke: rgba(255, 255, 255, 0.9);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .floating-sommario-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.25);
     transform: scale(1.1) translateY(-4px);
     box-shadow: 
-        0 12px 32px rgba(211, 228, 252, 0.6),
-        0 6px 16px rgba(0, 0, 0, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.5);
-    animation: none;
+        0 12px 32px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 .floating-sommario-btn.active {
-    background: linear-gradient(135deg, #ff3366 0%, #ff6b8a 100%);
-    transform: rotate(180deg);
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
 }
 
-@keyframes pulse {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.05);
-    }
+.floating-sommario-btn.active svg {
+    transform: rotate(180deg);
 }
 
 /* ==============================================
@@ -154,18 +210,19 @@
 
 .floating-sommario-menu {
     position: fixed;
-    bottom: 110px;
+    bottom: 100px;
     right: 30px;
-    background: linear-gradient(145deg, rgba(10, 10, 15, 0.98) 0%, rgba(20, 20, 30, 0.98) 100%);
-    backdrop-filter: blur(30px);
-    border-radius: 24px;
+    background: rgba(10, 10, 15, 0.98);
+    backdrop-filter: blur(40px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
     padding: 24px;
-    width: 320px;
+    width: 340px;
     max-height: 70vh;
     overflow-y: auto;
     box-shadow: 
-        0 20px 60px rgba(0, 0, 0, 0.5),
-        0 0 0 1px rgba(255, 255, 255, 0.1);
+        0 20px 60px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
     z-index: 999;
     opacity: 0;
     visibility: hidden;
@@ -180,22 +237,24 @@
 }
 
 .floating-sommario-menu h3 {
-    font-size: 1rem;
-    font-weight: 800;
+    font-size: 0.7rem;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    color: #ffffff;
+    letter-spacing: 3px;
+    color: rgba(255, 255, 255, 0.4);
     margin: 0 0 20px 0;
-    padding-bottom: 16px;
-    border-bottom: 2px solid rgba(211, 228, 252, 0.3);
-    display: flex;
-    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.floating-sommario-menu .sommario-list {
+    grid-template-columns: 1fr;
     gap: 8px;
 }
 
-.floating-sommario-menu h3::before {
-    content: '📑';
-    font-size: 1.2rem;
+.floating-sommario-menu .sommario-link {
+    padding: 14px 16px;
+    font-size: 0.9rem;
 }
 
 /* Scrollbar personalizzata */
@@ -222,37 +281,44 @@
    ============================================== */
 
 @media (max-width: 768px) {
-    /* Hero sommario diventa più piccolo su mobile */
-    .hero-sommario {
-        position: relative;
-        bottom: auto;
-        right: auto;
-        width: 100%;
-        margin: 2rem 1.5rem;
-        padding: 24px;
+    .sommario-toggle-hero {
+        width: 44px;
+        height: 44px;
     }
 
-    .hero-sommario h3 {
-        font-size: 0.95rem;
-        margin-bottom: 16px;
+    .hero-sommario-dropdown {
+        padding: 120px 0 40px 0;
+    }
+
+    .sommario-dropdown-content {
+        padding: 0 20px;
+    }
+
+    .sommario-list {
+        grid-template-columns: 1fr;
+        gap: 10px;
     }
 
     .sommario-link {
-        padding: 10px 14px;
-        font-size: 0.85rem;
+        padding: 16px 20px;
+        font-size: 0.9rem;
     }
 
     /* Pulsante flottante su mobile */
     .floating-sommario-btn {
         bottom: 20px;
         right: 20px;
-        width: 56px;
-        height: 56px;
-        font-size: 1.6rem;
+        width: 52px;
+        height: 52px;
+    }
+
+    .floating-sommario-btn svg {
+        width: 22px;
+        height: 22px;
     }
 
     .floating-sommario-menu {
-        bottom: 90px;
+        bottom: 85px;
         right: 20px;
         left: 20px;
         width: auto;
@@ -261,26 +327,29 @@
     }
 
     .floating-sommario-menu h3 {
-        font-size: 0.9rem;
+        font-size: 0.65rem;
         margin-bottom: 16px;
-    }
-
-    .sommario-item {
-        margin-bottom: 10px;
     }
 }
 
 @media (max-width: 480px) {
-    .hero-sommario {
-        margin: 1.5rem 1rem;
-        padding: 20px;
+    .sommario-toggle-hero {
+        width: 40px;
+        height: 40px;
+    }
+
+    .sommario-toggle-hero svg {
+        width: 16px;
+        height: 16px;
     }
 
     .sommario-link {
-        font-size: 0.8rem;
+        padding: 14px 16px;
+        font-size: 0.85rem;
     }
 
-    .sommario-icon {
-        font-size: 1rem;
+    .floating-sommario-menu .sommario-link {
+        padding: 12px 14px;
+        font-size: 0.85rem;
     }
 }

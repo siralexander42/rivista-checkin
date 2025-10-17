@@ -1,15 +1,40 @@
 // =============================================================================
 // SOMMARIO FLOTTANTE - FLOATING INDEX
+// Versione ultra-elegante con dropdown
 // =============================================================================
 
 document.addEventListener('DOMContentLoaded', function() {
     
-    const heroSommario = document.querySelector('.hero-sommario');
+    const toggleHero = document.querySelector('.sommario-toggle-hero');
+    const dropdownHero = document.querySelector('.hero-sommario-dropdown');
     const floatingBtn = document.querySelector('.floating-sommario-btn');
     const floatingMenu = document.querySelector('.floating-sommario-menu');
     const hero = document.querySelector('.hero-simple');
     
-    if (!floatingBtn || !floatingMenu) return;
+    if (!toggleHero || !dropdownHero || !floatingBtn || !floatingMenu) return;
+    
+    // =============================================================================
+    // MOSTRA DROPDOWN AUTOMATICAMENTE PER 5 SECONDI ALL'AVVIO
+    // =============================================================================
+    
+    setTimeout(() => {
+        dropdownHero.classList.add('show-initial');
+        
+        // Rimuovi la classe dopo l'animazione
+        setTimeout(() => {
+            dropdownHero.classList.remove('show-initial');
+        }, 5000);
+    }, 1500); // Inizia dopo 1.5 secondi (dopo il caricamento)
+    
+    // =============================================================================
+    // TOGGLE DROPDOWN HERO (FRECCIA TRA LOGO E COVER)
+    // =============================================================================
+    
+    toggleHero.addEventListener('click', function(e) {
+        e.stopPropagation();
+        dropdownHero.classList.toggle('active');
+        toggleHero.classList.toggle('active');
+    });
     
     // =============================================================================
     // GESTIONE VISIBILITÀ PULSANTE FLOTTANTE
@@ -23,11 +48,11 @@ document.addEventListener('DOMContentLoaded', function() {
             floatingBtn.style.display = 'flex';
             setTimeout(() => {
                 floatingBtn.style.opacity = '1';
-                floatingBtn.style.transform = 'translateY(0)';
+                floatingBtn.style.transform = 'scale(1) translateY(0)';
             }, 10);
         } else {
             floatingBtn.style.opacity = '0';
-            floatingBtn.style.transform = 'translateY(20px)';
+            floatingBtn.style.transform = 'scale(0.8) translateY(20px)';
             setTimeout(() => {
                 if (heroBottom >= 0) {
                     floatingBtn.style.display = 'none';
@@ -41,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Inizializza stili
     floatingBtn.style.opacity = '0';
-    floatingBtn.style.transform = 'translateY(20px)';
+    floatingBtn.style.transform = 'scale(0.8) translateY(20px)';
     floatingBtn.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
     
     // Ascolta lo scroll con throttle per performance
@@ -83,9 +108,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const targetElement = document.querySelector(targetId);
             
             if (targetElement) {
-                // Chiudi il menu flottante se aperto
+                // Chiudi i menu
                 floatingMenu.classList.remove('active');
                 floatingBtn.classList.remove('active');
+                dropdownHero.classList.remove('active');
+                toggleHero.classList.remove('active');
                 
                 // Smooth scroll
                 const offsetTop = targetElement.offsetTop - 80; // 80px per la navbar
@@ -96,12 +123,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 
                 // Effetto highlight sulla sezione di destinazione
-                targetElement.style.transition = 'background-color 0.6s ease';
-                targetElement.style.backgroundColor = 'rgba(211, 228, 252, 0.05)';
+                targetElement.style.transition = 'opacity 0.6s ease';
+                const originalOpacity = window.getComputedStyle(targetElement).opacity;
+                targetElement.style.opacity = '0.7';
                 
                 setTimeout(() => {
-                    targetElement.style.backgroundColor = '';
-                }, 1500);
+                    targetElement.style.opacity = originalOpacity;
+                    setTimeout(() => {
+                        targetElement.style.transition = '';
+                    }, 600);
+                }, 300);
             }
         });
     });
@@ -115,10 +146,15 @@ document.addEventListener('DOMContentLoaded', function() {
             floatingMenu.classList.remove('active');
             floatingBtn.classList.remove('active');
         }
+        
+        if (!dropdownHero.contains(e.target) && !toggleHero.contains(e.target)) {
+            dropdownHero.classList.remove('active');
+            toggleHero.classList.remove('active');
+        }
     });
     
     // =============================================================================
-    // EVIDENZIA SEZIONE ATTIVA (OPTIONAL)
+    // EVIDENZIA SEZIONE ATTIVA
     // =============================================================================
     
     const sections = document.querySelectorAll('section[id]');
@@ -150,8 +186,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const style = document.createElement('style');
     style.textContent = `
         .sommario-link.active-section {
-            background: rgba(211, 228, 252, 0.15) !important;
-            border-color: rgba(211, 228, 252, 0.4) !important;
+            background: rgba(255, 255, 255, 0.08) !important;
+            border-color: rgba(255, 255, 255, 0.2) !important;
             color: #ffffff !important;
         }
         .sommario-link.active-section::before {

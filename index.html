@@ -105,6 +105,52 @@
 
     <!-- HERO -->
     <section class="hero-simple" id="hero">
+        <!-- TOGGLE FRECCIA TRA LOGO E HERO -->
+        <button class="sommario-toggle-hero" aria-label="Mostra/Nascondi sommario">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+        </button>
+        
+        <!-- DROPDOWN SOMMARIO CHE SCENDE DALL'ALTO -->
+        <div class="hero-sommario-dropdown">
+            <div class="sommario-dropdown-content">
+                <h3>In questo numero</h3>
+                <ul class="sommario-list">
+                    <li class="sommario-item">
+                        <a href="#cremona" class="sommario-link">
+                            <span class="sommario-text">Cremona: Città che suona e cucina</span>
+                        </a>
+                    </li>
+                    <li class="sommario-item">
+                        <a href="#repubblica-ceca" class="sommario-link">
+                            <span class="sommario-text">Repubblica Ceca: La magia del Natale</span>
+                        </a>
+                    </li>
+                    <li class="sommario-item">
+                        <a href="#massimo-cosmo" class="sommario-link">
+                            <span class="sommario-text">Massimo Cosmo: Napoli conquista Prato</span>
+                        </a>
+                    </li>
+                    <li class="sommario-item">
+                        <a href="#lago-garda" class="sommario-link">
+                            <span class="sommario-text">Lago di Garda in movimento</span>
+                        </a>
+                    </li>
+                    <li class="sommario-item">
+                        <a href="#carnevale-venezia" class="sommario-link">
+                            <span class="sommario-text">Carnevale di Venezia 2025</span>
+                        </a>
+                    </li>
+                    <li class="sommario-item">
+                        <a href="#capuccina" class="sommario-link">
+                            <span class="sommario-text">La Capuccina: Un casale del '500</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
         <div class="hero-backgrounds">
             <div class="hero-bg active" style="background-image: url('assets/images/tofana_1.jpg')"></div>
             <div class="hero-bg" style="background-image: url('https://www.italiaatavola.net/images/contenutiarticoli/Alta_Badia_costume_ladino_by_IDM_Suedtirol_Alex_Moling.jpeg')"></div>
@@ -123,49 +169,6 @@
                 <span>Scorri per esplorare</span>
                 <div class="scroll-arrow">↓</div>
             </div>
-        </div>
-        
-        <!-- SOMMARIO FISSO NELLA HERO -->
-        <div class="hero-sommario">
-            <h3>In questo numero</h3>
-            <ul class="sommario-list">
-                <li class="sommario-item">
-                    <a href="#cremona" class="sommario-link">
-                        <span class="sommario-icon">🎻</span>
-                        <span class="sommario-text">Cremona: Città che suona</span>
-                    </a>
-                </li>
-                <li class="sommario-item">
-                    <a href="#repubblica-ceca" class="sommario-link">
-                        <span class="sommario-icon">🎄</span>
-                        <span class="sommario-text">Repubblica Ceca: Mercatini</span>
-                    </a>
-                </li>
-                <li class="sommario-item">
-                    <a href="#massimo-cosmo" class="sommario-link">
-                        <span class="sommario-icon">🍕</span>
-                        <span class="sommario-text">Massimo Cosmo a Prato</span>
-                    </a>
-                </li>
-                <li class="sommario-item">
-                    <a href="#lago-garda" class="sommario-link">
-                        <span class="sommario-icon">⛵</span>
-                        <span class="sommario-text">Lago di Garda in movimento</span>
-                    </a>
-                </li>
-                <li class="sommario-item">
-                    <a href="#carnevale-venezia" class="sommario-link">
-                        <span class="sommario-icon">🎭</span>
-                        <span class="sommario-text">Carnevale di Venezia 2025</span>
-                    </a>
-                </li>
-                <li class="sommario-item">
-                    <a href="#capuccina" class="sommario-link">
-                        <span class="sommario-icon">🏰</span>
-                        <span class="sommario-text">La Capuccina: Un casale storico</span>
-                    </a>
-                </li>
-            </ul>
         </div>
     </section>
 
@@ -757,7 +760,11 @@
 
     <!-- PULSANTE FLOTTANTE SOMMARIO -->
     <button class="floating-sommario-btn" aria-label="Apri sommario">
-        📑
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
     </button>
 
     <!-- MENU FLOTTANTE SOMMARIO -->
@@ -766,38 +773,32 @@
         <ul class="sommario-list">
             <li class="sommario-item">
                 <a href="#cremona" class="sommario-link">
-                    <span class="sommario-icon">🎻</span>
-                    <span class="sommario-text">Cremona: Città che suona</span>
+                    <span class="sommario-text">Cremona: Città che suona e cucina</span>
                 </a>
             </li>
             <li class="sommario-item">
                 <a href="#repubblica-ceca" class="sommario-link">
-                    <span class="sommario-icon">🎄</span>
-                    <span class="sommario-text">Repubblica Ceca: Mercatini</span>
+                    <span class="sommario-text">Repubblica Ceca: La magia del Natale</span>
                 </a>
             </li>
             <li class="sommario-item">
                 <a href="#massimo-cosmo" class="sommario-link">
-                    <span class="sommario-icon">🍕</span>
-                    <span class="sommario-text">Massimo Cosmo a Prato</span>
+                    <span class="sommario-text">Massimo Cosmo: Napoli conquista Prato</span>
                 </a>
             </li>
             <li class="sommario-item">
                 <a href="#lago-garda" class="sommario-link">
-                    <span class="sommario-icon">⛵</span>
                     <span class="sommario-text">Lago di Garda in movimento</span>
                 </a>
             </li>
             <li class="sommario-item">
                 <a href="#carnevale-venezia" class="sommario-link">
-                    <span class="sommario-icon">🎭</span>
                     <span class="sommario-text">Carnevale di Venezia 2025</span>
                 </a>
             </li>
             <li class="sommario-item">
                 <a href="#capuccina" class="sommario-link">
-                    <span class="sommario-icon">🏰</span>
-                    <span class="sommario-text">La Capuccina: Un casale storico</span>
+                    <span class="sommario-text">La Capuccina: Un casale del '500</span>
                 </a>
             </li>
         </ul>
