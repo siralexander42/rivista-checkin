@@ -393,6 +393,7 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
+    z-index: 5;
 }
 
 /* Custom Markers - Design Moderno Migliorato */
@@ -530,10 +531,9 @@
         0 0 40px rgba(52, 152, 219, 0.6);
 }
 
-/* Popup Cards - Design Cartoon più compatto */
-/* Popup Informazioni Locale - Posizionamento fisso a destra */
+/* Popup Cards - Design compatto e ben posizionato */
 .map-popup {
-    position: fixed;
+    position: absolute;
     background: rgba(26, 26, 26, 0.98);
     backdrop-filter: blur(20px);
     border-radius: 16px;
@@ -541,7 +541,7 @@
     opacity: 0;
     visibility: hidden;
     transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    z-index: 1000;
+    z-index: 10000;
     box-shadow: 
         0 15px 40px rgba(0, 0, 0, 0.5),
         0 0 30px rgba(255, 51, 102, 0.15),

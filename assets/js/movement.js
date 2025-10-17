@@ -107,37 +107,36 @@ document.addEventListener('DOMContentLoaded', function() {
             // Chiudi il popup precedente
             closeActivePopup();
 
-            // Apri il nuovo popup e posizionalo a destra del marker
+            // Apri il nuovo popup e posizionalo
             popup.classList.add('active');
             this.classList.add('active');
             activePopup = popup;
             activeMarker = this;
             
-            // Posiziona il popup a destra del marker
+            // Posiziona il popup rispetto al container della mappa
+            const mapContainerRect = mapContainer.getBoundingClientRect();
             const markerRect = this.getBoundingClientRect();
             const popupWidth = 280;
-            const windowHeight = window.innerHeight;
+            const popupHeight = popup.offsetHeight || 350;
             
-            // Calcola posizione base: 20px a destra del marker
-            let leftPos = markerRect.right + 20;
-            let topPos = markerRect.top + (markerRect.height / 2);
+            // Posizione relativa al map container
+            let leftPos = markerRect.left - mapContainerRect.left + markerRect.width + 20;
+            let topPos = markerRect.top - mapContainerRect.top + (markerRect.height / 2) - (popupHeight / 2);
             
-            // Se esce dallo schermo a destra, metti a sinistra del marker
-            if (leftPos + popupWidth > window.innerWidth - 20) {
-                leftPos = markerRect.left - popupWidth - 20;
+            // Se esce dal container a destra, metti a sinistra
+            if (leftPos + popupWidth > mapContainerRect.width) {
+                leftPos = markerRect.left - mapContainerRect.left - popupWidth - 20;
             }
             
-            // Assicurati che non esca dallo schermo verticalmente
-            const popupHeight = popup.offsetHeight || 350;
-            if (topPos - (popupHeight / 2) < 20) {
-                topPos = 20 + (popupHeight / 2);
-            } else if (topPos + (popupHeight / 2) > windowHeight - 20) {
-                topPos = windowHeight - 20 - (popupHeight / 2);
+            // Limiti verticali
+            if (topPos < 0) topPos = 10;
+            if (topPos + popupHeight > mapContainerRect.height) {
+                topPos = mapContainerRect.height - popupHeight - 10;
             }
             
             popup.style.left = `${leftPos}px`;
             popup.style.top = `${topPos}px`;
-            popup.style.transform = 'translateY(-50%)';
+            popup.style.transform = 'none';
         });
     });
 
