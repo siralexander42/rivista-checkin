@@ -41,14 +41,17 @@ img {
     top: 0;
     left: 0;
     right: 0;
-    background: rgba(10, 10, 15, 0.95);
-    backdrop-filter: blur(20px);
+    background: rgba(10, 10, 15, 0.85);
+    backdrop-filter: blur(15px);
     z-index: 1000;
-    padding: 1rem 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                background 0.3s ease,
-                box-shadow 0.3s ease;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.3s ease;
+}
+
+.main-nav:hover {
+    background: rgba(10, 10, 15, 0.95);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .nav-container {
@@ -60,10 +63,42 @@ img {
     align-items: center;
 }
 
+.nav-logo-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
 .nav-logo {
-    height: 50px;
+    height: 40px;
     width: auto;
     filter: brightness(0) invert(1);
+    transition: all 0.3s ease;
+}
+
+.nav-logo:hover {
+    transform: scale(1.05);
+}
+
+.nav-edition {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.8);
+    padding: 0.25rem 1rem;
+    background: linear-gradient(135deg, rgba(51, 51, 130, 0.2), rgba(211, 228, 252, 0.1));
+    border: 1px solid rgba(211, 228, 252, 0.2);
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+
+.nav-edition:hover {
+    color: rgba(255, 255, 255, 1);
+    border-color: rgba(211, 228, 252, 0.4);
+    background: linear-gradient(135deg, rgba(51, 51, 130, 0.3), rgba(211, 228, 252, 0.15));
 }
 
 .nav-menu {
