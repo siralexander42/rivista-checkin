@@ -24,15 +24,16 @@
             const sequence = flipsData.split(',');
             const finalLetter = sequence[sequence.length - 1];
             
-            // Timing basato sull'index
-            const baseDelay = 100 + (index * 50); // 100ms, 150ms, 200ms...
+            // Timing MOLTO più lento - finisce a ~3.9 secondi
+            const baseDelay = 150 + (index * 40); // Delay iniziale per ogni lettera
+            const flipDuration = 380; // Durata di ogni flip (molto più lento)
             
             // Anima ogni flip
             sequence.forEach((char, flipIndex) => {
                 setTimeout(() => {
                     letter.textContent = char;
                     letter.setAttribute('data-letter', char);
-                }, baseDelay + (flipIndex * 400));
+                }, baseDelay + (flipIndex * flipDuration));
             });
         });
     }

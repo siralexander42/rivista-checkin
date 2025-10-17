@@ -44,18 +44,18 @@
 
 /* TESTO SCROLLABILE A SINISTRA */
 .cremona-text-scroll {
-    padding: 4rem 3rem 2rem 0;
+    padding: 3rem 3rem 2rem 0;
     position: relative;
     z-index: 2;
 }
 
 .cremona-text-block {
-    min-height: 60vh;
+    min-height: 50vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 2rem 0;
-    margin-bottom: 3rem;
+    padding: 1.5rem 0;
+    margin-bottom: 2rem;
     opacity: 0.4;
     transition: opacity 0.6s ease, transform 0.6s ease;
     transform: translateY(20px);
@@ -72,8 +72,8 @@
 }
 
 .cremona-text-block:last-child {
-    margin-bottom: 4rem;
-    padding-bottom: 2rem;
+    margin-bottom: 3rem;
+    padding-bottom: 1.5rem;
 }
 
 .cremona-tag {
@@ -86,7 +86,7 @@
     background: rgba(211, 228, 252, 0.1);
     padding: 0.5rem 1.5rem;
     border-radius: 50px;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     width: fit-content;
 }
 
@@ -96,14 +96,14 @@
     font-weight: 700;
     line-height: 1.1;
     color: var(--white);
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 .cremona-intro {
     font-size: 1.25rem;
-    line-height: 1.8;
+    line-height: 1.6;
     color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 .cremona-text-block h3 {
@@ -111,26 +111,28 @@
     font-size: clamp(1.5rem, 3vw, 2rem);
     font-weight: 600;
     color: var(--white);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     line-height: 1.3;
 }
 
 .cremona-text-block p {
-    font-size: 1.1rem;
-    line-height: 1.8;
+    font-size: 1.05rem;
+    line-height: 1.7;
     color: rgba(255, 255, 255, 0.85);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .cremona-highlight {
-    font-size: 1.15rem;
-    font-weight: 500;
-    color: var(--accent);
-    background: rgba(211, 228, 252, 0.05);
-    padding: 1.5rem;
-    border-left: 3px solid var(--accent);
-    border-radius: 0 8px 8px 0;
-    margin: 2rem 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, rgba(211, 228, 252, 0.2) 0%, rgba(51, 51, 130, 0.3) 100%);
+    padding: 1.25rem 1.5rem;
+    border-left: 4px solid var(--accent);
+    border-radius: 0 12px 12px 0;
+    margin: 1.5rem 0;
+    box-shadow: 0 4px 20px rgba(211, 228, 252, 0.15);
+    backdrop-filter: blur(10px);
 }
 
 .cremona-cta {
@@ -145,7 +147,7 @@
     border-radius: 50px;
     text-decoration: none;
     transition: all 0.3s ease;
-    margin-top: 2rem;
+    margin-top: 1.5rem;
     width: fit-content;
 }
 

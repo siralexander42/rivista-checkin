@@ -727,19 +727,30 @@ blockquote cite {
 }
 .image-dots {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.4rem;
+    align-items: center;
 }
+
 .dot {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
-    background: rgba(211, 228, 252, 0.4);
-    transition: background 0.2s, transform 0.2s;
+    background: rgba(255, 255, 255, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
+    border: none;
 }
+
+.dot:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
 .dot.active {
-    background: var(--accent);
-    transform: scale(1.25);
+    width: 24px;
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.9);
+    transform: scale(1);
 }
 
 /* ==============================================
