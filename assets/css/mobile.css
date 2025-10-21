@@ -38,19 +38,6 @@
    ============================================== */
 @media (max-width: 768px) {
     
-    /* Page Navigation Ottimizzazioni */
-    section[id]:not(.in-view) {
-        opacity: 0.85; /* Meno aggressivo su mobile */
-        filter: blur(0px); /* Rimuovi blur per performance */
-    }
-    
-    .page-indicator {
-        bottom: 20px;
-        right: 20px;
-        padding: 8px 16px;
-        font-size: 12px;
-    }
-    
     /* Disabilita fullpage scroll su mobile */
     html {
         overflow-y: auto !important;

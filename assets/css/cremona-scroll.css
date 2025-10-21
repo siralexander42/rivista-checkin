@@ -9,6 +9,8 @@
     position: relative;
     overflow-y: auto;
     overflow-x: hidden;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
     
     /* Custom scrollbar per tutta la sezione */
     scrollbar-width: thin;

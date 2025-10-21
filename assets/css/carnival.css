@@ -8,6 +8,8 @@
     min-height: 800px;
     overflow: hidden;
     background: #000;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
 }
 
 /* Background Slideshow */
