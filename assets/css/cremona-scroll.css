@@ -4,8 +4,10 @@
 
 .cremona-scroll-section {
     background: linear-gradient(180deg, #0a0a0f 0%, #1a1a2e 100%);
-    min-height: 200vh;
+    min-height: 100vh;
+    height: 100vh;
     position: relative;
+    overflow-y: auto;
     overflow-x: hidden;
     scroll-snap-align: start;
     scroll-snap-stop: always;

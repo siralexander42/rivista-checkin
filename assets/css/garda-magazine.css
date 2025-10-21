@@ -19,8 +19,6 @@
     color: var(--movement-light);
     overflow: hidden;
     position: relative;
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
 }
 
 /* =============================================================================
