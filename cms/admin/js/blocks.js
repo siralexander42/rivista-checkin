@@ -15,22 +15,11 @@ if (!magazineId) {
 
 // Carica dati all'avvio
 document.addEventListener('DOMContentLoaded', () => {
-    loadUserInfo();
     loadMagazine();
     
     // Form submission
     document.getElementById('blockForm').addEventListener('submit', handleBlockFormSubmit);
 });
-
-// Carica info utente
-function loadUserInfo() {
-    const user = getCurrentUser();
-    if (user) {
-        document.getElementById('userName').textContent = user.name;
-        document.getElementById('userEmail').textContent = user.email;
-        document.getElementById('userAvatar').textContent = user.name.charAt(0).toUpperCase();
-    }
-}
 
 // Carica rivista e blocchi
 async function loadMagazine() {
@@ -72,23 +61,23 @@ function displayBlocks() {
         <div class="block-item" draggable="true" data-block-id="${block._id}" data-position="${index}">
             <div class="block-header">
                 <div style="display: flex; align-items: center; gap: 16px;">
-                    <span class="drag-handle" title="Trascina per riordinare">⋮⋮</span>
+                    <span class="drag-handle" title="Trascina per riordinare">☰</span>
                     <div>
                         <div class="block-type-badge">
                             ${getBlockIcon(block.type)} ${getBlockTypeName(block.type)}
                         </div>
-                        ${!block.visible ? '<span class="badge" style="margin-left: 8px; background: #fef3c7; color: #92400e;">👁️ Nascosto</span>' : ''}
+                        ${!block.visible ? '<span class="badge" style="margin-left: 8px; background: #fef3c7; color: #92400e;">Nascosto</span>' : ''}
                     </div>
                 </div>
                 <div class="block-actions">
                     <button class="btn btn-sm btn-secondary" onclick="editBlock('${block._id}')">
-                        ✏️ Modifica
+                        Modifica
                     </button>
                     <button class="btn btn-sm ${block.visible ? 'btn-secondary' : 'btn-success'}" onclick="toggleBlockVisibility('${block._id}')">
-                        ${block.visible ? '👁️' : '👁️‍🗨️'}
+                        ${block.visible ? 'Nascondi' : 'Mostra'}
                     </button>
                     <button class="btn btn-sm btn-danger" onclick="deleteBlock('${block._id}')">
-                        🗑️
+                        Elimina
                     </button>
                 </div>
             </div>
@@ -106,8 +95,8 @@ function displayBlocks() {
 function getBlockIcon(type) {
     const icons = {
         cover: '📰',
-        hero: '🎨',
-        article: '📝',
+        hero: '🖼️',
+        article: '�',
         gallery: '🖼️',
         text: '📄',
         quote: '💬',
@@ -649,7 +638,7 @@ function generateSommarioFields(sommarioItems = []) {
             <button type="button" 
                     onclick="removeSommarioItem(this)" 
                     class="btn btn-sm btn-danger">
-                🗑️
+                Elimina
             </button>
         </div>
     `).join('');
@@ -680,7 +669,7 @@ function addSommarioItem() {
         <button type="button" 
                 onclick="removeSommarioItem(this)" 
                 class="btn btn-sm btn-danger">
-            🗑️
+            Elimina
         </button>
     `;
     
