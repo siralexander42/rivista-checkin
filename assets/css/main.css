@@ -17,7 +17,8 @@
 }
 
 html {
-    scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+    height: 100%;
 }
 
 body {
@@ -26,11 +27,71 @@ body {
     color: var(--white);
     line-height: 1.6;
     overflow-x: hidden;
+    height: 100%;
 }
 
 img {
     max-width: 100%;
     display: block;
+}
+
+/* ==============================================
+   SCROLL-SNAP PULITO - NESSUNA ANIMAZIONE
+   ============================================== */
+section {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    position: relative;
+}
+
+/* Linea centrale luminosa - split orizzontale */
+/* Ombra sotto durante flip per profondità */
+section.flipped::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 5%;
+    right: 5%;
+    height: 150px;
+    background: radial-gradient(ellipse at center,
+        rgba(0, 0, 0, 0.6) 0%,
+        transparent 70%
+    );
+    transform: translateY(-50%);
+    animation: shadowPulse 0.8s ease-out;
+    z-index: -1;
+    pointer-events: none;
+}
+
+@keyframes shadowPulse {
+    0% { 
+        opacity: 0;
+        transform: translateY(-50%) scale(0.5);
+    }
+    50% { 
+        opacity: 1;
+        transform: translateY(-50%) scale(1.2);
+    }
+    100% { 
+        opacity: 0;
+        transform: translateY(-50%) scale(1);
+    }
+}
+
+/* Hero and Cremona sempre visibili - NO flip */
+.hero-simple,
+.cremona-scroll-section {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    filter: none !important;
+}
+
+.hero-simple::before,
+.hero-simple::after,
+.cremona-scroll-section::before,
+.cremona-scroll-section::after {
+    display: none !important;
 }
 
 /* ==============================================

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Flip Effect - Rivista CHECK-IN</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background: #1a1a1a;
+            color: white;
+            overflow-x: hidden;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+        }
+        
+        /* Flipbook container */
+        .flip-book-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 600px;
+            margin: 40px auto;
+        }
+        
+        .flip-book {
+            width: 800px;
+            height: 600px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
+        }
+        
+        /* Stile delle pagine */
+        .page {
+            padding: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .page h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .page p {
+            font-size: 1.2rem;
+            max-width: 300px;
+            line-height: 1.6;
+        }
+        
+        /* Colori diversi per pagina */
+        .page-1 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .page-2 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .page-3 { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .page-4 { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .page-5 { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .page-6 { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
+        
+        /* Controls */
+        .controls {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .controls button {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .controls button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        .controls button:active {
+            transform: translateY(0);
+        }
+        
+        .info {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1rem;
+            color: #999;
+        }
+        
+        .page-counter {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 900px) {
+            .flip-book {
+                width: 90vw;
+                height: calc(90vw * 0.75);
+            }
+            
+            .page h2 {
+                font-size: 2rem;
+            }
+            
+            .page p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📖 Effetto Sfoglia Pagina - CHECK-IN</h1>
+        
+        <div class="page-counter">
+            Pagina <span id="current-page">1</span> di <span id="total-pages">6</span>
+        </div>
+        
+        <div class="flip-book-container">
+            <div class="flip-book" id="flipbook">
+                <div class="page page-1">
+                    <h2>📖 Pagina 1</h2>
+                    <p>Clicca sulla pagina o usa i pulsanti sotto per sfogliare!</p>
+                </div>
+                <div class="page page-2">
+                    <h2>✨ Pagina 2</h2>
+                    <p>Effetto page flip realistico in stile rivista magazine</p>
+                </div>
+                <div class="page page-3">
+                    <h2>🎨 Pagina 3</h2>
+                    <p>Puoi anche trascinare l'angolo della pagina per sfogliarla manualmente</p>
+                </div>
+                <div class="page page-4">
+                    <h2>🚀 Pagina 4</h2>
+                    <p>Animazioni fluide e naturali come una rivista vera</p>
+                </div>
+                <div class="page page-5">
+                    <h2>💎 Pagina 5</h2>
+                    <p>Prova a trascinare l'angolo in alto a destra o in basso a destra!</p>
+                </div>
+                <div class="page page-6">
+                    <h2>🎯 Pagina 6</h2>
+                    <p>Fine! Clicca "Precedente" per tornare indietro</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="prev-btn">⬅️ Precedente</button>
+            <button id="next-btn">Successiva ➡️</button>
+        </div>
+        
+        <div class="info">
+            💡 Trascina l'angolo della pagina oppure clicca sui bordi per sfogliare
+        </div>
+    </div>
+
+    <!-- StPageFlip Library -->
+    <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.min.js"></script>
+    
+    <script>
+        console.log('📖 Inizializzazione Page Flip...');
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const flipbookElement = document.getElementById('flipbook');
+            const currentPageSpan = document.getElementById('current-page');
+            const totalPagesSpan = document.getElementById('total-pages');
+            
+            // Crea istanza PageFlip
+            const pageFlip = new St.PageFlip(flipbookElement, {
+                width: 400,  // Half width (each page)
+                height: 600,  // Full height
+                size: 'stretch',
+                minWidth: 315,
+                maxWidth: 1000,
+                minHeight: 400,
+                maxHeight: 1350,
+                maxShadowOpacity: 0.5,
+                showCover: false,
+                mobileScrollSupport: false,
+                swipeDistance: 30,
+                clickEventForward: true,
+                usePortrait: false,
+                startPage: 0,
+                flippingTime: 1000,
+                useMouseEvents: true,
+                autoSize: true,
+                drawShadow: true
+            });
+            
+            // Carica le pagine HTML
+            pageFlip.loadFromHTML(document.querySelectorAll('.page'));
+            
+            // Aggiorna contatore pagine
+            const updatePageCounter = (pageNum) => {
+                currentPageSpan.textContent = pageNum + 1;
+            };
+            
+            // Event listeners
+            pageFlip.on('flip', (e) => {
+                console.log('📄 Flip to page:', e.data);
+                updatePageCounter(e.data);
+            });
+            
+            pageFlip.on('changeOrientation', (e) => {
+                console.log('📱 Orientation changed:', e.data);
+            });
+            
+            pageFlip.on('changeState', (e) => {
+                console.log('🔄 State changed:', e.data);
+            });
+            
+            // Pulsanti controllo
+            document.getElementById('prev-btn').addEventListener('click', () => {
+                pageFlip.flipPrev();
+            });
+            
+            document.getElementById('next-btn').addEventListener('click', () => {
+                pageFlip.flipNext();
+            });
+            
+            // Keyboard controls
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') {
+                    pageFlip.flipPrev();
+                } else if (e.key === 'ArrowRight') {
+                    pageFlip.flipNext();
+                }
+            });
+            
+            // Imposta totale pagine
+            totalPagesSpan.textContent = document.querySelectorAll('.page').length;
+            
+            console.log('✅ Page Flip pronto!');
+            console.log('💡 Prova a trascinare l\'angolo della pagina!');
+        });
+    </script>
+</body>
+</html>

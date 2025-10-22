@@ -1,0 +1,33 @@
+/**
+ * MAGAZINE FLIP - Effetto super fluido senza scatti
+ */
+
+/* Ottimizzazione GPU */
+section[id] {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    -webkit-font-smoothing: subpixel-antialiased;
+}
+
+/* Animazione flip pagina - SOLO proprietà GPU-friendly */
+section.flip-active {
+    animation: smoothPageReveal 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes smoothPageReveal {
+    from {
+        opacity: 0.4;
+        filter: blur(2px);
+        transform: translateX(-50px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        filter: blur(0px);
+        transform: translateX(0) scale(1);
+    }
+}
+
+
+
+
+

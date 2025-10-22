@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestione Articoli - CHECK-IN CMS</title>
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>CHECK-IN</h2>
+                <p>CMS</p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item">
+                    <span class="icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="articles.html" class="nav-item active">
+                    <span class="icon">📝</span>
+                    <span>Articoli</span>
+                </a>
+                <a href="#" class="nav-item" onclick="logout()">
+                    <span class="icon">🚪</span>
+                    <span>Esci</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">👤</div>
+                    <div class="user-details">
+                        <div class="user-name" id="userName">Admin</div>
+                        <div class="user-email" id="userEmail"></div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="content-header">
+                <h1 id="pageTitle">Gestione Articoli</h1>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="toggleForm()">
+                        ➕ Nuovo Articolo
+                    </button>
+                </div>
+            </header>
+            
+            <div class="content-body">
+                <!-- Form Creazione/Modifica -->
+                <div id="articleForm" class="form-section" style="display: none;">
+                    <h2 id="formTitle">Nuovo Articolo</h2>
+                    <form id="editArticleForm">
+                        <input type="hidden" id="articleId">
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="title">Titolo *</label>
+                                <input type="text" id="title" required placeholder="Inserisci il titolo">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="description">Descrizione Breve *</label>
+                                <textarea id="description" rows="3" required placeholder="Una breve descrizione dell'articolo"></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="link">Link Esterno (Italia a Tavola) *</label>
+                                <input type="url" id="link" required placeholder="https://italiaatavola.net/...">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="image">URL Immagine *</label>
+                                <input type="url" id="image" required placeholder="https://...">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="category">Categoria *</label>
+                                <select id="category" required>
+                                    <option value="">Seleziona...</option>
+                                    <option value="viaggi">🧳 Viaggi</option>
+                                    <option value="enogastronomia">🍷 Enogastronomia</option>
+                                    <option value="ospitalita">🏨 Ospitalità</option>
+                                    <option value="cultura">🎭 Cultura</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="status">Stato *</label>
+                                <select id="status" required>
+                                    <option value="draft">📋 Bozza</option>
+                                    <option value="published">✅ Pubblicato</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="featured">
+                                    <span>⭐ Articolo in evidenza</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="cancelEdit()">
+                                Annulla
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                💾 Salva Articolo
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Lista Articoli -->
+                <div id="articlesList" class="section">
+                    <div class="section-header">
+                        <h2>Tutti gli Articoli</h2>
+                        <div class="filters">
+                            <select id="filterCategory" onchange="loadArticles()">
+                                <option value="">Tutte le categorie</option>
+                                <option value="viaggi">Viaggi</option>
+                                <option value="enogastronomia">Enogastronomia</option>
+                                <option value="ospitalita">Ospitalità</option>
+                                <option value="cultura">Cultura</option>
+                            </select>
+                            <select id="filterStatus" onchange="loadArticles()">
+                                <option value="">Tutti gli stati</option>
+                                <option value="published">Pubblicati</option>
+                                <option value="draft">Bozze</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div id="articlesContainer">
+                        <p class="loading">Caricamento articoli...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="js/auth.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/articles.js"></script>
+</body>
+</html>

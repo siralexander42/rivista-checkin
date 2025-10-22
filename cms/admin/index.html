@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - CHECK-IN CMS</title>
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>CHECK-IN</h2>
+                <p>CMS</p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item active">
+                    <span class="icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="articles.html" class="nav-item">
+                    <span class="icon">📝</span>
+                    <span>Articoli</span>
+                </a>
+                <a href="#" class="nav-item" onclick="logout()">
+                    <span class="icon">🚪</span>
+                    <span>Esci</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">👤</div>
+                    <div class="user-details">
+                        <div class="user-name" id="userName">Admin</div>
+                        <div class="user-email" id="userEmail"></div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="content-header">
+                <h1>Dashboard</h1>
+                <div class="header-actions">
+                    <a href="../../index.html" target="_blank" class="btn btn-secondary">
+                        👁️ Vedi Sito
+                    </a>
+                </div>
+            </header>
+            
+            <div class="content-body">
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📝</div>
+                        <div class="stat-content">
+                            <div class="stat-label">Articoli Totali</div>
+                            <div class="stat-value" id="totalArticles">0</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-content">
+                            <div class="stat-label">Pubblicati</div>
+                            <div class="stat-value" id="publishedArticles">0</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">📋</div>
+                        <div class="stat-content">
+                            <div class="stat-label">Bozze</div>
+                            <div class="stat-value" id="draftArticles">0</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">⭐</div>
+                        <div class="stat-content">
+                            <div class="stat-label">In Evidenza</div>
+                            <div class="stat-value" id="featuredArticles">0</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="section">
+                    <h2>Azioni Rapide</h2>
+                    <div class="quick-actions">
+                        <a href="articles.html" class="action-card">
+                            <span class="action-icon">➕</span>
+                            <span class="action-title">Nuovo Articolo</span>
+                        </a>
+                        <a href="articles.html" class="action-card">
+                            <span class="action-icon">📝</span>
+                            <span class="action-title">Gestisci Articoli</span>
+                        </a>
+                        <a href="../../index.html" target="_blank" class="action-card">
+                            <span class="action-icon">👁️</span>
+                            <span class="action-title">Anteprima Sito</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Recent Articles -->
+                <div class="section">
+                    <h2>Articoli Recenti</h2>
+                    <div id="recentArticles" class="articles-list">
+                        <p class="loading">Caricamento...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="js/auth.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        // Carica dati dashboard
+        async function loadDashboard() {
+            try {
+                const articles = await api.getArticles();
+                
+                // Calcola statistiche
+                const total = articles.length;
+                const published = articles.filter(a => a.status === 'published').length;
+                const drafts = articles.filter(a => a.status === 'draft').length;
+                const featured = articles.filter(a => a.featured).length;
+                
+                // Aggiorna UI
+                document.getElementById('totalArticles').textContent = total;
+                document.getElementById('publishedArticles').textContent = published;
+                document.getElementById('draftArticles').textContent = drafts;
+                document.getElementById('featuredArticles').textContent = featured;
+                
+                // Mostra articoli recenti (max 5)
+                const recentArticles = articles.slice(0, 5);
+                const recentList = document.getElementById('recentArticles');
+                
+                if (recentArticles.length === 0) {
+                    recentList.innerHTML = '<p>Nessun articolo ancora. <a href="articles.html">Creane uno!</a></p>';
+                } else {
+                    recentList.innerHTML = recentArticles.map(article => `
+                        <div class="article-item">
+                            <div class="article-info">
+                                <h3>${article.title}</h3>
+                                <p>${article.category} • ${article.status === 'published' ? '✅ Pubblicato' : '📋 Bozza'}</p>
+                            </div>
+                            <div class="article-actions">
+                                <a href="articles.html?edit=${article._id}" class="btn btn-sm">Modifica</a>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Errore caricamento dashboard:', error);
+                alert('Errore nel caricamento dei dati');
+            }
+        }
+        
+        // Carica info utente
+        const user = JSON.parse(localStorage.getItem('cms_user') || '{}');
+        if (user.name) {
+            document.getElementById('userName').textContent = user.name;
+            document.getElementById('userEmail').textContent = user.email;
+        }
+        
+        // Logout
+        function logout() {
+            if (confirm('Vuoi davvero uscire?')) {
+                localStorage.removeItem('cms_token');
+                localStorage.removeItem('cms_user');
+                window.location.href = 'login.html';
+            }
+        }
+        
+        // Carica dati all'avvio
+        loadDashboard();
+    </script>
+</body>
+</html>
