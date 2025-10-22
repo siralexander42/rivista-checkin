@@ -33,6 +33,11 @@ async function loadStats() {
         }
     } catch (error) {
         console.error('Errore caricamento statistiche:', error);
+        // In caso di errore, mostra 0 invece di crash
+        document.getElementById('totalAccesses').textContent = '0';
+        document.getElementById('successfulAccesses').textContent = '0';
+        document.getElementById('failedAccesses').textContent = '0';
+        document.getElementById('recent24h').textContent = '0';
     }
 }
 
@@ -86,10 +91,19 @@ async function loadLogs() {
         `;
     } catch (error) {
         console.error('Errore caricamento log:', error);
+        
+        let errorMessage = error.message || 'Errore sconosciuto';
+        if (errorMessage.includes('401') || errorMessage.includes('Token') || errorMessage.includes('Sessione')) {
+            errorMessage = 'Sessione scaduta. Effettua nuovamente il login.';
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 2000);
+        }
+        
         container.innerHTML = `
             <div class="error-state">
                 <p>❌ Errore nel caricamento dei log</p>
-                <p>${error.message}</p>
+                <p>${errorMessage}</p>
                 <button onclick="loadLogs()" class="btn btn-secondary">Riprova</button>
             </div>
         `;
