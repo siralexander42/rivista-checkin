@@ -48,7 +48,7 @@ function generateSlug(text) {
 async function loadMagazines() {
     try {
         const magazinesList = document.getElementById('magazinesList');
-        magazinesList.innerHTML = '<div class="loading">Caricamento riviste...</div>';
+        magazinesList.innerHTML = '<div class="loading"></div>';
         
         const response = await apiRequest('/admin/magazines');
         magazines = response.data;
@@ -58,7 +58,9 @@ async function loadMagazines() {
         console.error('Errore caricamento riviste:', error);
         document.getElementById('magazinesList').innerHTML = `
             <div class="empty-state">
-                <div class="empty-state-icon">❌</div>
+                <div class="empty-state-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" viewBox="0 0 50 50"><path d="M 25 2 C 12.308594 2 2 12.308594 2 25 C 2 37.691406 12.308594 48 25 48 C 37.691406 48 48 37.691406 48 25 C 48 12.308594 37.691406 2 25 2 Z M 25 4 C 36.609375 4 46 13.390625 46 25 C 46 36.609375 36.609375 46 25 46 C 13.390625 46 4 36.609375 4 25 C 4 13.390625 13.390625 4 25 4 Z M 25 11 C 24.445313 11 24 11.445313 24 12 L 24 25.5625 C 23.988281 26.101563 24.277344 26.597656 24.746094 26.84375 L 32.746094 31.84375 C 33.230469 32.097656 33.828125 31.9375 34.121094 31.476563 C 34.410156 31.015625 34.289063 30.402344 33.84375 30.0625 L 26.34375 25.40625 L 26 25.1875 L 26 12 C 26 11.445313 25.554688 11 25 11 Z"/></svg>
+                </div>
                 <h3>Errore nel caricamento</h3>
                 <p>${error.message}</p>
             </div>
