@@ -1164,10 +1164,47 @@ ${blocksHTML}
             }, 5000); // Cambia ogni 5 secondi
         }
         
+        // Typewriter effect for hero subtitle
+        function initTypewriter() {
+            const subtitle = document.querySelector('.hero-subtitle');
+            const description = document.querySelector('.hero-description');
+            if (!subtitle) return;
+            
+            const text = subtitle.getAttribute('data-text') || subtitle.textContent.trim();
+            subtitle.innerHTML = '';
+            
+            // Inizio subito a scrivere (senza aspettare loading)
+            setTimeout(() => {
+                subtitle.classList.add('typing');
+                let charIndex = 0;
+                
+                function typeChar() {
+                    if (charIndex < text.length) {
+                        subtitle.textContent += text.charAt(charIndex);
+                        charIndex++;
+                        setTimeout(typeChar, 50); // 50ms per carattere
+                    } else {
+                        subtitle.classList.add('typed');
+                        setTimeout(() => {
+                            subtitle.classList.remove('typing');
+                            subtitle.style.borderRight = 'none';
+                            if (description) {
+                                description.style.opacity = '1';
+                            }
+                        }, 1500);
+                    }
+                }
+                typeChar();
+            }, 500);
+        }
+        
         // Sommario toggle
         document.addEventListener('DOMContentLoaded', function() {
             // Inizializza alternanza sfondi hero
             initHeroBackgrounds();
+            
+            // Inizializza effetto typewriter
+            initTypewriter();
             
             // Toggle dropdown sommario
             const toggleBtn = document.querySelector('.sommario-toggle-hero');

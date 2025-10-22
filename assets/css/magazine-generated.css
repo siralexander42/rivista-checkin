@@ -438,6 +438,22 @@
     margin-bottom: 2rem;
     font-weight: 300;
     max-width: 800px;
+    opacity: 0; /* Nascosto fino al typewriter */
+}
+
+.hero-subtitle.typing {
+    opacity: 1;
+    border-right: 2px solid rgba(211, 228, 252, 0.8);
+    animation: blink 0.75s step-end infinite;
+}
+
+.hero-subtitle.typed {
+    opacity: 1 !important;
+}
+
+@keyframes blink {
+    from, to { border-color: transparent; }
+    50% { border-color: rgba(211, 228, 252, 0.8); }
 }
 
 .hero-description {
@@ -446,6 +462,8 @@
     color: rgba(255, 255, 255, 0.7);
     max-width: 700px;
     margin-bottom: 2rem;
+    opacity: 0; /* Nascosto fino a typewriter finito */
+    transition: opacity 1s ease;
 }
 
 .scroll-indicator {
