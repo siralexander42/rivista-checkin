@@ -43,7 +43,7 @@ function getCurrentUser() {
 // Controlla se l'utente è super admin
 function isSuperAdmin() {
     const user = getCurrentUser();
-    return user && user.role === 'super_admin';
+    return user && user.role === 'super-admin';
 }
 
 // Controlla autenticazione all'avvio (tranne che per login.html)
