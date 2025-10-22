@@ -1,6 +1,9 @@
 // API Client per comunicare con il backend
 
-const API_BASE_URL = 'http://localhost:3001/api';
+// Usa l'URL di produzione se disponibile, altrimenti localhost
+const API_BASE_URL = window.location.hostname === 'localhost' 
+    ? 'http://localhost:3001/api'
+    : 'https://rivista-checkin.onrender.com/api';
 
 // Helper per le richieste autenticate
 async function apiRequest(endpoint, options = {}) {
