@@ -214,8 +214,11 @@ body {
 
 /* Buttons */
 .btn {
-    display: inline-block;
-    padding: 14px 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
     border: none;
     border-radius: var(--radius-md);
     font-size: 15px;
@@ -225,14 +228,20 @@ body {
     text-align: center;
     text-decoration: none;
     letter-spacing: 0.3px;
+    height: 44px;
+    line-height: 1;
+}
+
+.btn svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
 }
 
 .btn-primary {
     background: var(--bg-gradient);
     color: #ffffff !important;
     box-shadow: var(--shadow-md);
-    width: 100%;
-    margin-top: 8px;
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -248,6 +257,10 @@ body {
 .btn-primary:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+}
+
+.btn-full {
+    width: 100%;
 }
 
 .login-footer {
@@ -481,6 +494,13 @@ body {
 .btn-sm {
     padding: 8px 16px;
     font-size: 13px;
+    height: 36px;
+}
+
+.btn-large {
+    padding: 16px 32px;
+    font-size: 16px;
+    height: 52px;
 }
 
 .btn:disabled {
