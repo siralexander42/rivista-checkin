@@ -1150,16 +1150,62 @@ ${blocksHTML}
     
     <!-- Script per Sommario Cover Block -->
     <script>
+        // Hero background alternation
+        function initHeroBackgrounds() {
+            const backgrounds = document.querySelectorAll('.hero-bg');
+            if (!backgrounds.length) return;
+            
+            let currentIndex = 0;
+            
+            setInterval(() => {
+                backgrounds[currentIndex].classList.remove('active');
+                currentIndex = (currentIndex + 1) % backgrounds.length;
+                backgrounds[currentIndex].classList.add('active');
+            }, 5000); // Cambia ogni 5 secondi
+        }
+        
+        // Sommario toggle
         document.addEventListener('DOMContentLoaded', function() {
+            // Inizializza alternanza sfondi hero
+            initHeroBackgrounds();
+            
+            // Toggle dropdown sommario
             const toggleBtn = document.querySelector('.sommario-toggle-hero');
             const dropdown = document.querySelector('.hero-sommario-dropdown');
+            const toggleLabel = document.querySelector('.sommario-toggle-label');
             
             if (toggleBtn && dropdown) {
-                toggleBtn.addEventListener('click', function() {
+                toggleBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
                     dropdown.classList.toggle('active');
                     toggleBtn.classList.toggle('active');
+                    
+                    // Nascondi/mostra la label
+                    if (toggleLabel) {
+                        if (dropdown.classList.contains('active')) {
+                            toggleLabel.style.opacity = '0';
+                        } else {
+                            toggleLabel.style.opacity = '1';
+                        }
+                    }
                 });
             }
+            
+            // Gestione sottomenu espandibili
+            const itemsWithSubmenu = document.querySelectorAll('.sommario-item:has(.sommario-submenu)');
+            
+            itemsWithSubmenu.forEach(item => {
+                const expandBtn = item.querySelector('.sommario-expand');
+                const submenu = item.querySelector('.sommario-submenu');
+                
+                if (expandBtn && submenu) {
+                    expandBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        item.classList.toggle('expanded');
+                    });
+                }
+            });
         });
     </script>
 </body>
@@ -1416,18 +1462,47 @@ ${blocksHTML}
     <!-- Scripts -->
     <script src="assets/js/main.js"></script>
     
-    <!-- Script per Sommario Cover Block -->
+    <!-- Script aggiuntivo per Sommario Cover Block -->
     <script>
+        // Override/integrazione per blocco cover se main.js non lo gestisce già
         document.addEventListener('DOMContentLoaded', function() {
+            // Toggle dropdown sommario
             const toggleBtn = document.querySelector('.sommario-toggle-hero');
             const dropdown = document.querySelector('.hero-sommario-dropdown');
+            const toggleLabel = document.querySelector('.sommario-toggle-label');
             
             if (toggleBtn && dropdown) {
-                toggleBtn.addEventListener('click', function() {
+                toggleBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
                     dropdown.classList.toggle('active');
                     toggleBtn.classList.toggle('active');
+                    
+                    // Nascondi/mostra la label
+                    if (toggleLabel) {
+                        if (dropdown.classList.contains('active')) {
+                            toggleLabel.style.opacity = '0';
+                        } else {
+                            toggleLabel.style.opacity = '1';
+                        }
+                    }
                 });
             }
+            
+            // Gestione sottomenu espandibili
+            const itemsWithSubmenu = document.querySelectorAll('.sommario-item:has(.sommario-submenu)');
+            
+            itemsWithSubmenu.forEach(item => {
+                const expandBtn = item.querySelector('.sommario-expand');
+                const submenu = item.querySelector('.sommario-submenu');
+                
+                if (expandBtn && submenu) {
+                    expandBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        item.classList.toggle('expanded');
+                    });
+                }
+            });
         });
     </script>
 </body>
