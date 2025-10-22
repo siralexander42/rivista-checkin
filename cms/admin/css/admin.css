@@ -326,7 +326,7 @@ body {
     transition: var(--transition);
     border-radius: var(--radius-sm);
     font-weight: 500;
-    font-size: 13px;
+    font-size: 14.5px;
 }
 
 .nav-item:hover {
