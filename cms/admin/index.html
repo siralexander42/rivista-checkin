@@ -180,11 +180,21 @@
                 } else {
                     recentList.innerHTML = `
                         <div class="magazines-grid">
-                            ${recentMagazines.map(magazine => `
+                            ${recentMagazines.map(magazine => {
+                                // Cerca cover image dal blocco cover
+                                let coverImage = magazine.coverImage;
+                                if (!coverImage && magazine.blocks) {
+                                    const coverBlock = magazine.blocks.find(b => b.type === 'cover');
+                                    if (coverBlock && coverBlock.images && coverBlock.images.length > 0) {
+                                        coverImage = coverBlock.images[0];
+                                    }
+                                }
+                                
+                                return `
                                 <div class="magazine-card" onclick="window.location.href='blocks.html?magazine=${magazine._id}'">
                                     <div class="magazine-cover">
-                                        ${magazine.coverImage 
-                                            ? `<img src="${magazine.coverImage}" alt="${magazine.name}">`
+                                        ${coverImage 
+                                            ? `<img src="${coverImage}" alt="${magazine.name}">`
                                             : '📖'
                                         }
                                         <div class="magazine-status-badge">
@@ -202,7 +212,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            `).join('')}
+                            `}).join('')}
                         </div>
                     `;
                 }
