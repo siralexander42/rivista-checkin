@@ -22,6 +22,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('slug').addEventListener('input', () => {
         document.getElementById('slug').dataset.manuallyEdited = 'true';
     });
+    
+    // Controlla se deve aprire il modal di creazione
+    if (localStorage.getItem('createNew') === 'true') {
+        localStorage.removeItem('createNew');
+        setTimeout(() => showCreateModal(), 500);
+    }
 });
 
 // Carica info utente

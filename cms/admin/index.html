@@ -21,12 +21,8 @@
                     <span>Dashboard</span>
                 </a>
                 <a href="magazines.html" class="nav-item">
-                    <span class="icon">�</span>
+                    <span class="icon">📖</span>
                     <span>Riviste</span>
-                </a>
-                <a href="articles.html" class="nav-item">
-                    <span class="icon">�</span>
-                    <span>Articoli</span>
                 </a>
             </nav>
             
@@ -47,76 +43,92 @@
         <!-- Main Content -->
         <main class="main-content">
             <header class="content-header">
-                <h1>Dashboard</h1>
+                <div>
+                    <h1>📊 Dashboard CHECK-IN</h1>
+                    <p style="color: var(--text-light); margin-top: 8px;">
+                        Benvenuto nel sistema di gestione delle riviste
+                    </p>
+                </div>
                 <div class="header-actions">
-                    <a href="../../index.html" target="_blank" class="btn btn-secondary">
-                        👁️ Vedi Sito
-                    </a>
+                    <button class="btn btn-primary" onclick="window.location.href='magazines.html'">
+                        ➕ Crea Nuova Rivista
+                    </button>
                 </div>
             </header>
             
             <div class="content-body">
+                
                 <!-- Stats Cards -->
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-icon">📝</div>
-                        <div class="stat-content">
-                            <div class="stat-label">Articoli Totali</div>
-                            <div class="stat-value" id="totalArticles">0</div>
+                        <div class="stat-header">
+                            <div class="stat-icon">�</div>
+                            <div class="stat-content">
+                                <div class="stat-label">Riviste Totali</div>
+                                <div class="stat-value" id="totalMagazines">0</div>
+                            </div>
                         </div>
                     </div>
                     
                     <div class="stat-card">
-                        <div class="stat-icon">✅</div>
-                        <div class="stat-content">
-                            <div class="stat-label">Pubblicati</div>
-                            <div class="stat-value" id="publishedArticles">0</div>
+                        <div class="stat-header">
+                            <div class="stat-icon">✅</div>
+                            <div class="stat-content">
+                                <div class="stat-label">Pubblicate</div>
+                                <div class="stat-value" id="publishedMagazines">0</div>
+                            </div>
                         </div>
                     </div>
                     
                     <div class="stat-card">
-                        <div class="stat-icon">📋</div>
-                        <div class="stat-content">
-                            <div class="stat-label">Bozze</div>
-                            <div class="stat-value" id="draftArticles">0</div>
+                        <div class="stat-header">
+                            <div class="stat-icon">📋</div>
+                            <div class="stat-content">
+                                <div class="stat-label">Bozze</div>
+                                <div class="stat-value" id="draftMagazines">0</div>
+                            </div>
                         </div>
                     </div>
                     
                     <div class="stat-card">
-                        <div class="stat-icon">⭐</div>
-                        <div class="stat-content">
-                            <div class="stat-label">In Evidenza</div>
-                            <div class="stat-value" id="featuredArticles">0</div>
+                        <div class="stat-header">
+                            <div class="stat-icon">👁️</div>
+                            <div class="stat-content">
+                                <div class="stat-label">Visualizzazioni</div>
+                                <div class="stat-value" id="totalViews">0</div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Quick Actions -->
                 <div class="section">
-                    <h2>Azioni Rapide</h2>
+                    <h2>🚀 Azioni Rapide</h2>
                     <div class="quick-actions">
-                        <a href="articles.html" class="action-card">
+                        <a href="magazines.html" class="action-card" onclick="localStorage.setItem('createNew', 'true')">
                             <span class="action-icon">➕</span>
-                            <span class="action-title">Nuovo Articolo</span>
+                            <span class="action-title">Crea Nuova Rivista</span>
+                            <span class="action-description">Inizia una nuova edizione</span>
                         </a>
-                        <a href="articles.html" class="action-card">
-                            <span class="action-icon">📝</span>
-                            <span class="action-title">Gestisci Articoli</span>
-                        </a>
-                        <a href="../../index.html" target="_blank" class="action-card">
-                            <span class="action-icon">👁️</span>
-                            <span class="action-title">Anteprima Sito</span>
+                        <a href="magazines.html" class="action-card">
+                            <span class="action-icon">�</span>
+                            <span class="action-title">Gestisci Riviste</span>
+                            <span class="action-description">Vedi e modifica le riviste esistenti</span>
                         </a>
                     </div>
                 </div>
                 
-                <!-- Recent Articles -->
+                <!-- Recent Magazines -->
                 <div class="section">
-                    <h2>Articoli Recenti</h2>
-                    <div id="recentArticles" class="articles-list">
-                        <p class="loading">Caricamento...</p>
+                    <div class="section-header">
+                        <h2>📖 Riviste Recenti</h2>
+                        <a href="magazines.html" class="btn btn-sm btn-secondary">Vedi Tutte</a>
+                    </div>
+                    <div id="recentMagazines">
+                        <div class="loading">Caricamento...</div>
                     </div>
                 </div>
+                
             </div>
         </main>
     </div>
@@ -124,38 +136,185 @@
     <script src="js/auth.js"></script>
     <script src="js/api.js"></script>
     <script>
+        // Carica info utente
+        function loadUserInfo() {
+            const user = getCurrentUser();
+            if (user) {
+                document.getElementById('userName').textContent = user.name;
+                document.getElementById('userEmail').textContent = user.email;
+                document.getElementById('userAvatar').textContent = user.name.charAt(0).toUpperCase();
+            }
+        }
+
         // Carica dati dashboard
         async function loadDashboard() {
             try {
-                const articles = await api.getArticles();
+                const response = await apiRequest('/admin/magazines');
+                const magazines = response.data;
                 
                 // Calcola statistiche
-                const total = articles.length;
-                const published = articles.filter(a => a.status === 'published').length;
-                const drafts = articles.filter(a => a.status === 'draft').length;
-                const featured = articles.filter(a => a.featured).length;
+                const total = magazines.length;
+                const published = magazines.filter(m => m.status === 'published').length;
+                const drafts = magazines.filter(m => m.status === 'draft').length;
+                const totalViews = magazines.reduce((sum, m) => sum + (m.views || 0), 0);
                 
                 // Aggiorna UI
-                document.getElementById('totalArticles').textContent = total;
-                document.getElementById('publishedArticles').textContent = published;
-                document.getElementById('draftArticles').textContent = drafts;
-                document.getElementById('featuredArticles').textContent = featured;
+                document.getElementById('totalMagazines').textContent = total;
+                document.getElementById('publishedMagazines').textContent = published;
+                document.getElementById('draftMagazines').textContent = drafts;
+                document.getElementById('totalViews').textContent = totalViews;
                 
-                // Mostra articoli recenti (max 5)
-                const recentArticles = articles.slice(0, 5);
-                const recentList = document.getElementById('recentArticles');
+                // Mostra riviste recenti (max 3)
+                const recentMagazines = magazines.slice(0, 3);
+                const recentList = document.getElementById('recentMagazines');
                 
-                if (recentArticles.length === 0) {
-                    recentList.innerHTML = '<p>Nessun articolo ancora. <a href="articles.html">Creane uno!</a></p>';
+                if (recentMagazines.length === 0) {
+                    recentList.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📖</div>
+                            <h3>Nessuna rivista ancora</h3>
+                            <p>Inizia creando la tua prima rivista!</p>
+                            <button class="btn btn-primary" onclick="window.location.href='magazines.html'">
+                                ➕ Crea Prima Rivista
+                            </button>
+                        </div>
+                    `;
                 } else {
-                    recentList.innerHTML = recentArticles.map(article => `
-                        <div class="article-item">
-                            <div class="article-info">
-                                <h3>${article.title}</h3>
-                                <p>${article.category} • ${article.status === 'published' ? '✅ Pubblicato' : '📋 Bozza'}</p>
-                            </div>
-                            <div class="article-actions">
-                                <a href="articles.html?edit=${article._id}" class="btn btn-sm">Modifica</a>
+                    recentList.innerHTML = `
+                        <div class="magazines-grid">
+                            ${recentMagazines.map(magazine => `
+                                <div class="magazine-card" onclick="window.location.href='blocks.html?magazine=${magazine._id}'">
+                                    <div class="magazine-cover">
+                                        ${magazine.coverImage 
+                                            ? `<img src="${magazine.coverImage}" alt="${magazine.name}">`
+                                            : '📖'
+                                        }
+                                        <div class="magazine-status-badge">
+                                            ${getStatusBadge(magazine.status)}
+                                        </div>
+                                    </div>
+                                    <div class="magazine-content">
+                                        <div class="magazine-header">
+                                            <div class="magazine-edition">Edizione ${magazine.editionNumber} • ${magazine.edition}</div>
+                                            <h3 class="magazine-title">${magazine.name}</h3>
+                                        </div>
+                                        <div class="magazine-meta">
+                                            <span>🎨 ${magazine.blocks?.length || 0} blocchi</span>
+                                            <span>👁️ ${magazine.views || 0} visite</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Errore caricamento dashboard:', error);
+            }
+        }
+        
+        function getStatusBadge(status) {
+            const badges = {
+                'draft': '<span class="badge badge-draft">Bozza</span>',
+                'published': '<span class="badge badge-published">Pubblicata</span>',
+                'archived': '<span class="badge badge-archived">Archiviata</span>'
+            };
+            return badges[status] || '';
+        }
+        
+        // Carica dati all'avvio
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserInfo();
+            loadDashboard();
+        });
+    </script>
+    
+    <style>
+        .magazines-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .magazine-card {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 2px solid var(--border-light);
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+        }
+        
+        .magazine-card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+        }
+        
+        .magazine-cover {
+            width: 100%;
+            height: 180px;
+            background: var(--bg-gradient-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .magazine-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .magazine-status-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+        }
+        
+        .magazine-content {
+            padding: 20px;
+        }
+        
+        .magazine-header {
+            margin-bottom: 12px;
+        }
+        
+        .magazine-edition {
+            font-size: 12px;
+            color: var(--text-light);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .magazine-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 8px 0 0 0;
+        }
+        
+        .magazine-meta {
+            display: flex;
+            gap: 16px;
+            margin-top: 12px;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        
+        .magazine-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+    </style>
+</body>
+</html>
                             </div>
                         </div>
                     `).join('');
