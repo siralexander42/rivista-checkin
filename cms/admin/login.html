@@ -45,7 +45,7 @@
                 <div id="errorMessage" class="error-message" style="display: none;"></div>
                 
                 <button type="submit" class="btn btn-primary btn-full" id="loginBtn">
-                    Accedi
+                    CHECK-IN
                 </button>
             </form>
             
@@ -70,7 +70,7 @@
             // Reset errori
             errorMsg.style.display = 'none';
             loginBtn.disabled = true;
-            loginBtn.textContent = 'Accesso in corso...';
+            loginBtn.textContent = 'CHECK-IN IN CORSO...';
             
             try {
                 // Usa l'URL API dinamico
@@ -112,7 +112,7 @@
                 errorMsg.textContent = error.message;
                 errorMsg.style.display = 'block';
                 loginBtn.disabled = false;
-                loginBtn.textContent = 'Accedi';
+                loginBtn.textContent = 'CHECK-IN';
             }
         });
         
