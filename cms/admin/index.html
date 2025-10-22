@@ -311,13 +311,15 @@
             // Benvenuto con animazione macchina da scrivere
             const user = getCurrentUser();
             if (user && user.name) {
-                const welcomeText = `CIAO ${user.name.toUpperCase()}`;
+                const welcomeText = `Ciao ${user.name}`;
                 const showAnimation = localStorage.getItem('cms_show_welcome_animation');
                 
                 if (showAnimation === 'true') {
                     // Animazione macchina da scrivere solo dopo login
-                    typeWriter(welcomeText, 'welcomeMessage', 80);
-                    localStorage.removeItem('cms_show_welcome_animation'); // Rimuovi flag
+                    setTimeout(() => {
+                        typeWriter(welcomeText, 'welcomeMessage', 80);
+                        localStorage.removeItem('cms_show_welcome_animation'); // Rimuovi flag
+                    }, 300);
                 } else {
                     // Mostra testo fisso nelle altre pagine
                     document.getElementById('welcomeMessage').textContent = welcomeText;
