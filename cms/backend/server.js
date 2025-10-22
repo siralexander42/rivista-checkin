@@ -1348,7 +1348,6 @@ function generateBlockHTML(block) {
     <!-- Cover Block (Hero con Sommario) -->
     <section class="hero-simple" id="hero">
         <!-- TOGGLE FRECCIA CON LABEL -->
-        ${sommarioItems.length > 0 ? `
         <div class="sommario-toggle-wrapper">
             <span class="sommario-toggle-label">In questo numero</span>
             <button class="sommario-toggle-hero" aria-label="Mostra/Nascondi sommario">
@@ -1362,6 +1361,7 @@ function generateBlockHTML(block) {
         <div class="hero-sommario-dropdown">
             <div class="sommario-dropdown-content">
                 <h3>In questo numero</h3>
+                ${sommarioItems.length > 0 ? `
                 <ul class="sommario-list">
                     ${sommarioItems.map(item => `
                     <li class="sommario-item">
@@ -1370,14 +1370,18 @@ function generateBlockHTML(block) {
                         </a>
                     </li>`).join('')}
                 </ul>
+                ` : `
+                <p style="color: rgba(255,255,255,0.5); text-align: center; padding: 20px;">
+                    📝 Nessuna voce nel sommario.<br>
+                    Aggiungi le voci quando modifichi il blocco!
+                </p>
+                `}
             </div>
         </div>
-        ` : ''}
         
         <div class="hero-backgrounds">
             ${backgrounds.map((bg, idx) => `
-            <div class="hero-bg ${idx === 0 ? 'active' : ''}" style="background-image: url('${bg}')"></div>
-            `).join('')}
+            <div class="hero-bg ${idx === 0 ? 'active' : ''}" style="background-image: url('${bg}')"></div>`).join('')}
         </div>
         <div class="hero-container">
             ${block.title ? `<h1>${block.title}</h1>` : ''}
