@@ -105,6 +105,7 @@ function displayBlocks() {
 // Icone per tipi di blocco
 function getBlockIcon(type) {
     const icons = {
+        cover: '📰',
         hero: '🎨',
         article: '📝',
         gallery: '🖼️',
@@ -119,6 +120,7 @@ function getBlockIcon(type) {
 // Nomi per tipi di blocco
 function getBlockTypeName(type) {
     const names = {
+        cover: 'Copertina',
         hero: 'Hero Section',
         article: 'Articolo',
         gallery: 'Gallery',
@@ -133,6 +135,15 @@ function getBlockTypeName(type) {
 // Preview contenuto blocco
 function getBlockPreview(block) {
     switch (block.type) {
+        case 'cover':
+            const sommarioCount = block.settings?.sommario?.length || 0;
+            return `
+                <h3>📰 ${block.title || 'Copertina'}</h3>
+                ${block.subtitle ? `<p><strong>${block.subtitle}</strong></p>` : ''}
+                ${block.images?.length ? `<p>🖼️ ${block.images.length} immagini di sfondo</p>` : ''}
+                ${sommarioCount > 0 ? `<p>📋 ${sommarioCount} voci nel sommario</p>` : ''}
+            `;
+        
         case 'hero':
             return `
                 <h3>${block.title || 'Hero senza titolo'}</h3>
@@ -225,6 +236,47 @@ function generateBlockForm(type, data = {}) {
     const formContent = document.getElementById('blockFormContent');
     
     const forms = {
+        cover: `
+            <div class="form-section">
+                <h4 style="margin-bottom: 16px;">📸 Copertina Rivista</h4>
+                
+                <div class="form-group">
+                    <label for="title">Titolo Principale *</label>
+                    <input type="text" id="title" required value="${data.title || ''}" placeholder="Alta Badia">
+                </div>
+                
+                <div class="form-group">
+                    <label for="subtitle">Sottotitolo</label>
+                    <input type="text" id="subtitle" value="${data.subtitle || ''}" placeholder="Tre settimane di eventi per vivere l'autunno sulle Dolomiti">
+                </div>
+                
+                <div class="form-group">
+                    <label for="content">Descrizione</label>
+                    <textarea id="content" rows="4" placeholder="Testo descrittivo della copertina...">${data.content || ''}</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="images">Immagini di sfondo (una per riga) *</label>
+                    <textarea id="images" rows="6" required placeholder="https://esempio.com/bg1.jpg
+https://esempio.com/bg2.jpg
+https://esempio.com/bg3.jpg
+https://esempio.com/bg4.jpg">${(data.images || []).join('\n')}</textarea>
+                    <small>⚠️ Inserisci almeno 1 immagine. Le immagini si alterneranno automaticamente</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>📋 Sommario "In questo numero"</label>
+                    <div id="sommarioItems" style="margin-top: 12px;">
+                        ${generateSommarioFields(data.settings?.sommario || [])}
+                    </div>
+                    <button type="button" onclick="addSommarioItem()" class="btn btn-secondary" style="margin-top: 8px;">
+                        ➕ Aggiungi voce sommario
+                    </button>
+                    <small>Gli elementi del sommario appariranno nel dropdown in alto</small>
+                </div>
+            </div>
+        `,
+        
         hero: `
             <div class="form-section">
                 <div class="form-group">
@@ -408,8 +460,19 @@ async function handleBlockFormSubmit(e) {
         style: {
             layout: document.getElementById('styleLayout')?.value || 'center',
             height: document.getElementById('styleHeight')?.value || 'auto'
-        }
+        },
+        settings: {}
     };
+    
+    // Cover: gestisci immagini multiple e sommario
+    if (type === 'cover') {
+        const imagesText = document.getElementById('images').value;
+        blockData.images = imagesText.split('\n').filter(url => url.trim());
+        delete blockData.image;
+        
+        // Raccogli sommario
+        blockData.settings.sommario = collectSommarioData();
+    }
     
     // Gallery: converti textarea in array
     if (type === 'gallery') {
@@ -559,6 +622,97 @@ async function updateBlocksOrder() {
     } catch (error) {
         console.error('Errore riordinamento:', error);
     }
+}
+
+// ============================================
+// HELPER PER SOMMARIO (blocco cover)
+// ============================================
+
+// Genera campi sommario esistenti
+function generateSommarioFields(sommarioItems = []) {
+    if (sommarioItems.length === 0) {
+        return '<p style="color: #94a3b8; font-size: 14px;">Nessuna voce. Clicca "Aggiungi voce sommario"</p>';
+    }
+    
+    return sommarioItems.map((item, index) => `
+        <div class="sommario-field" style="display: flex; gap: 8px; margin-bottom: 12px;">
+            <input type="text" 
+                   class="sommario-text" 
+                   placeholder="Testo voce" 
+                   value="${item.text || ''}" 
+                   style="flex: 2;">
+            <input type="text" 
+                   class="sommario-link" 
+                   placeholder="Link (es. #sezione)" 
+                   value="${item.link || ''}" 
+                   style="flex: 1;">
+            <button type="button" 
+                    onclick="removeSommarioItem(this)" 
+                    class="btn btn-sm btn-danger">
+                🗑️
+            </button>
+        </div>
+    `).join('');
+}
+
+// Aggiungi voce sommario
+function addSommarioItem() {
+    const container = document.getElementById('sommarioItems');
+    const currentContent = container.innerHTML;
+    
+    // Rimuovi messaggio "Nessuna voce" se presente
+    if (currentContent.includes('Nessuna voce')) {
+        container.innerHTML = '';
+    }
+    
+    const newField = document.createElement('div');
+    newField.className = 'sommario-field';
+    newField.style.cssText = 'display: flex; gap: 8px; margin-bottom: 12px;';
+    newField.innerHTML = `
+        <input type="text" 
+               class="sommario-text" 
+               placeholder="Testo voce" 
+               style="flex: 2;">
+        <input type="text" 
+               class="sommario-link" 
+               placeholder="Link (es. #sezione)" 
+               style="flex: 1;">
+        <button type="button" 
+                onclick="removeSommarioItem(this)" 
+                class="btn btn-sm btn-danger">
+            🗑️
+        </button>
+    `;
+    
+    container.appendChild(newField);
+}
+
+// Rimuovi voce sommario
+function removeSommarioItem(button) {
+    const container = document.getElementById('sommarioItems');
+    button.parentElement.remove();
+    
+    // Se non ci sono più voci, mostra messaggio
+    if (container.children.length === 0) {
+        container.innerHTML = '<p style="color: #94a3b8; font-size: 14px;">Nessuna voce. Clicca "Aggiungi voce sommario"</p>';
+    }
+}
+
+// Raccogli dati sommario dal form
+function collectSommarioData() {
+    const fields = document.querySelectorAll('.sommario-field');
+    const sommario = [];
+    
+    fields.forEach(field => {
+        const text = field.querySelector('.sommario-text')?.value || '';
+        const link = field.querySelector('.sommario-link')?.value || '';
+        
+        if (text.trim()) {
+            sommario.push({ text, link });
+        }
+    });
+    
+    return sommario;
 }
 
 // ============================================

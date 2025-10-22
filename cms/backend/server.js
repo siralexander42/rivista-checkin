@@ -131,14 +131,14 @@ const User = mongoose.model('User', userSchema);
 const blockSchema = new mongoose.Schema({
     type: {
         type: String,
-        enum: ['hero', 'article', 'gallery', 'text', 'quote', 'video', 'custom'],
+        enum: ['cover', 'hero', 'article', 'gallery', 'text', 'quote', 'video', 'custom'],
         required: true
     },
     title: String,
     subtitle: String,
     content: String,
     image: String,
-    images: [String], // Per gallery
+    images: [String], // Per gallery o backgrounds multipli (cover)
     link: String,
     buttonText: String,
     position: {
@@ -151,7 +151,7 @@ const blockSchema = new mongoose.Schema({
         layout: String, // 'full', 'left', 'right', 'center'
         height: String
     },
-    settings: mongoose.Schema.Types.Mixed, // Impostazioni custom per ogni tipo
+    settings: mongoose.Schema.Types.Mixed, // Impostazioni custom per ogni tipo (es. sommario per cover)
     visible: {
         type: Boolean,
         default: true
@@ -1125,6 +1125,21 @@ ${blocksHTML}
     
     <!-- Scripts -->
     <script src="assets/js/main.js"></script>
+    
+    <!-- Script per Sommario Cover Block -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.querySelector('.sommario-toggle-hero');
+            const dropdown = document.querySelector('.hero-sommario-dropdown');
+            
+            if (toggleBtn && dropdown) {
+                toggleBtn.addEventListener('click', function() {
+                    dropdown.classList.toggle('active');
+                    toggleBtn.classList.toggle('active');
+                });
+            }
+        });
+    </script>
 </body>
 </html>`;
         
@@ -1256,6 +1271,60 @@ function generateBlockHTML(block) {
         ${block.content ? `<div class="video-description">${block.content}</div>` : ''}
     </section>`;
         
+        case 'cover':
+            // Blocco copertina stile CHECK-IN con background multipli e dropdown sommario
+            const backgrounds = block.images || [];
+            const sommarioItems = block.settings?.sommario || [];
+            
+            return `
+    <!-- Cover Block (Hero con Sommario) -->
+    <section class="hero-simple" id="hero">
+        <!-- TOGGLE FRECCIA CON LABEL -->
+        ${sommarioItems.length > 0 ? `
+        <div class="sommario-toggle-wrapper">
+            <span class="sommario-toggle-label">In questo numero</span>
+            <button class="sommario-toggle-hero" aria-label="Mostra/Nascondi sommario">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </button>
+        </div>
+        
+        <!-- DROPDOWN SOMMARIO CHE SCENDE DALL'ALTO -->
+        <div class="hero-sommario-dropdown">
+            <div class="sommario-dropdown-content">
+                <h3>In questo numero</h3>
+                <ul class="sommario-list">
+                    ${sommarioItems.map(item => `
+                    <li class="sommario-item">
+                        <a href="${item.link || '#'}" class="sommario-link">
+                            <span class="sommario-text">${item.text || ''}</span>
+                        </a>
+                    </li>`).join('')}
+                </ul>
+            </div>
+        </div>
+        ` : ''}
+        
+        <div class="hero-backgrounds">
+            ${backgrounds.map((bg, idx) => `
+            <div class="hero-bg ${idx === 0 ? 'active' : ''}" style="background-image: url('${bg}')"></div>
+            `).join('')}
+        </div>
+        <div class="hero-container">
+            ${block.title ? `<h1>${block.title}</h1>` : ''}
+            ${block.subtitle ? `<p class="hero-subtitle" data-text="${block.subtitle}"></p>` : ''}
+            ${block.content ? `
+            <p class="hero-description">
+                ${block.content}
+            </p>` : ''}
+            <div class="scroll-indicator">
+                <span>Scorri per esplorare</span>
+                <div class="scroll-arrow">↓</div>
+            </div>
+        </div>
+    </section>`;
+        
         case 'custom':
             return `
     <!-- Custom Block -->
@@ -1324,6 +1393,21 @@ ${blocksHTML}
     
     <!-- Scripts -->
     <script src="assets/js/main.js"></script>
+    
+    <!-- Script per Sommario Cover Block -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.querySelector('.sommario-toggle-hero');
+            const dropdown = document.querySelector('.hero-sommario-dropdown');
+            
+            if (toggleBtn && dropdown) {
+                toggleBtn.addEventListener('click', function() {
+                    dropdown.classList.toggle('active');
+                    toggleBtn.classList.toggle('active');
+                });
+            }
+        });
+    </script>
 </body>
 </html>`;
         
