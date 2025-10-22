@@ -13,6 +13,7 @@
         <aside class="sidebar">
             <div class="sidebar-header">
                 <img src="https://www.italiaatavola.net/images/testate/checkin-testata-hd.svg" alt="CHECK-IN" style="width: 100%; max-width: 180px; filter: brightness(0) invert(1);">
+                <p id="welcomeMessage" style="color: rgba(255, 255, 255, 0.9); font-size: 12px; margin-top: 12px; font-weight: 500; letter-spacing: 0.5px; min-height: 18px;"></p>
             </div>
             
             <nav class="sidebar-nav">
@@ -22,7 +23,7 @@
                 <a href="magazines.html" class="nav-item">
                     <span>Riviste</span>
                 </a>
-                <a href="users.html" class="nav-item">
+                <a href="#" class="nav-item" id="usersNavItem">
                     <span>Utenti</span>
                 </a>
                 <a href="logs.html" class="nav-item active">
@@ -133,6 +134,53 @@
     <script src="js/auth.js"></script>
     <script src="js/logs.js"></script>
     <script>
+        // Mostra benvenuto
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = getCurrentUser();
+            if (user && user.name) {
+                document.getElementById('welcomeMessage').textContent = `CIAO ${user.name.toUpperCase()}`;
+            }
+            
+            // Gestione click su Utenti
+            const usersNavItem = document.getElementById('usersNavItem');
+            if (usersNavItem) {
+                usersNavItem.addEventListener('click', handleUsersAccess);
+            }
+        });
+        
+        // Gestione accesso Utenti
+        function handleUsersAccess(e) {
+            e.preventDefault();
+            
+            if (isSuperAdmin()) {
+                window.location.href = 'users.html';
+            } else {
+                const password = prompt('Inserisci la password per accedere alla gestione utenti:');
+                if (password) {
+                    fetch('/api/auth/verify-password', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${getAuthToken()}`
+                        },
+                        body: JSON.stringify({ password })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.href = 'users.html';
+                        } else {
+                            alert('Password errata!');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Errore verifica password:', error);
+                        alert('Errore durante la verifica della password');
+                    });
+                }
+            }
+        }
+        
         lucide.createIcons();
     </script>
 </body>

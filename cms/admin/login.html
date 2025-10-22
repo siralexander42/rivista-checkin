@@ -96,6 +96,7 @@
                     // Salva token e user
                     localStorage.setItem('cms_token', data.token);
                     localStorage.setItem('cms_user', JSON.stringify(data.user));
+                    localStorage.setItem('cms_show_welcome_animation', 'true'); // Flag per animazione
                     
                     console.log('Login successful, redirecting...');
                     

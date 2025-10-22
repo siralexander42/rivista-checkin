@@ -40,6 +40,12 @@ function getCurrentUser() {
     return userJson ? JSON.parse(userJson) : null;
 }
 
+// Controlla se l'utente è super admin
+function isSuperAdmin() {
+    const user = getCurrentUser();
+    return user && user.role === 'super_admin';
+}
+
 // Controlla autenticazione all'avvio (tranne che per login.html)
 if (!window.location.pathname.includes('login.html')) {
     checkAuth();
