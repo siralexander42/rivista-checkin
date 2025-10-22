@@ -561,30 +561,72 @@ async function updateBlocksOrder() {
     }
 }
 
-// Anteprima rivista
-function previewMagazine() {
-    // TODO: Implementa preview
-    alert('Preview in arrivo!');
-}
+// ============================================
+// ANTEPRIMA E PUBBLICAZIONE
+// ============================================
 
-// Pubblica rivista
-async function publishMagazine() {
-    if (!confirm('Vuoi pubblicare questa rivista? Sarà visibile pubblicamente.')) return;
-    
+// Anteprima rivista - Genera HTML e apre in nuova finestra
+async function previewMagazine() {
     try {
-        await apiRequest(`/admin/magazines/${magazineId}`, {
-            method: 'PUT',
-            body: JSON.stringify({ 
-                status: 'published',
-                publishDate: new Date().toISOString()
-            })
+        const response = await apiRequest(`/admin/magazines/${magazineId}/generate-html`, {
+            method: 'POST'
         });
         
-        alert('✅ Rivista pubblicata con successo!');
-        loadMagazine();
+        if (response.success && response.html) {
+            // Apri preview in nuova finestra
+            const previewWindow = window.open('', '_blank');
+            previewWindow.document.write(response.html);
+            previewWindow.document.close();
+        }
+    } catch (error) {
+        console.error('Errore generazione preview:', error);
+        alert('❌ Errore nella generazione dell\'anteprima: ' + error.message);
+    }
+}
+
+// Pubblica rivista - Genera HTML e salva su index.html
+async function publishMagazine() {
+    if (blocks.length === 0) {
+        alert('⚠️ Aggiungi almeno un blocco prima di pubblicare!');
+        return;
+    }
+    
+    if (!confirm(`🚀 Sei sicuro di voler pubblicare "${magazine.name}"?\n\nQuesta azione:\n✅ Genererà l'HTML completo\n✅ Sostituirà l'index.html pubblico\n✅ Renderà la rivista visibile online`)) {
+        return;
+    }
+    
+    try {
+        // Mostra loading
+        const publishBtn = event.target;
+        const originalText = publishBtn.innerHTML;
+        publishBtn.disabled = true;
+        publishBtn.innerHTML = '⏳ Pubblicazione...';
+        
+        // Pubblica
+        const response = await apiRequest(`/admin/magazines/${magazineId}/publish`, {
+            method: 'POST'
+        });
+        
+        if (response.success) {
+            alert(`✅ RIVISTA PUBBLICATA CON SUCCESSO!\n\n📄 File: ${response.path}\n🌐 URL: ${response.url}\n📅 Data: ${new Date(response.magazine.publishDate).toLocaleString('it-IT')}\n\n🎉 La tua rivista è ora online!`);
+            
+            // Ricarica i dati
+            await loadMagazine();
+            
+            // Apri la rivista pubblicata
+            if (confirm('Vuoi aprire la rivista pubblicata?')) {
+                window.open('../../index.html', '_blank');
+            }
+        }
+        
+        publishBtn.disabled = false;
+        publishBtn.innerHTML = originalText;
+        
     } catch (error) {
         console.error('Errore pubblicazione:', error);
-        alert('❌ Errore nella pubblicazione');
+        alert('❌ Errore nella pubblicazione: ' + error.message);
+        publishBtn.disabled = false;
+        publishBtn.innerHTML = originalText;
     }
 }
 
