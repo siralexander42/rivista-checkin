@@ -341,34 +341,3 @@
     </style>
 </body>
 </html>
-                            </div>
-                        </div>
-                    `).join('');
-                }
-            } catch (error) {
-                console.error('Errore caricamento dashboard:', error);
-                alert('Errore nel caricamento dei dati');
-            }
-        }
-        
-        // Carica info utente
-        const user = JSON.parse(localStorage.getItem('cms_user') || '{}');
-        if (user.name) {
-            document.getElementById('userName').textContent = user.name;
-            document.getElementById('userEmail').textContent = user.email;
-        }
-        
-        // Logout
-        function logout() {
-            if (confirm('Vuoi davvero uscire?')) {
-                localStorage.removeItem('cms_token');
-                localStorage.removeItem('cms_user');
-                window.location.href = 'login.html';
-            }
-        }
-        
-        // Carica dati all'avvio
-        loadDashboard();
-    </script>
-</body>
-</html>
