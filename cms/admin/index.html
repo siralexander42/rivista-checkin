@@ -218,6 +218,18 @@
                 }
             } catch (error) {
                 console.error('Errore caricamento dashboard:', error);
+                // Mostra messaggio di errore all'utente
+                const recentList = document.getElementById('recentMagazines');
+                if (recentList) {
+                    recentList.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">⚠️</div>
+                            <h3>Errore nel caricamento</h3>
+                            <p>Si è verificato un problema. Verifica che il backend sia attivo.</p>
+                            <button class="btn btn-secondary" onclick="loadDashboard()">Riprova</button>
+                        </div>
+                    `;
+                }
             }
         }
         
