@@ -61,23 +61,24 @@ function displayBlocks() {
         <div class="block-item" draggable="true" data-block-id="${block._id}" data-position="${index}">
             <div class="block-header">
                 <div style="display: flex; align-items: center; gap: 16px;">
-                    <span class="drag-handle" title="Trascina per riordinare">☰</span>
+                    <i data-lucide="grip-vertical" class="drag-handle" title="Trascina per riordinare" style="width: 20px; height: 20px; color: var(--text-light); cursor: grab;"></i>
                     <div>
                         <div class="block-type-badge">
-                            ${getBlockIcon(block.type)} ${getBlockTypeName(block.type)}
+                            <i data-lucide="${getBlockIcon(block.type)}" style="width: 16px; height: 16px;"></i>
+                            ${getBlockTypeName(block.type)}
                         </div>
-                        ${!block.visible ? '<span class="badge" style="margin-left: 8px; background: #fef3c7; color: #92400e;">Nascosto</span>' : ''}
+                        ${!block.visible ? '<span class="badge" style="margin-left: 8px; background: #fef3c7; color: #92400e;"><i data-lucide="eye-off" style="width: 14px; height: 14px;"></i> Nascosto</span>' : ''}
                     </div>
                 </div>
                 <div class="block-actions">
                     <button class="btn btn-sm btn-secondary" onclick="editBlock('${block._id}')">
-                        Modifica
+                        <i data-lucide="pencil" style="width: 14px; height: 14px;"></i> Modifica
                     </button>
                     <button class="btn btn-sm ${block.visible ? 'btn-secondary' : 'btn-success'}" onclick="toggleBlockVisibility('${block._id}')">
-                        ${block.visible ? 'Nascondi' : 'Mostra'}
+                        <i data-lucide="${block.visible ? 'eye-off' : 'eye'}" style="width: 14px; height: 14px;"></i> ${block.visible ? 'Nascondi' : 'Mostra'}
                     </button>
                     <button class="btn btn-sm btn-danger" onclick="deleteBlock('${block._id}')">
-                        Elimina
+                        <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i> Elimina
                     </button>
                 </div>
             </div>
@@ -87,23 +88,28 @@ function displayBlocks() {
         </div>
     `).join('');
     
+    // Reinizializza icone Lucide
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+    
     // Aggiungi drag & drop
     initDragAndDrop();
 }
 
-// Icone per tipi di blocco
+// Icone per tipi di blocco (Lucide Icons)
 function getBlockIcon(type) {
     const icons = {
-        cover: '📰',
-        hero: '🖼️',
-        article: '�',
-        gallery: '🖼️',
-        text: '📄',
-        quote: '💬',
-        video: '🎥',
-        custom: '⚙️'
+        cover: 'newspaper',
+        hero: 'image',
+        article: 'file-text',
+        gallery: 'images',
+        text: 'align-left',
+        quote: 'quote',
+        video: 'video',
+        custom: 'settings'
     };
-    return icons[type] || '📦';
+    return icons[type] || 'box';
 }
 
 // Nomi per tipi di blocco
@@ -254,12 +260,12 @@ https://esempio.com/bg4.jpg">${(data.images || []).join('\n')}</textarea>
                 </div>
                 
                 <div class="form-group">
-                    <label>📋 Sommario "In questo numero"</label>
+                    <label><i data-lucide="list" style="width: 16px; height: 16px;"></i> Sommario "In questo numero"</label>
                     <div id="sommarioItems" style="margin-top: 12px;">
                         ${generateSommarioFields(data.settings?.sommario || [])}
                     </div>
                     <button type="button" onclick="addSommarioItem()" class="btn btn-secondary" style="margin-top: 8px;">
-                        ➕ Aggiungi voce sommario
+                        <i data-lucide="plus" style="width: 14px; height: 14px;"></i> Aggiungi voce sommario
                     </button>
                     <small>Gli elementi del sommario appariranno nel dropdown in alto</small>
                 </div>
@@ -638,10 +644,15 @@ function generateSommarioFields(sommarioItems = []) {
             <button type="button" 
                     onclick="removeSommarioItem(this)" 
                     class="btn btn-sm btn-danger">
-                Elimina
+                <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
             </button>
         </div>
     `).join('');
+    
+    // Reinizializza icone Lucide
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
 }
 
 // Aggiungi voce sommario
@@ -669,11 +680,16 @@ function addSommarioItem() {
         <button type="button" 
                 onclick="removeSommarioItem(this)" 
                 class="btn btn-sm btn-danger">
-            Elimina
+            <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
         </button>
     `;
     
     container.appendChild(newField);
+    
+    // Reinizializza icone Lucide
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
 }
 
 // Rimuovi voce sommario
