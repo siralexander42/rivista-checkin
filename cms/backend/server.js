@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3001;
 // ============================================
 
 app.use(cors({
-    origin: [process.env.FRONTEND_URL, process.env.ADMIN_URL],
+    origin: '*', // Permetti tutte le origini per ora
     credentials: true
 }));
 app.use(express.json());
