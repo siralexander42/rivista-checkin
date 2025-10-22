@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestione Utenti - CHECK-IN CMS</title>
+    <link rel="icon" type="image/png" href="https://www.italiaatavola.net/images/contenutiarticoli/logo_check-in-favicon.png">
+    <link rel="stylesheet" href="css/admin.css?v=6.0">
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="https://www.italiaatavola.net/images/testate/checkin-testata-hd.svg" alt="CHECK-IN" style="width: 100%; max-width: 180px; filter: brightness(0) invert(1);">
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item">
+                    <span>Dashboard</span>
+                </a>
+                <a href="magazines.html" class="nav-item">
+                    <span>Riviste</span>
+                </a>
+                <a href="users.html" class="nav-item active">
+                    <span>Utenti</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button onclick="logout()" class="btn btn-text">
+                    🚪 Esci
+                </button>
+            </div>
+        </aside>
+        
+        <main class="main-content">
+            <div class="content-header">
+                <div>
+                    <h1>👥 Gestione Utenti</h1>
+                    <p>Crea e gestisci gli utenti del CMS</p>
+                </div>
+                <button onclick="showCreateModal()" class="btn btn-primary">
+                    + Nuovo Utente
+                </button>
+            </div>
+            
+            <div class="content-body">
+                <div id="usersContainer" class="table-container">
+                    <p class="loading-text">Caricamento utenti...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Verifica Password -->
+    <div id="passwordModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h2>🔐 Accesso Protetto</h2>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 20px;">Inserisci la password speciale per accedere alla gestione utenti:</p>
+                <div class="form-group">
+                    <label for="accessPassword">Password</label>
+                    <input 
+                        type="password" 
+                        id="accessPassword" 
+                        class="form-control"
+                        placeholder="Password speciale"
+                        autocomplete="off"
+                    >
+                </div>
+                <div id="passwordError" class="error-message" style="display: none;"></div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="window.location.href='index.html'" class="btn btn-secondary">
+                    Annulla
+                </button>
+                <button onclick="verifyAccess()" class="btn btn-primary">
+                    Verifica
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Crea/Modifica Utente -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Nuovo Utente</h2>
+                <button class="modal-close" onclick="closeUserModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="userForm">
+                    <input type="hidden" id="userId">
+                    
+                    <div class="form-group">
+                        <label for="userName">Nome Completo *</label>
+                        <input 
+                            type="text" 
+                            id="userName" 
+                            class="form-control"
+                            required
+                            placeholder="Es: Mario Rossi"
+                        >
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="userUsername">Username *</label>
+                            <input 
+                                type="text" 
+                                id="userUsername" 
+                                class="form-control"
+                                required
+                                placeholder="Es: mrossi"
+                            >
+                            <small>Solo lettere minuscole e numeri</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="userEmail">Email *</label>
+                            <input 
+                                type="email" 
+                                id="userEmail" 
+                                class="form-control"
+                                required
+                                placeholder="email@esempio.it"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="userPassword">Password <span id="passwordRequired">*</span></label>
+                            <input 
+                                type="password" 
+                                id="userPassword" 
+                                class="form-control"
+                                placeholder="Minimo 6 caratteri"
+                            >
+                            <small id="passwordHint">Lascia vuoto per mantenere la password attuale</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="userRole">Ruolo *</label>
+                            <select id="userRole" class="form-control" required>
+                                <option value="editor">Editor</option>
+                                <option value="admin">Admin</option>
+                                <option value="super-admin">Super Admin</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="userActive" checked>
+                            <span>Utente attivo</span>
+                        </label>
+                    </div>
+                </form>
+                <div id="formError" class="error-message" style="display: none;"></div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeUserModal()" class="btn btn-secondary">
+                    Annulla
+                </button>
+                <button onclick="saveUser()" class="btn btn-primary">
+                    Salva Utente
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Elimina -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>⚠️ Conferma Eliminazione</h2>
+                <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Sei sicuro di voler eliminare l'utente <strong id="deleteUserName"></strong>?</p>
+                <p style="color: var(--danger); margin-top: 12px;">Questa azione è irreversibile.</p>
+            </div>
+            <div class="modal-footer" style="justify-content: space-between;">
+                <button onclick="closeDeleteModal()" class="btn btn-secondary">
+                    Annulla
+                </button>
+                <button onclick="confirmDelete()" class="btn btn-danger">
+                    Elimina
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/users.js"></script>
+</body>
+</html>

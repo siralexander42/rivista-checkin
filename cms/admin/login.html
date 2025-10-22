@@ -16,16 +16,16 @@
                 <p style="font-size: 13px; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px;">ed effettua il check-in</p>
             </div>
             
-            <form id="loginForm" class="login-form">
+                        <form id="loginForm" class="login-form">
                 <div class="form-group">
-                    <label for="email">Email</label>
+                    <label for="username">Username</label>
                     <input 
-                        type="email" 
-                        id="email" 
-                        name="email" 
+                        type="text" 
+                        id="username" 
+                        name="username" 
                         required 
-                        placeholder="admin@check-in.it"
-                        autocomplete="email"
+                        placeholder="Il tuo username"
+                        autocomplete="username"
                     >
                 </div>
                 
@@ -36,7 +36,7 @@
                         id="password" 
                         name="password" 
                         required 
-                        placeholder="••••••••"
+                        placeholder="La tua password"
                         autocomplete="current-password"
                     >
                 </div>
@@ -61,7 +61,7 @@
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const email = document.getElementById('email').value;
+            const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             const errorMsg = document.getElementById('errorMessage');
             const loginBtn = document.getElementById('loginBtn');
@@ -86,7 +86,7 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ email, password })
+                    body: JSON.stringify({ username, password })
                 });
                 
                 const data = await response.json();

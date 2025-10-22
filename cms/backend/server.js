@@ -94,6 +94,13 @@ const Article = mongoose.model('Article', articleSchema);
 
 // Schema User (Admin)
 const userSchema = new mongoose.Schema({
+    username: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true,
+        lowercase: true
+    },
     email: { 
         type: String, 
         required: true, 
@@ -111,11 +118,15 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['admin', 'editor'],
+        enum: ['super-admin', 'admin', 'editor'],
         default: 'editor'
     },
     lastLogin: {
         type: Date
+    },
+    isActive: {
+        type: Boolean,
+        default: true
     }
 }, { 
     timestamps: true 
@@ -255,6 +266,19 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
+// Middleware per verificare il ruolo super-admin
+const requireSuperAdmin = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.user.id);
+        if (!user || user.role !== 'super-admin') {
+            return res.status(403).json({ error: 'Accesso negato. Richiesti privilegi di super-admin.' });
+        }
+        next();
+    } catch (error) {
+        res.status(500).json({ error: 'Errore verifica autorizzazioni' });
+    }
+};
+
 // ============================================
 // ROTTE PUBBLICHE (per il sito)
 // ============================================
@@ -378,16 +402,16 @@ app.get('/api/magazine/current', async (req, res) => {
 // POST - Login
 app.post('/api/auth/login', async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { username, password } = req.body;
 
-        if (!email || !password) {
+        if (!username || !password) {
             return res.status(400).json({ 
                 success: false,
-                error: 'Email e password sono obbligatori' 
+                error: 'Username e password sono obbligatori' 
             });
         }
         
-        const user = await User.findOne({ email: email.toLowerCase() });
+        const user = await User.findOne({ username: username.toLowerCase() });
         
         if (!user) {
             return res.status(401).json({ 
@@ -412,6 +436,7 @@ app.post('/api/auth/login', async (req, res) => {
         const token = jwt.sign(
             { 
                 id: user._id, 
+                username: user.username,
                 email: user.email,
                 role: user.role
             },
@@ -424,6 +449,7 @@ app.post('/api/auth/login', async (req, res) => {
             token,
             user: {
                 id: user._id,
+                username: user.username,
                 email: user.email,
                 name: user.name,
                 role: user.role,
@@ -481,12 +507,12 @@ app.post('/api/auth/setup-admin', async (req, res) => {
             });
         }
 
-        const { email, password, name } = req.body;
+        const { username, email, password, name } = req.body;
 
-        if (!email || !password || !name) {
+        if (!username || !email || !password || !name) {
             return res.status(400).json({ 
                 success: false,
-                error: 'Email, password e nome sono obbligatori' 
+                error: 'Username, email, password e nome sono obbligatori' 
             });
         }
 
@@ -500,18 +526,20 @@ app.post('/api/auth/setup-admin', async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         
         const user = new User({
+            username: username.toLowerCase(),
             email: email.toLowerCase(),
             password: hashedPassword,
             name,
-            role: 'admin'
+            role: 'super-admin'
         });
         
         await user.save();
         
         res.json({ 
             success: true,
-            message: 'Admin creato con successo! Ora puoi fare il login.',
+            message: 'Super-Admin creato con successo! Ora puoi fare il login.',
             user: {
+                username: user.username,
                 email: user.email,
                 name: user.name
             }
@@ -521,6 +549,218 @@ app.post('/api/auth/setup-admin', async (req, res) => {
         res.status(500).json({ 
             success: false,
             error: 'Errore durante la creazione dell\'admin' 
+        });
+    }
+});
+
+// ============================================
+// ROTTE GESTIONE UTENTI (SUPER-ADMIN ONLY)
+// ============================================
+
+// GET - Lista tutti gli utenti
+app.get('/api/users', authenticateToken, requireSuperAdmin, async (req, res) => {
+    try {
+        const users = await User.find({}).select('-password').sort({ createdAt: -1 });
+        res.json({ 
+            success: true,
+            data: users
+        });
+    } catch (error) {
+        console.error('Errore GET /api/users:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Errore nel recupero degli utenti' 
+        });
+    }
+});
+
+// POST - Crea nuovo utente
+app.post('/api/users', authenticateToken, requireSuperAdmin, async (req, res) => {
+    try {
+        const { username, email, password, name, role } = req.body;
+
+        if (!username || !email || !password || !name) {
+            return res.status(400).json({ 
+                success: false,
+                error: 'Username, email, password e nome sono obbligatori' 
+            });
+        }
+
+        if (password.length < 6) {
+            return res.status(400).json({ 
+                success: false,
+                error: 'La password deve essere di almeno 6 caratteri' 
+            });
+        }
+
+        // Verifica se username o email esistono già
+        const existingUser = await User.findOne({ 
+            $or: [
+                { username: username.toLowerCase() },
+                { email: email.toLowerCase() }
+            ]
+        });
+
+        if (existingUser) {
+            return res.status(400).json({ 
+                success: false,
+                error: 'Username o email già in uso' 
+            });
+        }
+        
+        const hashedPassword = await bcrypt.hash(password, 10);
+        
+        const user = new User({
+            username: username.toLowerCase(),
+            email: email.toLowerCase(),
+            password: hashedPassword,
+            name,
+            role: role || 'editor'
+        });
+        
+        await user.save();
+        
+        res.json({ 
+            success: true,
+            message: 'Utente creato con successo',
+            data: {
+                id: user._id,
+                username: user.username,
+                email: user.email,
+                name: user.name,
+                role: user.role,
+                isActive: user.isActive
+            }
+        });
+    } catch (error) {
+        console.error('Errore POST /api/users:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Errore durante la creazione dell\'utente' 
+        });
+    }
+});
+
+// PUT - Aggiorna utente
+app.put('/api/users/:id', authenticateToken, requireSuperAdmin, async (req, res) => {
+    try {
+        const { username, email, name, role, isActive, password } = req.body;
+        const updateData = {};
+
+        if (username) updateData.username = username.toLowerCase();
+        if (email) updateData.email = email.toLowerCase();
+        if (name) updateData.name = name;
+        if (role) updateData.role = role;
+        if (typeof isActive === 'boolean') updateData.isActive = isActive;
+        
+        if (password) {
+            if (password.length < 6) {
+                return res.status(400).json({ 
+                    success: false,
+                    error: 'La password deve essere di almeno 6 caratteri' 
+                });
+            }
+            updateData.password = await bcrypt.hash(password, 10);
+        }
+
+        const user = await User.findByIdAndUpdate(
+            req.params.id,
+            updateData,
+            { new: true, runValidators: true }
+        ).select('-password');
+
+        if (!user) {
+            return res.status(404).json({ 
+                success: false,
+                error: 'Utente non trovato' 
+            });
+        }
+
+        res.json({ 
+            success: true,
+            message: 'Utente aggiornato con successo',
+            data: user
+        });
+    } catch (error) {
+        console.error('Errore PUT /api/users:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Errore durante l\'aggiornamento dell\'utente' 
+        });
+    }
+});
+
+// DELETE - Elimina utente
+app.delete('/api/users/:id', authenticateToken, requireSuperAdmin, async (req, res) => {
+    try {
+        // Non permettere di eliminare se stesso
+        if (req.params.id === req.user.id) {
+            return res.status(400).json({ 
+                success: false,
+                error: 'Non puoi eliminare il tuo account' 
+            });
+        }
+
+        const user = await User.findByIdAndDelete(req.params.id);
+
+        if (!user) {
+            return res.status(404).json({ 
+                success: false,
+                error: 'Utente non trovato' 
+            });
+        }
+
+        res.json({ 
+            success: true,
+            message: 'Utente eliminato con successo'
+        });
+    } catch (error) {
+        console.error('Errore DELETE /api/users:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Errore durante l\'eliminazione dell\'utente' 
+        });
+    }
+});
+
+// POST - Verifica password super-admin per accesso pagina utenti
+app.post('/api/users/verify-access', authenticateToken, async (req, res) => {
+    try {
+        const { password } = req.body;
+
+        if (!password) {
+            return res.status(400).json({ 
+                success: false,
+                error: 'Password richiesta' 
+            });
+        }
+
+        const user = await User.findById(req.user.id);
+
+        if (!user || user.role !== 'super-admin') {
+            return res.status(403).json({ 
+                success: false,
+                error: 'Accesso negato' 
+            });
+        }
+
+        // Verifica password speciale
+        if (password !== 'alessandro.venturini!') {
+            return res.status(401).json({ 
+                success: false,
+                error: 'Password non corretta' 
+            });
+        }
+
+        res.json({ 
+            success: true,
+            message: 'Accesso consentito'
+        });
+    } catch (error) {
+        console.error('Errore POST /api/users/verify-access:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Errore durante la verifica' 
         });
     }
 });
