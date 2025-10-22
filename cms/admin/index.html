@@ -309,9 +309,19 @@
         function handleUsersAccess(e) {
             e.preventDefault();
             
-            if (isSuperAdmin()) {
+            // Debug
+            console.log('handleUsersAccess called');
+            console.log('isSuperAdmin exists?', typeof isSuperAdmin);
+            
+            const user = getCurrentUser();
+            console.log('User:', user);
+            console.log('User role:', user?.role);
+            
+            if (user && user.role === 'super-admin') {
+                console.log('Super admin detected - direct access');
                 window.location.href = 'users.html';
             } else {
+                console.log('Not super admin - showing password modal');
                 // Mostra modal password
                 document.getElementById('passwordModal').style.display = 'flex';
                 document.getElementById('accessPassword').value = '';

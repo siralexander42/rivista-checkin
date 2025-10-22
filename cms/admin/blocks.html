@@ -96,6 +96,41 @@
             </div>
         </main>
     </div>
+
+    <!-- Modal Verifica Password Utenti -->
+    <div id="passwordModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 450px;">
+            <div class="modal-header">
+                <h2>Accesso Gestione Utenti</h2>
+                <button class="modal-close" onclick="closePasswordModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 20px; color: var(--text-light);">
+                    Inserisci la password per accedere alla gestione utenti:
+                </p>
+                <div class="form-group">
+                    <label for="accessPassword">Password</label>
+                    <input 
+                        type="password" 
+                        id="accessPassword" 
+                        class="form-control"
+                        placeholder="Password speciale"
+                        autocomplete="off"
+                        style="padding: 14px 16px; border: 2px solid var(--border-light); border-radius: var(--radius-md); font-size: 15px; width: 100%;"
+                    >
+                </div>
+                <div id="passwordError" class="error-message" style="display: none; margin-top: 12px;"></div>
+            </div>
+            <div class="modal-footer" style="display: flex; gap: 12px; justify-content: flex-end; padding: 20px 24px; border-top: 1px solid var(--border-light);">
+                <button onclick="closePasswordModal()" class="btn btn-secondary">
+                    Annulla
+                </button>
+                <button onclick="verifyPasswordAccess()" class="btn btn-primary">
+                    Verifica
+                </button>
+            </div>
+        </div>
+    </div>
     
     <!-- Modal Selezione Tipo Blocco -->
     <div id="blockTypesModal" class="modal">
@@ -310,34 +345,49 @@
         function handleUsersAccess(e) {
             e.preventDefault();
             
-            if (isSuperAdmin()) {
+            const user = getCurrentUser();
+            if (user && user.role === 'super-admin') {
                 window.location.href = 'users.html';
             } else {
-                const password = prompt('Inserisci la password per accedere alla gestione utenti:');
-                if (password) {
-                    fetch('/api/auth/verify-password', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${getAuthToken()}`
-                        },
-                        body: JSON.stringify({ password })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            window.location.href = 'users.html';
-                        } else {
-                            alert('Password errata!');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Errore verifica password:', error);
-                        alert('Errore durante la verifica della password');
-                    });
-                }
+                document.getElementById('passwordModal').style.display = 'flex';
+                document.getElementById('accessPassword').value = '';
+                document.getElementById('passwordError').style.display = 'none';
+                setTimeout(() => document.getElementById('accessPassword').focus(), 100);
             }
         }
+
+        function closePasswordModal() {
+            document.getElementById('passwordModal').style.display = 'none';
+            document.getElementById('accessPassword').value = '';
+            document.getElementById('passwordError').style.display = 'none';
+        }
+
+        function verifyPasswordAccess() {
+            const password = document.getElementById('accessPassword').value;
+            const errorDiv = document.getElementById('passwordError');
+            
+            if (password === 'alessandro.venturini') {
+                closePasswordModal();
+                window.location.href = 'users.html';
+            } else {
+                errorDiv.textContent = 'Password errata!';
+                errorDiv.style.display = 'block';
+                errorDiv.style.background = '#fee';
+                errorDiv.style.color = '#c00';
+                errorDiv.style.padding = '12px';
+                errorDiv.style.borderRadius = '8px';
+                errorDiv.style.border = '2px solid #fcc';
+            }
+        }
+
+        document.addEventListener('keypress', (e) => {
+            const passwordInput = document.getElementById('accessPassword');
+            if (passwordInput && document.getElementById('passwordModal').style.display === 'flex') {
+                if (e.key === 'Enter') {
+                    verifyPasswordAccess();
+                }
+            }
+        });
         
         lucide.createIcons();
     </script>
