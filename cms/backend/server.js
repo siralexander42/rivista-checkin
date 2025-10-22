@@ -123,33 +123,110 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
-// Schema Rivista (per gestire layout e metadata)
+// ============================================
+// SCHEMA RIVISTE E BLOCCHI
+// ============================================
+
+// Schema per i Blocchi di contenuto della rivista
+const blockSchema = new mongoose.Schema({
+    type: {
+        type: String,
+        enum: ['hero', 'article', 'gallery', 'text', 'quote', 'video', 'custom'],
+        required: true
+    },
+    title: String,
+    subtitle: String,
+    content: String,
+    image: String,
+    images: [String], // Per gallery
+    link: String,
+    buttonText: String,
+    position: {
+        type: Number,
+        default: 0
+    },
+    style: {
+        backgroundColor: String,
+        textColor: String,
+        layout: String, // 'full', 'left', 'right', 'center'
+        height: String
+    },
+    settings: mongoose.Schema.Types.Mixed, // Impostazioni custom per ogni tipo
+    visible: {
+        type: Boolean,
+        default: true
+    }
+}, { _id: true });
+
+// Schema Rivista Completo
 const magazineSchema = new mongoose.Schema({
+    // Metadata
+    name: {
+        type: String,
+        required: [true, 'Il nome della rivista è obbligatorio'],
+        trim: true
+    },
+    slug: {
+        type: String,
+        required: [true, 'Lo slug URL è obbligatorio'],
+        unique: true,
+        lowercase: true,
+        trim: true
+    },
+    edition: {
+        type: String, // es: "Gennaio 2025", "Estate 2025"
+        required: true
+    },
     editionNumber: {
         type: Number,
         required: true
     },
-    title: {
+    
+    // SEO
+    metaTitle: {
         type: String,
-        default: 'CHECK-IN Magazine'
+        required: true
     },
-    subtitle: {
-        type: String
+    metaDescription: {
+        type: String,
+        required: true,
+        maxlength: 160
     },
-    coverImage: {
-        type: String
+    metaKeywords: [String],
+    ogImage: String, // Open Graph image
+    
+    // Contenuto
+    coverImage: String,
+    subtitle: String,
+    description: String,
+    
+    // Blocchi di contenuto
+    blocks: [blockSchema],
+    
+    // Stato pubblicazione
+    status: {
+        type: String,
+        enum: ['draft', 'published', 'archived'],
+        default: 'draft'
     },
     publishDate: {
-        type: Date,
-        default: Date.now
-    },
-    published: {
-        type: Boolean,
-        default: false
+        type: Date
     },
     featured: {
         type: Boolean,
-        default: true
+        default: false
+    },
+    
+    // Statistiche
+    views: {
+        type: Number,
+        default: 0
+    },
+    
+    // Autore
+    author: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     }
 }, {
     timestamps: true
@@ -646,13 +723,15 @@ app.get('/api/admin/stats', authenticateToken, async (req, res) => {
 });
 
 // ============================================
-// ROTTE GESTIONE RIVISTA
+// ROTTE GESTIONE RIVISTA E BLOCCHI
 // ============================================
 
-// GET - Tutte le edizioni
+// GET - Tutte le riviste
 app.get('/api/admin/magazines', authenticateToken, async (req, res) => {
     try {
-        const magazines = await Magazine.find().sort({ publishDate: -1 });
+        const magazines = await Magazine.find()
+            .sort({ createdAt: -1 })
+            .populate('author', 'name email');
         
         res.json({
             success: true,
@@ -668,10 +747,231 @@ app.get('/api/admin/magazines', authenticateToken, async (req, res) => {
     }
 });
 
-// POST - Crea nuova edizione
+// GET - Singola rivista
+app.get('/api/admin/magazines/:id', authenticateToken, async (req, res) => {
+    try {
+        const magazine = await Magazine.findById(req.params.id)
+            .populate('author', 'name email');
+        
+        if (!magazine) {
+            return res.status(404).json({ 
+                success: false,
+                error: 'Rivista non trovata' 
+            });
+        }
+        
+        res.json({
+            success: true,
+            data: magazine
+        });
+    } catch (error) {
+        console.error('Errore GET /api/admin/magazines/:id:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Errore nel recupero della rivista' 
+        });
+    }
+});
+
+// GET - Rivista pubblica per slug
+app.get('/api/magazines/slug/:slug', async (req, res) => {
+    try {
+        const magazine = await Magazine.findOne({ 
+            slug: req.params.slug,
+            status: 'published'
+        }).populate('author', 'name');
+        
+        if (!magazine) {
+            return res.status(404).json({ 
+                success: false,
+                error: 'Rivista non trovata' 
+            });
+        }
+        
+        // Incrementa views
+        magazine.views += 1;
+        await magazine.save();
+        
+        res.json({
+            success: true,
+            data: magazine
+        });
+    } catch (error) {
+        console.error('Errore GET /api/magazines/slug/:slug:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Errore nel recupero della rivista' 
+        });
+    }
+});
+
+// ============================================
+// GESTIONE BLOCCHI DENTRO LA RIVISTA
+// ============================================
+
+// POST - Aggiungi blocco a una rivista
+app.post('/api/admin/magazines/:id/blocks', authenticateToken, async (req, res) => {
+    try {
+        const magazine = await Magazine.findById(req.params.id);
+        
+        if (!magazine) {
+            return res.status(404).json({ 
+                success: false,
+                error: 'Rivista non trovata' 
+            });
+        }
+        
+        // Calcola la posizione del nuovo blocco
+        const maxPosition = magazine.blocks.length > 0 
+            ? Math.max(...magazine.blocks.map(b => b.position))
+            : -1;
+        
+        const newBlock = {
+            ...req.body,
+            position: maxPosition + 1
+        };
+        
+        magazine.blocks.push(newBlock);
+        await magazine.save();
+        
+        res.status(201).json({
+            success: true,
+            message: 'Blocco aggiunto con successo',
+            data: magazine
+        });
+    } catch (error) {
+        console.error('Errore POST /api/admin/magazines/:id/blocks:', error);
+        res.status(400).json({ 
+            success: false,
+            error: error.message || 'Errore nell\'aggiunta del blocco' 
+        });
+    }
+});
+
+// PUT - Aggiorna blocco
+app.put('/api/admin/magazines/:id/blocks/:blockId', authenticateToken, async (req, res) => {
+    try {
+        const magazine = await Magazine.findById(req.params.id);
+        
+        if (!magazine) {
+            return res.status(404).json({ 
+                success: false,
+                error: 'Rivista non trovata' 
+            });
+        }
+        
+        const block = magazine.blocks.id(req.params.blockId);
+        
+        if (!block) {
+            return res.status(404).json({ 
+                success: false,
+                error: 'Blocco non trovato' 
+            });
+        }
+        
+        // Aggiorna i campi del blocco
+        Object.assign(block, req.body);
+        await magazine.save();
+        
+        res.json({
+            success: true,
+            message: 'Blocco aggiornato con successo',
+            data: magazine
+        });
+    } catch (error) {
+        console.error('Errore PUT /api/admin/magazines/:id/blocks/:blockId:', error);
+        res.status(400).json({ 
+            success: false,
+            error: error.message || 'Errore nell\'aggiornamento del blocco' 
+        });
+    }
+});
+
+// DELETE - Elimina blocco
+app.delete('/api/admin/magazines/:id/blocks/:blockId', authenticateToken, async (req, res) => {
+    try {
+        const magazine = await Magazine.findById(req.params.id);
+        
+        if (!magazine) {
+            return res.status(404).json({ 
+                success: false,
+                error: 'Rivista non trovata' 
+            });
+        }
+        
+        magazine.blocks.pull(req.params.blockId);
+        await magazine.save();
+        
+        res.json({
+            success: true,
+            message: 'Blocco eliminato con successo',
+            data: magazine
+        });
+    } catch (error) {
+        console.error('Errore DELETE /api/admin/magazines/:id/blocks/:blockId:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Errore nell\'eliminazione del blocco' 
+        });
+    }
+});
+
+// PUT - Riordina blocchi
+app.put('/api/admin/magazines/:id/blocks/reorder', authenticateToken, async (req, res) => {
+    try {
+        const magazine = await Magazine.findById(req.params.id);
+        
+        if (!magazine) {
+            return res.status(404).json({ 
+                success: false,
+                error: 'Rivista non trovata' 
+            });
+        }
+        
+        const { blocks } = req.body; // Array di { id, position }
+        
+        if (!Array.isArray(blocks)) {
+            return res.status(400).json({ 
+                success: false,
+                error: 'Formato dati non valido' 
+            });
+        }
+        
+        // Aggiorna la posizione di ogni blocco
+        blocks.forEach(({ id, position }) => {
+            const block = magazine.blocks.id(id);
+            if (block) {
+                block.position = position;
+            }
+        });
+        
+        await magazine.save();
+        
+        res.json({
+            success: true,
+            message: 'Ordine blocchi aggiornato con successo',
+            data: magazine
+        });
+    } catch (error) {
+        console.error('Errore PUT /api/admin/magazines/:id/blocks/reorder:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Errore nel riordinamento dei blocchi' 
+        });
+    }
+});
+
+// ============================================
+// ROTTE GESTIONE RIVISTA (CRUD BASE)
+// ============================================
+
+// POST - Crea nuova rivista
 app.post('/api/admin/magazines', authenticateToken, async (req, res) => {
     try {
-        const magazine = new Magazine(req.body);
+        const magazine = new Magazine({
+            ...req.body,
+            author: req.user.id
+        });
         await magazine.save();
         
         res.status(201).json({
@@ -684,6 +984,31 @@ app.post('/api/admin/magazines', authenticateToken, async (req, res) => {
         res.status(400).json({ 
             success: false,
             error: error.message || 'Errore nella creazione della rivista' 
+        });
+    }
+});
+
+// DELETE - Elimina rivista
+app.delete('/api/admin/magazines/:id', authenticateToken, async (req, res) => {
+    try {
+        const magazine = await Magazine.findByIdAndDelete(req.params.id);
+        
+        if (!magazine) {
+            return res.status(404).json({ 
+                success: false,
+                error: 'Rivista non trovata' 
+            });
+        }
+        
+        res.json({ 
+            success: true,
+            message: 'Rivista eliminata con successo' 
+        });
+    } catch (error) {
+        console.error('Errore DELETE /api/admin/magazines/:id:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Errore nell\'eliminazione della rivista' 
         });
     }
 });

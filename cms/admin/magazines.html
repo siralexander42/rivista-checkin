@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestione Riviste - CHECK-IN CMS</title>
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>CHECK-IN</h2>
+                <p>CMS</p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item">
+                    <span class="icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="magazines.html" class="nav-item active">
+                    <span class="icon">📖</span>
+                    <span>Riviste</span>
+                </a>
+                <a href="articles.html" class="nav-item">
+                    <span class="icon">📝</span>
+                    <span>Articoli</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">A</div>
+                    <div class="user-details">
+                        <div class="user-name" id="userName">Admin</div>
+                        <div class="user-email" id="userEmail"></div>
+                    </div>
+                </div>
+                <button class="logout-btn" onclick="logout()">
+                    🚪 Esci
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="content-header">
+                <div>
+                    <h1>📖 Gestione Riviste</h1>
+                    <p style="color: var(--text-light); margin-top: 8px;">
+                        Crea e gestisci le edizioni della rivista CHECK-IN
+                    </p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="showCreateModal()">
+                        ➕ Nuova Rivista
+                    </button>
+                </div>
+            </header>
+            
+            <div class="content-body">
+                
+                <!-- Filters -->
+                <div class="section">
+                    <div class="filters">
+                        <input 
+                            type="search" 
+                            id="searchInput" 
+                            placeholder="🔍 Cerca rivista..."
+                            onkeyup="filterMagazines()"
+                        >
+                        <select id="statusFilter" onchange="filterMagazines()">
+                            <option value="">Tutti gli stati</option>
+                            <option value="draft">Bozza</option>
+                            <option value="published">Pubblicata</option>
+                            <option value="archived">Archiviata</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Magazines List -->
+                <div class="section">
+                    <h2>Le Tue Riviste</h2>
+                    <div id="magazinesList" class="magazines-grid">
+                        <!-- Popolato via JS -->
+                        <div class="loading">Caricamento...</div>
+                    </div>
+                </div>
+                
+            </div>
+        </main>
+    </div>
+    
+    <!-- Modal Crea/Modifica Rivista -->
+    <div id="magazineModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2 id="modalTitle">Nuova Rivista</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            
+            <form id="magazineForm" class="modal-body">
+                <input type="hidden" id="magazineId">
+                
+                <div class="form-section">
+                    <h3>📝 Informazioni Principali</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Nome Rivista *</label>
+                            <input 
+                                type="text" 
+                                id="name" 
+                                required 
+                                placeholder="es: CHECK-IN Estate 2025"
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="slug">URL Slug *</label>
+                            <input 
+                                type="text" 
+                                id="slug" 
+                                required 
+                                placeholder="es: estate-2025"
+                                pattern="[a-z0-9-]+"
+                            >
+                            <small>Solo lettere minuscole, numeri e trattini</small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edition">Edizione *</label>
+                            <input 
+                                type="text" 
+                                id="edition" 
+                                required 
+                                placeholder="es: Gennaio 2025"
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="editionNumber">Numero Edizione *</label>
+                            <input 
+                                type="number" 
+                                id="editionNumber" 
+                                required 
+                                min="1"
+                                placeholder="es: 1"
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="subtitle">Sottotitolo</label>
+                            <input 
+                                type="text" 
+                                id="subtitle" 
+                                placeholder="es: Il magazine del viaggio"
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">Descrizione</label>
+                        <textarea 
+                            id="description" 
+                            rows="3"
+                            placeholder="Breve descrizione della rivista..."
+                        ></textarea>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>🎨 Immagini</h3>
+                    
+                    <div class="form-group">
+                        <label for="coverImage">Immagine di Copertina</label>
+                        <input 
+                            type="url" 
+                            id="coverImage" 
+                            placeholder="https://esempio.com/cover.jpg"
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="ogImage">Open Graph Image (Social)</label>
+                        <input 
+                            type="url" 
+                            id="ogImage" 
+                            placeholder="https://esempio.com/og-image.jpg"
+                        >
+                        <small>Immagine per condivisione social (1200x630px)</small>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>🔍 SEO</h3>
+                    
+                    <div class="form-group">
+                        <label for="metaTitle">Meta Title *</label>
+                        <input 
+                            type="text" 
+                            id="metaTitle" 
+                            required 
+                            placeholder="es: CHECK-IN Estate 2025 | La rivista del viaggio"
+                            maxlength="60"
+                        >
+                        <small>Massimo 60 caratteri</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="metaDescription">Meta Description *</label>
+                        <textarea 
+                            id="metaDescription" 
+                            required
+                            rows="2"
+                            placeholder="Descrizione che appare nei risultati di ricerca..."
+                            maxlength="160"
+                        ></textarea>
+                        <small>Massimo 160 caratteri</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="metaKeywords">Keywords (separate da virgola)</label>
+                        <input 
+                            type="text" 
+                            id="metaKeywords" 
+                            placeholder="viaggio, turismo, ospitalità, enogastronomia"
+                        >
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>⚙️ Impostazioni</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="status">Stato *</label>
+                            <select id="status" required>
+                                <option value="draft">Bozza</option>
+                                <option value="published">Pubblicata</option>
+                                <option value="archived">Archiviata</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="publishDate">Data Pubblicazione</label>
+                            <input type="datetime-local" id="publishDate">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="featured">
+                            In Evidenza (Homepage)
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">
+                        Annulla
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        💾 Salva Rivista
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="js/auth.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/magazines.js"></script>
+    
+    <style>
+        /* Additional styles for magazines page */
+        .magazines-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 24px;
+        }
+        
+        .magazine-card {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 2px solid var(--border-light);
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .magazine-card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+        }
+        
+        .magazine-cover {
+            width: 100%;
+            height: 200px;
+            background: var(--bg-gradient-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .magazine-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .magazine-status-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+        }
+        
+        .magazine-content {
+            padding: 20px;
+        }
+        
+        .magazine-header {
+            margin-bottom: 16px;
+        }
+        
+        .magazine-edition {
+            font-size: 12px;
+            color: var(--text-light);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .magazine-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 8px 0;
+        }
+        
+        .magazine-subtitle {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        
+        .magazine-meta {
+            display: flex;
+            gap: 16px;
+            margin-top: 12px;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        
+        .magazine-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .magazine-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-light);
+        }
+        
+        .magazine-actions button {
+            flex: 1;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.2s ease;
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+            animation: slideUp 0.3s ease;
+        }
+        
+        .modal-header {
+            padding: 24px;
+            border-bottom: 2px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-gradient-light);
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            color: var(--primary);
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 32px;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: var(--transition);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-md);
+        }
+        
+        .modal-close:hover {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .modal-body {
+            padding: 24px;
+        }
+        
+        .form-section {
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .form-section:last-of-type {
+            border-bottom: none;
+        }
+        
+        .form-section h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</body>
+</html>
