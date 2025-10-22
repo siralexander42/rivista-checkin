@@ -181,8 +181,8 @@
         </div>
     </div>
     
-    <script src="js/auth.js"></script>
-    <script src="js/api.js"></script>
+    <script src="js/auth.js?v=2.0"></script>
+    <script src="js/api.js?v=2.0"></script>
     <script>
         // Dashboard Script v2.0 - Fixed template literals
         // Carica info utente
@@ -309,25 +309,33 @@
         function handleUsersAccess(e) {
             e.preventDefault();
             
-            // Debug
-            console.log('handleUsersAccess called');
-            console.log('isSuperAdmin exists?', typeof isSuperAdmin);
-            
             const user = getCurrentUser();
+            console.log('=== DEBUG ACCESSO UTENTI ===');
             console.log('User:', user);
             console.log('User role:', user?.role);
+            console.log('Is super-admin?', user?.role === 'super-admin');
             
             if (user && user.role === 'super-admin') {
-                console.log('Super admin detected - direct access');
+                console.log('✅ Super admin - accesso diretto');
                 window.location.href = 'users.html';
-            } else {
-                console.log('Not super admin - showing password modal');
-                // Mostra modal password
-                document.getElementById('passwordModal').style.display = 'flex';
-                document.getElementById('accessPassword').value = '';
-                document.getElementById('passwordError').style.display = 'none';
-                setTimeout(() => document.getElementById('accessPassword').focus(), 100);
+                return;
             }
+            
+            console.log('🔒 Non super admin - mostra modal password');
+            const modal = document.getElementById('passwordModal');
+            if (!modal) {
+                console.error('❌ ERRORE: Modal passwordModal non trovato!');
+                alert('ERRORE: Modal non trovato. Controlla console.');
+                return;
+            }
+            
+            modal.style.display = 'flex';
+            document.getElementById('accessPassword').value = '';
+            document.getElementById('passwordError').style.display = 'none';
+            setTimeout(() => {
+                const input = document.getElementById('accessPassword');
+                if (input) input.focus();
+            }, 100);
         }
 
         function closePasswordModal() {
