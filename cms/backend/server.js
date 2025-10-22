@@ -134,6 +134,30 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
+// Schema Login Log
+const loginLogSchema = new mongoose.Schema({
+    username: {
+        type: String,
+        required: true
+    },
+    email: String,
+    success: {
+        type: Boolean,
+        required: true
+    },
+    ipAddress: String,
+    userAgent: String,
+    errorMessage: String,
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }
+}, {
+    timestamps: true
+});
+
+const LoginLog = mongoose.model('LoginLog', loginLogSchema);
+
 // ============================================
 // SCHEMA RIVISTE E BLOCCHI
 // ============================================
@@ -401,10 +425,22 @@ app.get('/api/magazine/current', async (req, res) => {
 
 // POST - Login
 app.post('/api/auth/login', async (req, res) => {
+    const ipAddress = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    const userAgent = req.headers['user-agent'];
+    
     try {
         const { username, password } = req.body;
 
         if (!username || !password) {
+            // Log tentativo fallito - campi mancanti
+            await LoginLog.create({
+                username: username || 'N/A',
+                success: false,
+                ipAddress,
+                userAgent,
+                errorMessage: 'Username o password mancanti'
+            });
+            
             return res.status(400).json({ 
                 success: false,
                 error: 'Username e password sono obbligatori' 
@@ -414,6 +450,15 @@ app.post('/api/auth/login', async (req, res) => {
         const user = await User.findOne({ username: username.toLowerCase() });
         
         if (!user) {
+            // Log tentativo fallito - utente non trovato
+            await LoginLog.create({
+                username: username.toLowerCase(),
+                success: false,
+                ipAddress,
+                userAgent,
+                errorMessage: 'Username non esistente'
+            });
+            
             return res.status(401).json({ 
                 success: false,
                 error: 'Credenziali non valide' 
@@ -423,6 +468,17 @@ app.post('/api/auth/login', async (req, res) => {
         const validPassword = await bcrypt.compare(password, user.password);
         
         if (!validPassword) {
+            // Log tentativo fallito - password errata
+            await LoginLog.create({
+                username: user.username,
+                email: user.email,
+                userId: user._id,
+                success: false,
+                ipAddress,
+                userAgent,
+                errorMessage: 'Password errata'
+            });
+            
             return res.status(401).json({ 
                 success: false,
                 error: 'Credenziali non valide' 
@@ -432,6 +488,16 @@ app.post('/api/auth/login', async (req, res) => {
         // Aggiorna ultimo login
         user.lastLogin = new Date();
         await user.save();
+        
+        // Log accesso riuscito
+        await LoginLog.create({
+            username: user.username,
+            email: user.email,
+            userId: user._id,
+            success: true,
+            ipAddress,
+            userAgent
+        });
         
         const token = jwt.sign(
             { 
@@ -458,6 +524,20 @@ app.post('/api/auth/login', async (req, res) => {
         });
     } catch (error) {
         console.error('Errore POST /api/auth/login:', error);
+        
+        // Log errore di sistema
+        try {
+            await LoginLog.create({
+                username: req.body.username || 'N/A',
+                success: false,
+                ipAddress,
+                userAgent,
+                errorMessage: 'Errore di sistema: ' + error.message
+            });
+        } catch (logError) {
+            console.error('Errore nel logging:', logError);
+        }
+        
         res.status(500).json({ 
             success: false,
             error: 'Errore durante il login' 
@@ -761,6 +841,95 @@ app.post('/api/users/verify-access', authenticateToken, async (req, res) => {
         res.status(500).json({ 
             success: false,
             error: 'Errore durante la verifica' 
+        });
+    }
+});
+
+// ============================================
+// ROTTE LOGIN LOGS (SUPER-ADMIN ONLY)
+// ============================================
+
+// GET - Lista tutti i log di accesso
+app.get('/api/login-logs', authenticateToken, requireSuperAdmin, async (req, res) => {
+    try {
+        const { limit = 100, success, username } = req.query;
+        
+        let query = {};
+        if (success !== undefined) {
+            query.success = success === 'true';
+        }
+        if (username) {
+            query.username = new RegExp(username, 'i');
+        }
+        
+        const logs = await LoginLog.find(query)
+            .sort({ createdAt: -1 })
+            .limit(parseInt(limit))
+            .populate('userId', 'name email role');
+        
+        res.json({ 
+            success: true,
+            data: logs
+        });
+    } catch (error) {
+        console.error('Errore GET /api/login-logs:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Errore nel recupero dei log' 
+        });
+    }
+});
+
+// GET - Statistiche accessi
+app.get('/api/login-logs/stats', authenticateToken, requireSuperAdmin, async (req, res) => {
+    try {
+        const total = await LoginLog.countDocuments();
+        const successful = await LoginLog.countDocuments({ success: true });
+        const failed = await LoginLog.countDocuments({ success: false });
+        
+        // Ultimi 24 ore
+        const last24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
+        const recentTotal = await LoginLog.countDocuments({ createdAt: { $gte: last24h } });
+        const recentFailed = await LoginLog.countDocuments({ success: false, createdAt: { $gte: last24h } });
+        
+        res.json({ 
+            success: true,
+            data: {
+                total,
+                successful,
+                failed,
+                last24h: {
+                    total: recentTotal,
+                    failed: recentFailed
+                }
+            }
+        });
+    } catch (error) {
+        console.error('Errore GET /api/login-logs/stats:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Errore nel calcolo delle statistiche' 
+        });
+    }
+});
+
+// DELETE - Elimina log vecchi
+app.delete('/api/login-logs/cleanup', authenticateToken, requireSuperAdmin, async (req, res) => {
+    try {
+        const { days = 30 } = req.query;
+        const cutoffDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+        
+        const result = await LoginLog.deleteMany({ createdAt: { $lt: cutoffDate } });
+        
+        res.json({ 
+            success: true,
+            message: `Eliminati ${result.deletedCount} log più vecchi di ${days} giorni`
+        });
+    } catch (error) {
+        console.error('Errore DELETE /api/login-logs/cleanup:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Errore durante la pulizia dei log' 
         });
     }
 });

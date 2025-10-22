@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Accessi - CHECK-IN CMS</title>
+    <link rel="icon" type="image/png" href="https://www.italiaatavola.net/images/contenutiarticoli/logo_check-in-favicon.png">
+    <link rel="stylesheet" href="css/admin.css?v=7.0">
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="https://www.italiaatavola.net/images/testate/checkin-testata-hd.svg" alt="CHECK-IN" style="width: 100%; max-width: 180px; filter: brightness(0) invert(1);">
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item">
+                    <span>Dashboard</span>
+                </a>
+                <a href="magazines.html" class="nav-item">
+                    <span>Riviste</span>
+                </a>
+                <a href="users.html" class="nav-item">
+                    <span>Utenti</span>
+                </a>
+                <a href="logs.html" class="nav-item active">
+                    <span>Log Accessi</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button onclick="logout()" class="btn btn-text">
+                    🚪 Esci
+                </button>
+            </div>
+        </aside>
+        
+        <main class="main-content">
+            <div class="content-header">
+                <div>
+                    <h1>📊 Log Accessi</h1>
+                    <p>Monitoraggio tentativi di login (riusciti e falliti)</p>
+                </div>
+                <div class="header-actions">
+                    <button onclick="cleanupOldLogs()" class="btn btn-secondary">
+                        🗑️ Pulisci Vecchi Log
+                    </button>
+                    <button onclick="loadLogs()" class="btn btn-primary">
+                        🔄 Aggiorna
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Statistiche -->
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-content">
+                        <div class="stat-label">TOTALE ACCESSI</div>
+                        <div class="stat-value" id="totalAccesses">-</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-content">
+                        <div class="stat-label">RIUSCITI</div>
+                        <div class="stat-value" id="successfulAccesses">-</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">❌</div>
+                    <div class="stat-content">
+                        <div class="stat-label">FALLITI</div>
+                        <div class="stat-value" id="failedAccesses">-</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">⏰</div>
+                    <div class="stat-content">
+                        <div class="stat-label">ULTIMI 24H (Falliti)</div>
+                        <div class="stat-value" id="recent24h">-</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content-body">
+                <!-- Filtri -->
+                <div class="filters-bar">
+                    <div class="filter-group">
+                        <label>Filtra per stato:</label>
+                        <select id="filterStatus" onchange="loadLogs()">
+                            <option value="">Tutti</option>
+                            <option value="true">Solo Riusciti</option>
+                            <option value="false">Solo Falliti</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label>Cerca username:</label>
+                        <input 
+                            type="text" 
+                            id="filterUsername" 
+                            placeholder="Username..."
+                            onkeyup="filterByUsername()"
+                        >
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label>Limite risultati:</label>
+                        <select id="filterLimit" onchange="loadLogs()">
+                            <option value="50">50</option>
+                            <option value="100" selected>100</option>
+                            <option value="200">200</option>
+                            <option value="500">500</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="logsContainer" class="table-container">
+                    <p class="loading-text">Caricamento log...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/logs.js"></script>
+</body>
+</html>

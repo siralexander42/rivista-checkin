@@ -5,7 +5,6 @@ let currentMagazine = null;
 
 // Carica riviste all'avvio
 document.addEventListener('DOMContentLoaded', () => {
-    loadUserInfo();
     loadMagazines();
     
     // Form submission
@@ -29,16 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => showCreateModal(), 500);
     }
 });
-
-// Carica info utente
-function loadUserInfo() {
-    const user = getCurrentUser();
-    if (user) {
-        document.getElementById('userName').textContent = user.name;
-        document.getElementById('userEmail').textContent = user.email;
-        document.getElementById('userAvatar').textContent = user.name.charAt(0).toUpperCase();
-    }
-}
 
 // Genera slug da testo
 function generateSlug(text) {
