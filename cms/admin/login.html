@@ -52,6 +52,7 @@
         </div>
     </div>
     
+    <script src="js/api.js"></script>
     <script src="js/auth.js"></script>
     <script>
         // Gestione form login
@@ -69,7 +70,16 @@
             loginBtn.textContent = 'Accesso in corso...';
             
             try {
-                const response = await fetch('http://localhost:3001/api/auth/login', {
+                // Usa l'URL API dinamico
+                const API_URL = window.location.hostname === 'localhost' 
+                    ? 'http://localhost:3001/api'
+                    : 'https://rivista-checkin.onrender.com/api';
+                
+                console.log('Hostname:', window.location.hostname);
+                console.log('Using API URL:', API_URL);
+                console.log('Full URL:', `${API_URL}/auth/login`);
+                
+                const response = await fetch(`${API_URL}/auth/login`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -79,17 +89,22 @@
                 
                 const data = await response.json();
                 
-                if (response.ok) {
-                    // Salva token
+                if (response.ok && data.success) {
+                    // Salva token e user
                     localStorage.setItem('cms_token', data.token);
                     localStorage.setItem('cms_user', JSON.stringify(data.user));
                     
+                    console.log('Login successful, redirecting...');
+                    
                     // Redirect alla dashboard
-                    window.location.href = 'index.html';
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 100);
                 } else {
                     throw new Error(data.error || 'Credenziali non valide');
                 }
             } catch (error) {
+                console.error('Login error:', error);
                 errorMsg.textContent = error.message;
                 errorMsg.style.display = 'block';
                 loginBtn.disabled = false;
