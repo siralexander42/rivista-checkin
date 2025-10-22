@@ -96,13 +96,24 @@ function displayMagazines(filteredMagazines = null) {
         return;
     }
     
-    magazinesList.innerHTML = list.map(magazine => `
+    magazinesList.innerHTML = list.map(magazine => {
+        // Cerca cover image dal blocco cover
+        let coverImage = magazine.coverImage;
+        if (!coverImage && magazine.blocks) {
+            const coverBlock = magazine.blocks.find(b => b.type === 'cover');
+            if (coverBlock && coverBlock.images && coverBlock.images.length > 0) {
+                coverImage = coverBlock.images[0];
+            }
+        }
+        
+        const coverHTML = coverImage 
+            ? `<img src="${coverImage}" alt="${magazine.name}">`
+            : '📖';
+        
+        return `
         <div class="magazine-card" data-id="${magazine._id}">
             <div class="magazine-cover">
-                ${magazine.coverImage 
-                    ? `<img src="${magazine.coverImage}" alt="${magazine.name}">`
-                    : '📖'
-                }
+                ${coverHTML}
                 <div class="magazine-status-badge">
                     ${getBadgeHTML(magazine.status)}
                 </div>
@@ -124,18 +135,15 @@ function displayMagazines(filteredMagazines = null) {
                 
                 <div class="magazine-actions">
                     <button class="btn btn-sm btn-primary" onclick="editBlocks('${magazine._id}')">
-                        🎨 Gestisci Blocchi
+                        📝 Gestisci Blocchi
                     </button>
                     <button class="btn btn-sm btn-secondary" onclick="editMagazine('${magazine._id}')">
-                        ✏️ Modifica
-                    </button>
-                    <button class="btn btn-sm btn-danger" onclick="deleteMagazine('${magazine._id}')">
-                        🗑️
+                        ⚙️ Impostazioni
                     </button>
                 </div>
             </div>
         </div>
-    `).join('');
+    `}).join('');
 }
 
 // Badge status
@@ -175,6 +183,9 @@ function showCreateModal() {
     document.getElementById('magazineId').value = '';
     document.getElementById('slug').dataset.manuallyEdited = '';
     
+    // Nascondi pulsante elimina in modalità creazione
+    document.getElementById('deleteButton').style.display = 'none';
+    
     // Set default values
     document.getElementById('status').value = 'draft';
     
@@ -187,8 +198,11 @@ async function editMagazine(id) {
         const response = await apiRequest(`/admin/magazines/${id}`);
         currentMagazine = response.data;
         
-        document.getElementById('modalTitle').textContent = 'Modifica Rivista';
+        document.getElementById('modalTitle').textContent = 'Impostazioni Rivista';
         document.getElementById('magazineId').value = currentMagazine._id;
+        
+        // Mostra pulsante elimina solo in edit mode
+        document.getElementById('deleteButton').style.display = 'block';
         
         // Popola il form
         document.getElementById('name').value = currentMagazine.name;
@@ -278,7 +292,29 @@ async function handleFormSubmit(e) {
     }
 }
 
-// Elimina rivista
+// Gestisce eliminazione dal modal impostazioni
+async function handleDelete() {
+    if (!currentMagazine) return;
+    
+    if (!confirm(`Sei sicuro di voler eliminare "${currentMagazine.name}"?\n\n⚠️ Questa azione eliminerà anche tutti i blocchi contenuti nella rivista.`)) {
+        return;
+    }
+    
+    try {
+        await apiRequest(`/admin/magazines/${currentMagazine._id}`, {
+            method: 'DELETE'
+        });
+        
+        alert('✅ Rivista eliminata con successo!');
+        closeModal();
+        loadMagazines();
+    } catch (error) {
+        console.error('Errore eliminazione rivista:', error);
+        alert('❌ Errore nell\'eliminazione: ' + error.message);
+    }
+}
+
+// Elimina rivista (vecchia funzione - mantenuta per retrocompatibilità)
 async function deleteMagazine(id) {
     const magazine = magazines.find(m => m._id === id);
     if (!magazine) return;

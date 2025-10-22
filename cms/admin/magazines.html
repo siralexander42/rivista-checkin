@@ -259,12 +259,19 @@
                 </div>
                 
                 <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal()">
-                        Annulla
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                        💾 Salva Rivista
-                    </button>
+                    <div class="form-actions-left">
+                        <button type="button" id="deleteButton" class="btn btn-danger" onclick="handleDelete()" style="display: none;">
+                            🗑️ Elimina Rivista
+                        </button>
+                    </div>
+                    <div class="form-actions-right">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal()">
+                            Annulla
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            💾 Salva Rivista
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
