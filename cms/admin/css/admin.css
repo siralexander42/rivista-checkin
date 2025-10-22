@@ -1,9 +1,8 @@
 /* ============================================
-   CHECK-IN CMS - VOGUE EDITORIAL STYLE
-   Luxury Magazine Design System
+   CHECK-IN CMS - PROFESSIONAL ADMIN SYSTEM
    ============================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 * {
     margin: 0;
@@ -58,9 +57,9 @@
     /* Transitions */
     --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     
-    /* Typography - COURIER NEW MONOSPACE */
-    --font-serif: 'Courier New', Courier, monospace;
-    --font-sans: 'Courier New', Courier, monospace;
+    /* Typography - INTER PROFESSIONAL */
+    --font-serif: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 body {
@@ -68,7 +67,7 @@ body {
     background: var(--bg-white);
     color: var(--text-dark);
     line-height: 1.6;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 400;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -1007,12 +1006,12 @@ tbody td {
 
 .loading {
     display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 3px solid rgba(60, 61, 143, 0.3);
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(60, 61, 143, 0.2);
     border-radius: 50%;
     border-top-color: var(--primary);
-    animation: spin 1s ease-in-out infinite;
+    animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
@@ -1377,12 +1376,6 @@ tbody td {
 
 .error-state button {
     margin-top: 20px;
-}
-
-.loading-text {
-    text-align: center;
-    padding: 40px;
-    color: var(--gray-600);
 }
 
 /* ============================================

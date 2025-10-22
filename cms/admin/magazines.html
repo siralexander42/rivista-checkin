@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestione Riviste - CHECK-IN CMS</title>
     <link rel="icon" type="image/png" href="https://www.italiaatavola.net/images/contenutiarticoli/logo_check-in-favicon.png">
-    <link rel="stylesheet" href="css/admin.css?v=5.0">
+    <link rel="stylesheet" href="css/admin.css?v=8.0">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
     <div class="admin-container">
@@ -32,7 +33,7 @@
             
             <div class="sidebar-footer">
                 <button onclick="logout()" class="btn btn-text">
-                    🚪 Esci
+                    <i data-lucide="log-out"></i> Esci
                 </button>
             </div>
         </aside>
@@ -41,14 +42,14 @@
         <main class="main-content">
             <header class="content-header">
                 <div>
-                    <h1>📖 Gestione Riviste</h1>
+                    <h1><i data-lucide="book-open"></i> Gestione Riviste</h1>
                     <p style="color: var(--text-light); margin-top: 8px;">
                         Crea e gestisci le edizioni della rivista CHECK-IN
                     </p>
                 </div>
                 <div class="header-actions">
                     <button class="btn btn-primary" onclick="showCreateModal()">
-                        ➕ Nuova Rivista
+                        <i data-lucide="plus"></i> Nuova Rivista
                     </button>
                 </div>
             </header>
@@ -481,5 +482,10 @@
             }
         }
     </style>
+    
+    <script>
+        // Inizializza Lucide Icons
+        lucide.createIcons();
+    </script>
 </body>
 </html>

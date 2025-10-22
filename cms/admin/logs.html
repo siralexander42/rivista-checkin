@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Log Accessi - CHECK-IN CMS</title>
     <link rel="icon" type="image/png" href="https://www.italiaatavola.net/images/contenutiarticoli/logo_check-in-favicon.png">
-    <link rel="stylesheet" href="css/admin.css?v=7.0">
+    <link rel="stylesheet" href="css/admin.css?v=8.0">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
     <div class="admin-layout">
@@ -31,7 +32,7 @@
             
             <div class="sidebar-footer">
                 <button onclick="logout()" class="btn btn-text">
-                    🚪 Esci
+                    <i data-lucide="log-out"></i> Esci
                 </button>
             </div>
         </aside>
@@ -39,15 +40,15 @@
         <main class="main-content">
             <div class="content-header">
                 <div>
-                    <h1>📊 Log Accessi</h1>
+                    <h1><i data-lucide="activity"></i> Log Accessi</h1>
                     <p>Monitoraggio tentativi di login (riusciti e falliti)</p>
                 </div>
                 <div class="header-actions">
                     <button onclick="cleanupOldLogs()" class="btn btn-secondary">
-                        🗑️ Pulisci Vecchi Log
+                        <i data-lucide="trash-2"></i> Pulisci Vecchi Log
                     </button>
                     <button onclick="loadLogs()" class="btn btn-primary">
-                        🔄 Aggiorna
+                        <i data-lucide="refresh-cw"></i> Aggiorna
                     </button>
                 </div>
             </div>
@@ -55,7 +56,7 @@
             <!-- Statistiche -->
             <div class="stats-grid" id="statsGrid">
                 <div class="stat-card">
-                    <div class="stat-icon">📈</div>
+                    <div class="stat-icon"><i data-lucide="trending-up"></i></div>
                     <div class="stat-content">
                         <div class="stat-label">TOTALE ACCESSI</div>
                         <div class="stat-value" id="totalAccesses">-</div>
@@ -63,7 +64,7 @@
                 </div>
                 
                 <div class="stat-card">
-                    <div class="stat-icon">✅</div>
+                    <div class="stat-icon"><i data-lucide="check-circle"></i></div>
                     <div class="stat-content">
                         <div class="stat-label">RIUSCITI</div>
                         <div class="stat-value" id="successfulAccesses">-</div>
@@ -71,7 +72,7 @@
                 </div>
                 
                 <div class="stat-card">
-                    <div class="stat-icon">❌</div>
+                    <div class="stat-icon"><i data-lucide="x-circle"></i></div>
                     <div class="stat-content">
                         <div class="stat-label">FALLITI</div>
                         <div class="stat-value" id="failedAccesses">-</div>
@@ -121,7 +122,7 @@
                 </div>
                 
                 <div id="logsContainer" class="table-container">
-                    <p class="loading-text">Caricamento log...</p>
+                    <div class="loading"></div>
                 </div>
             </div>
         </main>
@@ -130,5 +131,8 @@
     <script src="js/api.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/logs.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 </html>

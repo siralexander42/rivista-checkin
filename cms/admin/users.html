@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestione Utenti - CHECK-IN CMS</title>
     <link rel="icon" type="image/png" href="https://www.italiaatavola.net/images/contenutiarticoli/logo_check-in-favicon.png">
-    <link rel="stylesheet" href="css/admin.css?v=6.0">
+    <link rel="stylesheet" href="css/admin.css?v=8.0">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
     <div class="admin-layout">
@@ -31,7 +32,7 @@
             
             <div class="sidebar-footer">
                 <button onclick="logout()" class="btn btn-text">
-                    🚪 Esci
+                    <i data-lucide="log-out"></i> Esci
                 </button>
             </div>
         </aside>
@@ -39,17 +40,17 @@
         <main class="main-content">
             <div class="content-header">
                 <div>
-                    <h1>👥 Gestione Utenti</h1>
+                    <h1><i data-lucide="users"></i> Gestione Utenti</h1>
                     <p>Crea e gestisci gli utenti del CMS</p>
                 </div>
                 <button onclick="showCreateModal()" class="btn btn-primary">
-                    + Nuovo Utente
+                    <i data-lucide="user-plus"></i> Nuovo Utente
                 </button>
             </div>
             
             <div class="content-body">
                 <div id="usersContainer" class="table-container">
-                    <p class="loading-text">Caricamento utenti...</p>
+                    <div class="loading"></div>
                 </div>
             </div>
         </main>
@@ -59,7 +60,7 @@
     <div id="passwordModal" class="modal">
         <div class="modal-content" style="max-width: 400px;">
             <div class="modal-header">
-                <h2>🔐 Accesso Protetto</h2>
+                <h2><i data-lucide="lock"></i> Accesso Protetto</h2>
             </div>
             <div class="modal-body">
                 <p style="margin-bottom: 20px;">Inserisci la password speciale per accedere alla gestione utenti:</p>
@@ -200,5 +201,8 @@
     <script src="js/api.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/users.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 </html>

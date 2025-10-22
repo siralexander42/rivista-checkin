@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestione Blocchi - CHECK-IN CMS</title>
+    <title>Editor Rivista - CHECK-IN CMS</title>
     <link rel="icon" type="image/png" href="https://www.italiaatavola.net/images/contenutiarticoli/logo_check-in-favicon.png">
-    <link rel="stylesheet" href="css/admin.css?v=5.0">
+    <link rel="stylesheet" href="css/admin.css?v=8.0">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
     <div class="admin-container">
@@ -32,7 +33,7 @@
             
             <div class="sidebar-footer">
                 <button onclick="logout()" class="btn btn-text">
-                    🚪 Esci
+                    <i data-lucide="log-out"></i> Esci
                 </button>
             </div>
         </aside>
@@ -49,17 +50,17 @@
                         <span style="color: var(--text-light);">|</span>
                         <span id="magazineEdition" style="color: var(--text-light); font-size: 14px;"></span>
                     </div>
-                    <h1 id="magazineName">Gestione Blocchi</h1>
+                    <h1 id="magazineName">Editor Rivista</h1>
                     <p style="color: var(--text-light); margin-top: 8px;">
                         Crea e organizza i contenuti della tua rivista
                     </p>
                 </div>
                 <div class="header-actions">
                     <button class="btn btn-secondary" onclick="previewMagazine()">
-                        👁️ Anteprima
+                        <i data-lucide="eye"></i> Anteprima
                     </button>
                     <button class="btn btn-success" onclick="publishMagazine()">
-                        🚀 Pubblica
+                        <i data-lucide="rocket"></i> Pubblica
                     </button>
                 </div>
             </header>
@@ -69,22 +70,22 @@
                 <!-- Pulsante Aggiungi Blocco -->
                 <div class="add-block-section">
                     <button class="btn btn-primary btn-large" onclick="showBlockTypesModal()">
-                        ➕ Aggiungi Blocco
+                        <i data-lucide="plus"></i> Aggiungi Blocco
                     </button>
                 </div>
                 
                 <!-- Lista Blocchi (Drag & Drop) -->
                 <div id="blocksList" class="blocks-list">
-                    <div class="loading">Caricamento blocchi...</div>
+                    <div class="loading"></div>
                 </div>
                 
                 <!-- Empty State -->
                 <div id="emptyState" class="empty-state" style="display: none;">
-                    <div class="empty-state-icon">📦</div>
+                    <div class="empty-state-icon"><i data-lucide="package"></i></div>
                     <h3>Nessun blocco ancora</h3>
                     <p>Inizia ad aggiungere blocchi per costruire la tua rivista!</p>
                     <button class="btn btn-primary" onclick="showBlockTypesModal()">
-                        ➕ Aggiungi Primo Blocco
+                        <i data-lucide="plus"></i> Aggiungi Primo Blocco
                     </button>
                 </div>
                 
@@ -131,7 +132,7 @@
                         Annulla
                     </button>
                     <button type="submit" class="btn btn-primary">
-                        💾 Salva Blocco
+                        <i data-lucide="save"></i> Salva Blocco
                     </button>
                 </div>
             </form>
@@ -286,5 +287,8 @@
             color: var(--primary);
         }
     </style>
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 </html>
