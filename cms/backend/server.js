@@ -1381,7 +1381,7 @@ function generateBlockHTML(block) {
         </div>
         <div class="hero-container">
             ${block.title ? `<h1>${block.title}</h1>` : ''}
-            ${block.subtitle ? `<p class="hero-subtitle" data-text="${block.subtitle}"></p>` : ''}
+            ${block.subtitle ? `<p class="hero-subtitle" data-text="${block.subtitle}">${block.subtitle}</p>` : ''}
             ${block.content ? `
             <p class="hero-description">
                 ${block.content}
