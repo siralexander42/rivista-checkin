@@ -608,14 +608,14 @@ async function publishMagazine() {
         });
         
         if (response.success) {
-            alert(`✅ RIVISTA PUBBLICATA CON SUCCESSO!\n\n📄 File: ${response.path}\n🌐 URL: ${response.url}\n📅 Data: ${new Date(response.magazine.publishDate).toLocaleString('it-IT')}\n\n🎉 La tua rivista è ora online!`);
+            alert(`✅ RIVISTA PUBBLICATA CON SUCCESSO!\n\n📄 File: ${response.fileName}\n🌐 URL: ${response.url}\n📅 Data: ${new Date(response.magazine.publishDate).toLocaleString('it-IT')}\n\n🎉 La tua rivista è ora online!`);
             
             // Ricarica i dati
             await loadMagazine();
             
             // Apri la rivista pubblicata
             if (confirm('Vuoi aprire la rivista pubblicata?')) {
-                window.open('../../index.html', '_blank');
+                window.open(`../../${response.fileName}`, '_blank');
             }
         }
         
