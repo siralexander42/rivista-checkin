@@ -178,41 +178,46 @@
                         </div>
                     `;
                 } else {
-                    recentList.innerHTML = `
-                        <div class="magazines-grid">
-                            ${recentMagazines.map(magazine => {
-                                // Cerca cover image dal blocco cover
-                                let coverImage = magazine.coverImage;
-                                if (!coverImage && magazine.blocks) {
-                                    const coverBlock = magazine.blocks.find(b => b.type === 'cover');
-                                    if (coverBlock && coverBlock.images && coverBlock.images.length > 0) {
-                                        coverImage = coverBlock.images[0];
-                                    }
-                                }
-                                
-                                return `
-                                <div class="magazine-card" onclick="window.location.href='blocks.html?magazine=${magazine._id}'">
-                                    <div class="magazine-cover">
-                                        ${coverImage 
-                                            ? `<img src="${coverImage}" alt="${magazine.name}">`
-                                            : '📖'
-                                        }
-                                        <div class="magazine-status-badge">
-                                            ${getStatusBadge(magazine.status)}
-                                        </div>
-                                    </div>
-                                    <div class="magazine-content">
-                                        <div class="magazine-header">
-                                            <div class="magazine-edition">Edizione ${magazine.editionNumber} • ${magazine.edition}</div>
-                                            <h3 class="magazine-title">${magazine.name}</h3>
-                                        </div>
-                                        <div class="magazine-meta">
-                                            <span>🎨 ${magazine.blocks?.length || 0} blocchi</span>
-                                            <span>👁️ ${magazine.views || 0} visite</span>
-                                        </div>
+                    // Genera HTML per ogni rivista
+                    const magazinesHTML = recentMagazines.map(magazine => {
+                        // Cerca cover image dal blocco cover
+                        let coverImage = magazine.coverImage;
+                        if (!coverImage && magazine.blocks) {
+                            const coverBlock = magazine.blocks.find(b => b.type === 'cover');
+                            if (coverBlock && coverBlock.images && coverBlock.images.length > 0) {
+                                coverImage = coverBlock.images[0];
+                            }
+                        }
+                        
+                        const coverHTML = coverImage 
+                            ? `<img src="${coverImage}" alt="${magazine.name}">`
+                            : '📖';
+                        
+                        return `
+                            <div class="magazine-card" onclick="window.location.href='blocks.html?magazine=${magazine._id}'">
+                                <div class="magazine-cover">
+                                    ${coverHTML}
+                                    <div class="magazine-status-badge">
+                                        ${getStatusBadge(magazine.status)}
                                     </div>
                                 </div>
-                            `}).join('')}
+                                <div class="magazine-content">
+                                    <div class="magazine-header">
+                                        <div class="magazine-edition">Edizione ${magazine.editionNumber} • ${magazine.edition}</div>
+                                        <h3 class="magazine-title">${magazine.name}</h3>
+                                    </div>
+                                    <div class="magazine-meta">
+                                        <span>🎨 ${magazine.blocks?.length || 0} blocchi</span>
+                                        <span>👁️ ${magazine.views || 0} visite</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    recentList.innerHTML = `
+                        <div class="magazines-grid">
+                            ${magazinesHTML}
                         </div>
                     `;
                 }
