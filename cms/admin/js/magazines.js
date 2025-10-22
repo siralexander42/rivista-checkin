@@ -134,8 +134,8 @@ function displayMagazines(filteredMagazines = null) {
                 </div>
                 
                 <div class="magazine-actions">
-                    <button class="btn btn-sm btn-primary" onclick="editBlocks('${magazine._id}')">
-                        📝 Gestisci Blocchi
+                    <button class="btn btn-sm btn-secondary" onclick="editBlocks('${magazine._id}')">
+                        ✏️ Modifica
                     </button>
                     <button class="btn btn-sm btn-secondary" onclick="editMagazine('${magazine._id}')">
                         ⚙️ Impostazioni

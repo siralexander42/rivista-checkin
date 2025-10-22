@@ -921,18 +921,22 @@ tbody td {
 }
 
 .badge-published {
-    background: rgba(16, 185, 129, 0.1);
-    color: var(--success);
+    background: var(--success);
+    color: var(--white);
+    border: 2px solid var(--success);
+    box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
 }
 
 .badge-draft {
-    background: rgba(251, 191, 36, 0.1);
+    background: var(--white);
     color: var(--warning);
+    border: 2px solid var(--warning);
 }
 
 .badge-archived {
-    background: rgba(107, 114, 128, 0.1);
+    background: var(--white);
     color: var(--text-light);
+    border: 2px solid var(--gray-300);
 }
 
 /* ============================================
