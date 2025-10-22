@@ -28,14 +28,7 @@
             </nav>
             
             <div class="sidebar-footer">
-                <div class="user-info">
-                    <div class="user-avatar" id="userAvatar">👤</div>
-                    <div class="user-details">
-                        <div class="user-name" id="userName">Admin</div>
-                        <div class="user-email" id="userEmail"></div>
-                    </div>
-                </div>
-                <button class="logout-btn" onclick="logout()">
+                <button onclick="logout()" class="btn btn-text">
                     🚪 Esci
                 </button>
             </div>
@@ -139,15 +132,6 @@
     <script>
         // Dashboard Script v2.0 - Fixed template literals
         // Carica info utente
-        function loadUserInfo() {
-            const user = getCurrentUser();
-            if (user) {
-                document.getElementById('userName').textContent = user.name;
-                document.getElementById('userEmail').textContent = user.email;
-                document.getElementById('userAvatar').textContent = user.name.charAt(0).toUpperCase();
-            }
-        }
-
         // Carica dati dashboard
         async function loadDashboard() {
             try {
@@ -253,7 +237,6 @@
         
         // Carica dati all'avvio
         document.addEventListener('DOMContentLoaded', () => {
-            loadUserInfo();
             loadDashboard();
         });
     </script>
