@@ -103,47 +103,11 @@
                 <button class="modal-close" onclick="closeBlockTypesModal()">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="block-types-grid">
-                    <div class="block-type-card" onclick="addBlock('cover')" style="grid-column: span 2; background: linear-gradient(135deg, #3C3D8F 0%, #5B5FC7 100%); color: white;">
-                        <div class="block-type-icon">📰</div>
-                        <h3>Copertina</h3>
-                        <p>Copertina rivista con sommario e sfondi multipli</p>
-                    </div>
-                    
-                    <div class="block-type-card" onclick="addBlock('hero')">
-                        <div class="block-type-icon">🎨</div>
-                        <h3>Hero Section</h3>
-                        <p>Sezione hero con immagine e testo principale</p>
-                    </div>
-                    
-                    <div class="block-type-card" onclick="addBlock('article')">
-                        <div class="block-type-icon">📝</div>
-                        <h3>Articolo</h3>
-                        <p>Blocco articolo con immagine, titolo e testo</p>
-                    </div>
-                    
-                    <div class="block-type-card" onclick="addBlock('gallery')">
-                        <div class="block-type-icon">🖼️</div>
-                        <h3>Gallery</h3>
-                        <p>Galleria di immagini</p>
-                    </div>
-                    
-                    <div class="block-type-card" onclick="addBlock('text')">
-                        <div class="block-type-icon">📄</div>
-                        <h3>Testo</h3>
-                        <p>Blocco di testo semplice</p>
-                    </div>
-                    
-                    <div class="block-type-card" onclick="addBlock('quote')">
-                        <div class="block-type-icon">💬</div>
-                        <h3>Citazione</h3>
-                        <p>Citazione in evidenza</p>
-                    </div>
-                    
-                    <div class="block-type-card" onclick="addBlock('video')">
-                        <div class="block-type-icon">🎥</div>
-                        <h3>Video</h3>
-                        <p>Video embed (YouTube, Vimeo)</p>
+                <div class="block-types-grid" style="justify-content: center;">
+                    <div class="block-type-card" onclick="addBlock('cover')" style="max-width: 400px; background: linear-gradient(135deg, #3C3D8F 0%, #5B5FC7 100%); color: white;">
+                        <div class="block-type-icon" style="font-size: 4rem;">📰</div>
+                        <h3 style="font-size: 1.5rem; margin: 1rem 0;">Copertina - Layout 1</h3>
+                        <p style="font-size: 1rem;">Copertina rivista con sommario dropdown e sfondi multipli animati</p>
                     </div>
                 </div>
             </div>
