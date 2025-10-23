@@ -1144,9 +1144,9 @@ async function updateBlockPreview() {
             // Dimensioni e scaling
             const scale = isMobile ? 1 : 0.5; // Desktop scalato al 50%
             const iframeWidth = isMobile ? 700 : 1100;
-            const iframeHeight = 1200;
+            const iframeHeight = 2000; // Altezza maggiore per contenere tutto il contenuto
             const containerWidth = iframeWidth * scale;
-            const containerHeight = iframeHeight * scale;
+            const containerHeight = 700; // Altezza fissa del container con scroll
             
             // Crea iframe con HTML reale e CSS della rivista
             previewContainer.innerHTML = `
@@ -1171,10 +1171,10 @@ async function updateBlockPreview() {
                             </button>
                         </div>
                     </div>
-                    <div style="background: #f1f5f9; border-radius: 0 0 12px 12px; padding: 20px; display: flex; justify-content: center; align-items: flex-start; min-height: ${containerHeight + 40}px;">
-                        <div style="width: ${containerWidth}px; height: ${containerHeight}px; background: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); overflow: hidden; position: relative;">
+                    <div style="background: #f1f5f9; border-radius: 0 0 12px 12px; padding: 20px; display: flex; justify-content: center; align-items: flex-start;">
+                        <div style="width: ${containerWidth}px; height: ${containerHeight}px; background: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); overflow-y: auto; overflow-x: hidden; position: relative;">
                             <iframe 
-                                style="width: ${iframeWidth}px; height: ${iframeHeight}px; border: none; transform: scale(${scale}); transform-origin: top left; position: absolute; top: 0; left: 0;"
+                                style="width: ${iframeWidth}px; height: ${iframeHeight}px; border: none; transform: scale(${scale}); transform-origin: top left; position: absolute; top: 0; left: 0; display: block;"
                                 srcdoc="${escapeHtml(result.html)}"
                             ></iframe>
                         </div>
