@@ -67,36 +67,7 @@
         </main>
     </div>
 
-    <!-- Modal Verifica Password -->
-    <div id="passwordModal" class="modal">
-        <div class="modal-content" style="max-width: 400px;">
-            <div class="modal-header">
-                <h2><i data-lucide="lock"></i> Accesso Protetto</h2>
-            </div>
-            <div class="modal-body">
-                <p style="margin-bottom: 20px;">Inserisci la password speciale per accedere alla gestione utenti:</p>
-                <div class="form-group">
-                    <label for="accessPassword">Password</label>
-                    <input 
-                        type="password" 
-                        id="accessPassword" 
-                        class="form-control"
-                        placeholder="Password speciale"
-                        autocomplete="off"
-                    >
-                </div>
-                <div id="passwordError" class="error-message" style="display: none;"></div>
-            </div>
-            <div class="modal-footer">
-                <button onclick="window.location.href='index.html'" class="btn btn-secondary">
-                    Annulla
-                </button>
-                <button onclick="verifyAccess()" class="btn btn-primary">
-                    Verifica
-                </button>
-            </div>
-        </div>
-    </div>
+    <!-- Modal Verifica Password rimosso - non più necessario -->
 
     <!-- Modal Crea/Modifica Utente -->
     <div id="userModal" class="modal">
