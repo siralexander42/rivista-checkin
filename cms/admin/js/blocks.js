@@ -1161,9 +1161,9 @@ async function updateBlockPreview() {
                         </div>
                     </div>
                     <div style="background: #f1f5f9; border-radius: 0 0 12px 12px; padding: 20px; text-align: center;">
-                        <div style="width: ${thumbnailWidth}px; height: ${thumbnailHeight}px; margin: 0 auto; overflow: hidden; background: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); position: relative;">
+                        <div style="width: ${originalWidth}px; height: ${originalHeight}px; margin: 0 auto; background: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); transform: scale(${scale}); transform-origin: top center;">
                             <iframe 
-                                style="width: ${originalWidth}px; height: ${originalHeight}px; border: none; transform: scale(${scale}); transform-origin: 0 0; position: absolute; top: 0; left: 0;"
+                                style="width: 100%; height: 100%; border: none;"
                                 srcdoc="${escapeHtml(result.html)}"
                             ></iframe>
                         </div>
