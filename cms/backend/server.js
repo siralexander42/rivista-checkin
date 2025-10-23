@@ -1724,8 +1724,9 @@ ${blocksHTML}
         const previewPath = path.join(previewDir, previewFileName);
         await fs.writeFile(previewPath, fullHTML, 'utf8');
         
-        // URL di anteprima (relativo al backend)
-        const previewUrl = `http://localhost:${PORT}/preview/${previewFileName}`;
+        // URL di anteprima (usa l'host corrente del server)
+        const baseUrl = process.env.BASE_URL || `http://localhost:${PORT}`;
+        const previewUrl = `${baseUrl}/preview/${previewFileName}`;
         
         res.json({
             success: true,
