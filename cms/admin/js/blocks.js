@@ -547,8 +547,9 @@ https://esempio.com/img3.jpg">${(data.images || []).join('\n')}</textarea>
     if (type === 'fluid') {
         setTimeout(() => {
             initFluidBlockDragDrop();
+            initAllFluidCroppers();
             updateBlockPreview();
-        }, 100);
+        }, 300);
     } else {
         // Per tutti gli altri tipi, carica l'anteprima
         setTimeout(() => {
@@ -1364,9 +1365,18 @@ function initFluidImageCropper(index) {
     const imageInput = document.getElementById(`fluidImage${index}`);
     const cropperContainer = document.getElementById(`fluidCropper${index}`);
     
-    if (!imageInput || !cropperContainer) return;
+    console.log('initFluidImageCropper chiamata per index:', index);
+    console.log('imageInput:', imageInput);
+    console.log('cropperContainer:', cropperContainer);
+    
+    if (!imageInput || !cropperContainer) {
+        console.warn('Elementi non trovati per index:', index);
+        return;
+    }
     
     const imageUrl = imageInput.value.trim();
+    console.log('imageUrl:', imageUrl);
+    
     if (!imageUrl || !(imageUrl.startsWith('http://') || imageUrl.startsWith('https://'))) {
         cropperContainer.innerHTML = '';
         return;
@@ -1378,6 +1388,8 @@ function initFluidImageCropper(index) {
     try {
         existingCropData = cropDataInput ? JSON.parse(cropDataInput.value) : {};
     } catch (e) {}
+    
+    console.log('Creazione cropper per:', imageUrl);
     
     // Distruggi cropper esistente
     if (window.fluidCroppers[index]) {
@@ -1397,14 +1409,19 @@ function initFluidImageCropper(index) {
                 }
             }
         });
-    }, 100);
+        console.log('Cropper creato per index:', index);
+    }, 200);
 }
 
 // Inizializza tutti i cropper quando si apre il modal di modifica
 function initAllFluidCroppers() {
+    console.log('initAllFluidCroppers chiamata');
     const fluidBlocks = document.querySelectorAll('.fluid-block-field');
+    console.log('Blocchi fluid trovati:', fluidBlocks.length);
+    
     fluidBlocks.forEach((block, index) => {
         const imageInput = block.querySelector('.fluid-image');
+        console.log(`Blocco ${index}, imageInput:`, imageInput, 'value:', imageInput?.value);
         if (imageInput && imageInput.value.trim()) {
             initFluidImageCropper(index);
         }
