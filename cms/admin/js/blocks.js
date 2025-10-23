@@ -1253,15 +1253,28 @@ function updateFluidPreview() {
 // ANTEPRIMA E PUBBLICAZIONE
 // ============================================
 
-// Anteprima rivista - Apre direttamente l'URL di produzione su Render
+// Anteprima rivista - Genera HTML su Render e apre l'anteprima
 async function previewMagazine() {
     try {
-        // Apri direttamente l'URL di produzione su Render
-        const previewUrl = `https://rivista-checkin.onrender.com/preview/${magazineId}.html`;
-        window.open(previewUrl, '_blank');
+        // Prima genera l'HTML su Render
+        const response = await fetch(`https://rivista-checkin.onrender.com/api/admin/magazines/${magazineId}/generate-html`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        const result = await response.json();
+        
+        if (result.success && result.previewUrl) {
+            // Apri l'URL generato
+            window.open(result.previewUrl, '_blank');
+        } else {
+            throw new Error(result.error || 'Errore nella generazione dell\'anteprima');
+        }
     } catch (error) {
-        console.error('Errore apertura preview:', error);
-        alert('❌ Errore nell\'apertura dell\'anteprima: ' + error.message);
+        console.error('Errore generazione preview:', error);
+        alert('❌ Errore nella generazione dell\'anteprima: ' + error.message);
     }
 }
 
