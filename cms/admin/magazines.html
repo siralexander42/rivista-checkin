@@ -99,40 +99,7 @@
         </main>
     </div>
 
-    <!-- Modal Verifica Password Utenti -->
-    <div id="passwordModal" class="modal" style="display: none;">
-        <div class="modal-content" style="max-width: 450px;">
-            <div class="modal-header">
-                <h2>Accesso Gestione Utenti</h2>
-                <button class="modal-close" onclick="closePasswordModal()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p style="margin-bottom: 20px; color: var(--text-light);">
-                    Inserisci la password per accedere alla gestione utenti:
-                </p>
-                <div class="form-group">
-                    <label for="accessPassword">Password</label>
-                    <input 
-                        type="password" 
-                        id="accessPassword" 
-                        class="form-control"
-                        placeholder="Password speciale"
-                        autocomplete="off"
-                        style="padding: 14px 16px; border: 2px solid var(--border-light); border-radius: var(--radius-md); font-size: 15px; width: 100%;"
-                    >
-                </div>
-                <div id="passwordError" class="error-message" style="display: none; margin-top: 12px;"></div>
-            </div>
-            <div class="modal-footer" style="display: flex; gap: 12px; justify-content: flex-end; padding: 20px 24px; border-top: 1px solid var(--border-light);">
-                <button onclick="closePasswordModal()" class="btn btn-secondary">
-                    Annulla
-                </button>
-                <button onclick="verifyPasswordAccess()" class="btn btn-primary">
-                    Verifica
-                </button>
-            </div>
-        </div>
-    </div>
+    <!-- Modal Verifica Password Utenti rimosso - non più necessario -->
     
     <!-- Modal Crea/Modifica Rivista -->
     <div id="magazineModal" class="modal">
