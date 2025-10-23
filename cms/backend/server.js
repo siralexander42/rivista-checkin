@@ -1503,7 +1503,27 @@ app.post('/api/admin/blocks/preview', authenticateToken, async (req, res) => {
         // Genera HTML del blocco
         const blockHtml = generateBlockHTML({ type, ...data }, 0);
         
-        // Crea HTML completo con CSS
+        // Leggi CSS inline
+        const cssFiles = [
+            'style.css',
+            'main.css', 
+            'cremona-scroll.css',
+            'sommario.css',
+            'mobile.css'
+        ];
+        
+        let inlineCSS = '';
+        for (const cssFile of cssFiles) {
+            try {
+                const cssPath = path.join(__dirname, '../../assets/css', cssFile);
+                const cssContent = await fs.readFile(cssPath, 'utf8');
+                inlineCSS += cssContent + '\n';
+            } catch (err) {
+                console.warn(`CSS file not found: ${cssFile}`);
+            }
+        }
+        
+        // Crea HTML completo con CSS inline
         const fullHtml = `
 <!DOCTYPE html>
 <html lang="it">
@@ -1511,12 +1531,9 @@ app.post('/api/admin/blocks/preview', authenticateToken, async (req, res) => {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anteprima Blocco</title>
-    <link rel="stylesheet" href="${process.env.BASE_URL || 'http://localhost:3001'}/assets/css/style.css">
-    <link rel="stylesheet" href="${process.env.BASE_URL || 'http://localhost:3001'}/assets/css/main.css">
-    <link rel="stylesheet" href="${process.env.BASE_URL || 'http://localhost:3001'}/assets/css/cremona-scroll.css">
-    <link rel="stylesheet" href="${process.env.BASE_URL || 'http://localhost:3001'}/assets/css/sommario.css">
-    <link rel="stylesheet" href="${process.env.BASE_URL || 'http://localhost:3001'}/assets/css/mobile.css">
     <style>
+        ${inlineCSS}
+        
         body {
             margin: 0;
             padding: 0;
