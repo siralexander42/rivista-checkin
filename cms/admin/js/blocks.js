@@ -1169,8 +1169,7 @@ async function updateBlockPreview() {
         const response = await fetch(`${API_BASE_URL}/admin/blocks/preview`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({ type: blockType, data: blockData })
         });
