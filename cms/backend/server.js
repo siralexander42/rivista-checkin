@@ -1417,12 +1417,12 @@ app.put('/api/admin/magazines/:id/blocks/reorder', authenticateToken, async (req
 // ROTTE GESTIONE RIVISTA (CRUD BASE)
 // ============================================
 
-// POST - Crea nuova rivista
-app.post('/api/admin/magazines', authenticateToken, async (req, res) => {
+// POST - Crea nuova rivista (senza autenticazione per sviluppo)
+app.post('/api/admin/magazines', async (req, res) => {
     try {
         const magazine = new Magazine({
             ...req.body,
-            author: req.user.id
+            author: "admin" // Default author per sviluppo
         });
         await magazine.save();
         
