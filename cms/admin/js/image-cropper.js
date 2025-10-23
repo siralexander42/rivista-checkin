@@ -322,9 +322,13 @@ class ImageCropper {
         let x = e.clientX - canvasRect.left - this.dragStart.x;
         let y = e.clientY - canvasRect.top - this.dragStart.y;
         
+        // Usa clientWidth/clientHeight invece di width/height per dimensioni accurate
+        const maxX = this.canvas.clientWidth - this.selection.offsetWidth;
+        const maxY = this.canvas.clientHeight - this.selection.offsetHeight;
+        
         // Limiti
-        x = Math.max(0, Math.min(x, canvasRect.width - this.selection.offsetWidth));
-        y = Math.max(0, Math.min(y, canvasRect.height - this.selection.offsetHeight));
+        x = Math.max(0, Math.min(x, maxX));
+        y = Math.max(0, Math.min(y, maxY));
         
         this.updateSelection(x, y, this.selection.offsetWidth, this.selection.offsetHeight);
     }
@@ -405,20 +409,23 @@ class ImageCropper {
         width = Math.max(minSize, width);
         height = Math.max(minSize, height);
         
-        // Limiti canvas - IMPORTANTE: usa la dimensione effettiva del canvas
+        // Limiti canvas - usa clientWidth/clientHeight per dimensioni accurate
+        const maxWidth = this.canvas.clientWidth;
+        const maxHeight = this.canvas.clientHeight;
+        
         x = Math.max(0, x);
         y = Math.max(0, y);
         
         // Non superare i bordi destro e inferiore
-        if (x + width > canvasRect.width) {
-            width = canvasRect.width - x;
+        if (x + width > maxWidth) {
+            width = maxWidth - x;
             if (this.aspectRatio) {
                 height = width / this.aspectRatio;
             }
         }
         
-        if (y + height > canvasRect.height) {
-            height = canvasRect.height - y;
+        if (y + height > maxHeight) {
+            height = maxHeight - y;
             if (this.aspectRatio) {
                 width = height * this.aspectRatio;
             }
@@ -439,14 +446,16 @@ class ImageCropper {
     }
     
     updateCropData() {
-        const canvasRect = this.canvas.getBoundingClientRect();
+        // Usa clientWidth/clientHeight per calcoli accurati
+        const canvasWidth = this.canvas.clientWidth;
+        const canvasHeight = this.canvas.clientHeight;
         
         // Converti a percentuali dell'immagine originale
         this.cropData = {
-            x: (this.selection.offsetLeft / canvasRect.width * 100).toFixed(2),
-            y: (this.selection.offsetTop / canvasRect.height * 100).toFixed(2),
-            width: (this.selection.offsetWidth / canvasRect.width * 100).toFixed(2),
-            height: (this.selection.offsetHeight / canvasRect.height * 100).toFixed(2),
+            x: (this.selection.offsetLeft / canvasWidth * 100).toFixed(2),
+            y: (this.selection.offsetTop / canvasHeight * 100).toFixed(2),
+            width: (this.selection.offsetWidth / canvasWidth * 100).toFixed(2),
+            height: (this.selection.offsetHeight / canvasHeight * 100).toFixed(2),
             unit: '%'
         };
         
@@ -455,20 +464,27 @@ class ImageCropper {
     }
     
     updatePreview() {
-        const canvasRect = this.canvas.getBoundingClientRect();
+        if (!this.previewElement || !this.canvas || !this.selection) return;
         
-        const scaleX = this.imageWidth / canvasRect.width;
-        const scaleY = this.imageHeight / canvasRect.height;
+        // Usa clientWidth/clientHeight per calcoli accurati
+        const canvasWidth = this.canvas.clientWidth;
+        const canvasHeight = this.canvas.clientHeight;
         
-        const cropX = this.selection.offsetLeft * scaleX;
-        const cropY = this.selection.offsetTop * scaleY;
-        const cropWidth = this.selection.offsetWidth * scaleX;
-        const cropHeight = this.selection.offsetHeight * scaleY;
+        // Calcola le coordinate in percentuale
+        const cropXPercent = (this.selection.offsetLeft / canvasWidth) * 100;
+        const cropYPercent = (this.selection.offsetTop / canvasHeight) * 100;
+        const cropWidthPercent = (this.selection.offsetWidth / canvasWidth) * 100;
+        const cropHeightPercent = (this.selection.offsetHeight / canvasHeight) * 100;
         
+        // Crea anteprima usando CSS clip
         this.previewElement.innerHTML = `
-            <div style="width: 100%; height: 0; padding-bottom: ${(cropHeight/cropWidth*100)}%; position: relative; overflow: hidden; background: #f8f9fa;">
+            <div style="width: 100%; height: 0; padding-bottom: ${(cropHeightPercent/cropWidthPercent*100)}%; position: relative; overflow: hidden; background: #f1f5f9; border-radius: 8px;">
                 <img src="${this.imageUrl}" 
-                     style="position: absolute; top: ${-(cropY/cropHeight*100)}%; left: ${-(cropX/cropWidth*100)}%; width: ${(this.imageWidth/cropWidth*100)}%; height: auto;">
+                     style="position: absolute; 
+                            left: -${cropXPercent/(cropWidthPercent/100)}%; 
+                            top: -${cropYPercent/(cropHeightPercent/100)}%; 
+                            width: ${(100/(cropWidthPercent/100))}%; 
+                            height: auto;">
             </div>
         `;
     }
