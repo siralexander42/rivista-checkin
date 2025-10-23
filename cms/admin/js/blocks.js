@@ -1414,6 +1414,7 @@ function initPreviewImageCropper() {
     
     // Distruggi cropper esistente
     if (window.previewImageCropper) {
+        window.previewImageCropper.destroy();
         window.previewImageCropper = null;
     }
     
@@ -1468,6 +1469,7 @@ function initFluidImageCropperByElement(inputElement) {
     
     // Distruggi cropper esistente
     if (window.fluidCroppers[index]) {
+        window.fluidCroppers[index].destroy();
         delete window.fluidCroppers[index];
     }
     
