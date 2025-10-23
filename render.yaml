@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: checkin-cms-backend
+    runtime: node
+    region: frankfurt
+    plan: free
+    buildCommand: cd cms/backend && npm install
+    startCommand: cd cms/backend && node server.js
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PORT
+        value: 3001
