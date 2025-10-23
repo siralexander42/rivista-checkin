@@ -94,104 +94,27 @@ document.addEventListener('DOMContentLoaded', () => {
     initParallaxHero();
     initSmoothScroll();
     initNavbarScroll();
-    
-    // Ritardiamo l'inizializzazione dei counter per dare tempo al DOM di caricarsi completamente
-    setTimeout(() => {
-        console.log('⏰ Inizializzazione counter ritardata');
-        initCounterAnimation();
-    }, 500);
-    
+    initCounterAnimation();
     initImageControls();
     initHolographicEffect();
-    initTypewriter();
 });
-
-// Typewriter effect for hero subtitle
-function initTypewriter() {
-    const subtitle = document.querySelector('.hero-subtitle');
-    const description = document.querySelector('.hero-description');
-    if (!subtitle) {
-        console.log('❌ Subtitle non trovato');
-        return;
-    }
-    
-    // Prendi il testo dal data attribute
-    const text = subtitle.getAttribute('data-text') || subtitle.textContent.trim();
-    
-    // Svuota completamente il contenuto
-    subtitle.innerHTML = '';
-    
-    console.log('🎬 Typewriter pronto. Aspetto fine loading...');
-    
-    // ASPETTA CHE IL LOADING SIA FINITO
-    window.addEventListener('loadingComplete', () => {
-        console.log('📝 Loading finito! Inizio a scrivere:', text);
-        
-        subtitle.classList.add('typing');
-        let charIndex = 0;
-        
-        function typeChar() {
-            if (charIndex < text.length) {
-                subtitle.textContent += text.charAt(charIndex);
-                charIndex++;
-                setTimeout(typeChar, 50); // 50ms per carattere
-            } else {
-                console.log('✅ Scrittura completata! IL TESTO RESTA VISIBILE PER SEMPRE');
-                
-                // IMPORTANTE: Aggiungi classe 'typed' per mantenerlo visibile
-                subtitle.classList.add('typed');
-                
-                // Rimuovi solo il cursore lampeggiante dopo 1.5 secondi
-                setTimeout(() => {
-                    subtitle.classList.remove('typing');
-                    subtitle.style.borderRight = 'none';
-                    
-                    // Mostra la descrizione
-                    if (description) {
-                        description.classList.add('visible');
-                        console.log('👁️ Descrizione mostrata');
-                    }
-                }, 1500);
-            }
-        }
-        
-        // Inizia a scrivere dopo 800ms dalla fine del loading
-        setTimeout(typeChar, 800);
-    }, { once: true });
-}
 
 // Counter animato per i numeri
 function initCounterAnimation() {
     const counters = document.querySelectorAll('.detail-item strong');
-    console.log('🔢 Counters trovati:', counters.length);
-    
-    if (counters.length === 0) {
-        console.log('⚠️ Nessun counter trovato!');
-        return;
-    }
-    
-    counters.forEach((counter, index) => {
-        console.log(`Counter ${index}:`, counter.textContent, counter);
-    });
     
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            console.log('👀 Observer triggered:', entry.target.textContent, 'isIntersecting:', entry.isIntersecting, 'intersectionRatio:', entry.intersectionRatio);
             if (entry.isIntersecting && !entry.target.classList.contains('counted')) {
-                console.log('✅ Animating:', entry.target.textContent);
                 entry.target.classList.add('counted');
                 animateCounter(entry.target);
             }
         });
     }, {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
+        threshold: 0.5
     });
     
-    counters.forEach(counter => {
-        observer.observe(counter);
-        console.log('👁️ Observer attached to:', counter.textContent);
-    });
+    counters.forEach(counter => observer.observe(counter));
 }
 
 function animateCounter(element) {
@@ -199,12 +122,7 @@ function animateCounter(element) {
     const hasPlus = text.includes('+');
     const number = parseInt(text.replace(/\D/g, ''));
     
-    console.log('🎬 Starting animation for:', text, 'Extracted number:', number);
-    
-    if (isNaN(number)) {
-        console.log('❌ NaN detected for:', text);
-        return;
-    }
+    if (isNaN(number)) return;
     
     const duration = 2500;
     const steps = 80;
