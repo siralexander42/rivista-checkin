@@ -1510,13 +1510,39 @@ app.post('/api/admin/magazines/:id/generate-html', authenticateToken, async (req
             .map(block => generateBlockHTML(block))
             .join('\n\n');
         
-        // Leggi il CSS inline per l'anteprima
+        // Leggi i CSS inline per l'anteprima
         const cssPath = path.join(__dirname, '../../assets/css/magazine-generated.css');
+        const cremonaCssPath = path.join(__dirname, '../../assets/css/cremona-scroll.css');
+        const mainCssPath = path.join(__dirname, '../../assets/css/main.css');
+        const cremonaJsPath = path.join(__dirname, '../../assets/js/cremona-scroll.js');
+        
         let inlineCSS = '';
+        let cremonaCSS = '';
+        let mainCSS = '';
+        let cremonaJS = '';
+        
         try {
             inlineCSS = await fs.readFile(cssPath, 'utf8');
         } catch (err) {
-            console.warn('CSS file not found, using empty styles');
+            console.warn('magazine-generated.css not found');
+        }
+        
+        try {
+            cremonaCSS = await fs.readFile(cremonaCssPath, 'utf8');
+        } catch (err) {
+            console.warn('cremona-scroll.css not found');
+        }
+        
+        try {
+            mainCSS = await fs.readFile(mainCssPath, 'utf8');
+        } catch (err) {
+            console.warn('main.css not found');
+        }
+        
+        try {
+            cremonaJS = await fs.readFile(cremonaJsPath, 'utf8');
+        } catch (err) {
+            console.warn('cremona-scroll.js not found');
         }
         
         // Template HTML completo con CSS inline
@@ -1556,6 +1582,13 @@ app.post('/api/admin/magazines/:id/generate-html', authenticateToken, async (req
             background: #ffffff;
         }
         
+        /* Main CSS */
+        ${mainCSS}
+        
+        /* Cremona Scroll CSS */
+        ${cremonaCSS}
+        
+        /* Magazine Generated CSS */
         ${inlineCSS}
     </style>
 </head>
@@ -1663,6 +1696,11 @@ ${blocksHTML}
                 }
             });
         });
+    </script>
+    
+    <!-- Cremona Scroll Script -->
+    <script>
+        ${cremonaJS}
     </script>
 </body>
 </html>`;
