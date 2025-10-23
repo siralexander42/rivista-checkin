@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modalità Sviluppatore - CHECK-IN CMS</title>
+    <link rel="icon" type="image/png" href="https://www.italiaatavola.net/images/contenutiarticoli/logo_check-in-favicon.png">
+    <link rel="stylesheet" href="css/admin.css?v=8.0">
+    <link rel="stylesheet" href="css/image-cropper.css?v=1.0">
+    <style>
+        .dev-mode-badge {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-left: 12px;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+        }
+        
+        .code-editor {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            white-space: pre;
+            border: 1px solid rgba(60, 61, 143, 0.2);
+        }
+        
+        .json-viewer {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .block-preview-card {
+            background: white;
+            border: 1.5px solid rgba(60, 61, 143, 0.12);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .block-preview-card:hover {
+            box-shadow: 0 4px 12px rgba(60, 61, 143, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .block-type-label {
+            display: inline-block;
+            padding: 4px 10px;
+            background: linear-gradient(135deg, rgba(211, 228, 252, 0.5) 0%, rgba(232, 241, 253, 0.5) 100%);
+            border: 1px solid rgba(60, 61, 143, 0.15);
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .magazine-selector {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            border: 1.5px solid rgba(60, 61, 143, 0.12);
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="https://www.italiaatavola.net/images/testate/checkin-testata-hd.svg" alt="CHECK-IN" style="width: 100%; max-width: 180px; filter: brightness(0) invert(1);">
+                <p id="welcomeMessage" style="color: rgba(255, 255, 255, 0.9); font-size: 12px; margin-top: 12px; font-weight: 500; letter-spacing: 0.5px; min-height: 18px;"></p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item">
+                    <span>Dashboard</span>
+                </a>
+                <a href="magazines.html" class="nav-item">
+                    <span>Riviste</span>
+                </a>
+                <a href="#" class="nav-item" id="usersNavItem">
+                    <span>Utenti</span>
+                </a>
+                <a href="logs.html" class="nav-item">
+                    <span>Log Sistema</span>
+                </a>
+                <a href="developer.html" class="nav-item active">
+                    <span>Modalità Sviluppatore</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button onclick="logout()" class="btn btn-secondary btn-full">
+                    Logout
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <div>
+                    <h1>⚙️ Modalità Sviluppatore <span class="dev-mode-badge">DEV MODE</span></h1>
+                    <p>Gestisci blocchi avanzati e configurazioni del sistema</p>
+                </div>
+            </div>
+
+            <!-- Magazine Selector -->
+            <div class="magazine-selector">
+                <label style="font-weight: 600; margin-bottom: 12px; display: block;">📚 Seleziona Rivista</label>
+                <select id="magazineSelect" class="form-control" style="max-width: 400px;">
+                    <option value="">Caricamento riviste...</option>
+                </select>
+            </div>
+
+            <!-- Tabs -->
+            <div style="margin-bottom: 24px; border-bottom: 2px solid var(--border-light);">
+                <div style="display: flex; gap: 8px;">
+                    <button class="tab-btn active" data-tab="blocks">
+                        📦 Blocchi
+                    </button>
+                    <button class="tab-btn" data-tab="json">
+                        🔧 JSON Editor
+                    </button>
+                    <button class="tab-btn" data-tab="create">
+                        ➕ Crea Blocco
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab: Blocchi -->
+            <div class="tab-content active" data-tab="blocks">
+                <div id="blocksList">
+                    <div style="text-align: center; padding: 60px 20px; color: var(--text-light);">
+                        <div style="font-size: 64px; margin-bottom: 16px;">📦</div>
+                        <p>Seleziona una rivista per vedere i blocchi</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: JSON Editor -->
+            <div class="tab-content" data-tab="json">
+                <div style="background: white; padding: 24px; border-radius: 12px; border: 1.5px solid rgba(60, 61, 143, 0.12);">
+                    <h3 style="margin-bottom: 16px;">JSON Completo della Rivista</h3>
+                    <div class="json-viewer">
+                        <pre class="code-editor" id="jsonEditor">{
+  "message": "Seleziona una rivista per vedere il JSON"
+}</pre>
+                    </div>
+                    <div style="margin-top: 16px; display: flex; gap: 12px;">
+                        <button class="btn btn-secondary" onclick="copyJSON()">
+                            📋 Copia JSON
+                        </button>
+                        <button class="btn btn-primary" onclick="downloadJSON()">
+                            💾 Scarica JSON
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Crea Blocco -->
+            <div class="tab-content" data-tab="create">
+                <div style="background: white; padding: 24px; border-radius: 12px; border: 1.5px solid rgba(60, 61, 143, 0.12);">
+                    <h3 style="margin-bottom: 16px;">Crea Nuovo Blocco</h3>
+                    <p style="color: var(--text-light); margin-bottom: 24px;">
+                        Questa funzionalità ti permetterà di creare blocchi direttamente dal JSON o con un editor visuale avanzato.
+                    </p>
+                    <div style="text-align: center; padding: 40px; background: var(--bg-light); border-radius: 8px;">
+                        <div style="font-size: 48px; margin-bottom: 12px;">🚧</div>
+                        <p style="font-weight: 600;">In sviluppo...</p>
+                        <p style="font-size: 13px; color: var(--text-light); margin-top: 8px;">
+                            Per ora usa l'editor normale nella pagina della rivista
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        let currentMagazine = null;
+        let magazines = [];
+
+        // Carica riviste
+        async function loadMagazines() {
+            try {
+                const response = await apiRequest('/admin/magazines');
+                magazines = response.magazines || [];
+                
+                const select = document.getElementById('magazineSelect');
+                select.innerHTML = '<option value="">Seleziona una rivista...</option>';
+                
+                magazines.forEach(mag => {
+                    const option = document.createElement('option');
+                    option.value = mag._id;
+                    option.textContent = `${mag.name} (${mag.blocks?.length || 0} blocchi)`;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Errore caricamento riviste:', error);
+                alert('Errore nel caricamento delle riviste');
+            }
+        }
+
+        // Cambia rivista
+        document.getElementById('magazineSelect')?.addEventListener('change', async (e) => {
+            const magazineId = e.target.value;
+            if (!magazineId) {
+                currentMagazine = null;
+                updateBlocksList();
+                updateJSON();
+                return;
+            }
+
+            try {
+                const response = await apiRequest(`/admin/magazines/${magazineId}`);
+                currentMagazine = response.magazine;
+                updateBlocksList();
+                updateJSON();
+            } catch (error) {
+                console.error('Errore caricamento rivista:', error);
+                alert('Errore nel caricamento della rivista');
+            }
+        });
+
+        // Aggiorna lista blocchi
+        function updateBlocksList() {
+            const container = document.getElementById('blocksList');
+            
+            if (!currentMagazine || !currentMagazine.blocks || currentMagazine.blocks.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 60px 20px; color: var(--text-light);">
+                        <div style="font-size: 64px; margin-bottom: 16px;">📦</div>
+                        <p>${currentMagazine ? 'Nessun blocco in questa rivista' : 'Seleziona una rivista per vedere i blocchi'}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = currentMagazine.blocks.map((block, index) => `
+                <div class="block-preview-card">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                        <div>
+                            <span class="block-type-label">${block.type}</span>
+                            <h4 style="margin: 8px 0 4px 0; font-size: 16px;">${block.title || block.tag || 'Blocco ' + (index + 1)}</h4>
+                            ${block.subtitle ? `<p style="color: var(--text-light); font-size: 13px; margin: 0;">${block.subtitle}</p>` : ''}
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn btn-sm btn-secondary" onclick="editBlock('${block._id}')">
+                                ✏️ Modifica
+                            </button>
+                            <button class="btn btn-sm" onclick="viewBlockJSON('${block._id}')" style="background: #1e1e1e; color: white;">
+                                {} JSON
+                            </button>
+                        </div>
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-light);">
+                        <strong>ID:</strong> <code style="background: var(--bg-light); padding: 2px 6px; border-radius: 4px; font-family: monospace;">${block._id}</code>
+                        <span style="margin: 0 12px;">•</span>
+                        <strong>Ordine:</strong> ${block.order}
+                        <span style="margin: 0 12px;">•</span>
+                        <strong>Visibile:</strong> ${block.visible !== false ? '✅' : '❌'}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Aggiorna JSON
+        function updateJSON() {
+            const editor = document.getElementById('jsonEditor');
+            if (!currentMagazine) {
+                editor.textContent = JSON.stringify({message: "Seleziona una rivista"}, null, 2);
+                return;
+            }
+            editor.textContent = JSON.stringify(currentMagazine, null, 2);
+        }
+
+        // Modifica blocco (apre la pagina della rivista)
+        function editBlock(blockId) {
+            window.location.href = `blocks.html?id=${currentMagazine._id}#block-${blockId}`;
+        }
+
+        // Visualizza JSON del blocco
+        function viewBlockJSON(blockId) {
+            const block = currentMagazine.blocks.find(b => b._id === blockId);
+            if (!block) return;
+            
+            const jsonStr = JSON.stringify(block, null, 2);
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>JSON Blocco</h2>
+                        <button class="modal-close" onclick="this.closest('.modal').remove()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <pre class="code-editor" style="max-height: 500px; overflow-y: auto;">${jsonStr}</pre>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" onclick="navigator.clipboard.writeText(\`${jsonStr.replace(/`/g, '\\`')}\`); alert('✅ JSON copiato!')">
+                            📋 Copia JSON
+                        </button>
+                        <button class="btn btn-primary" onclick="this.closest('.modal').remove()">
+                            Chiudi
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        // Copia JSON completo
+        function copyJSON() {
+            const json = document.getElementById('jsonEditor').textContent;
+            navigator.clipboard.writeText(json).then(() => {
+                alert('✅ JSON copiato negli appunti!');
+            });
+        }
+
+        // Scarica JSON
+        function downloadJSON() {
+            if (!currentMagazine) return;
+            
+            const json = JSON.stringify(currentMagazine, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentMagazine.name.replace(/\s+/g, '_')}_${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tab = btn.dataset.tab;
+                
+                // Update buttons
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Update content
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                document.querySelector(`.tab-content[data-tab="${tab}"]`).classList.add('active');
+            });
+        });
+
+        // Init
+        loadMagazines();
+        
+        // Welcome message
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        document.getElementById('welcomeMessage').textContent = user.username ? `Developer: ${user.username}` : '';
+        
+        // Users nav
+        document.getElementById('usersNavItem').addEventListener('click', (e) => {
+            e.preventDefault();
+            if (user.role === 'super-admin') {
+                window.location.href = 'users.html';
+            } else {
+                alert('⚠️ Accesso limitato ai Super Admin');
+            }
+        });
+    </script>
+
+    <style>
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-btn:hover {
+            color: var(--primary);
+            background: rgba(60, 61, 143, 0.05);
+        }
+        
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</body>
+</html>
