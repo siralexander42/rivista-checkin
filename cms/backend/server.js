@@ -1495,8 +1495,8 @@ app.put('/api/admin/magazines/:id', authenticateToken, async (req, res) => {
     }
 });
 
-// POST - Anteprima blocco singolo
-app.post('/api/admin/blocks/preview', authenticateToken, async (req, res) => {
+// POST - Anteprima blocco singolo (senza autenticazione per facilità di sviluppo)
+app.post('/api/admin/blocks/preview', async (req, res) => {
     try {
         const { type, data } = req.body;
         
