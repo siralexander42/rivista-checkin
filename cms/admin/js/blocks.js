@@ -1164,9 +1164,20 @@ async function updateBlockPreview() {
         }
     } catch (error) {
         console.error('Errore anteprima:', error);
+        
+        // Fallback: mostra anteprima semplice senza backend
+        const simplePreview = generateSimplePreview(blockType, blockData);
         previewContainer.innerHTML = `
-            <div style="background: #fee; border-radius: 12px; padding: 20px; text-align: center; color: #c00;">
-                <p>⚠️ Errore anteprima: ${error.message}</p>
+            <div style="position: sticky; top: 20px;">
+                <div style="padding: 12px 20px; background: #f59e0b; color: white; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h3 style="margin: 0; font-size: 16px;">📝 Anteprima Semplice</h3>
+                        <p style="margin: 0; font-size: 12px; opacity: 0.8;">Backend non disponibile</p>
+                    </div>
+                </div>
+                <div style="background: #f1f5f9; border-radius: 0 0 12px 12px; padding: 20px;">
+                    ${simplePreview}
+                </div>
             </div>
         `;
     }
@@ -1259,6 +1270,51 @@ function escapeHtml(html) {
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
+}
+
+// Anteprima semplice senza backend (fallback)
+function generateSimplePreview(blockType, blockData) {
+    switch (blockType) {
+        case 'cover':
+            return `
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px; border-radius: 8px; text-align: center;">
+                    <h1 style="margin: 0 0 10px 0; font-size: 28px;">${blockData.title || 'Titolo Copertina'}</h1>
+                    ${blockData.subtitle ? `<h2 style="margin: 0 0 20px 0; font-size: 18px; opacity: 0.9;">${blockData.subtitle}</h2>` : ''}
+                    ${blockData.content ? `<p style="margin: 0; font-size: 14px; opacity: 0.8;">${blockData.content.substring(0, 100)}...</p>` : ''}
+                </div>
+            `;
+        case 'article':
+            return `
+                <div style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea;">
+                    <h3 style="margin: 0 0 10px 0; color: #333;">${blockData.title || 'Titolo Articolo'}</h3>
+                    ${blockData.content ? `<p style="margin: 0; color: #666; line-height: 1.6;">${blockData.content.substring(0, 150)}...</p>` : ''}
+                </div>
+            `;
+        case 'hero':
+            return `
+                <div style="background: #f8fafc; padding: 30px; border-radius: 8px; text-align: center; border: 2px dashed #cbd5e0;">
+                    <h2 style="margin: 0 0 10px 0; color: #2d3748;">${blockData.title || 'Hero Title'}</h2>
+                    ${blockData.subtitle ? `<p style="margin: 0; color: #718096;">${blockData.subtitle}</p>` : ''}
+                </div>
+            `;
+        case 'fluid':
+            return `
+                <div style="background: linear-gradient(45deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 25px; border-radius: 8px;">
+                    <div style="display: inline-block; background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 12px; margin-bottom: 15px;">
+                        ${blockData.tag || 'TAG'}
+                    </div>
+                    <h2 style="margin: 0 0 10px 0; font-size: 24px;">${blockData.title || 'Fluid Block'}</h2>
+                    ${blockData.intro ? `<p style="margin: 0; opacity: 0.9; font-size: 14px;">${blockData.intro.substring(0, 100)}...</p>` : ''}
+                </div>
+            `;
+        default:
+            return `
+                <div style="background: #e5e7eb; padding: 20px; border-radius: 8px; text-align: center; color: #6b7280;">
+                    <p style="margin: 0;">📦 Anteprima tipo: ${blockType}</p>
+                    ${blockData.title ? `<h3 style="margin: 10px 0 0 0; color: #374151;">${blockData.title}</h3>` : ''}
+                </div>
+            `;
+    }
 }
 
 // Mantieni updateFluidPreview come alias per retrocompatibilità
