@@ -109,6 +109,10 @@ class ImageCropper {
             const btn = e.target.closest('.cropper-ratio-btn');
             if (!btn) return;
             
+            // Previeni la propagazione dell'evento
+            e.preventDefault();
+            e.stopPropagation();
+            
             const ratio = btn.dataset.ratio;
             that.setAspectRatio(ratio);
             
