@@ -165,32 +165,31 @@ class ImageCropper {
     
     renderCanvas() {
         this.canvasWrapper.innerHTML = `
-            <button class="cropper-reset-btn" onclick="this.closest('.image-cropper-container').imageCropper.resetSelection()">
+            <button class="cropper-reset-btn" id="cropperResetBtn">
                 🔄 Reset
             </button>
             <div class="cropper-canvas">
-                <img src="${this.imageUrl}" class="cropper-image" draggable="false">
-                <div class="cropper-overlay">
-                    <div class="cropper-selection">
-                        <div class="cropper-handle nw"></div>
-                        <div class="cropper-handle n"></div>
-                        <div class="cropper-handle ne"></div>
-                        <div class="cropper-handle w"></div>
-                        <div class="cropper-handle e"></div>
-                        <div class="cropper-handle sw"></div>
-                        <div class="cropper-handle s"></div>
-                        <div class="cropper-handle se"></div>
-                    </div>
+                <img src="${this.imageUrl}" class="cropper-image" draggable="false" id="cropperImage">
+                <div class="cropper-selection" id="cropperSelection" style="position: absolute; border: 3px solid #3C3D8F; cursor: move;">
+                    <div class="cropper-handle nw" style="position: absolute; top: -6px; left: -6px;"></div>
+                    <div class="cropper-handle n" style="position: absolute; top: -6px; left: 50%; margin-left: -6px;"></div>
+                    <div class="cropper-handle ne" style="position: absolute; top: -6px; right: -6px;"></div>
+                    <div class="cropper-handle w" style="position: absolute; top: 50%; left: -6px; margin-top: -6px;"></div>
+                    <div class="cropper-handle e" style="position: absolute; top: 50%; right: -6px; margin-top: -6px;"></div>
+                    <div class="cropper-handle sw" style="position: absolute; bottom: -6px; left: -6px;"></div>
+                    <div class="cropper-handle s" style="position: absolute; bottom: -6px; left: 50%; margin-left: -6px;"></div>
+                    <div class="cropper-handle se" style="position: absolute; bottom: -6px; right: -6px;"></div>
                 </div>
             </div>
         `;
         
         this.canvas = this.canvasWrapper.querySelector('.cropper-canvas');
-        this.imageElement = this.canvas.querySelector('.cropper-image');
-        this.selection = this.canvas.querySelector('.cropper-selection');
+        this.imageElement = document.getElementById('cropperImage');
+        this.selection = document.getElementById('cropperSelection');
         
-        // Store reference for reset button
-        this.canvasWrapper.querySelector('.image-cropper-container').imageCropper = this;
+        // Reset button
+        const resetBtn = document.getElementById('cropperResetBtn');
+        resetBtn.addEventListener('click', () => this.resetSelection());
         
         this.attachCanvasEvents();
     }
@@ -232,85 +231,89 @@ class ImageCropper {
         console.log('attachCanvasEvents chiamata');
         console.log('selection:', this.selection);
         
-        // Selection drag
-        this.selection.addEventListener('mousedown', (e) => {
-            console.log('mousedown su selection, target:', e.target);
+        const that = this; // Mantieni riferimento a this
+        
+        // Drag della selezione
+        this.selection.onmousedown = function(e) {
+            console.log('mousedown su selection');
+            
+            // Se clicco su un handle, non fare drag
             if (e.target.classList.contains('cropper-handle')) {
-                console.log('Click su handle, skip drag');
+                console.log('Click su handle, gestito separatamente');
                 return;
             }
             
-            console.log('Inizio drag');
-            this.isDragging = true;
-            const canvasRect = this.canvas.getBoundingClientRect();
-            this.dragStart = {
-                x: e.clientX - canvasRect.left - this.selection.offsetLeft,
-                y: e.clientY - canvasRect.top - this.selection.offsetTop
+            console.log('Inizio drag della selezione');
+            that.isDragging = true;
+            const canvasRect = that.canvas.getBoundingClientRect();
+            that.dragStart = {
+                x: e.clientX - canvasRect.left - that.selection.offsetLeft,
+                y: e.clientY - canvasRect.top - that.selection.offsetTop
             };
             e.preventDefault();
-            e.stopPropagation();
-        });
+            return false;
+        };
         
-        // Handle resize
+        // Handle resize - uno per uno
         const handles = this.selection.querySelectorAll('.cropper-handle');
         console.log('Handle trovati:', handles.length);
         
         handles.forEach(handle => {
-            handle.addEventListener('mousedown', (e) => {
-                console.log('mousedown su handle:', handle.className);
-                this.isResizing = true;
-                this.resizeHandle = handle.classList.contains('nw') ? 'nw' :
-                                   handle.classList.contains('ne') ? 'ne' :
-                                   handle.classList.contains('sw') ? 'sw' :
-                                   handle.classList.contains('se') ? 'se' :
-                                   handle.classList.contains('n') ? 'n' :
-                                   handle.classList.contains('s') ? 's' :
-                                   handle.classList.contains('w') ? 'w' : 'e';
+            handle.onmousedown = function(e) {
+                console.log('mousedown su handle:', this.className);
+                that.isResizing = true;
                 
-                console.log('resizeHandle:', this.resizeHandle);
+                // Identifica quale handle
+                if (this.classList.contains('nw')) that.resizeHandle = 'nw';
+                else if (this.classList.contains('ne')) that.resizeHandle = 'ne';
+                else if (this.classList.contains('sw')) that.resizeHandle = 'sw';
+                else if (this.classList.contains('se')) that.resizeHandle = 'se';
+                else if (this.classList.contains('n')) that.resizeHandle = 'n';
+                else if (this.classList.contains('s')) that.resizeHandle = 's';
+                else if (this.classList.contains('w')) that.resizeHandle = 'w';
+                else if (this.classList.contains('e')) that.resizeHandle = 'e';
                 
-                const canvasRect = this.canvas.getBoundingClientRect();
-                this.dragStart = {
+                console.log('resizeHandle:', that.resizeHandle);
+                
+                const canvasRect = that.canvas.getBoundingClientRect();
+                that.dragStart = {
                     x: e.clientX,
                     y: e.clientY,
                     canvasX: canvasRect.left,
                     canvasY: canvasRect.top,
-                    selectionX: this.selection.offsetLeft,
-                    selectionY: this.selection.offsetTop,
-                    selectionWidth: this.selection.offsetWidth,
-                    selectionHeight: this.selection.offsetHeight
+                    selectionX: that.selection.offsetLeft,
+                    selectionY: that.selection.offsetTop,
+                    selectionWidth: that.selection.offsetWidth,
+                    selectionHeight: that.selection.offsetHeight
                 };
+                
                 e.preventDefault();
                 e.stopPropagation();
-            });
+                return false;
+            };
         });
         
-        // Mouse move - Usa bind per mantenere il contesto
-        this.handleMouseMove = this.handleMouseMove.bind(this);
-        this.handleMouseUp = this.handleMouseUp.bind(this);
+        // Mouse move globale
+        document.onmousemove = function(e) {
+            if (that.isDragging) {
+                console.log('Dragging...');
+                that.handleDrag(e);
+            } else if (that.isResizing) {
+                console.log('Resizing...', that.resizeHandle);
+                that.handleResize(e);
+            }
+        };
         
-        document.addEventListener('mousemove', this.handleMouseMove);
-        document.addEventListener('mouseup', this.handleMouseUp);
+        // Mouse up globale
+        document.onmouseup = function() {
+            if (that.isDragging) console.log('Fine drag');
+            if (that.isResizing) console.log('Fine resize');
+            that.isDragging = false;
+            that.isResizing = false;
+            that.resizeHandle = null;
+        };
         
-        console.log('Event listeners attaccati');
-    }
-    
-    handleMouseMove(e) {
-        if (this.isDragging) {
-            console.log('Dragging...');
-            this.handleDrag(e);
-        } else if (this.isResizing) {
-            console.log('Resizing...');
-            this.handleResize(e);
-        }
-    }
-    
-    handleMouseUp() {
-        if (this.isDragging) console.log('Fine drag');
-        if (this.isResizing) console.log('Fine resize');
-        this.isDragging = false;
-        this.isResizing = false;
-        this.resizeHandle = null;
+        console.log('Event listeners attaccati con onmousedown');
     }
     
     handleDrag(e) {
