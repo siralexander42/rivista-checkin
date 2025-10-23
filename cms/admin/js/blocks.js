@@ -1131,16 +1131,10 @@ async function updateBlockPreview() {
     
     try {
         // Chiama il backend per generare l'HTML con i CSS reali
-        const response = await fetch(`${API_BASE_URL}/admin/blocks/preview`, {
+        const result = await apiRequest('/admin/blocks/preview', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
             body: JSON.stringify({ type: blockType, data: blockData })
         });
-        
-        const result = await response.json();
         
         if (result.success && result.html) {
             // Crea iframe con HTML reale e CSS della rivista
@@ -1162,6 +1156,7 @@ async function updateBlockPreview() {
         previewContainer.innerHTML = `
             <div style="position: sticky; top: 20px; background: #fee; border-radius: 12px; padding: 20px; text-align: center; color: #c00;">
                 <p style="margin: 0;">⚠️ Errore nel caricamento dell'anteprima</p>
+                <small style="display: block; margin-top: 8px; font-size: 12px;">${error.message || 'Errore sconosciuto'}</small>
             </div>
         `;
     }
