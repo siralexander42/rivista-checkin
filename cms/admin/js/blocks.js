@@ -1274,44 +1274,123 @@ function escapeHtml(html) {
 
 // Anteprima semplice senza backend (fallback)
 function generateSimplePreview(blockType, blockData) {
+    console.log('Generando anteprima per:', blockType, blockData); // Debug
+    
     switch (blockType) {
         case 'cover':
+            const bgImage = blockData.images && blockData.images.length > 0 ? blockData.images[0] : null;
+            const bgStyle = bgImage 
+                ? `background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.3)), url('${bgImage}') center/cover;`
+                : 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);';
+            
             return `
-                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px; border-radius: 8px; text-align: center;">
-                    <h1 style="margin: 0 0 10px 0; font-size: 28px;">${blockData.title || 'Titolo Copertina'}</h1>
-                    ${blockData.subtitle ? `<h2 style="margin: 0 0 20px 0; font-size: 18px; opacity: 0.9;">${blockData.subtitle}</h2>` : ''}
-                    ${blockData.content ? `<p style="margin: 0; font-size: 14px; opacity: 0.8;">${blockData.content.substring(0, 100)}...</p>` : ''}
+                <div style="${bgStyle} color: white; padding: 40px; border-radius: 8px; text-align: center; min-height: 300px; display: flex; flex-direction: column; justify-content: center;">
+                    <h1 style="margin: 0 0 15px 0; font-size: 32px; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">${blockData.title || 'Inserisci il titolo'}</h1>
+                    ${blockData.subtitle ? `<h2 style="margin: 0 0 20px 0; font-size: 20px; opacity: 0.9; text-shadow: 1px 1px 2px rgba(0,0,0,0.7);">${blockData.subtitle}</h2>` : '<p style="margin: 0 0 20px 0; font-style: italic; opacity: 0.7;">Aggiungi un sottotitolo...</p>'}
+                    ${blockData.content ? `<p style="margin: 0; font-size: 16px; opacity: 0.8; max-width: 600px; margin: 0 auto; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">${blockData.content}</p>` : '<p style="margin: 0; font-style: italic; opacity: 0.6;">Aggiungi una descrizione...</p>'}
+                    ${blockData.images && blockData.images.length > 1 ? `<div style="margin-top: 20px; font-size: 14px; opacity: 0.8;">📸 ${blockData.images.length} immagini di sfondo</div>` : ''}
                 </div>
             `;
+        
         case 'article':
             return `
-                <div style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea;">
-                    <h3 style="margin: 0 0 10px 0; color: #333;">${blockData.title || 'Titolo Articolo'}</h3>
-                    ${blockData.content ? `<p style="margin: 0; color: #666; line-height: 1.6;">${blockData.content.substring(0, 150)}...</p>` : ''}
-                </div>
+                <article style="background: white; padding: 30px; border-radius: 8px; border-left: 4px solid #667eea; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <h3 style="margin: 0 0 15px 0; color: #333; font-size: 24px; line-height: 1.3;">${blockData.title || 'Inserisci il titolo dell\'articolo'}</h3>
+                    ${blockData.subtitle ? `<h4 style="margin: 0 0 15px 0; color: #667eea; font-size: 18px; font-weight: 500;">${blockData.subtitle}</h4>` : ''}
+                    ${blockData.content ? `<p style="margin: 0; color: #555; line-height: 1.6; font-size: 16px;">${blockData.content}</p>` : '<p style="margin: 0; color: #999; font-style: italic;">Scrivi qui il contenuto dell\'articolo...</p>'}
+                    ${blockData.image ? `<div style="margin-top: 20px; text-align: center;"><img src="${blockData.image}" style="max-width: 100%; height: 200px; object-fit: cover; border-radius: 8px; border: 2px solid #f0f0f0;" alt="Immagine articolo"></div>` : '<div style="margin-top: 20px; padding: 40px; background: #f8f9fa; border-radius: 8px; text-align: center; color: #999; border: 2px dashed #ddd;">📸 Aggiungi un\'immagine</div>'}
+                </article>
             `;
+        
         case 'hero':
             return `
-                <div style="background: #f8fafc; padding: 30px; border-radius: 8px; text-align: center; border: 2px dashed #cbd5e0;">
-                    <h2 style="margin: 0 0 10px 0; color: #2d3748;">${blockData.title || 'Hero Title'}</h2>
-                    ${blockData.subtitle ? `<p style="margin: 0; color: #718096;">${blockData.subtitle}</p>` : ''}
-                </div>
+                <section style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 50px 30px; border-radius: 8px; text-align: center; color: white;">
+                    <h2 style="margin: 0 0 15px 0; font-size: 36px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">${blockData.title || 'Titolo Hero'}</h2>
+                    ${blockData.subtitle ? `<p style="margin: 0 0 25px 0; font-size: 20px; opacity: 0.9; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">${blockData.subtitle}</p>` : '<p style="margin: 0 0 25px 0; font-style: italic; opacity: 0.7;">Aggiungi un sottotitolo...</p>'}
+                    ${blockData.buttonText ? `<button style="background: white; color: #f5576c; padding: 12px 30px; border: none; border-radius: 25px; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">${blockData.buttonText}</button>` : '<button style="background: rgba(255,255,255,0.3); color: white; padding: 12px 30px; border: 2px dashed white; border-radius: 25px; font-size: 16px; cursor: pointer;">+ Aggiungi bottone</button>'}
+                </section>
             `;
+        
         case 'fluid':
             return `
-                <div style="background: linear-gradient(45deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 25px; border-radius: 8px;">
-                    <div style="display: inline-block; background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 12px; margin-bottom: 15px;">
-                        ${blockData.tag || 'TAG'}
+                <div style="background: linear-gradient(45deg, #667eea 0%, #764ba2 100%); color: white; padding: 35px; border-radius: 12px; position: relative; overflow: hidden;">
+                    <div style="position: relative; z-index: 2;">
+                        <div style="display: inline-block; background: rgba(255,255,255,0.25); padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">
+                            ${blockData.tag || 'TAG'}
+                        </div>
+                        <h2 style="margin: 0 0 15px 0; font-size: 28px; line-height: 1.2;">${blockData.title || 'Titolo Parallasse Block'}</h2>
+                        ${blockData.intro ? `<p style="margin: 0 0 20px 0; font-size: 16px; opacity: 0.9; line-height: 1.5;">${blockData.intro}</p>` : '<p style="margin: 0 0 20px 0; font-style: italic; opacity: 0.7;">Aggiungi un\'introduzione...</p>'}
+                        ${blockData.previewImage ? `<div style="margin-top: 20px; border-radius: 8px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.3);"><img src="${blockData.previewImage}" style="width: 100%; height: 200px; object-fit: cover;" alt="Anteprima"></div>` : '<div style="margin-top: 20px; padding: 60px 20px; background: rgba(255,255,255,0.1); border-radius: 8px; text-align: center; border: 2px dashed rgba(255,255,255,0.3);">📸 Aggiungi foto di anteprima</div>'}
                     </div>
-                    <h2 style="margin: 0 0 10px 0; font-size: 24px;">${blockData.title || 'Fluid Block'}</h2>
-                    ${blockData.intro ? `<p style="margin: 0; opacity: 0.9; font-size: 14px;">${blockData.intro.substring(0, 100)}...</p>` : ''}
+                    <div style="position: absolute; top: -50%; right: -20%; width: 300px; height: 300px; background: rgba(255,255,255,0.1); border-radius: 50%; z-index: 1;"></div>
                 </div>
             `;
+        
+        case 'text':
+            return `
+                <div style="background: white; padding: 25px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    ${blockData.title ? `<h3 style="margin: 0 0 15px 0; color: #2d3748; font-size: 22px;">${blockData.title}</h3>` : '<h3 style="margin: 0 0 15px 0; color: #a0aec0; font-style: italic;">Aggiungi un titolo...</h3>'}
+                    ${blockData.content ? `<div style="color: #4a5568; line-height: 1.7; font-size: 16px;">${blockData.content.replace(/\n/g, '<br>')}</div>` : '<p style="color: #a0aec0; font-style: italic; margin: 0;">Scrivi qui il tuo contenuto...</p>'}
+                </div>
+            `;
+        
+        case 'quote':
+            return `
+                <blockquote style="background: #f7fafc; border-left: 4px solid #4299e1; padding: 25px; margin: 0; border-radius: 0 8px 8px 0; position: relative;">
+                    <p style="margin: 0 0 15px 0; font-size: 20px; font-style: italic; color: #2d3748; line-height: 1.4;">"${blockData.content || 'Inserisci una citazione interessante...'}"</p>
+                    ${blockData.subtitle ? `<cite style="font-size: 16px; color: #718096; font-weight: 500;">— ${blockData.subtitle}</cite>` : '<cite style="font-size: 16px; color: #a0aec0; font-style: italic;">— Aggiungi autore</cite>'}
+                    <div style="position: absolute; top: 15px; left: 15px; font-size: 40px; color: #4299e1; opacity: 0.3;">"</div>
+                </blockquote>
+            `;
+        
+        case 'video':
+            return `
+                <div style="background: #1a202c; color: white; padding: 30px; border-radius: 8px; text-align: center;">
+                    <h3 style="margin: 0 0 15px 0; font-size: 22px;">${blockData.title || 'Titolo Video'}</h3>
+                    ${blockData.link ? `
+                        <div style="background: #2d3748; padding: 60px 20px; border-radius: 8px; margin-bottom: 15px; border: 2px dashed #4a5568;">
+                            <div style="font-size: 48px; margin-bottom: 10px;">▶️</div>
+                            <p style="margin: 0; color: #a0aec0;">Video: ${blockData.link}</p>
+                        </div>
+                    ` : `
+                        <div style="background: #2d3748; padding: 60px 20px; border-radius: 8px; margin-bottom: 15px; border: 2px dashed #4a5568;">
+                            <div style="font-size: 48px; margin-bottom: 10px; opacity: 0.5;">📹</div>
+                            <p style="margin: 0; color: #718096; font-style: italic;">Aggiungi link video</p>
+                        </div>
+                    `}
+                    ${blockData.content ? `<p style="margin: 0; color: #e2e8f0;">${blockData.content}</p>` : ''}
+                </div>
+            `;
+        
+        case 'gallery':
+            const images = blockData.images || [];
+            return `
+                <div style="background: white; padding: 25px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <h3 style="margin: 0 0 20px 0; color: #2d3748; font-size: 22px; text-align: center;">${blockData.title || 'Galleria Immagini'}</h3>
+                    ${images.length > 0 ? `
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                            ${images.slice(0, 6).map(img => `
+                                <div style="aspect-ratio: 1; background: url('${img}') center/cover; border-radius: 8px; border: 2px solid #e2e8f0;"></div>
+                            `).join('')}
+                            ${images.length > 6 ? `<div style="aspect-ratio: 1; background: #f7fafc; border: 2px dashed #cbd5e0; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #718096; font-size: 14px;">+${images.length - 6} altre</div>` : ''}
+                        </div>
+                        <p style="margin: 0; text-align: center; color: #718096; font-size: 14px;">� ${images.length} immagini nella galleria</p>
+                    ` : `
+                        <div style="padding: 60px 20px; background: #f7fafc; border-radius: 8px; text-align: center; border: 2px dashed #cbd5e0;">
+                            <div style="font-size: 48px; margin-bottom: 15px; opacity: 0.5;">🖼️</div>
+                            <p style="margin: 0; color: #718096; font-style: italic;">Aggiungi immagini alla galleria</p>
+                        </div>
+                    `}
+                </div>
+            `;
+        
         default:
             return `
-                <div style="background: #e5e7eb; padding: 20px; border-radius: 8px; text-align: center; color: #6b7280;">
-                    <p style="margin: 0;">📦 Anteprima tipo: ${blockType}</p>
-                    ${blockData.title ? `<h3 style="margin: 10px 0 0 0; color: #374151;">${blockData.title}</h3>` : ''}
+                <div style="background: #f7fafc; padding: 30px; border-radius: 8px; text-align: center; border: 2px dashed #cbd5e0;">
+                    <div style="font-size: 48px; margin-bottom: 15px; opacity: 0.5;">📦</div>
+                    <h4 style="margin: 0 0 10px 0; color: #4a5568;">Blocco tipo: ${blockType}</h4>
+                    ${blockData.title ? `<h3 style="margin: 0 0 10px 0; color: #2d3748;">${blockData.title}</h3>` : '<p style="margin: 0; color: #a0aec0; font-style: italic;">Titolo non definito</p>'}
+                    ${blockData.content ? `<p style="margin: 10px 0 0 0; color: #718096;">${blockData.content.substring(0, 100)}${blockData.content.length > 100 ? '...' : ''}</p>` : ''}
                 </div>
             `;
     }
