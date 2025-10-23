@@ -1662,15 +1662,48 @@ function updateFluidPreview() {
 // ANTEPRIMA E PUBBLICAZIONE
 // ============================================
 
-// Anteprima rivista - Apre direttamente l'URL come prima
+// Anteprima rivista - Prima crea il file HTML, poi lo apre
 async function previewMagazine() {
-    // Costruisci URL dell'anteprima come funzionava prima
-    const previewUrl = `https://rivista-checkin.onrender.com/preview/${magazineId}.html`;
-    
-    console.log('🚀 Aprendo anteprima:', previewUrl);
-    
-    // Apri direttamente l'URL che funzionava prima
-    window.open(previewUrl, '_blank');
+    try {
+        console.log('🚀 Generando anteprima per rivista:', magazineId);
+        
+        // Prima prova a creare la rivista se non esiste
+        try {
+            await fetch(`https://rivista-checkin.onrender.com/api/admin/magazines`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    _id: magazineId,
+                    name: 'CHECK-IN #42',
+                    edition: 'Edizione 42 • ottobre',
+                    description: 'Rivista Check-in'
+                })
+            });
+        } catch (e) {
+            console.log('Rivista probabilmente esiste già');
+        }
+        
+        // Poi genera l'HTML
+        const response = await fetch(`https://rivista-checkin.onrender.com/api/admin/magazines/${magazineId}/generate-html`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        
+        const result = await response.json();
+        console.log('Risposta generate-html:', result);
+        
+        if (result.success && result.previewUrl) {
+            // Apri l'URL generato
+            window.open(result.previewUrl, '_blank');
+        } else {
+            // Fallback: apri direttamente l'URL
+            const previewUrl = `https://rivista-checkin.onrender.com/preview/${magazineId}.html`;
+            window.open(previewUrl, '_blank');
+        }
+    } catch (error) {
+        console.error('❌ Errore:', error);
+        alert(`Errore: ${error.message}`);
+    }
 }
 
 // Pubblica rivista - Genera HTML e salva su index.html
