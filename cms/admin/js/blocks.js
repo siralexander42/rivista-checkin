@@ -1420,13 +1420,22 @@ function initPreviewImageCropper() {
     
     // Crea nuovo cropper
     setTimeout(() => {
+        // Cattura il riferimento in una variabile locale per evitare problemi di closure
+        const targetCropDataInput = cropDataInput;
+        
         window.previewImageCropper = new ImageCropper('previewImageCropper', {
             imageUrl: imageUrl,
             aspectRatio: 16/9,
             cropData: existingCropData,
             onChange: (cropData) => {
-                if (cropDataInput) {
-                    cropDataInput.value = JSON.stringify(cropData);
+                console.log('onChange chiamato per previewImageCropper', cropData);
+                console.log('targetCropDataInput:', targetCropDataInput);
+                
+                if (targetCropDataInput) {
+                    targetCropDataInput.value = JSON.stringify(cropData);
+                    console.log('Nuovo valore cropData preview:', targetCropDataInput.value);
+                } else {
+                    console.error('cropDataInput non trovato per preview image');
                 }
             }
         });
@@ -1460,12 +1469,18 @@ function initFluidImageCropperByElement(inputElement) {
     
     // Recupera crop data esistente se presente
     const cropDataInput = inputElement.closest('.fluid-block-content').querySelector('.fluid-crop-data');
+    
+    console.log('cropDataInput trovato:', cropDataInput);
+    console.log('cropDataInput ID (se presente):', cropDataInput?.id);
+    console.log('cropDataInput value:', cropDataInput?.value);
+    
     let existingCropData = {};
     try {
         existingCropData = cropDataInput ? JSON.parse(cropDataInput.value) : {};
     } catch (e) {}
     
     console.log('Creazione cropper per:', imageUrl);
+    console.log('Existing crop data:', existingCropData);
     
     // Distruggi cropper esistente
     if (window.fluidCroppers[index]) {
@@ -1473,16 +1488,26 @@ function initFluidImageCropperByElement(inputElement) {
         delete window.fluidCroppers[index];
     }
     
-    // Crea nuovo cropper
+    // Crea nuovo cropper con riferimento esplicito al cropDataInput
     setTimeout(() => {
+        // Cattura il riferimento in una variabile locale per evitare problemi di closure
+        const targetCropDataInput = cropDataInput;
+        
         window.fluidCroppers[index] = new ImageCropper(`fluidCropper${index}`, {
             imageUrl: imageUrl,
             aspectRatio: 16/9,
             cropData: existingCropData,
             onChange: (cropData) => {
+                console.log(`onChange chiamato per cropper ${index}`, cropData);
+                console.log('targetCropDataInput:', targetCropDataInput);
+                
                 // Aggiorna hidden input con crop data
-                if (cropDataInput) {
-                    cropDataInput.value = JSON.stringify(cropData);
+                if (targetCropDataInput) {
+                    console.log('Aggiornamento cropData per index', index);
+                    targetCropDataInput.value = JSON.stringify(cropData);
+                    console.log('Nuovo valore:', targetCropDataInput.value);
+                } else {
+                    console.error('cropDataInput non trovato per index', index);
                 }
             }
         });

@@ -103,17 +103,21 @@ class ImageCropper {
     }
     
     attachEvents() {
-        // Ratio selector
-        this.container.querySelectorAll('.cropper-ratio-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const ratio = e.target.dataset.ratio;
-                this.setAspectRatio(ratio);
-                
-                // Update active state
-                this.container.querySelectorAll('.cropper-ratio-btn').forEach(b => b.classList.remove('active'));
-                e.target.classList.add('active');
-            });
-        });
+        // Usa event delegation sul container per evitare conflitti
+        const that = this;
+        this.ratioClickHandler = function(e) {
+            const btn = e.target.closest('.cropper-ratio-btn');
+            if (!btn) return;
+            
+            const ratio = btn.dataset.ratio;
+            that.setAspectRatio(ratio);
+            
+            // Update active state solo all'interno di questo cropper
+            that.container.querySelectorAll('.cropper-ratio-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        };
+        
+        this.container.addEventListener('click', this.ratioClickHandler);
     }
     
     setAspectRatio(ratio) {
@@ -300,8 +304,8 @@ class ImageCropper {
             };
         });
         
-        // Mouse move globale
-        document.onmousemove = function(e) {
+        // Crea funzioni bound per poterle rimuovere dopo
+        this.handleMouseMove = function(e) {
             if (that.isDragging) {
                 console.log('Dragging...');
                 that.handleDrag(e);
@@ -311,14 +315,17 @@ class ImageCropper {
             }
         };
         
-        // Mouse up globale
-        document.onmouseup = function() {
+        this.handleMouseUp = function() {
             if (that.isDragging) console.log('Fine drag');
             if (that.isResizing) console.log('Fine resize');
             that.isDragging = false;
             that.isResizing = false;
             that.resizeHandle = null;
         };
+        
+        // Usa addEventListener invece di assegnazione diretta
+        document.addEventListener('mousemove', this.handleMouseMove);
+        document.addEventListener('mouseup', this.handleMouseUp);
         
         console.log('Event listeners attaccati con onmousedown');
     }
@@ -527,6 +534,26 @@ class ImageCropper {
         const height = (parseFloat(data.height) / 100) * canvasRect.height;
         
         this.updateSelection(x, y, width, height);
+    }
+    
+    destroy() {
+        // Rimuovi event listener globali
+        if (this.handleMouseMove) {
+            document.removeEventListener('mousemove', this.handleMouseMove);
+        }
+        if (this.handleMouseUp) {
+            document.removeEventListener('mouseup', this.handleMouseUp);
+        }
+        
+        // Rimuovi event listener del container
+        if (this.ratioClickHandler) {
+            this.container.removeEventListener('click', this.ratioClickHandler);
+        }
+        
+        // Pulisci container
+        if (this.container) {
+            this.container.innerHTML = '';
+        }
     }
 }
 
