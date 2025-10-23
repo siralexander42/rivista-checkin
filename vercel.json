@@ -1,18 +1,8 @@
 {
-  "buildCommand": "echo 'No build needed'",
-  "outputDirectory": ".",
-  "routes": [
+  "rewrites": [
     {
-      "src": "/cms/admin/(.*)",
-      "dest": "/cms/admin/$1"
-    },
-    {
-      "src": "/login.html",
-      "dest": "/cms/admin/login.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
+      "source": "/login.html",
+      "destination": "/cms/admin/login.html"
     }
   ],
   "headers": [
