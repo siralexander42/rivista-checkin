@@ -1156,11 +1156,13 @@ async function updateBlockPreview() {
                             <button type="button" onclick="switchViewport('mobile')" style="padding: 6px 12px; border: none; background: ${isMobile ? 'white' : 'rgba(255,255,255,0.2)'}; color: ${isMobile ? '#333382' : 'white'}; border-radius: 6px; cursor: pointer; font-size: 12px;">Mobile</button>
                         </div>
                     </div>
-                    <div style="background: #f1f5f9; border-radius: 0 0 12px 12px; padding: 20px; text-align: center;">
-                        <iframe 
-                            style="width: ${width}px; height: 600px; border: none; background: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);"
-                            srcdoc="${escapeHtml(result.html)}"
-                        ></iframe>
+                    <div style="background: #f1f5f9; border-radius: 0 0 12px 12px; padding: 20px; overflow-x: auto; overflow-y: hidden;">
+                        <div style="display: flex; justify-content: center; min-width: ${width + 40}px;">
+                            <iframe 
+                                style="width: ${width}px; height: 600px; border: none; background: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); display: block;"
+                                srcdoc="${escapeHtml(result.html)}"
+                            ></iframe>
+                        </div>
                     </div>
                 </div>
             `;
