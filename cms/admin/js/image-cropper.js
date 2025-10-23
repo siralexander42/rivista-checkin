@@ -234,21 +234,33 @@ class ImageCropper {
             if (e.target.classList.contains('cropper-handle')) return;
             
             this.isDragging = true;
+            const canvasRect = this.canvas.getBoundingClientRect();
             this.dragStart = {
-                x: e.clientX - this.selection.offsetLeft,
-                y: e.clientY - this.selection.offsetTop
+                x: e.clientX - canvasRect.left - this.selection.offsetLeft,
+                y: e.clientY - canvasRect.top - this.selection.offsetTop
             };
             e.preventDefault();
+            e.stopPropagation();
         });
         
         // Handle resize
         this.selection.querySelectorAll('.cropper-handle').forEach(handle => {
             handle.addEventListener('mousedown', (e) => {
                 this.isResizing = true;
-                this.resizeHandle = handle.className.split(' ')[1];
+                this.resizeHandle = handle.classList.contains('nw') ? 'nw' :
+                                   handle.classList.contains('ne') ? 'ne' :
+                                   handle.classList.contains('sw') ? 'sw' :
+                                   handle.classList.contains('se') ? 'se' :
+                                   handle.classList.contains('n') ? 'n' :
+                                   handle.classList.contains('s') ? 's' :
+                                   handle.classList.contains('w') ? 'w' : 'e';
+                
+                const canvasRect = this.canvas.getBoundingClientRect();
                 this.dragStart = {
                     x: e.clientX,
                     y: e.clientY,
+                    canvasX: canvasRect.left,
+                    canvasY: canvasRect.top,
                     selectionX: this.selection.offsetLeft,
                     selectionY: this.selection.offsetTop,
                     selectionWidth: this.selection.offsetWidth,
@@ -259,27 +271,32 @@ class ImageCropper {
             });
         });
         
-        // Mouse move
-        document.addEventListener('mousemove', (e) => {
-            if (this.isDragging) {
-                this.handleDrag(e);
-            } else if (this.isResizing) {
-                this.handleResize(e);
-            }
-        });
+        // Mouse move - Usa bind per mantenere il contesto
+        this.handleMouseMove = this.handleMouseMove.bind(this);
+        this.handleMouseUp = this.handleMouseUp.bind(this);
         
-        // Mouse up
-        document.addEventListener('mouseup', () => {
-            this.isDragging = false;
-            this.isResizing = false;
-            this.resizeHandle = null;
-        });
+        document.addEventListener('mousemove', this.handleMouseMove);
+        document.addEventListener('mouseup', this.handleMouseUp);
+    }
+    
+    handleMouseMove(e) {
+        if (this.isDragging) {
+            this.handleDrag(e);
+        } else if (this.isResizing) {
+            this.handleResize(e);
+        }
+    }
+    
+    handleMouseUp() {
+        this.isDragging = false;
+        this.isResizing = false;
+        this.resizeHandle = null;
     }
     
     handleDrag(e) {
         const canvasRect = this.canvas.getBoundingClientRect();
-        let x = e.clientX - this.dragStart.x;
-        let y = e.clientY - this.dragStart.y;
+        let x = e.clientX - canvasRect.left - this.dragStart.x;
+        let y = e.clientY - canvasRect.top - this.dragStart.y;
         
         // Limiti
         x = Math.max(0, Math.min(x, canvasRect.width - this.selection.offsetWidth));
