@@ -1273,7 +1273,7 @@ function updateFluidPreview() {
 // Anteprima rivista - Genera HTML e apre in nuova finestra
 async function previewMagazine() {
     try {
-        const response = await apiRequest(`/admin/magazines/${magazineId}/generate-html`, {
+        const response = await apiRequest(`/api/admin/magazines/${magazineId}/generate-html`, {
             method: 'POST'
         });
         
