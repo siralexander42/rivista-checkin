@@ -1143,9 +1143,10 @@ async function updateBlockPreview() {
         if (result.success && result.html) {
             // Dimensioni originali e scala per miniatura
             const originalWidth = isMobile ? 700 : 1100;
+            const originalHeight = 800; // Altezza maggiore per vedere più contenuto
             const thumbnailWidth = 300;
             const scale = thumbnailWidth / originalWidth;
-            const thumbnailHeight = 400 * scale; // Altezza proporzionale
+            const thumbnailHeight = originalHeight * scale; // Altezza proporzionale
             
             previewContainer.innerHTML = `
                 <div style="position: sticky; top: 20px;">
@@ -1160,9 +1161,9 @@ async function updateBlockPreview() {
                         </div>
                     </div>
                     <div style="background: #f1f5f9; border-radius: 0 0 12px 12px; padding: 20px; text-align: center;">
-                        <div style="width: ${thumbnailWidth}px; height: ${thumbnailHeight}px; margin: 0 auto; overflow: hidden; background: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); position: relative;">
+                        <div style="width: ${thumbnailWidth}px; margin: 0 auto; overflow: hidden; background: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); position: relative; display: inline-block;">
                             <iframe 
-                                style="width: ${originalWidth}px; height: 400px; border: none; transform: scale(${scale}); transform-origin: 0 0; position: absolute; top: 0; left: 0;"
+                                style="width: ${originalWidth}px; height: ${originalHeight}px; border: none; transform: scale(${scale}); transform-origin: 0 0; position: absolute; top: 0; left: 0;"
                                 srcdoc="${escapeHtml(result.html)}"
                             ></iframe>
                         </div>
