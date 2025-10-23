@@ -1145,8 +1145,6 @@ async function updateBlockPreview() {
             const iframeWidth = isMobile ? 700 : 1100;
             const iframeHeight = 1500;
             const scale = isMobile ? 1 : 0.5;
-            const containerWidth = iframeWidth * scale;
-            const containerHeight = Math.min(iframeHeight * scale, 750);
             
             // Crea iframe con HTML reale e CSS della rivista
             previewContainer.innerHTML = `
@@ -1171,12 +1169,14 @@ async function updateBlockPreview() {
                             </button>
                         </div>
                     </div>
-                    <div style="background: #f1f5f9; border-radius: 0 0 12px 12px; padding: 20px; display: flex; justify-content: center; align-items: flex-start;">
-                        <div style="width: ${containerWidth}px; height: ${containerHeight}px; background: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); overflow: auto; position: relative;">
-                            <iframe 
-                                style="width: ${iframeWidth}px; height: ${iframeHeight}px; border: none; transform: scale(${scale}); transform-origin: 0 0; display: block;"
-                                srcdoc="${escapeHtml(result.html)}"
-                            ></iframe>
+                    <div style="background: #f1f5f9; border-radius: 0 0 12px 12px; padding: 20px; display: flex; justify-content: center; align-items: flex-start; max-height: 800px; overflow: auto;">
+                        <div style="background: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); overflow: hidden;">
+                            <div style="width: ${iframeWidth}px; height: ${iframeHeight}px; transform: scale(${scale}); transform-origin: 0 0;">
+                                <iframe 
+                                    style="width: ${iframeWidth}px; height: ${iframeHeight}px; border: none; display: block;"
+                                    srcdoc="${escapeHtml(result.html)}"
+                                ></iframe>
+                            </div>
                         </div>
                     </div>
                 </div>
