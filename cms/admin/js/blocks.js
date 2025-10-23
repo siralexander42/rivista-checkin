@@ -31,6 +31,38 @@ async function loadMagazine() {
         document.getElementById('magazineName').textContent = magazine.name;
         document.getElementById('magazineEdition').textContent = `Edizione ${magazine.editionNumber} • ${magazine.edition}`;
         
+        // Imposta toggle loading screen
+        const loadingToggle = document.getElementById('showLoadingScreen');
+        if (loadingToggle) {
+            loadingToggle.checked = magazine.showLoadingScreen || false;
+            
+            // Aggiungi listener per salvare automaticamente
+            loadingToggle.addEventListener('change', async (e) => {
+                try {
+                    await apiRequest(`/admin/magazines/${magazineId}`, {
+                        method: 'PUT',
+                        body: JSON.stringify({
+                            showLoadingScreen: e.target.checked
+                        })
+                    });
+                    
+                    // Feedback visivo
+                    const container = loadingToggle.closest('div');
+                    const originalBg = container.style.background;
+                    container.style.background = 'rgba(34, 197, 94, 0.15)';
+                    container.style.borderColor = 'rgba(34, 197, 94, 0.3)';
+                    setTimeout(() => {
+                        container.style.background = originalBg;
+                        container.style.borderColor = 'rgba(99, 102, 241, 0.2)';
+                    }, 1000);
+                } catch (error) {
+                    console.error('Errore salvataggio loading screen:', error);
+                    alert('Errore nel salvataggio delle impostazioni');
+                    e.target.checked = !e.target.checked;
+                }
+            });
+        }
+        
         // Carica blocchi
         blocks = magazine.blocks || [];
         blocks.sort((a, b) => a.position - b.position);
@@ -132,7 +164,6 @@ function getBlockPreview(block) {
                 <h3>📰 ${block.title || 'Copertina'}</h3>
                 ${block.subtitle ? `<p><strong>${block.subtitle}</strong></p>` : ''}
                 ${block.images?.length ? `<p>🖼️ ${block.images.length} immagini di sfondo</p>` : ''}
-                ${block.settings?.showLoadingScreen ? `<p>✈️ Loading screen attivo</p>` : ''}
                 ${sommarioCount > 0 ? `<p>📋 ${sommarioCount} voci nel sommario</p>` : ''}
             `;
         
@@ -265,14 +296,6 @@ https://esempio.com/bg2.jpg
 https://esempio.com/bg3.jpg
 https://esempio.com/bg4.jpg">${(data.images || []).join('\n')}</textarea>
                     <small>⚠️ Inserisci almeno 1 immagine. Le immagini si alterneranno automaticamente</small>
-                </div>
-                
-                <div class="form-group">
-                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none;">
-                        <input type="checkbox" id="showLoadingScreen" ${data.settings?.showLoadingScreen ? 'checked' : ''} style="width: auto; cursor: pointer;">
-                        <span>✈️ Mostra schermata di caricamento (tabellone aeroporto)</span>
-                    </label>
-                    <small>Se attivo, prima della rivista apparirà un'animazione di caricamento stile aeroporto</small>
                 </div>
                 
                 <div class="form-group">
@@ -541,9 +564,8 @@ async function handleBlockFormSubmit(e) {
         blockData.images = imagesText.split('\n').filter(url => url.trim());
         delete blockData.image;
         
-        // Raccogli sommario e loading screen flag
+        // Raccogli sommario
         blockData.settings.sommario = collectSommarioData();
-        blockData.settings.showLoadingScreen = document.getElementById('showLoadingScreen')?.checked || false;
     }
     
     // Gallery: converti textarea in array

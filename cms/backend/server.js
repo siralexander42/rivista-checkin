@@ -249,6 +249,12 @@ const magazineSchema = new mongoose.Schema({
     subtitle: String,
     description: String,
     
+    // Impostazioni visualizzazione
+    showLoadingScreen: {
+        type: Boolean,
+        default: false
+    },
+    
     // Blocchi di contenuto
     blocks: [blockSchema],
     
@@ -1517,9 +1523,8 @@ app.post('/api/admin/magazines/:id/generate-html', authenticateToken, async (req
             .map(block => generateBlockHTML(block))
             .join('\n\n');
         
-        // Controlla se c'è un blocco cover con loading screen attivo
-        const coverBlock = sortedBlocks.find(b => b.type === 'cover');
-        const showLoadingScreen = coverBlock?.settings?.showLoadingScreen || false;
+        // Controlla se la rivista ha la loading screen attiva
+        const showLoadingScreen = magazine.showLoadingScreen || false;
         
         // Leggi i CSS inline per l'anteprima
         const cssPath = path.join(__dirname, '../../assets/css/magazine-generated.css');
