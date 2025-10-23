@@ -459,7 +459,8 @@ https://esempio.com/img3.jpg">${(data.images || []).join('\n')}</textarea>
         `,
         
         fluid: `
-            <div class="form-section">
+            <div style="display: grid; grid-template-columns: 1fr 400px; gap: 24px; align-items: start;">
+                <div class="form-section">
                 <h4 style="margin-bottom: 16px;">🌊 Parallasse Block - Scroll con Immagini Parallasse</h4>
                 <p style="color: var(--text-light); margin-bottom: 24px; line-height: 1.6;">
                     Blocco in stile Apple/Wanderlust: testo scrollabile a sinistra con immagini che cambiano automaticamente a destra.
@@ -468,23 +469,23 @@ https://esempio.com/img3.jpg">${(data.images || []).join('\n')}</textarea>
                 
                 <div class="form-group">
                     <label for="tag">Tag/Categoria *</label>
-                    <input type="text" id="tag" required value="${data.tag || ''}" placeholder="Destinazioni">
+                    <input type="text" id="tag" required value="${data.tag || ''}" placeholder="Destinazioni" oninput="updateFluidPreview()">
                     <small>Es: "Destinazioni", "Food & Wine", "Culture"</small>
                 </div>
                 
                 <div class="form-group">
                     <label for="title">Titolo Principale *</label>
-                    <input type="text" id="title" required value="${data.title || ''}" placeholder="Cremona: La città che suona e cucina">
+                    <input type="text" id="title" required value="${data.title || ''}" placeholder="Cremona: La città che suona e cucina" oninput="updateFluidPreview()">
                 </div>
                 
                 <div class="form-group">
                     <label for="intro">Intro/Sottotitolo *</label>
-                    <textarea id="intro" rows="3" required placeholder="Breve introduzione al contenuto...">${data.intro || ''}</textarea>
+                    <textarea id="intro" rows="3" required placeholder="Breve introduzione al contenuto..." oninput="updateFluidPreview()">${data.intro || ''}</textarea>
                 </div>
                 
                 <div class="form-group">
                     <label for="previewImage">🖼️ Foto di Anteprima Iniziale *</label>
-                    <input type="url" id="previewImage" required value="${data.previewImage || ''}" placeholder="https://...">
+                    <input type="url" id="previewImage" required value="${data.previewImage || ''}" placeholder="https://..." oninput="updateFluidPreview()">
                     <small>Questa sarà la prima immagine visualizzata quando si carica il blocco</small>
                 </div>
                 
@@ -513,8 +514,12 @@ https://esempio.com/img3.jpg">${(data.images || []).join('\n')}</textarea>
                 
                 <div class="form-group">
                     <label for="ctaLink">Link Call-to-Action</label>
-                    <input type="url" id="ctaLink" value="${data.ctaLink || ''}" placeholder="https://...">
+                    <input type="url" id="ctaLink" value="${data.ctaLink || ''}" placeholder="https://..." oninput="updateFluidPreview()">
                 </div>
+            </div>
+            <div id="parallassePreview" style="position: relative;">
+                <!-- Anteprima live verrà inserita qui -->
+            </div>
             </div>
         `
     };
@@ -532,6 +537,14 @@ https://esempio.com/img3.jpg">${(data.images || []).join('\n')}</textarea>
             </div>
         </div>
     `;
+    
+    // Inizializza funzionalità specifiche per tipo
+    if (type === 'fluid') {
+        setTimeout(() => {
+            initFluidBlockDragDrop();
+            updateFluidPreview();
+        }, 100);
+    }
 }
 
 // Submit form blocco
@@ -845,16 +858,23 @@ function generateFluidBlocksFields(fluidBlocks = []) {
     }
     
     return fluidBlocks.map((block, index) => `
-        <div class="fluid-block-field" style="background: var(--bg-gradient-light); padding: 20px; border-radius: 12px; margin-bottom: 16px; border: 1px solid rgba(51, 51, 130, 0.1);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <strong style="color: var(--primary); font-size: 14px;">📄 Blocco ${index + 1}</strong>
-                <button type="button" 
-                        onclick="removeFluidBlock(this)" 
-                        class="btn btn-sm btn-danger">
-                    <svg style="width: 14px; height: 14px;" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 30 30"><path d="M 13 3 A 1.0001 1.0001 0 0 0 11.986328 4 L 6 4 A 1.0001 1.0001 0 1 0 6 6 L 24 6 A 1.0001 1.0001 0 1 0 24 4 L 18.013672 4 A 1.0001 1.0001 0 0 0 17 3 L 13 3 z M 6 8 L 6 24 C 6 25.105 6.895 26 8 26 L 22 26 C 23.105 26 24 25.105 24 24 L 24 8 L 6 8 z"/></svg>
-                    Rimuovi
-                </button>
+        <div class="fluid-block-field" draggable="true" style="background: var(--bg-gradient-light); border-radius: 12px; margin-bottom: 16px; border: 1px solid rgba(51, 51, 130, 0.1); cursor: move;">
+            <div class="fluid-block-header" onclick="toggleFluidBlock(this)" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; cursor: pointer; user-select: none;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span class="drag-handle" style="cursor: grab; color: var(--text-light);">⠿</span>
+                    <strong style="color: var(--primary); font-size: 14px;">📄 Blocco ${index + 1}</strong>
+                    <span class="fluid-block-preview" style="color: var(--text-light); font-size: 12px; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${block.heading || block.text?.substring(0, 50) || 'Nuovo blocco'}...</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span class="toggle-icon" style="transition: transform 0.3s; color: var(--primary);">▼</span>
+                    <button type="button" 
+                            onclick="event.stopPropagation(); removeFluidBlock(this)" 
+                            class="btn btn-sm btn-danger" style="padding: 4px 8px;">
+                        <svg style="width: 14px; height: 14px;" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 30 30"><path d="M 13 3 A 1.0001 1.0001 0 0 0 11.986328 4 L 6 4 A 1.0001 1.0001 0 1 0 6 6 L 24 6 A 1.0001 1.0001 0 1 0 24 4 L 18.013672 4 A 1.0001 1.0001 0 0 0 17 3 L 13 3 z M 6 8 L 6 24 C 6 25.105 6.895 26 8 26 L 22 26 C 23.105 26 24 25.105 24 24 L 24 8 L 6 8 z"/></svg>
+                    </button>
+                </div>
             </div>
+            <div class="fluid-block-content" style="padding: 0 20px 20px; display: block;">
             
             <div class="form-group" style="margin-bottom: 12px;">
                 <label style="font-size: 13px; font-weight: 600;">Titolo Sezione (opzionale)</label>
@@ -862,7 +882,8 @@ function generateFluidBlocksFields(fluidBlocks = []) {
                        class="fluid-heading" 
                        placeholder="Un patrimonio che nasce dal suono" 
                        value="${block.heading || ''}" 
-                       style="width: 100%;">
+                       style="width: 100%;"
+                       oninput="updateFluidPreview()">
             </div>
             
             <div class="form-group" style="margin-bottom: 12px;">
@@ -870,7 +891,8 @@ function generateFluidBlocksFields(fluidBlocks = []) {
                 <textarea class="fluid-text" 
                           rows="4" 
                           placeholder="Scrivi il testo del blocco..." 
-                          style="width: 100%;">${block.text || ''}</textarea>
+                          style="width: 100%;"
+                          oninput="updateFluidPreview()">${block.text || ''}</textarea>
             </div>
             
             <div class="form-group" style="margin-bottom: 12px;">
@@ -878,7 +900,8 @@ function generateFluidBlocksFields(fluidBlocks = []) {
                 <textarea class="fluid-highlight" 
                           rows="2" 
                           placeholder="Testo da evidenziare con sfondo e bordo..." 
-                          style="width: 100%;">${block.highlight || ''}</textarea>
+                          style="width: 100%;"
+                          oninput="updateFluidPreview()">${block.highlight || ''}</textarea>
                 <small>Questo testo apparirà con sfondo colorato e bordo a sinistra</small>
             </div>
             
@@ -888,11 +911,27 @@ function generateFluidBlocksFields(fluidBlocks = []) {
                        class="fluid-image" 
                        placeholder="https://esempio.com/immagine.jpg" 
                        value="${block.image || ''}" 
-                       style="width: 100%;">
+                       style="width: 100%;"
+                       oninput="updateFluidPreview()">
                 <small>Questa immagine verrà mostrata quando l'utente legge questo blocco</small>
+            </div>
             </div>
         </div>
     `).join('');
+}
+
+// Toggle espansione blocco fluid
+function toggleFluidBlock(header) {
+    const content = header.nextElementSibling;
+    const icon = header.querySelector('.toggle-icon');
+    
+    if (content.style.display === 'none') {
+        content.style.display = 'block';
+        icon.style.transform = 'rotate(0deg)';
+    } else {
+        content.style.display = 'none';
+        icon.style.transform = 'rotate(-90deg)';
+    }
 }
 
 // Aggiungi blocco fluid
@@ -908,24 +947,33 @@ function addFluidBlock() {
     const index = container.children.length;
     const newBlock = document.createElement('div');
     newBlock.className = 'fluid-block-field';
-    newBlock.style.cssText = 'background: var(--bg-gradient-light); padding: 20px; border-radius: 12px; margin-bottom: 16px; border: 1px solid rgba(51, 51, 130, 0.1);';
+    newBlock.draggable = true;
+    newBlock.style.cssText = 'background: var(--bg-gradient-light); border-radius: 12px; margin-bottom: 16px; border: 1px solid rgba(51, 51, 130, 0.1); cursor: move;';
     newBlock.innerHTML = `
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-            <strong style="color: var(--primary); font-size: 14px;">📄 Blocco ${index + 1}</strong>
-            <button type="button" 
-                    onclick="removeFluidBlock(this)" 
-                    class="btn btn-sm btn-danger">
-                <svg style="width: 14px; height: 14px;" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 30 30"><path d="M 13 3 A 1.0001 1.0001 0 0 0 11.986328 4 L 6 4 A 1.0001 1.0001 0 1 0 6 6 L 24 6 A 1.0001 1.0001 0 1 0 24 4 L 18.013672 4 A 1.0001 1.0001 0 0 0 17 3 L 13 3 z M 6 8 L 6 24 C 6 25.105 6.895 26 8 26 L 22 26 C 23.105 26 24 25.105 24 24 L 24 8 L 6 8 z"/></svg>
-                Rimuovi
-            </button>
+        <div class="fluid-block-header" onclick="toggleFluidBlock(this)" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; cursor: pointer; user-select: none;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <span class="drag-handle" style="cursor: grab; color: var(--text-light);">⠿</span>
+                <strong style="color: var(--primary); font-size: 14px;">📄 Blocco ${index + 1}</strong>
+                <span class="fluid-block-preview" style="color: var(--text-light); font-size: 12px;">Nuovo blocco...</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="toggle-icon" style="transition: transform 0.3s; color: var(--primary);">▼</span>
+                <button type="button" 
+                        onclick="event.stopPropagation(); removeFluidBlock(this)" 
+                        class="btn btn-sm btn-danger" style="padding: 4px 8px;">
+                    <svg style="width: 14px; height: 14px;" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 30 30"><path d="M 13 3 A 1.0001 1.0001 0 0 0 11.986328 4 L 6 4 A 1.0001 1.0001 0 1 0 6 6 L 24 6 A 1.0001 1.0001 0 1 0 24 4 L 18.013672 4 A 1.0001 1.0001 0 0 0 17 3 L 13 3 z M 6 8 L 6 24 C 6 25.105 6.895 26 8 26 L 22 26 C 23.105 26 24 25.105 24 24 L 24 8 L 6 8 z"/></svg>
+                </button>
+            </div>
         </div>
+        <div class="fluid-block-content" style="padding: 0 20px 20px; display: block;">
         
         <div class="form-group" style="margin-bottom: 12px;">
             <label style="font-size: 13px; font-weight: 600;">Titolo Sezione (opzionale)</label>
             <input type="text" 
                    class="fluid-heading" 
                    placeholder="Un patrimonio che nasce dal suono" 
-                   style="width: 100%;">
+                   style="width: 100%;"
+                   oninput="updateFluidPreview()">
         </div>
         
         <div class="form-group" style="margin-bottom: 12px;">
@@ -933,7 +981,8 @@ function addFluidBlock() {
             <textarea class="fluid-text" 
                       rows="4" 
                       placeholder="Scrivi il testo del blocco..." 
-                      style="width: 100%;"></textarea>
+                      style="width: 100%;"
+                      oninput="updateFluidPreview()"></textarea>
         </div>
         
         <div class="form-group" style="margin-bottom: 12px;">
@@ -941,7 +990,8 @@ function addFluidBlock() {
             <textarea class="fluid-highlight" 
                       rows="2" 
                       placeholder="Testo da evidenziare con sfondo e bordo..." 
-                      style="width: 100%;"></textarea>
+                      style="width: 100%;"
+                      oninput="updateFluidPreview()"></textarea>
             <small>Questo testo apparirà con sfondo colorato e bordo a sinistra</small>
         </div>
         
@@ -950,12 +1000,16 @@ function addFluidBlock() {
             <input type="url" 
                    class="fluid-image" 
                    placeholder="https://esempio.com/immagine.jpg" 
-                   style="width: 100%;">
+                   style="width: 100%;"
+                   oninput="updateFluidPreview()">
             <small>Questa immagine verrà mostrata quando l'utente legge questo blocco</small>
+        </div>
         </div>
     `;
     
     container.appendChild(newBlock);
+    initFluidBlockDragDrop();
+    updateFluidPreview();
 }
 
 // Rimuovi blocco fluid
@@ -992,6 +1046,110 @@ function collectFluidBlocksData() {
     });
     
     return fluidBlocks;
+}
+
+// Drag & Drop per blocchi fluid
+let draggedFluidBlock = null;
+
+function initFluidBlockDragDrop() {
+    const fluidBlocks = document.querySelectorAll('.fluid-block-field');
+    
+    fluidBlocks.forEach(block => {
+        block.removeEventListener('dragstart', handleFluidDragStart);
+        block.removeEventListener('dragover', handleFluidDragOver);
+        block.removeEventListener('drop', handleFluidDrop);
+        block.removeEventListener('dragend', handleFluidDragEnd);
+        
+        block.addEventListener('dragstart', handleFluidDragStart);
+        block.addEventListener('dragover', handleFluidDragOver);
+        block.addEventListener('drop', handleFluidDrop);
+        block.addEventListener('dragend', handleFluidDragEnd);
+    });
+}
+
+function handleFluidDragStart(e) {
+    draggedFluidBlock = this;
+    this.style.opacity = '0.4';
+    e.dataTransfer.effectAllowed = 'move';
+}
+
+function handleFluidDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    
+    if (this !== draggedFluidBlock) {
+        const container = this.parentElement;
+        const allBlocks = [...container.querySelectorAll('.fluid-block-field')];
+        const draggedIndex = allBlocks.indexOf(draggedFluidBlock);
+        const targetIndex = allBlocks.indexOf(this);
+        
+        if (draggedIndex < targetIndex) {
+            this.parentElement.insertBefore(draggedFluidBlock, this.nextSibling);
+        } else {
+            this.parentElement.insertBefore(draggedFluidBlock, this);
+        }
+    }
+}
+
+function handleFluidDrop(e) {
+    e.stopPropagation();
+    return false;
+}
+
+function handleFluidDragEnd(e) {
+    this.style.opacity = '1';
+    
+    // Riaggiorna numerazione
+    const container = document.getElementById('fluidBlocks');
+    const blocks = container.querySelectorAll('.fluid-block-field');
+    blocks.forEach((block, index) => {
+        block.querySelector('strong').textContent = `📄 Blocco ${index + 1}`;
+    });
+    
+    updateFluidPreview();
+}
+
+// Anteprima live Parallasse Block
+function updateFluidPreview() {
+    const previewContainer = document.getElementById('parallassePreview');
+    if (!previewContainer) return;
+    
+    const tag = document.getElementById('tag')?.value || '';
+    const title = document.getElementById('title')?.value || '';
+    const intro = document.getElementById('intro')?.value || '';
+    const previewImage = document.getElementById('previewImage')?.value || '';
+    const fluidBlocksData = collectFluidBlocksData();
+    
+    const fluidImages = previewImage ? [previewImage, ...fluidBlocksData.map(b => b.image)] : fluidBlocksData.map(b => b.image);
+    
+    previewContainer.innerHTML = `
+        <div style="position: sticky; top: 20px; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+            <div style="padding: 24px; background: linear-gradient(135deg, #333382 0%, #2a2a6b 100%); color: white;">
+                <h3 style="margin: 0 0 8px 0; font-size: 18px;">📱 Anteprima Live</h3>
+                <p style="margin: 0; font-size: 12px; opacity: 0.8;">Parallasse Block</p>
+            </div>
+            <div style="max-height: 600px; overflow-y: auto;">
+                <!-- Immagine -->
+                <div style="position: relative; padding-top: 66.67%; background: #f1f5f9;">
+                    ${fluidImages[0] ? `<img src="${fluidImages[0]}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'">` : '<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #94a3b8;">Nessuna immagine</div>'}
+                </div>
+                <!-- Contenuto -->
+                <div style="padding: 20px;">
+                    ${tag ? `<div style="display: inline-block; padding: 4px 12px; background: #333382; color: white; border-radius: 20px; font-size: 11px; font-weight: 600; margin-bottom: 12px;">${tag}</div>` : ''}
+                    ${title ? `<h2 style="margin: 0 0 8px 0; font-size: 20px; color: #1e293b;">${title}</h2>` : '<h2 style="margin: 0 0 8px 0; font-size: 20px; color: #cbd5e1;">Titolo...</h2>'}
+                    ${intro ? `<p style="margin: 0; font-size: 14px; color: #64748b; line-height: 1.6;">${intro}</p>` : '<p style="margin: 0; font-size: 14px; color: #cbd5e1;">Intro...</p>'}
+                    
+                    ${fluidBlocksData.map((block, idx) => `
+                        <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #e2e8f0;">
+                            ${block.heading ? `<h3 style="margin: 0 0 12px 0; font-size: 16px; color: #1e293b;">${block.heading}</h3>` : ''}
+                            <p style="margin: 0; font-size: 14px; color: #475569; line-height: 1.7;">${block.text}</p>
+                            ${block.highlight ? `<div style="margin-top: 12px; padding: 12px; background: #fef3c7; border-left: 3px solid #f59e0b; border-radius: 6px;"><p style="margin: 0; font-size: 13px; color: #92400e;">${block.highlight}</p></div>` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        </div>
+    `;
 }
 
 // ============================================
