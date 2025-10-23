@@ -1141,40 +1141,26 @@ async function updateBlockPreview() {
         });
         
         if (result.success && result.html) {
-            // Dimensioni: schermo COMPLETO visibile
-            const screenWidth = isMobile ? 700 : 1100;
-            const screenHeight = 700;
+            // SEMPLICE: larghezza reale schermo, altezza fissa con scroll
+            const width = isMobile ? 700 : 1100;
             
-            // Crea iframe con HTML reale e CSS della rivista
             previewContainer.innerHTML = `
                 <div style="position: sticky; top: 20px;">
-                    <div style="padding: 12px 20px; background: linear-gradient(135deg, #333382 0%, #2a2a6b 100%); color: white; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center;">
+                    <div style="padding: 12px 20px; background: #333382; color: white; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center;">
                         <div>
-                            <h3 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 600;">📱 Anteprima Live</h3>
-                            <p style="margin: 0; font-size: 12px; opacity: 0.8;">${getBlockTypeName(blockType)} - ${isMobile ? 'Mobile 700px' : 'Desktop 1100px'}</p>
+                            <h3 style="margin: 0; font-size: 16px;">📱 Anteprima Live</h3>
+                            <p style="margin: 0; font-size: 12px; opacity: 0.8;">${isMobile ? '📱 Mobile 700px' : '🖥️ Desktop 1100px'}</p>
                         </div>
-                        <div style="display: flex; gap: 8px; background: rgba(255,255,255,0.1); border-radius: 8px; padding: 4px;">
-                            <button 
-                                type="button"
-                                onclick="event.preventDefault(); event.stopPropagation(); switchViewport('desktop')" 
-                                style="padding: 6px 12px; border: none; background: ${!isMobile ? 'white' : 'transparent'}; color: ${!isMobile ? '#333382' : 'white'}; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s;">
-                                🖥️ Desktop
-                            </button>
-                            <button 
-                                type="button"
-                                onclick="event.preventDefault(); event.stopPropagation(); switchViewport('mobile')" 
-                                style="padding: 6px 12px; border: none; background: ${isMobile ? 'white' : 'transparent'}; color: ${isMobile ? '#333382' : 'white'}; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s;">
-                                📱 Mobile
-                            </button>
+                        <div style="display: flex; gap: 8px;">
+                            <button type="button" onclick="switchViewport('desktop')" style="padding: 6px 12px; border: none; background: ${!isMobile ? 'white' : 'rgba(255,255,255,0.2)'}; color: ${!isMobile ? '#333382' : 'white'}; border-radius: 6px; cursor: pointer; font-size: 12px;">Desktop</button>
+                            <button type="button" onclick="switchViewport('mobile')" style="padding: 6px 12px; border: none; background: ${isMobile ? 'white' : 'rgba(255,255,255,0.2)'}; color: ${isMobile ? '#333382' : 'white'}; border-radius: 6px; cursor: pointer; font-size: 12px;">Mobile</button>
                         </div>
                     </div>
-                    <div style="background: #f1f5f9; border-radius: 0 0 12px 12px; padding: 20px; display: flex; justify-content: center; align-items: flex-start;">
-                        <div style="width: ${screenWidth}px; height: ${screenHeight}px; background: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); overflow-y: auto; overflow-x: hidden;">
-                            <iframe 
-                                style="width: ${screenWidth}px; min-height: 100%; border: none; display: block;"
-                                srcdoc="${escapeHtml(result.html)}"
-                            ></iframe>
-                        </div>
+                    <div style="background: #f1f5f9; border-radius: 0 0 12px 12px; padding: 20px; text-align: center;">
+                        <iframe 
+                            style="width: ${width}px; height: 600px; border: none; background: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);"
+                            srcdoc="${escapeHtml(result.html)}"
+                        ></iframe>
                     </div>
                 </div>
             `;
@@ -1182,9 +1168,8 @@ async function updateBlockPreview() {
     } catch (error) {
         console.error('Errore anteprima:', error);
         previewContainer.innerHTML = `
-            <div style="position: sticky; top: 20px; background: #fee; border-radius: 12px; padding: 20px; text-align: center; color: #c00;">
-                <p style="margin: 0;">⚠️ Errore nel caricamento dell'anteprima</p>
-                <small style="display: block; margin-top: 8px; font-size: 12px;">${error.message || 'Errore sconosciuto'}</small>
+            <div style="background: #fee; border-radius: 12px; padding: 20px; text-align: center; color: #c00;">
+                <p>⚠️ Errore anteprima: ${error.message}</p>
             </div>
         `;
     }
