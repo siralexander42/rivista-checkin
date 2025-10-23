@@ -1600,7 +1600,7 @@ app.post('/api/admin/blocks/preview', async (req, res) => {
 app.use('/preview', express.static(path.join(__dirname, 'preview')));
 
 // Genera l'HTML completo della rivista dai blocchi e salva come file preview
-app.post('/api/admin/magazines/:id/generate-html', authenticateToken, async (req, res) => {
+app.post('/api/admin/magazines/:id/generate-html', async (req, res) => {
     try {
         const magazine = await Magazine.findById(req.params.id);
         
