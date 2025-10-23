@@ -1106,7 +1106,13 @@ tbody td {
 }
 
 .modal-content.modal-large {
-    max-width: 900px;
+    max-width: 1400px;
+    width: 95%;
+}
+
+.modal-content.modal-xlarge {
+    max-width: 1600px;
+    width: 98%;
 }
 
 @keyframes slideUp {

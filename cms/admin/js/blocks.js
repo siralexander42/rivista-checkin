@@ -271,22 +271,23 @@ function generateBlockForm(type, data = {}) {
     
     const forms = {
         cover: `
-            <div class="form-section">
+            <div style="display: grid; grid-template-columns: 1fr 500px; gap: 24px; align-items: start;">
+                <div class="form-section">
                 <h4 style="margin-bottom: 16px;">📸 Copertina Rivista</h4>
                 
                 <div class="form-group">
                     <label for="title">Titolo Principale *</label>
-                    <input type="text" id="title" required value="${data.title || ''}" placeholder="Alta Badia">
+                    <input type="text" id="title" required value="${data.title || ''}" placeholder="Alta Badia" oninput="updateBlockPreview()">
                 </div>
                 
                 <div class="form-group">
                     <label for="subtitle">Sottotitolo</label>
-                    <input type="text" id="subtitle" value="${data.subtitle || ''}" placeholder="Tre settimane di eventi per vivere l'autunno sulle Dolomiti">
+                    <input type="text" id="subtitle" value="${data.subtitle || ''}" placeholder="Tre settimane di eventi per vivere l'autunno sulle Dolomiti" oninput="updateBlockPreview()">
                 </div>
                 
                 <div class="form-group">
                     <label for="content">Descrizione</label>
-                    <textarea id="content" rows="4" placeholder="Testo descrittivo della copertina...">${data.content || ''}</textarea>
+                    <textarea id="content" rows="4" placeholder="Testo descrittivo della copertina..." oninput="updateBlockPreview()">${data.content || ''}</textarea>
                 </div>
                 
                 <div class="form-group">
@@ -294,7 +295,7 @@ function generateBlockForm(type, data = {}) {
                     <textarea id="images" rows="6" required placeholder="https://esempio.com/bg1.jpg
 https://esempio.com/bg2.jpg
 https://esempio.com/bg3.jpg
-https://esempio.com/bg4.jpg">${(data.images || []).join('\n')}</textarea>
+https://esempio.com/bg4.jpg" oninput="updateBlockPreview()">${(data.images || []).join('\n')}</textarea>
                     <small>⚠️ Inserisci almeno 1 immagine. Le immagini si alterneranno automaticamente</small>
                 </div>
                 
@@ -308,6 +309,10 @@ https://esempio.com/bg4.jpg">${(data.images || []).join('\n')}</textarea>
                     </button>
                     <small>Gli elementi del sommario appariranno nel dropdown in alto</small>
                 </div>
+            </div>
+            <div id="blockPreview" style="position: relative;">
+                <!-- Anteprima live verrà inserita qui -->
+            </div>
             </div>
         `,
         
@@ -514,10 +519,10 @@ https://esempio.com/img3.jpg">${(data.images || []).join('\n')}</textarea>
                 
                 <div class="form-group">
                     <label for="ctaLink">Link Call-to-Action</label>
-                    <input type="url" id="ctaLink" value="${data.ctaLink || ''}" placeholder="https://..." oninput="updateFluidPreview()">
+                    <input type="url" id="ctaLink" value="${data.ctaLink || ''}" placeholder="https://..." oninput="updateBlockPreview()">
                 </div>
             </div>
-            <div id="parallassePreview" style="position: relative;">
+            <div id="blockPreview" style="position: relative;">
                 <!-- Anteprima live verrà inserita qui -->
             </div>
             </div>
@@ -542,7 +547,12 @@ https://esempio.com/img3.jpg">${(data.images || []).join('\n')}</textarea>
     if (type === 'fluid') {
         setTimeout(() => {
             initFluidBlockDragDrop();
-            updateFluidPreview();
+            updateBlockPreview();
+        }, 100);
+    } else {
+        // Per tutti gli altri tipi, carica l'anteprima
+        setTimeout(() => {
+            updateBlockPreview();
         }, 100);
     }
 }
@@ -1109,47 +1119,134 @@ function handleFluidDragEnd(e) {
     updateFluidPreview();
 }
 
-// Anteprima live Parallasse Block
+// Anteprima live universale per tutti i blocchi
+async function updateBlockPreview() {
+    const blockType = document.getElementById('blockType')?.value;
+    const previewContainer = document.getElementById('blockPreview');
+    
+    if (!previewContainer || !blockType) return;
+    
+    // Raccogli i dati del blocco corrente
+    const blockData = collectCurrentBlockData();
+    
+    try {
+        // Chiama il backend per generare l'HTML con i CSS reali
+        const response = await fetch(`${API_BASE_URL}/admin/blocks/preview`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify({ type: blockType, data: blockData })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success && result.html) {
+            // Crea iframe con HTML reale e CSS della rivista
+            previewContainer.innerHTML = `
+                <div style="position: sticky; top: 20px;">
+                    <div style="padding: 16px 20px; background: linear-gradient(135deg, #333382 0%, #2a2a6b 100%); color: white; border-radius: 12px 12px 0 0;">
+                        <h3 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 600;">📱 Anteprima Live</h3>
+                        <p style="margin: 0; font-size: 12px; opacity: 0.8;">${getBlockTypeName(blockType)}</p>
+                    </div>
+                    <iframe 
+                        style="width: 100%; height: 700px; border: none; border-radius: 0 0 12px 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); background: white;"
+                        srcdoc="${escapeHtml(result.html)}"
+                    ></iframe>
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error('Errore anteprima:', error);
+        previewContainer.innerHTML = `
+            <div style="position: sticky; top: 20px; background: #fee; border-radius: 12px; padding: 20px; text-align: center; color: #c00;">
+                <p style="margin: 0;">⚠️ Errore nel caricamento dell'anteprima</p>
+            </div>
+        `;
+    }
+}
+
+// Raccogli dati del blocco corrente dal form
+function collectCurrentBlockData() {
+    const type = document.getElementById('blockType')?.value;
+    
+    const data = {
+        title: document.getElementById('title')?.value || '',
+        subtitle: document.getElementById('subtitle')?.value || '',
+        content: document.getElementById('content')?.value || '',
+        image: document.getElementById('image')?.value || '',
+        link: document.getElementById('link')?.value || '',
+        buttonText: document.getElementById('buttonText')?.value || '',
+        visible: document.getElementById('visible')?.checked !== false,
+        style: {
+            layout: document.getElementById('styleLayout')?.value || 'center',
+            textColor: document.getElementById('styleTextColor')?.value || '#ffffff',
+            bgColor: document.getElementById('styleBgColor')?.value || '#000000'
+        }
+    };
+    
+    // Dati specifici per tipo
+    if (type === 'cover') {
+        const imagesText = document.getElementById('images')?.value || '';
+        data.images = imagesText.split('\n').filter(url => url.trim());
+        data.settings = {
+            sommario: collectSommarioData()
+        };
+    }
+    
+    if (type === 'gallery') {
+        const imagesText = document.getElementById('images')?.value || '';
+        data.images = imagesText.split('\n').filter(url => url.trim());
+        data.settings = {
+            columns: parseInt(document.getElementById('settingsColumns')?.value) || 3,
+            gap: parseInt(document.getElementById('settingsGap')?.value) || 16,
+            aspectRatio: document.getElementById('settingsAspectRatio')?.value || '16/9'
+        };
+    }
+    
+    if (type === 'fluid') {
+        data.tag = document.getElementById('tag')?.value || '';
+        data.intro = document.getElementById('intro')?.value || '';
+        data.previewImage = document.getElementById('previewImage')?.value || '';
+        data.summaryTitle = document.getElementById('summaryTitle')?.value || '';
+        data.ctaText = document.getElementById('ctaText')?.value || '';
+        data.ctaLink = document.getElementById('ctaLink')?.value || '';
+        data.fluidBlocks = collectFluidBlocksData();
+    }
+    
+    return data;
+}
+
+// Ottieni nome leggibile del tipo di blocco
+function getBlockTypeName(type) {
+    const names = {
+        cover: 'Blocco Copertina',
+        hero: 'Hero Block',
+        article: 'Articolo',
+        gallery: 'Galleria',
+        text: 'Testo',
+        quote: 'Citazione',
+        video: 'Video',
+        fluid: 'Parallasse Block',
+        custom: 'Blocco Personalizzato'
+    };
+    return names[type] || type;
+}
+
+// Escape HTML per iframe srcdoc
+function escapeHtml(html) {
+    return html
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+// Mantieni updateFluidPreview come alias per retrocompatibilità
 function updateFluidPreview() {
-    const previewContainer = document.getElementById('parallassePreview');
-    if (!previewContainer) return;
-    
-    const tag = document.getElementById('tag')?.value || '';
-    const title = document.getElementById('title')?.value || '';
-    const intro = document.getElementById('intro')?.value || '';
-    const previewImage = document.getElementById('previewImage')?.value || '';
-    const fluidBlocksData = collectFluidBlocksData();
-    
-    const fluidImages = previewImage ? [previewImage, ...fluidBlocksData.map(b => b.image)] : fluidBlocksData.map(b => b.image);
-    
-    previewContainer.innerHTML = `
-        <div style="position: sticky; top: 20px; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
-            <div style="padding: 24px; background: linear-gradient(135deg, #333382 0%, #2a2a6b 100%); color: white;">
-                <h3 style="margin: 0 0 8px 0; font-size: 18px;">📱 Anteprima Live</h3>
-                <p style="margin: 0; font-size: 12px; opacity: 0.8;">Parallasse Block</p>
-            </div>
-            <div style="max-height: 600px; overflow-y: auto;">
-                <!-- Immagine -->
-                <div style="position: relative; padding-top: 66.67%; background: #f1f5f9;">
-                    ${fluidImages[0] ? `<img src="${fluidImages[0]}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'">` : '<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #94a3b8;">Nessuna immagine</div>'}
-                </div>
-                <!-- Contenuto -->
-                <div style="padding: 20px;">
-                    ${tag ? `<div style="display: inline-block; padding: 4px 12px; background: #333382; color: white; border-radius: 20px; font-size: 11px; font-weight: 600; margin-bottom: 12px;">${tag}</div>` : ''}
-                    ${title ? `<h2 style="margin: 0 0 8px 0; font-size: 20px; color: #1e293b;">${title}</h2>` : '<h2 style="margin: 0 0 8px 0; font-size: 20px; color: #cbd5e1;">Titolo...</h2>'}
-                    ${intro ? `<p style="margin: 0; font-size: 14px; color: #64748b; line-height: 1.6;">${intro}</p>` : '<p style="margin: 0; font-size: 14px; color: #cbd5e1;">Intro...</p>'}
-                    
-                    ${fluidBlocksData.map((block, idx) => `
-                        <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #e2e8f0;">
-                            ${block.heading ? `<h3 style="margin: 0 0 12px 0; font-size: 16px; color: #1e293b;">${block.heading}</h3>` : ''}
-                            <p style="margin: 0; font-size: 14px; color: #475569; line-height: 1.7;">${block.text}</p>
-                            ${block.highlight ? `<div style="margin-top: 12px; padding: 12px; background: #fef3c7; border-left: 3px solid #f59e0b; border-radius: 6px;"><p style="margin: 0; font-size: 13px; color: #92400e;">${block.highlight}</p></div>` : ''}
-                        </div>
-                    `).join('')}
-                </div>
-            </div>
-        </div>
-    `;
+    updateBlockPreview();
 }
 
 // ============================================

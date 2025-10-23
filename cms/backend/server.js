@@ -1495,6 +1495,103 @@ app.put('/api/admin/magazines/:id', authenticateToken, async (req, res) => {
     }
 });
 
+// POST - Anteprima blocco singolo
+app.post('/api/admin/blocks/preview', authenticateToken, async (req, res) => {
+    try {
+        const { type, data } = req.body;
+        
+        // Genera HTML del blocco
+        const blockHtml = generateBlockHTML({ type, ...data }, 0);
+        
+        // Crea HTML completo con CSS
+        const fullHtml = `
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anteprima Blocco</title>
+    <link rel="stylesheet" href="${process.env.BASE_URL || 'http://localhost:3001'}/assets/css/style.css">
+    <link rel="stylesheet" href="${process.env.BASE_URL || 'http://localhost:3001'}/assets/css/main.css">
+    <link rel="stylesheet" href="${process.env.BASE_URL || 'http://localhost:3001'}/assets/css/cremona-scroll.css">
+    <link rel="stylesheet" href="${process.env.BASE_URL || 'http://localhost:3001'}/assets/css/sommario.css">
+    <link rel="stylesheet" href="${process.env.BASE_URL || 'http://localhost:3001'}/assets/css/mobile.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        * { box-sizing: border-box; }
+    </style>
+</head>
+<body>
+    ${blockHtml}
+    
+    <script>
+        // Script base per il funzionamento del blocco
+        document.addEventListener('DOMContentLoaded', function() {
+            // IntersectionObserver per Parallasse Block
+            const cremonaSections = document.querySelectorAll('.cremona-scroll-section');
+            cremonaSections.forEach(section => {
+                const textBlocks = section.querySelectorAll('.cremona-text-block');
+                const images = section.querySelectorAll('.cremona-img');
+                
+                if (textBlocks.length === 0 || images.length === 0) return;
+                
+                textBlocks[0].classList.add('active');
+                images[0].classList.add('active');
+                
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const block = entry.target;
+                            const imageIndex = parseInt(block.getAttribute('data-image'));
+                            
+                            textBlocks.forEach(b => b.classList.remove('active'));
+                            block.classList.add('active');
+                            
+                            if (imageIndex >= 0 && imageIndex < images.length) {
+                                images.forEach(img => img.classList.remove('active'));
+                                images[imageIndex].classList.add('active');
+                            }
+                        }
+                    });
+                }, {
+                    threshold: 0.5,
+                    rootMargin: '-20% 0px -20% 0px'
+                });
+                
+                textBlocks.forEach(block => observer.observe(block));
+            });
+            
+            // Sommario toggle per Cover
+            const sommarioToggle = document.querySelector('.sommario-toggle-hero');
+            const dropdown = document.querySelector('.hero-sommario-dropdown');
+            if (sommarioToggle && dropdown) {
+                sommarioToggle.addEventListener('click', () => {
+                    dropdown.classList.toggle('active');
+                    sommarioToggle.classList.toggle('active');
+                });
+            }
+        });
+    </script>
+</body>
+</html>`;
+        
+        res.json({
+            success: true,
+            html: fullHtml
+        });
+    } catch (error) {
+        console.error('Errore anteprima blocco:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Errore nella generazione dell\'anteprima'
+        });
+    }
+});
+
 // ============================================
 // GENERAZIONE HTML RIVISTA
 // ============================================
