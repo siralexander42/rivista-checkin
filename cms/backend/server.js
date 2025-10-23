@@ -166,7 +166,7 @@ const LoginLog = mongoose.model('LoginLog', loginLogSchema);
 const blockSchema = new mongoose.Schema({
     type: {
         type: String,
-        enum: ['cover', 'hero', 'article', 'gallery', 'text', 'quote', 'video', 'custom'],
+        enum: ['cover', 'hero', 'article', 'gallery', 'text', 'quote', 'video', 'fluid', 'custom'],
         required: true
     },
     title: String,
@@ -176,6 +176,16 @@ const blockSchema = new mongoose.Schema({
     images: [String], // Per gallery o backgrounds multipli (cover)
     link: String,
     buttonText: String,
+    tag: String, // Per fluid block
+    intro: String, // Per fluid block
+    ctaText: String, // Per fluid block
+    ctaLink: String, // Per fluid block
+    fluidBlocks: [{ // Per fluid block - array di blocchi di testo con immagini
+        heading: String,
+        text: String,
+        highlight: String,
+        image: String
+    }],
     position: {
         type: Number,
         default: 0
