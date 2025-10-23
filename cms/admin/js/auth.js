@@ -46,6 +46,28 @@ function isSuperAdmin() {
     return user && user.role === 'super-admin';
 }
 
+// Gestione accesso pagina Utenti
+function handleUsersAccess(e) {
+    e.preventDefault();
+    
+    const user = getCurrentUser();
+    
+    // Super admin: accesso diretto senza password
+    if (user && user.role === 'super-admin') {
+        window.location.href = 'users.html';
+        return;
+    }
+    
+    // Altri utenti: richiesta password
+    const password = prompt('🔒 Inserisci la password per accedere alla gestione utenti:');
+    
+    if (password === 'alessandro.venturini') {
+        window.location.href = 'users.html';
+    } else if (password !== null) {
+        alert('❌ Password errata');
+    }
+}
+
 // Controlla autenticazione all'avvio (tranne che per login.html)
 if (!window.location.pathname.includes('login.html')) {
     checkAuth();

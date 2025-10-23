@@ -94,6 +94,9 @@
                 <a href="#" class="nav-item" id="usersNavItem">
                     <span>Utenti</span>
                 </a>
+                <a href="permissions.html" class="nav-item" id="permissionsNavItem" style="display: none;">
+                    <span>Permessi</span>
+                </a>
                 <a href="logs.html" class="nav-item">
                     <span>Log Sistema</span>
                 </a>
@@ -371,15 +374,13 @@
         const user = JSON.parse(localStorage.getItem('user') || '{}');
         document.getElementById('welcomeMessage').textContent = user.username ? `Developer: ${user.username}` : '';
         
+        // Show permissions link only for super-admin
+        if (user.role === 'super-admin') {
+            document.getElementById('permissionsNavItem').style.display = 'block';
+        }
+        
         // Users nav
-        document.getElementById('usersNavItem').addEventListener('click', (e) => {
-            e.preventDefault();
-            if (user.role === 'super-admin') {
-                window.location.href = 'users.html';
-            } else {
-                alert('⚠️ Accesso limitato ai Super Admin');
-            }
-        });
+        document.getElementById('usersNavItem').addEventListener('click', handleUsersAccess);
     </script>
 
     <style>

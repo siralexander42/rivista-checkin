@@ -27,6 +27,9 @@
                 <a href="#" class="nav-item" id="usersNavItem">
                     <span>Utenti</span>
                 </a>
+                <a href="permissions.html" class="nav-item" id="permissionsNavItem" style="display: none;">
+                    <span>Permessi</span>
+                </a>
                 <a href="logs.html" class="nav-item">
                     <span>Log Accessi</span>
                 </a>
@@ -534,11 +537,15 @@
             if (user && user.name) {
                 document.getElementById('welcomeMessage').textContent = `Ciao ${user.name}`;
                 
-                // Mostra "Modalità Sviluppatore" solo per super-admin
+                // Mostra "Modalità Sviluppatore" e "Permessi" solo per super-admin
                 if (user.role === 'super-admin') {
                     const devModeNavItem = document.getElementById('devModeNavItem');
                     if (devModeNavItem) {
                         devModeNavItem.style.display = 'flex';
+                    }
+                    const permissionsNavItem = document.getElementById('permissionsNavItem');
+                    if (permissionsNavItem) {
+                        permissionsNavItem.style.display = 'flex';
                     }
                 }
             }

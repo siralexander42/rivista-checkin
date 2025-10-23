@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Permessi - CHECK-IN CMS</title>
+    <link rel="icon" type="image/png" href="https://www.italiaatavola.net/images/contenutiarticoli/logo_check-in-favicon.png">
+    <link rel="stylesheet" href="css/admin.css?v=8.0">
+    <style>
+        .permissions-matrix {
+            background: white;
+            border-radius: 12px;
+            border: 1.5px solid rgba(60, 61, 143, 0.12);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+        
+        .permissions-header {
+            background: linear-gradient(135deg, var(--primary) 0%, #4a4bc4 100%);
+            color: white;
+            padding: 20px 24px;
+            font-weight: 700;
+            font-size: 16px;
+        }
+        
+        .permission-row {
+            display: grid;
+            grid-template-columns: 250px repeat(3, 1fr);
+            gap: 16px;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-light);
+            align-items: center;
+            transition: background 0.2s ease;
+        }
+        
+        .permission-row:hover {
+            background: rgba(60, 61, 143, 0.03);
+        }
+        
+        .permission-row:last-child {
+            border-bottom: none;
+        }
+        
+        .permission-label {
+            font-weight: 600;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .permission-label .icon {
+            font-size: 20px;
+        }
+        
+        .permission-cell {
+            text-align: center;
+        }
+        
+        .role-header {
+            font-weight: 700;
+            color: var(--text-dark);
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            padding: 12px;
+            background: var(--bg-light);
+            border-radius: 6px;
+        }
+        
+        .permission-toggle {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+        
+        .permission-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 26px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+        
+        input:disabled + .toggle-slider {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .fixed-permission {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            background: var(--bg-light);
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+        
+        .fixed-permission.granted {
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+        }
+        
+        .fixed-permission.denied {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+        }
+        
+        .info-box {
+            background: linear-gradient(135deg, rgba(211, 228, 252, 0.3) 0%, rgba(232, 241, 253, 0.3) 100%);
+            border: 1.5px solid rgba(60, 61, 143, 0.15);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        
+        .info-box h3 {
+            margin: 0 0 12px 0;
+            color: var(--primary);
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .info-box ul {
+            margin: 0;
+            padding-left: 20px;
+            color: var(--text-dark);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="https://www.italiaatavola.net/images/testate/checkin-testata-hd.svg" alt="CHECK-IN" style="width: 100%; max-width: 180px; filter: brightness(0) invert(1);">
+                <p id="welcomeMessage" style="color: rgba(255, 255, 255, 0.9); font-size: 12px; margin-top: 12px; font-weight: 500; letter-spacing: 0.5px; min-height: 18px;"></p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item">
+                    <span>Dashboard</span>
+                </a>
+                <a href="magazines.html" class="nav-item">
+                    <span>Riviste</span>
+                </a>
+                <a href="#" class="nav-item" id="usersNavItem">
+                    <span>Utenti</span>
+                </a>
+                <a href="permissions.html" class="nav-item active" id="permissionsNavItem">
+                    <span>Permessi</span>
+                </a>
+                <a href="logs.html" class="nav-item">
+                    <span>Log Sistema</span>
+                </a>
+                <a href="developer.html" class="nav-item" id="devModeNavItem">
+                    <span>Modalità Sviluppatore</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button onclick="logout()" class="btn btn-secondary btn-full">
+                    Logout
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <div>
+                    <h1>🔐 Gestione Permessi</h1>
+                    <p>Configura l'accesso alle funzionalità per ogni ruolo</p>
+                </div>
+                <button class="btn btn-primary" onclick="savePermissions()">
+                    💾 Salva Modifiche
+                </button>
+            </div>
+
+            <!-- Info Box -->
+            <div class="info-box">
+                <h3>ℹ️ Informazioni sui Permessi</h3>
+                <ul>
+                    <li><strong>Super Admin:</strong> Ha accesso completo a tutte le funzionalità (non modificabile)</li>
+                    <li><strong>Admin:</strong> Gestisce riviste e contenuti, i permessi sono configurabili</li>
+                    <li><strong>Editor:</strong> Può modificare contenuti, i permessi sono configurabili</li>
+                    <li>I permessi vengono salvati nel database e applicati immediatamente</li>
+                    <li>La pagina "Utenti" per Super Admin non richiede mai password</li>
+                </ul>
+            </div>
+
+            <!-- Permissions Matrix -->
+            <div class="permissions-matrix">
+                <div class="permissions-header">
+                    Matrice dei Permessi
+                </div>
+                
+                <div class="permission-row" style="background: var(--bg-light); border-bottom: 2px solid rgba(60, 61, 143, 0.2);">
+                    <div class="permission-label"></div>
+                    <div class="permission-cell">
+                        <div class="role-header">Super Admin</div>
+                    </div>
+                    <div class="permission-cell">
+                        <div class="role-header">Admin</div>
+                    </div>
+                    <div class="permission-cell">
+                        <div class="role-header">Editor</div>
+                    </div>
+                </div>
+                
+                <!-- Dashboard -->
+                <div class="permission-row">
+                    <div class="permission-label">
+                        <span class="icon">📊</span>
+                        <span>Dashboard</span>
+                    </div>
+                    <div class="permission-cell">
+                        <span class="fixed-permission granted">✓ Sempre</span>
+                    </div>
+                    <div class="permission-cell">
+                        <label class="permission-toggle">
+                            <input type="checkbox" id="perm_admin_dashboard" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="permission-cell">
+                        <label class="permission-toggle">
+                            <input type="checkbox" id="perm_editor_dashboard" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Riviste -->
+                <div class="permission-row">
+                    <div class="permission-label">
+                        <span class="icon">📚</span>
+                        <span>Gestione Riviste</span>
+                    </div>
+                    <div class="permission-cell">
+                        <span class="fixed-permission granted">✓ Sempre</span>
+                    </div>
+                    <div class="permission-cell">
+                        <label class="permission-toggle">
+                            <input type="checkbox" id="perm_admin_magazines" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="permission-cell">
+                        <label class="permission-toggle">
+                            <input type="checkbox" id="perm_editor_magazines" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Blocchi -->
+                <div class="permission-row">
+                    <div class="permission-label">
+                        <span class="icon">📦</span>
+                        <span>Modifica Blocchi</span>
+                    </div>
+                    <div class="permission-cell">
+                        <span class="fixed-permission granted">✓ Sempre</span>
+                    </div>
+                    <div class="permission-cell">
+                        <label class="permission-toggle">
+                            <input type="checkbox" id="perm_admin_blocks" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="permission-cell">
+                        <label class="permission-toggle">
+                            <input type="checkbox" id="perm_editor_blocks" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Utenti -->
+                <div class="permission-row">
+                    <div class="permission-label">
+                        <span class="icon">👥</span>
+                        <span>Gestione Utenti</span>
+                    </div>
+                    <div class="permission-cell">
+                        <span class="fixed-permission granted">✓ Sempre</span>
+                    </div>
+                    <div class="permission-cell">
+                        <label class="permission-toggle">
+                            <input type="checkbox" id="perm_admin_users">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="permission-cell">
+                        <label class="permission-toggle">
+                            <input type="checkbox" id="perm_editor_users">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Permessi -->
+                <div class="permission-row">
+                    <div class="permission-label">
+                        <span class="icon">🔐</span>
+                        <span>Gestione Permessi</span>
+                    </div>
+                    <div class="permission-cell">
+                        <span class="fixed-permission granted">✓ Sempre</span>
+                    </div>
+                    <div class="permission-cell">
+                        <label class="permission-toggle">
+                            <input type="checkbox" id="perm_admin_permissions">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="permission-cell">
+                        <span class="fixed-permission denied">✗ Negato</span>
+                    </div>
+                </div>
+                
+                <!-- Log Sistema -->
+                <div class="permission-row">
+                    <div class="permission-label">
+                        <span class="icon">📋</span>
+                        <span>Log Sistema</span>
+                    </div>
+                    <div class="permission-cell">
+                        <span class="fixed-permission granted">✓ Sempre</span>
+                    </div>
+                    <div class="permission-cell">
+                        <label class="permission-toggle">
+                            <input type="checkbox" id="perm_admin_logs" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="permission-cell">
+                        <label class="permission-toggle">
+                            <input type="checkbox" id="perm_editor_logs">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Developer Mode -->
+                <div class="permission-row">
+                    <div class="permission-label">
+                        <span class="icon">⚙️</span>
+                        <span>Modalità Sviluppatore</span>
+                    </div>
+                    <div class="permission-cell">
+                        <span class="fixed-permission granted">✓ Sempre</span>
+                    </div>
+                    <div class="permission-cell">
+                        <label class="permission-toggle">
+                            <input type="checkbox" id="perm_admin_developer">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="permission-cell">
+                        <span class="fixed-permission denied">✗ Negato</span>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        let permissions = {};
+
+        // Carica permessi attuali
+        async function loadPermissions() {
+            try {
+                const response = await apiRequest('/admin/permissions');
+                permissions = response.permissions || {};
+                applyPermissions();
+            } catch (error) {
+                console.error('Errore caricamento permessi:', error);
+                // Usa permessi di default se il caricamento fallisce
+                permissions = getDefaultPermissions();
+                applyPermissions();
+            }
+        }
+
+        // Permessi di default
+        function getDefaultPermissions() {
+            return {
+                admin: {
+                    dashboard: true,
+                    magazines: true,
+                    blocks: true,
+                    users: false,
+                    permissions: false,
+                    logs: true,
+                    developer: false
+                },
+                editor: {
+                    dashboard: true,
+                    magazines: true,
+                    blocks: true,
+                    users: false,
+                    permissions: false,
+                    logs: false,
+                    developer: false
+                }
+            };
+        }
+
+        // Applica permessi ai toggle
+        function applyPermissions() {
+            const roles = ['admin', 'editor'];
+            const pages = ['dashboard', 'magazines', 'blocks', 'users', 'permissions', 'logs', 'developer'];
+            
+            roles.forEach(role => {
+                pages.forEach(page => {
+                    const checkbox = document.getElementById(`perm_${role}_${page}`);
+                    if (checkbox && permissions[role] && permissions[role][page] !== undefined) {
+                        checkbox.checked = permissions[role][page];
+                    }
+                });
+            });
+        }
+
+        // Salva permessi
+        async function savePermissions() {
+            const roles = ['admin', 'editor'];
+            const pages = ['dashboard', 'magazines', 'blocks', 'users', 'permissions', 'logs', 'developer'];
+            
+            const newPermissions = {};
+            
+            roles.forEach(role => {
+                newPermissions[role] = {};
+                pages.forEach(page => {
+                    const checkbox = document.getElementById(`perm_${role}_${page}`);
+                    if (checkbox) {
+                        newPermissions[role][page] = checkbox.checked;
+                    } else {
+                        // Permessi fissi
+                        if (role === 'editor' && (page === 'permissions' || page === 'developer')) {
+                            newPermissions[role][page] = false;
+                        }
+                    }
+                });
+            });
+            
+            try {
+                await apiRequest('/admin/permissions', {
+                    method: 'PUT',
+                    body: JSON.stringify({ permissions: newPermissions })
+                });
+                
+                alert('✅ Permessi salvati con successo!');
+                permissions = newPermissions;
+            } catch (error) {
+                console.error('Errore salvataggio permessi:', error);
+                alert('❌ Errore nel salvataggio dei permessi');
+            }
+        }
+
+        // Init
+        const user = getCurrentUser();
+        
+        // Verifica accesso (solo super-admin)
+        if (!user || user.role !== 'super-admin') {
+            alert('⚠️ Accesso negato. Solo i Super Admin possono gestire i permessi.');
+            window.location.href = 'index.html';
+        }
+        
+        loadPermissions();
+        
+        // Welcome message
+        document.getElementById('welcomeMessage').textContent = user.username ? `Super Admin: ${user.username}` : '';
+        
+        // Navigation
+        document.getElementById('usersNavItem').addEventListener('click', handleUsersAccess);
+        
+        document.getElementById('devModeNavItem')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = 'developer.html';
+        });
+    </script>
+</body>
+</html>
