@@ -233,6 +233,11 @@ class ImageCropper {
         console.log('attachCanvasEvents chiamata');
         console.log('selection:', this.selection);
         
+        if (!this.selection) {
+            console.error('Selection element not found!');
+            return;
+        }
+        
         const that = this; // Mantieni riferimento a this
         
         // Drag della selezione
