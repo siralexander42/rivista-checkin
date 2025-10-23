@@ -1134,11 +1134,20 @@ async function updateBlockPreview() {
     const isMobile = viewportMode === 'mobile';
     
     try {
+        console.log('Tentativo chiamata API per anteprima:', { type: blockType, data: blockData });
+        
         // Chiama il backend per generare l'HTML con i CSS reali
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 secondi timeout
+        
         const result = await apiRequest('/api/admin/blocks/preview', {
             method: 'POST',
-            body: JSON.stringify({ type: blockType, data: blockData })
+            body: JSON.stringify({ type: blockType, data: blockData }),
+            signal: controller.signal
         });
+        
+        clearTimeout(timeoutId);
+        console.log('Risposta API ricevuta:', result);
         
         if (result.success && result.html) {
             previewContainer.innerHTML = `
@@ -1165,18 +1174,28 @@ async function updateBlockPreview() {
     } catch (error) {
         console.error('Errore anteprima:', error);
         
-        // Fallback: mostra anteprima semplice senza backend
-        const simplePreview = generateSimplePreview(blockType, blockData);
+        let errorMessage = 'Backend non disponibile';
+        if (error.message.includes('401')) {
+            errorMessage = 'Login richiesto - ricarica la pagina';
+        } else if (error.message.includes('timeout') || error.name === 'AbortError') {
+            errorMessage = 'Timeout connessione';
+        } else if (error.message.includes('Endpoint')) {
+            errorMessage = 'Endpoint non trovato';
+        }
+        
+        // Prova a generare anteprima con CSS reale del sito
+        const realisticPreview = generateRealisticPreview(blockType, blockData);
         previewContainer.innerHTML = `
             <div style="position: sticky; top: 20px;">
                 <div style="padding: 12px 20px; background: #f59e0b; color: white; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center;">
                     <div>
-                        <h3 style="margin: 0; font-size: 16px;">📝 Anteprima Semplice</h3>
-                        <p style="margin: 0; font-size: 12px; opacity: 0.8;">Backend non disponibile</p>
+                        <h3 style="margin: 0; font-size: 16px;">📝 Anteprima Offline</h3>
+                        <p style="margin: 0; font-size: 12px; opacity: 0.8;">${errorMessage}</p>
                     </div>
+                    <button onclick="updateBlockPreview()" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 11px;">🔄 Riprova</button>
                 </div>
                 <div style="background: #f1f5f9; border-radius: 0 0 12px 12px; padding: 20px;">
-                    ${simplePreview}
+                    ${realisticPreview}
                 </div>
             </div>
         `;
@@ -1393,6 +1412,244 @@ function generateSimplePreview(blockType, blockData) {
                     ${blockData.content ? `<p style="margin: 10px 0 0 0; color: #718096;">${blockData.content.substring(0, 100)}${blockData.content.length > 100 ? '...' : ''}</p>` : ''}
                 </div>
             `;
+    }
+}
+
+// Anteprima realistica che simula il CSS del sito reale
+function generateRealisticPreview(blockType, blockData) {
+    console.log('Generando anteprima realistica per:', blockType, blockData);
+    
+    // Include CSS del sito reale inline
+    const siteCSS = `
+        <style>
+            /* Importa i CSS del sito reale */
+            @import url('../../assets/css/main.css');
+            @import url('../../assets/css/style.css');
+            @import url('../../assets/css/cremona-scroll.css');
+            
+            /* Reset per anteprima */
+            .preview-container { 
+                font-family: 'Poppins', sans-serif; 
+                line-height: 1.6; 
+                color: #333; 
+                background: white;
+                margin: 0;
+                padding: 0;
+            }
+            
+            /* Stili copertina realistici */
+            .cover-block {
+                position: relative;
+                min-height: 500px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                text-align: center;
+                background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+                background-size: cover;
+                background-position: center;
+                overflow: hidden;
+            }
+            
+            .cover-overlay {
+                position: absolute;
+                top: 0; left: 0; right: 0; bottom: 0;
+                background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.2));
+            }
+            
+            .cover-content {
+                position: relative;
+                z-index: 2;
+                max-width: 800px;
+                padding: 40px 20px;
+            }
+            
+            .cover-title {
+                font-size: 3.5rem;
+                font-weight: 700;
+                margin: 0 0 20px 0;
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+                line-height: 1.1;
+            }
+            
+            .cover-subtitle {
+                font-size: 1.5rem;
+                font-weight: 300;
+                margin: 0 0 30px 0;
+                opacity: 0.95;
+                text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            }
+            
+            .cover-description {
+                font-size: 1.1rem;
+                opacity: 0.9;
+                max-width: 600px;
+                margin: 0 auto;
+                text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            }
+            
+            /* Stili articolo realistici */
+            .article-block {
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 40px 20px;
+                background: white;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+                border-radius: 12px;
+            }
+            
+            .article-title {
+                font-size: 2.5rem;
+                font-weight: 700;
+                color: #2c3e50;
+                margin: 0 0 15px 0;
+                line-height: 1.2;
+            }
+            
+            .article-subtitle {
+                font-size: 1.3rem;
+                color: #3498db;
+                font-weight: 500;
+                margin: 0 0 25px 0;
+            }
+            
+            .article-content {
+                font-size: 1.1rem;
+                line-height: 1.8;
+                color: #444;
+                text-align: justify;
+            }
+            
+            .article-image {
+                width: 100%;
+                height: 300px;
+                object-fit: cover;
+                border-radius: 12px;
+                margin: 25px 0;
+                box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            }
+            
+            /* Stili fluid block realistici */
+            .fluid-block {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 60px 40px;
+                border-radius: 20px;
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .fluid-tag {
+                display: inline-block;
+                background: rgba(255,255,255,0.25);
+                padding: 8px 20px;
+                border-radius: 25px;
+                font-size: 0.9rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                margin-bottom: 25px;
+            }
+            
+            .fluid-title {
+                font-size: 3rem;
+                font-weight: 700;
+                margin: 0 0 20px 0;
+                line-height: 1.1;
+            }
+            
+            .fluid-intro {
+                font-size: 1.2rem;
+                opacity: 0.95;
+                line-height: 1.6;
+                margin: 0 0 30px 0;
+                max-width: 700px;
+            }
+            
+            .fluid-preview-image {
+                width: 100%;
+                max-width: 500px;
+                height: 280px;
+                object-fit: cover;
+                border-radius: 15px;
+                box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+                margin-top: 30px;
+            }
+            
+            /* Decorazioni */
+            .fluid-block::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                right: -20%;
+                width: 400px;
+                height: 400px;
+                background: rgba(255,255,255,0.1);
+                border-radius: 50%;
+                z-index: 1;
+            }
+            
+            .fluid-content {
+                position: relative;
+                z-index: 2;
+            }
+        </style>
+    `;
+    
+    switch (blockType) {
+        case 'cover':
+            const bgImage = blockData.images && blockData.images.length > 0 ? blockData.images[0] : null;
+            const bgStyle = bgImage ? `background-image: url('${bgImage}');` : '';
+            
+            return `
+                ${siteCSS}
+                <div class="preview-container">
+                    <div class="cover-block" style="${bgStyle}">
+                        <div class="cover-overlay"></div>
+                        <div class="cover-content">
+                            <h1 class="cover-title">${blockData.title || 'Inserisci il titolo della copertina'}</h1>
+                            ${blockData.subtitle ? `<h2 class="cover-subtitle">${blockData.subtitle}</h2>` : '<p style="font-style: italic; opacity: 0.7;">Aggiungi un sottotitolo...</p>'}
+                            ${blockData.content ? `<p class="cover-description">${blockData.content}</p>` : '<p style="font-style: italic; opacity: 0.6;">Aggiungi una descrizione...</p>'}
+                            ${blockData.images && blockData.images.length > 1 ? `<div style="margin-top: 30px; font-size: 1rem; opacity: 0.8;">📸 ${blockData.images.length} immagini di sfondo disponibili</div>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        
+        case 'article':
+            return `
+                ${siteCSS}
+                <div class="preview-container">
+                    <article class="article-block">
+                        <h1 class="article-title">${blockData.title || 'Inserisci il titolo dell\'articolo'}</h1>
+                        ${blockData.subtitle ? `<h2 class="article-subtitle">${blockData.subtitle}</h2>` : ''}
+                        ${blockData.image ? `<img src="${blockData.image}" class="article-image" alt="Immagine articolo">` : ''}
+                        <div class="article-content">
+                            ${blockData.content ? blockData.content.replace(/\n/g, '</p><p>') : '<p style="font-style: italic; color: #999;">Scrivi qui il contenuto dell\'articolo...</p>'}
+                        </div>
+                    </article>
+                </div>
+            `;
+        
+        case 'fluid':
+            return `
+                ${siteCSS}
+                <div class="preview-container">
+                    <div class="fluid-block">
+                        <div class="fluid-content">
+                            <div class="fluid-tag">${blockData.tag || 'TAG'}</div>
+                            <h1 class="fluid-title">${blockData.title || 'Titolo Parallasse Block'}</h1>
+                            ${blockData.intro ? `<p class="fluid-intro">${blockData.intro}</p>` : '<p style="font-style: italic; opacity: 0.7;">Aggiungi un\'introduzione...</p>'}
+                            ${blockData.previewImage ? `<img src="${blockData.previewImage}" class="fluid-preview-image" alt="Anteprima">` : '<div style="padding: 80px 20px; background: rgba(255,255,255,0.1); border-radius: 15px; text-align: center; border: 2px dashed rgba(255,255,255,0.3); margin-top: 30px;"><div style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;">📸</div><p style="margin: 0; font-style: italic; opacity: 0.7;">Aggiungi foto di anteprima</p></div>'}
+                        </div>
+                    </div>
+                </div>
+            `;
+        
+        default:
+            // Fallback alla versione semplice per altri tipi
+            return generateSimplePreview(blockType, blockData);
     }
 }
 
