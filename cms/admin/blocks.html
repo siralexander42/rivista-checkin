@@ -397,44 +397,7 @@
             }
         });
         
-        // Gestione accesso Utenti
-        function handleUsersAccess(e) {
-            e.preventDefault();
-            
-            const user = getCurrentUser();
-            if (user && user.role === 'super-admin') {
-                window.location.href = 'users.html';
-            } else {
-                document.getElementById('passwordModal').style.display = 'flex';
-                document.getElementById('accessPassword').value = '';
-                document.getElementById('passwordError').style.display = 'none';
-                setTimeout(() => document.getElementById('accessPassword').focus(), 100);
-            }
-        }
-
-        function closePasswordModal() {
-            document.getElementById('passwordModal').style.display = 'none';
-            document.getElementById('accessPassword').value = '';
-            document.getElementById('passwordError').style.display = 'none';
-        }
-
-        function verifyPasswordAccess() {
-            const password = document.getElementById('accessPassword').value;
-            const errorDiv = document.getElementById('passwordError');
-            
-            if (password === 'alessandro.venturini') {
-                closePasswordModal();
-                window.location.href = 'users.html';
-            } else {
-                errorDiv.textContent = 'Password errata!';
-                errorDiv.style.display = 'block';
-                errorDiv.style.background = '#fee';
-                errorDiv.style.color = '#c00';
-                errorDiv.style.padding = '12px';
-                errorDiv.style.borderRadius = '8px';
-                errorDiv.style.border = '2px solid #fcc';
-            }
-        }
+        // handleUsersAccess è definito in auth.js (rimossa versione locale)
 
         document.addEventListener('keypress', (e) => {
             const passwordInput = document.getElementById('accessPassword');

@@ -314,63 +314,7 @@
             type();
         }
 
-        // Gestione accesso Utenti
-        function handleUsersAccess(e) {
-            e.preventDefault();
-            
-            const user = getCurrentUser();
-            console.log('=== DEBUG ACCESSO UTENTI ===');
-            console.log('User:', user);
-            console.log('User role:', user?.role);
-            console.log('Is super-admin?', user?.role === 'super-admin');
-            
-            if (user && user.role === 'super-admin') {
-                console.log('✅ Super admin - accesso diretto');
-                window.location.href = 'users.html';
-                return;
-            }
-            
-            console.log('🔒 Non super admin - mostra modal password');
-            const modal = document.getElementById('passwordModal');
-            if (!modal) {
-                console.error('❌ ERRORE: Modal passwordModal non trovato!');
-                alert('ERRORE: Modal non trovato. Controlla console.');
-                return;
-            }
-            
-            modal.style.display = 'flex';
-            document.getElementById('accessPassword').value = '';
-            document.getElementById('passwordError').style.display = 'none';
-            setTimeout(() => {
-                const input = document.getElementById('accessPassword');
-                if (input) input.focus();
-            }, 100);
-        }
-
-        function closePasswordModal() {
-            document.getElementById('passwordModal').style.display = 'none';
-            document.getElementById('accessPassword').value = '';
-            document.getElementById('passwordError').style.display = 'none';
-        }
-
-        function verifyPasswordAccess() {
-            const password = document.getElementById('accessPassword').value;
-            const errorDiv = document.getElementById('passwordError');
-            
-            // Password corretta: alessandro.venturini
-            if (password === 'alessandro.venturini') {
-                closePasswordModal();
-                window.location.href = 'users.html';
-            } else {
-                errorDiv.textContent = 'Password errata!';
-                errorDiv.style.display = 'block';
-                errorDiv.style.background = '#fee';
-                errorDiv.style.color = '#c00';
-                errorDiv.style.padding = '12px';
-                errorDiv.style.borderRadius = '8px';
-                errorDiv.style.border = '2px solid #fcc';
-            }
-        }
+        // handleUsersAccess è definito in auth.js (rimossa versione locale)
 
         // Enter per verificare password
         document.addEventListener('keypress', (e) => {
