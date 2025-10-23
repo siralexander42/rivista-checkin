@@ -1141,10 +1141,9 @@ async function updateBlockPreview() {
         });
         
         if (result.success && result.html) {
-            // Dimensioni e zoom
+            // Dimensioni viewport
             const width = isMobile ? '700px' : '1100px';
-            const height = isMobile ? '700px' : '650px';
-            const zoom = isMobile ? '1' : '0.5'; // Desktop zoomato al 50% per vedere tutto
+            const height = '800px';
             
             // Crea iframe con HTML reale e CSS della rivista
             previewContainer.innerHTML = `
@@ -1169,10 +1168,10 @@ async function updateBlockPreview() {
                             </button>
                         </div>
                     </div>
-                    <div style="background: #f1f5f9; border-radius: 0 0 12px 12px; padding: 20px; display: flex; justify-content: center; align-items: flex-start; min-height: ${height}; overflow: auto;">
-                        <div style="width: ${zoom !== '1' ? parseInt(width) * parseFloat(zoom) + 'px' : width}; height: ${height}; background: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); overflow: hidden; position: relative;">
+                    <div style="background: #f1f5f9; border-radius: 0 0 12px 12px; padding: 20px; display: flex; justify-content: center; align-items: flex-start; overflow: auto;">
+                        <div style="width: ${width}; height: ${height}; background: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); overflow-y: auto; overflow-x: hidden;">
                             <iframe 
-                                style="width: ${width}; height: ${zoom !== '1' ? parseInt(height) * (1/parseFloat(zoom)) + 'px' : height}; border: none; transform: scale(${zoom}); transform-origin: top left; position: absolute; top: 0; left: 0;"
+                                style="width: ${width}; height: ${height}; border: none;"
                                 srcdoc="${escapeHtml(result.html)}"
                             ></iframe>
                         </div>
