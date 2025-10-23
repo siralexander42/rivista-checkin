@@ -30,6 +30,12 @@
                 <a href="logs.html" class="nav-item">
                     <span>Log Accessi</span>
                 </a>
+                <a href="#" class="nav-item" id="devModeNavItem" style="display: none;">
+                    <span>Modalità Sviluppatore</span>
+                </a>
+                <a href="#" class="nav-item" id="advNavItem">
+                    <span>ADV</span>
+                </a>
             </nav>
             
             <div class="sidebar-footer">
@@ -393,12 +399,40 @@
                     // Mostra testo fisso nelle altre pagine
                     document.getElementById('welcomeMessage').textContent = welcomeText;
                 }
+                
+                // Mostra "Modalità Sviluppatore" solo per super-admin
+                if (user.role === 'super-admin') {
+                    const devModeNavItem = document.getElementById('devModeNavItem');
+                    if (devModeNavItem) {
+                        devModeNavItem.style.display = 'flex';
+                    }
+                }
             }
             
             // Gestione click su Utenti
             const usersNavItem = document.getElementById('usersNavItem');
             if (usersNavItem) {
                 usersNavItem.addEventListener('click', handleUsersAccess);
+            }
+            
+            // Gestione click su Modalità Sviluppatore
+            const devModeNavItem = document.getElementById('devModeNavItem');
+            if (devModeNavItem) {
+                devModeNavItem.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    alert('Modalità Sviluppatore - Coming Soon!');
+                    // TODO: implementare pagina modalità sviluppatore
+                });
+            }
+            
+            // Gestione click su ADV
+            const advNavItem = document.getElementById('advNavItem');
+            if (advNavItem) {
+                advNavItem.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    alert('ADV - Coming Soon!');
+                    // TODO: implementare pagina ADV
+                });
             }
         });
     </script>
