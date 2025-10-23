@@ -1156,12 +1156,14 @@ async function updateBlockPreview() {
                         </div>
                         <div style="display: flex; gap: 8px; background: rgba(255,255,255,0.1); border-radius: 8px; padding: 4px;">
                             <button 
-                                onclick="switchViewport('desktop')" 
+                                type="button"
+                                onclick="event.preventDefault(); event.stopPropagation(); switchViewport('desktop')" 
                                 style="padding: 6px 12px; border: none; background: ${!isMobile ? 'white' : 'transparent'}; color: ${!isMobile ? '#333382' : 'white'}; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s;">
                                 🖥️ Desktop
                             </button>
                             <button 
-                                onclick="switchViewport('mobile')" 
+                                type="button"
+                                onclick="event.preventDefault(); event.stopPropagation(); switchViewport('mobile')" 
                                 style="padding: 6px 12px; border: none; background: ${isMobile ? 'white' : 'transparent'}; color: ${isMobile ? '#333382' : 'white'}; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s;">
                                 📱 Mobile
                             </button>
@@ -1191,6 +1193,9 @@ async function updateBlockPreview() {
 
 // Switch viewport mode
 function switchViewport(mode) {
+    event?.preventDefault();
+    event?.stopPropagation();
+    
     const previewContainer = document.getElementById('blockPreview');
     if (previewContainer) {
         previewContainer.dataset.viewportMode = mode;
