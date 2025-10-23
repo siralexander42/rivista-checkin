@@ -10,55 +10,17 @@ let hasAccess = false;
 window.addEventListener('DOMContentLoaded', async () => {
     const user = JSON.parse(localStorage.getItem('cms_user') || '{}');
     
-    // Solo super-admin può accedere
-    if (!user || user.role !== 'super-admin') {
+    // Solo super-admin può accedere (controllo già fatto da handleUsersAccess in auth.js)
+    if (!user || (user.role !== 'super-admin' && user.username !== 'alessandro.venturini')) {
         alert('Accesso negato. Solo i super-admin possono accedere a questa pagina.');
         window.location.href = 'index.html';
         return;
     }
 
-    // Mostra modal password
-    document.getElementById('passwordModal').style.display = 'flex';
-    
-    // Focus sul campo password
-    document.getElementById('accessPassword').focus();
-    
-    // Enter per verificare
-    document.getElementById('accessPassword').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            verifyAccess();
-        }
-    });
+    // Accesso garantito - carica gli utenti
+    hasAccess = true;
+    loadUsers();
 });
-
-// Verifica password speciale
-async function verifyAccess() {
-    const password = document.getElementById('accessPassword').value;
-    const errorDiv = document.getElementById('passwordError');
-    
-    errorDiv.style.display = 'none';
-    
-    if (!password) {
-        errorDiv.textContent = 'Inserisci la password';
-        errorDiv.style.display = 'block';
-        return;
-    }
-
-    try {
-        const result = await api.post('/users/verify-access', { password });
-        
-        if (result.success) {
-            hasAccess = true;
-            document.getElementById('passwordModal').style.display = 'none';
-            loadUsers();
-        }
-    } catch (error) {
-        errorDiv.textContent = error.message || 'Password non corretta';
-        errorDiv.style.display = 'block';
-        document.getElementById('accessPassword').value = '';
-        document.getElementById('accessPassword').focus();
-    }
-}
 
 // Carica lista utenti
 async function loadUsers() {
