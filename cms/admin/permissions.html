@@ -194,6 +194,9 @@
                 <a href="developer.html" class="nav-item" id="devModeNavItem">
                     <span>Modalità Sviluppatore</span>
                 </a>
+                <a href="#" class="nav-item" id="advNavItem">
+                    <span>ADV</span>
+                </a>
             </nav>
             
             <div class="sidebar-footer">
@@ -517,6 +520,14 @@
         
         // Navigation
         document.getElementById('usersNavItem').addEventListener('click', handleUsersAccess);
+        
+        const advNavItem = document.getElementById('advNavItem');
+        if (advNavItem) {
+            advNavItem.addEventListener('click', (e) => {
+                e.preventDefault();
+                alert('📢 Gestione ADV in arrivo!\n\nQui potrai configurare banner pubblicitari e sponsorizzazioni.');
+            });
+        }
         
         document.getElementById('devModeNavItem')?.addEventListener('click', (e) => {
             e.preventDefault();

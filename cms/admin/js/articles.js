@@ -195,3 +195,12 @@ const editId = urlParams.get('edit');
 if (editId) {
     editArticle(editId);
 }
+
+// Gestione click ADV
+const advNavItem = document.getElementById('advNavItem');
+if (advNavItem) {
+    advNavItem.addEventListener('click', (e) => {
+        e.preventDefault();
+        alert('📢 Gestione ADV in arrivo!\n\nQui potrai configurare banner pubblicitari e sponsorizzazioni.');
+    });
+}
