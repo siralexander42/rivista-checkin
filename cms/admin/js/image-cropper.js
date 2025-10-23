@@ -139,7 +139,8 @@ class ImageCropper {
         `;
         
         const img = new Image();
-        img.crossOrigin = 'anonymous';
+        // Rimosso crossOrigin per evitare problemi CORS
+        // img.crossOrigin = 'anonymous';
         
         img.onload = () => {
             this.image = img;
@@ -154,7 +155,7 @@ class ImageCropper {
             this.canvasWrapper.innerHTML = `
                 <div class="cropper-placeholder">
                     <div class="cropper-placeholder-icon">⚠️</div>
-                    <div class="cropper-placeholder-text">Errore nel caricamento dell'immagine</div>
+                    <div class="cropper-placeholder-text">Errore nel caricamento dell'immagine<br><small style="font-size: 11px; margin-top: 8px; display: block;">Verifica che l'URL sia corretto</small></div>
                 </div>
             `;
         };

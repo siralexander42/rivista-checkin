@@ -490,9 +490,15 @@ https://esempio.com/img3.jpg">${(data.images || []).join('\n')}</textarea>
                 
                 <div class="form-group">
                     <label for="previewImage">🖼️ Foto di Anteprima Iniziale *</label>
-                    <input type="url" id="previewImage" required value="${data.previewImage || ''}" placeholder="https://..." oninput="updateFluidPreview()">
+                    <input type="url" id="previewImage" required value="${data.previewImage || ''}" placeholder="https://..." oninput="updateFluidPreview(); initPreviewImageCropper()">
                     <small>Questa sarà la prima immagine visualizzata quando si carica il blocco</small>
                 </div>
+                
+                <div class="form-group">
+                    <div id="previewImageCropper"></div>
+                </div>
+                
+                <input type="hidden" id="previewImageCropData" value='${JSON.stringify(data.previewImageCropData || {})}'>
                 
                 <div class="form-group">
                     <label for="summaryTitle">📋 Titolo per il Sommario *</label>
@@ -608,6 +614,14 @@ async function handleBlockFormSubmit(e) {
         blockData.ctaText = document.getElementById('ctaText')?.value || '';
         blockData.ctaLink = document.getElementById('ctaLink')?.value || '';
         blockData.fluidBlocks = collectFluidBlocksData();
+        
+        // Salva crop data dell'immagine di anteprima
+        const previewCropDataInput = document.getElementById('previewImageCropData');
+        try {
+            blockData.previewImageCropData = previewCropDataInput ? JSON.parse(previewCropDataInput.value) : {};
+        } catch (e) {
+            blockData.previewImageCropData = {};
+        }
         
         // Valida che ci sia almeno un blocco
         if (blockData.fluidBlocks.length === 0) {
@@ -1359,6 +1373,59 @@ window.addEventListener('click', (e) => {
 
 // Store dei cropper attivi
 window.fluidCroppers = {};
+window.previewImageCropper = null;
+
+// Inizializza cropper per immagine di anteprima
+function initPreviewImageCropper() {
+    const imageInput = document.getElementById('previewImage');
+    const cropperContainer = document.getElementById('previewImageCropper');
+    const cropDataInput = document.getElementById('previewImageCropData');
+    
+    console.log('initPreviewImageCropper chiamata');
+    console.log('imageInput:', imageInput);
+    console.log('cropperContainer:', cropperContainer);
+    
+    if (!imageInput || !cropperContainer) {
+        console.warn('Elementi non trovati per preview image cropper');
+        return;
+    }
+    
+    const imageUrl = imageInput.value.trim();
+    console.log('imageUrl:', imageUrl);
+    
+    if (!imageUrl || !(imageUrl.startsWith('http://') || imageUrl.startsWith('https://'))) {
+        cropperContainer.innerHTML = '';
+        return;
+    }
+    
+    // Recupera crop data esistente
+    let existingCropData = {};
+    try {
+        existingCropData = cropDataInput ? JSON.parse(cropDataInput.value) : {};
+    } catch (e) {}
+    
+    console.log('Creazione cropper per preview image:', imageUrl);
+    
+    // Distruggi cropper esistente
+    if (window.previewImageCropper) {
+        window.previewImageCropper = null;
+    }
+    
+    // Crea nuovo cropper
+    setTimeout(() => {
+        window.previewImageCropper = new ImageCropper('previewImageCropper', {
+            imageUrl: imageUrl,
+            aspectRatio: 16/9,
+            cropData: existingCropData,
+            onChange: (cropData) => {
+                if (cropDataInput) {
+                    cropDataInput.value = JSON.stringify(cropData);
+                }
+            }
+        });
+        console.log('Preview image cropper creato');
+    }, 200);
+}
 
 // Inizializza cropper per un blocco fluid
 function initFluidImageCropper(index) {
@@ -1416,6 +1483,15 @@ function initFluidImageCropper(index) {
 // Inizializza tutti i cropper quando si apre il modal di modifica
 function initAllFluidCroppers() {
     console.log('initAllFluidCroppers chiamata');
+    
+    // Inizializza cropper per immagine di anteprima
+    const previewImage = document.getElementById('previewImage');
+    if (previewImage && previewImage.value.trim()) {
+        console.log('Inizializzazione cropper immagine anteprima');
+        initPreviewImageCropper();
+    }
+    
+    // Inizializza cropper per blocchi fluid
     const fluidBlocks = document.querySelectorAll('.fluid-block-field');
     console.log('Blocchi fluid trovati:', fluidBlocks.length);
     
