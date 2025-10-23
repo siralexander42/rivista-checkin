@@ -5,6 +5,7 @@
 
 class ImageCropper {
     constructor(containerId, options = {}) {
+        this.containerId = containerId;
         this.container = document.getElementById(containerId);
         this.imageUrl = options.imageUrl || '';
         this.aspectRatio = options.aspectRatio || 16/9; // Default 16:9 per parallasse
@@ -63,7 +64,7 @@ class ImageCropper {
                         <div class="cropper-preview-panel">
                             <div class="cropper-preview-box">
                                 <h5>Anteprima Crop</h5>
-                                <div class="cropper-preview-image" id="cropperPreview">
+                                <div class="cropper-preview-image" id="cropperPreview_${this.containerId}">
                                     <div style="padding: 40px; text-align: center; color: #94a3b8;">
                                         <div style="font-size: 32px; margin-bottom: 8px;">👁️</div>
                                         <div style="font-size: 12px;">Nessuna selezione</div>
@@ -75,19 +76,19 @@ class ImageCropper {
                                 <div class="cropper-info">
                                     <div class="cropper-info-row">
                                         <span class="cropper-info-label">Posizione X:</span>
-                                        <span class="cropper-info-value" id="cropX">0%</span>
+                                        <span class="cropper-info-value" id="cropX_${this.containerId}">0%</span>
                                     </div>
                                     <div class="cropper-info-row">
                                         <span class="cropper-info-label">Posizione Y:</span>
-                                        <span class="cropper-info-value" id="cropY">0%</span>
+                                        <span class="cropper-info-value" id="cropY_${this.containerId}">0%</span>
                                     </div>
                                     <div class="cropper-info-row">
                                         <span class="cropper-info-label">Larghezza:</span>
-                                        <span class="cropper-info-value" id="cropWidth">100%</span>
+                                        <span class="cropper-info-value" id="cropWidth_${this.containerId}">100%</span>
                                     </div>
                                     <div class="cropper-info-row">
                                         <span class="cropper-info-label">Altezza:</span>
-                                        <span class="cropper-info-value" id="cropHeight">100%</span>
+                                        <span class="cropper-info-value" id="cropHeight_${this.containerId}">100%</span>
                                     </div>
                                 </div>
                             </div>
@@ -98,7 +99,7 @@ class ImageCropper {
         `;
         
         this.canvasWrapper = this.container.querySelector('.cropper-canvas-wrapper');
-        this.previewElement = document.getElementById('cropperPreview');
+        this.previewElement = document.getElementById(`cropperPreview_${this.containerId}`);
     }
     
     attachEvents() {
@@ -166,12 +167,12 @@ class ImageCropper {
     
     renderCanvas() {
         this.canvasWrapper.innerHTML = `
-            <button class="cropper-reset-btn" id="cropperResetBtn">
+            <button class="cropper-reset-btn" id="cropperResetBtn_${this.containerId}">
                 🔄 Reset
             </button>
             <div class="cropper-canvas">
-                <img src="${this.imageUrl}" class="cropper-image" draggable="false" id="cropperImage">
-                <div class="cropper-selection" id="cropperSelection" style="position: absolute; border: 3px solid #3C3D8F; cursor: move;">
+                <img src="${this.imageUrl}" class="cropper-image" draggable="false" id="cropperImage_${this.containerId}">
+                <div class="cropper-selection" id="cropperSelection_${this.containerId}" style="position: absolute; border: 3px solid #3C3D8F; cursor: move;">
                     <div class="cropper-handle nw" style="position: absolute; top: -6px; left: -6px;"></div>
                     <div class="cropper-handle n" style="position: absolute; top: -6px; left: 50%; margin-left: -6px;"></div>
                     <div class="cropper-handle ne" style="position: absolute; top: -6px; right: -6px;"></div>
@@ -185,11 +186,11 @@ class ImageCropper {
         `;
         
         this.canvas = this.canvasWrapper.querySelector('.cropper-canvas');
-        this.imageElement = document.getElementById('cropperImage');
-        this.selection = document.getElementById('cropperSelection');
+        this.imageElement = document.getElementById(`cropperImage_${this.containerId}`);
+        this.selection = document.getElementById(`cropperSelection_${this.containerId}`);
         
         // Reset button
-        const resetBtn = document.getElementById('cropperResetBtn');
+        const resetBtn = document.getElementById(`cropperResetBtn_${this.containerId}`);
         resetBtn.addEventListener('click', () => this.resetSelection());
         
         this.attachCanvasEvents();
@@ -499,10 +500,10 @@ class ImageCropper {
     }
     
     updateInfo() {
-        document.getElementById('cropX').textContent = this.cropData.x + '%';
-        document.getElementById('cropY').textContent = this.cropData.y + '%';
-        document.getElementById('cropWidth').textContent = this.cropData.width + '%';
-        document.getElementById('cropHeight').textContent = this.cropData.height + '%';
+        document.getElementById(`cropX_${this.containerId}`).textContent = this.cropData.x + '%';
+        document.getElementById(`cropY_${this.containerId}`).textContent = this.cropData.y + '%';
+        document.getElementById(`cropWidth_${this.containerId}`).textContent = this.cropData.width + '%';
+        document.getElementById(`cropHeight_${this.containerId}`).textContent = this.cropData.height + '%';
     }
     
     getCropData() {
