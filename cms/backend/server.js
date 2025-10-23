@@ -1839,7 +1839,7 @@ ${blocksHTML}
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
                             const block = entry.target;
-                            const imageIndex = parseInt(block.getAttribute('data-image')) - 1;
+                            const imageIndex = parseInt(block.getAttribute('data-image'));
                             
                             if (imageIndex >= 0 && imageIndex < images.length) {
                                 // Rimuovi active da tutte le immagini
@@ -1858,11 +1858,6 @@ ${blocksHTML}
                 textBlocks.forEach(block => observer.observe(block));
             });
         });
-    </script>
-    
-    <!-- Cremona Scroll Script -->
-    <script>
-        ${cremonaJS}
     </script>
 </body>
 </html>`;
@@ -2029,14 +2024,14 @@ function generateBlockHTML(block) {
             <!-- TESTO SCROLLABILE A SINISTRA -->
             <div class="cremona-text-scroll">
                 <!-- Primo blocco con tag e titolo principale -->
-                <div class="cremona-text-block" data-image="1">
+                <div class="cremona-text-block" data-image="0">
                     ${block.tag ? `<span class="cremona-tag">${block.tag}</span>` : ''}
                     ${block.title ? `<h2 class="cremona-title">${block.title}</h2>` : ''}
                     ${block.intro ? `<p class="cremona-intro">${block.intro}</p>` : ''}
                 </div>
 
                 ${fluidBlocks.map((fb, idx) => `
-                <div class="cremona-text-block" data-image="${idx + 2}">
+                <div class="cremona-text-block" data-image="${idx + 1}">
                     ${fb.heading ? `<h3>${fb.heading}</h3>` : ''}
                     ${fb.text ? `<p>${fb.text}</p>` : ''}
                     ${fb.highlight ? `<p class="cremona-highlight">${fb.highlight}</p>` : ''}
@@ -2044,7 +2039,7 @@ function generateBlockHTML(block) {
                 `).join('')}
 
                 ${block.ctaText && block.ctaLink ? `
-                <div class="cremona-text-block" data-image="1">
+                <div class="cremona-text-block" data-image="0">
                     <a href="${block.ctaLink}" class="cremona-cta" target="_blank">
                         ${block.ctaText}
                     </a>
@@ -2059,7 +2054,7 @@ function generateBlockHTML(block) {
                     <img src="${img}" 
                          alt="${block.title || 'Image'} ${idx + 1}"
                          class="cremona-img ${idx === 0 ? 'active' : ''}"
-                         data-index="${idx + 1}">
+                         data-index="${idx}">
                     `).join('')}
                 </div>
             </div>
