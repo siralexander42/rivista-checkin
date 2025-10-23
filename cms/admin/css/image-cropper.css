@@ -107,7 +107,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    pointer-events: none;
+    pointer-events: none; /* L'overlay non deve catturare eventi */
 }
 
 .cropper-selection {
@@ -118,7 +118,8 @@
         0 0 0 3px rgba(255, 255, 255, 0.5),
         inset 0 0 0 1px rgba(255, 255, 255, 0.3);
     cursor: move;
-    pointer-events: all;
+    pointer-events: all; /* La selezione DEVE catturare gli eventi */
+    z-index: 10;
 }
 
 .cropper-selection::before {

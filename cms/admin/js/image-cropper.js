@@ -229,10 +229,18 @@ class ImageCropper {
     }
     
     attachCanvasEvents() {
+        console.log('attachCanvasEvents chiamata');
+        console.log('selection:', this.selection);
+        
         // Selection drag
         this.selection.addEventListener('mousedown', (e) => {
-            if (e.target.classList.contains('cropper-handle')) return;
+            console.log('mousedown su selection, target:', e.target);
+            if (e.target.classList.contains('cropper-handle')) {
+                console.log('Click su handle, skip drag');
+                return;
+            }
             
+            console.log('Inizio drag');
             this.isDragging = true;
             const canvasRect = this.canvas.getBoundingClientRect();
             this.dragStart = {
@@ -244,8 +252,12 @@ class ImageCropper {
         });
         
         // Handle resize
-        this.selection.querySelectorAll('.cropper-handle').forEach(handle => {
+        const handles = this.selection.querySelectorAll('.cropper-handle');
+        console.log('Handle trovati:', handles.length);
+        
+        handles.forEach(handle => {
             handle.addEventListener('mousedown', (e) => {
+                console.log('mousedown su handle:', handle.className);
                 this.isResizing = true;
                 this.resizeHandle = handle.classList.contains('nw') ? 'nw' :
                                    handle.classList.contains('ne') ? 'ne' :
@@ -254,6 +266,8 @@ class ImageCropper {
                                    handle.classList.contains('n') ? 'n' :
                                    handle.classList.contains('s') ? 's' :
                                    handle.classList.contains('w') ? 'w' : 'e';
+                
+                console.log('resizeHandle:', this.resizeHandle);
                 
                 const canvasRect = this.canvas.getBoundingClientRect();
                 this.dragStart = {
@@ -277,17 +291,23 @@ class ImageCropper {
         
         document.addEventListener('mousemove', this.handleMouseMove);
         document.addEventListener('mouseup', this.handleMouseUp);
+        
+        console.log('Event listeners attaccati');
     }
     
     handleMouseMove(e) {
         if (this.isDragging) {
+            console.log('Dragging...');
             this.handleDrag(e);
         } else if (this.isResizing) {
+            console.log('Resizing...');
             this.handleResize(e);
         }
     }
     
     handleMouseUp() {
+        if (this.isDragging) console.log('Fine drag');
+        if (this.isResizing) console.log('Fine resize');
         this.isDragging = false;
         this.isResizing = false;
         this.resizeHandle = null;
