@@ -1662,15 +1662,40 @@ function updateFluidPreview() {
 // ANTEPRIMA E PUBBLICAZIONE
 // ============================================
 
-// Anteprima rivista - Apre direttamente l'URL di produzione
+// Anteprima rivista - Genera HTML tramite API e apre in nuova finestra
 async function previewMagazine() {
-    // Costruisci URL dell'anteprima su Render
-    const previewUrl = `https://rivista-checkin.onrender.com/preview/${magazineId}.html`;
-    
-    console.log('🚀 Aprendo anteprima:', previewUrl);
-    
-    // Apri direttamente l'URL di produzione
-    window.open(previewUrl, '_blank');
+    try {
+        console.log('🚀 Generando anteprima per rivista:', magazineId);
+        
+        // Chiama l'API di produzione per generare l'HTML
+        const response = await fetch(`https://rivista-checkin.onrender.com/api/admin/magazines/${magazineId}/generate-html`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        const result = await response.json();
+        
+        if (result.success && result.previewUrl) {
+            // Apri il link dell'anteprima generata
+            window.open(result.previewUrl, '_blank');
+        } else if (result.success && result.html) {
+            // Se non c'è previewUrl ma c'è HTML, aprilo in una nuova finestra
+            const previewWindow = window.open('', '_blank');
+            previewWindow.document.write(result.html);
+            previewWindow.document.close();
+        } else {
+            throw new Error(result.error || 'Errore nella generazione dell\'anteprima');
+        }
+    } catch (error) {
+        console.error('❌ Errore anteprima:', error);
+        alert(`❌ Errore nell'anteprima: ${error.message}\n\nProvo ad aprire direttamente l'URL...`);
+        
+        // Fallback: apri direttamente l'URL statico
+        const fallbackUrl = `https://rivista-checkin.onrender.com/preview/${magazineId}.html`;
+        window.open(fallbackUrl, '_blank');
+    }
 }
 
 // Pubblica rivista - Genera HTML e salva su index.html
