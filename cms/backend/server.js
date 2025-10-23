@@ -1517,16 +1517,24 @@ app.post('/api/admin/magazines/:id/generate-html', authenticateToken, async (req
             .map(block => generateBlockHTML(block))
             .join('\n\n');
         
+        // Controlla se c'è un blocco cover con loading screen attivo
+        const coverBlock = sortedBlocks.find(b => b.type === 'cover');
+        const showLoadingScreen = coverBlock?.settings?.showLoadingScreen || false;
+        
         // Leggi i CSS inline per l'anteprima
         const cssPath = path.join(__dirname, '../../assets/css/magazine-generated.css');
         const cremonaCssPath = path.join(__dirname, '../../assets/css/cremona-scroll.css');
         const mainCssPath = path.join(__dirname, '../../assets/css/main.css');
+        const loadingCssPath = path.join(__dirname, '../../assets/css/loading.css');
         const cremonaJsPath = path.join(__dirname, '../../assets/js/cremona-scroll.js');
+        const loadingJsPath = path.join(__dirname, '../../assets/js/loading.js');
         
         let inlineCSS = '';
         let cremonaCSS = '';
         let mainCSS = '';
+        let loadingCSS = '';
         let cremonaJS = '';
+        let loadingJS = '';
         
         try {
             inlineCSS = await fs.readFile(cssPath, 'utf8');
@@ -1544,6 +1552,20 @@ app.post('/api/admin/magazines/:id/generate-html', authenticateToken, async (req
             mainCSS = await fs.readFile(mainCssPath, 'utf8');
         } catch (err) {
             console.warn('main.css not found');
+        }
+        
+        if (showLoadingScreen) {
+            try {
+                loadingCSS = await fs.readFile(loadingCssPath, 'utf8');
+            } catch (err) {
+                console.warn('loading.css not found');
+            }
+            
+            try {
+                loadingJS = await fs.readFile(loadingJsPath, 'utf8');
+            } catch (err) {
+                console.warn('loading.js not found');
+            }
         }
         
         try {
@@ -1589,6 +1611,7 @@ app.post('/api/admin/magazines/:id/generate-html', authenticateToken, async (req
             background: #ffffff;
         }
         
+        ${showLoadingScreen ? `/* Loading Screen CSS */\n        ${loadingCSS}\n        ` : ''}
         /* Main CSS */
         ${mainCSS}
         
@@ -1600,6 +1623,86 @@ app.post('/api/admin/magazines/:id/generate-html', authenticateToken, async (req
     </style>
 </head>
 <body>
+    ${showLoadingScreen ? `<!-- LOADING SCREEN -->
+    <div class="loading-screen" id="loadingScreen">
+        <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=200" alt="CHECK-IN" class="loading-logo">
+        
+        <!-- Tabellone aeroporto vintage -->
+        <div class="departure-board">
+            <div class="board-header">
+                <span class="board-icon">✈</span>
+                <span>IMBARCHI</span>
+                <span class="board-icon">✈</span>
+            </div>
+            
+            <!-- Voli fittizi superiori (sfocati) -->
+            <div class="board-row blurred">
+                <span class="board-flight">AZ 1247</span>
+                <span class="board-destination">LONDRA HEATHROW</span>
+                <span class="board-time">14:35</span>
+                <span class="board-gate">GATE 12</span>
+                <span class="board-status status-boarding">IMBARCO</span>
+            </div>
+            <div class="board-row blurred">
+                <span class="board-flight">AF 9823</span>
+                <span class="board-destination">PARIGI CDG</span>
+                <span class="board-time">15:10</span>
+                <span class="board-gate">GATE 8</span>
+                <span class="board-status status-ontime">IN ORARIO</span>
+            </div>
+            
+            <!-- Scritta centrale principale -->
+            <div class="board-text main-message">
+                <div class="flip-letter" data-letter="C" data-flips="X,K,E,C,7,C">C</div>
+                <div class="flip-letter" data-letter="H" data-flips="A,N,3,H,I,H">H</div>
+                <div class="flip-letter" data-letter="E" data-flips="U,O,8,E,O,E">E</div>
+                <div class="flip-letter" data-letter="C" data-flips="L,G,9,C,B,C">C</div>
+                <div class="flip-letter" data-letter="K" data-flips="T,R,2,K,S,K">K</div>
+                <div class="flip-letter" data-letter="-" data-flips="-,-,-,-,-,-">-</div>
+                <div class="flip-letter" data-letter="I" data-flips="A,L,6,I,J,I">I</div>
+                <div class="flip-letter" data-letter="N" data-flips="M,L,1,N,K,N">N</div>
+                <div class="flip-letter-space"></div>
+                <br class="mobile-break">
+                <div class="flip-letter" data-letter="I" data-flips="L,J,9,I,O,I">I</div>
+                <div class="flip-letter" data-letter="N" data-flips="M,K,7,N,Q,N">N</div>
+                <div class="flip-letter-space"></div>
+                <div class="flip-letter" data-letter="C" data-flips="B,D,7,C,Q,C">C</div>
+                <div class="flip-letter" data-letter="O" data-flips="Q,U,3,O,E,O">O</div>
+                <div class="flip-letter" data-letter="R" data-flips="S,T,8,R,N,R">R</div>
+                <div class="flip-letter" data-letter="S" data-flips="V,W,2,S,Y,S">S</div>
+                <div class="flip-letter" data-letter="O" data-flips="P,E,6,O,U,O">O</div>
+                <div class="flip-letter dots" data-letter="." data-flips=".,.,.,.,.,.">.</div>
+                <div class="flip-letter dots" data-letter="." data-flips=".,.,.,.,.,.">.</div>
+                <div class="flip-letter dots" data-letter="." data-flips=".,.,.,.,.,.">.</div>
+            </div>
+            
+            <!-- Voli fittizi inferiori (sfocati) -->
+            <div class="board-row blurred">
+                <span class="board-flight">BA 2891</span>
+                <span class="board-destination">NEW YORK JFK</span>
+                <span class="board-time">16:20</span>
+                <span class="board-gate">GATE 23</span>
+                <span class="board-status status-delayed">RITARDO</span>
+            </div>
+            <div class="board-row blurred">
+                <span class="board-flight">IB 5634</span>
+                <span class="board-destination">MADRID BARAJAS</span>
+                <span class="board-time">16:55</span>
+                <span class="board-gate">GATE 15</span>
+                <span class="board-status status-boarding">IMBARCO</span>
+            </div>
+        </div>
+        
+        <div class="loading-progress">
+            <div class="flight-path">
+                <svg class="flight-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+                </svg>
+                <div class="flight-trail"></div>
+            </div>
+        </div>
+    </div>
+    ` : ''}
     <!-- Generated by CHECK-IN CMS -->
     <div class="magazine-container" data-magazine-id="${magazine._id}" data-slug="${magazine.slug}">
         
@@ -1705,6 +1808,11 @@ ${blocksHTML}
         });
     </script>
     
+    ${showLoadingScreen ? `<!-- Loading Screen Script -->
+    <script>
+        ${loadingJS}
+    </script>
+    ` : ''}
     <!-- Cremona Scroll Script -->
     <script>
         ${cremonaJS}

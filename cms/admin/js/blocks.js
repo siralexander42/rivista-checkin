@@ -132,6 +132,7 @@ function getBlockPreview(block) {
                 <h3>📰 ${block.title || 'Copertina'}</h3>
                 ${block.subtitle ? `<p><strong>${block.subtitle}</strong></p>` : ''}
                 ${block.images?.length ? `<p>🖼️ ${block.images.length} immagini di sfondo</p>` : ''}
+                ${block.settings?.showLoadingScreen ? `<p>✈️ Loading screen attivo</p>` : ''}
                 ${sommarioCount > 0 ? `<p>📋 ${sommarioCount} voci nel sommario</p>` : ''}
             `;
         
@@ -264,6 +265,14 @@ https://esempio.com/bg2.jpg
 https://esempio.com/bg3.jpg
 https://esempio.com/bg4.jpg">${(data.images || []).join('\n')}</textarea>
                     <small>⚠️ Inserisci almeno 1 immagine. Le immagini si alterneranno automaticamente</small>
+                </div>
+                
+                <div class="form-group">
+                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none;">
+                        <input type="checkbox" id="showLoadingScreen" ${data.settings?.showLoadingScreen ? 'checked' : ''} style="width: auto; cursor: pointer;">
+                        <span>✈️ Mostra schermata di caricamento (tabellone aeroporto)</span>
+                    </label>
+                    <small>Se attivo, prima della rivista apparirà un'animazione di caricamento stile aeroporto</small>
                 </div>
                 
                 <div class="form-group">
@@ -532,8 +541,9 @@ async function handleBlockFormSubmit(e) {
         blockData.images = imagesText.split('\n').filter(url => url.trim());
         delete blockData.image;
         
-        // Raccogli sommario
+        // Raccogli sommario e loading screen flag
         blockData.settings.sommario = collectSommarioData();
+        blockData.settings.showLoadingScreen = document.getElementById('showLoadingScreen')?.checked || false;
     }
     
     // Gallery: converti textarea in array
