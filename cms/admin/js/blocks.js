@@ -1135,7 +1135,7 @@ async function updateBlockPreview() {
     
     try {
         // Chiama il backend per generare l'HTML con i CSS reali
-        const result = await apiRequest('/admin/blocks/preview', {
+        const result = await apiRequest('/api/admin/blocks/preview', {
             method: 'POST',
             body: JSON.stringify({ type: blockType, data: blockData })
         });
