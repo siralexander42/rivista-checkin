@@ -1831,7 +1831,8 @@ ${blocksHTML}
                 
                 if (textBlocks.length === 0 || images.length === 0) return;
                 
-                // Mostra la prima immagine
+                // Attiva il primo blocco e la prima immagine
+                textBlocks[0].classList.add('active');
                 images[0].classList.add('active');
                 
                 // Observer per rilevare quando i blocchi di testo entrano in viewport
@@ -1841,10 +1842,13 @@ ${blocksHTML}
                             const block = entry.target;
                             const imageIndex = parseInt(block.getAttribute('data-image'));
                             
+                            // Attiva il blocco di testo
+                            textBlocks.forEach(b => b.classList.remove('active'));
+                            block.classList.add('active');
+                            
+                            // Cambia l'immagine corrispondente
                             if (imageIndex >= 0 && imageIndex < images.length) {
-                                // Rimuovi active da tutte le immagini
                                 images.forEach(img => img.classList.remove('active'));
-                                // Aggiungi active all'immagine corrispondente
                                 images[imageIndex].classList.add('active');
                             }
                         }
