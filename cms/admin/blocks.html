@@ -140,11 +140,17 @@
                 <button class="modal-close" onclick="closeBlockTypesModal()">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="block-types-grid" style="justify-content: center;">
-                    <div class="block-type-card" onclick="addBlock('cover')" style="max-width: 400px; background: linear-gradient(135deg, #3C3D8F 0%, #5B5FC7 100%); color: white;">
+                <div class="block-types-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; max-width: 800px; margin: 0 auto;">
+                    <div class="block-type-card" onclick="addBlock('cover')" style="background: linear-gradient(135deg, #3C3D8F 0%, #5B5FC7 100%); color: white;">
                         <div class="block-type-icon" style="font-size: 4rem;">📰</div>
-                        <h3 style="font-size: 1.5rem; margin: 1rem 0;">Copertina - Layout 1</h3>
+                        <h3 style="font-size: 1.5rem; margin: 1rem 0;">Copertina</h3>
                         <p style="font-size: 1rem;">Copertina rivista con sommario dropdown e sfondi multipli animati</p>
+                    </div>
+                    
+                    <div class="block-type-card" onclick="addBlock('fluid')" style="background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%); color: white; border: 1px solid rgba(211, 228, 252, 0.2);">
+                        <div class="block-type-icon" style="font-size: 4rem;">🌊</div>
+                        <h3 style="font-size: 1.5rem; margin: 1rem 0;">Fluid Block</h3>
+                        <p style="font-size: 1rem;">Testo scrollabile con immagini che cambiano in parallelo. Stile Apple/Wanderlust</p>
                     </div>
                 </div>
             </div>

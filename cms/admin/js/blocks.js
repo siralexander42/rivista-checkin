@@ -117,6 +117,7 @@ function getBlockTypeName(type) {
         text: 'Testo',
         quote: 'Citazione',
         video: 'Video',
+        fluid: 'Fluid Block',
         custom: 'Personalizzato'
     };
     return names[type] || 'Sconosciuto';
@@ -170,6 +171,16 @@ function getBlockPreview(block) {
             return `
                 <h3>${block.title || 'Video'}</h3>
                 ${block.link ? `<p>🎥 ${block.link}</p>` : '<p>Nessun video collegato</p>'}
+            `;
+        
+        case 'fluid':
+            const fluidBlocksCount = block.fluidBlocks?.length || 0;
+            return `
+                <h3>🌊 ${block.title || 'Fluid Block'}</h3>
+                ${block.tag ? `<p><span style="background: rgba(211, 228, 252, 0.2); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">${block.tag}</span></p>` : ''}
+                ${block.intro ? `<p style="color: var(--text-light); margin-top: 8px;">${block.intro.substring(0, 100)}...</p>` : ''}
+                ${fluidBlocksCount > 0 ? `<p style="margin-top: 12px;">📄 ${fluidBlocksCount} blocchi di testo con immagini</p>` : ''}
+                ${block.ctaText ? `<p style="margin-top: 8px;">🔗 CTA: ${block.ctaText}</p>` : ''}
             `;
         
         default:
@@ -412,6 +423,54 @@ https://esempio.com/img3.jpg">${(data.images || []).join('\n')}</textarea>
                     <textarea id="content" rows="3" placeholder="Descrizione del video...">${data.content || ''}</textarea>
                 </div>
             </div>
+        `,
+        
+        fluid: `
+            <div class="form-section">
+                <h4 style="margin-bottom: 16px;">🌊 Fluid Block - Scroll con Immagini Parallasse</h4>
+                <p style="color: var(--text-light); margin-bottom: 24px; line-height: 1.6;">
+                    Blocco in stile Apple/Wanderlust: testo scrollabile a sinistra con immagini che cambiano automaticamente a destra.
+                    Ogni blocco di testo corrisponde a un'immagine specifica.
+                </p>
+                
+                <div class="form-group">
+                    <label for="tag">Tag/Categoria *</label>
+                    <input type="text" id="tag" required value="${data.tag || ''}" placeholder="Destinazioni">
+                    <small>Es: "Destinazioni", "Food & Wine", "Culture"</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="title">Titolo Principale *</label>
+                    <input type="text" id="title" required value="${data.title || ''}" placeholder="Cremona: La città che suona e cucina">
+                </div>
+                
+                <div class="form-group">
+                    <label for="intro">Intro/Sottotitolo *</label>
+                    <textarea id="intro" rows="3" required placeholder="Breve introduzione al contenuto...">${data.intro || ''}</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label><svg style="width: 16px; height: 16px; display: inline-block; vertical-align: middle;" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 50 50"><path d="M 5 8 A 2.0002 2.0002 0 1 0 5 12 L 45 12 A 2.0002 2.0002 0 1 0 45 8 L 5 8 z M 5 23 A 2.0002 2.0002 0 1 0 5 27 L 45 27 A 2.0002 2.0002 0 1 0 45 23 L 5 23 z M 5 38 A 2.0002 2.0002 0 1 0 5 42 L 45 42 A 2.0002 2.0002 0 1 0 45 38 L 5 38 z"/></svg> Blocchi di Testo + Immagini</label>
+                    <small style="display: block; margin-bottom: 16px;">Ogni blocco di testo è associato a un'immagine. Man mano che l'utente scrolla, l'immagine a destra cambia automaticamente.</small>
+                    <div id="fluidBlocks" style="margin-top: 12px;">
+                        ${generateFluidBlocksFields(data.fluidBlocks || [])}
+                    </div>
+                    <button type="button" onclick="addFluidBlock()" class="btn btn-secondary" style="margin-top: 12px;">
+                        <svg style="width: 14px; height: 14px;" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 50 50"><path d="M 25 2 C 24.730469 2 24.476563 2.105469 24.292969 2.292969 L 2.292969 24.292969 C 1.90625 24.679688 1.90625 25.320313 2.292969 25.707031 L 24.292969 47.707031 C 24.683594 48.097656 25.316406 48.097656 25.707031 47.707031 L 47.707031 25.707031 C 48.097656 25.316406 48.097656 24.683594 47.707031 24.292969 L 25.707031 2.292969 C 25.523438 2.105469 25.269531 2 25 2 Z M 25 4.414063 L 45.585938 25 L 25 45.585938 L 4.414063 25 Z M 24 16 L 24 26 L 14 26 L 14 28 L 24 28 L 24 38 L 26 38 L 26 28 L 36 28 L 36 26 L 26 26 L 26 16 Z"/></svg> Aggiungi Blocco di Testo + Immagine
+                    </button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="ctaText">Testo Call-to-Action (opzionale)</label>
+                    <input type="text" id="ctaText" value="${data.ctaText || ''}" placeholder="Scopri di più su Cremona →">
+                    <small>Verrà mostrato nell'ultimo blocco di testo</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="ctaLink">Link Call-to-Action</label>
+                    <input type="url" id="ctaLink" value="${data.ctaLink || ''}" placeholder="https://...">
+                </div>
+            </div>
         `
     };
     
@@ -469,6 +528,21 @@ async function handleBlockFormSubmit(e) {
         const imagesText = document.getElementById('images').value;
         blockData.images = imagesText.split('\n').filter(url => url.trim());
         delete blockData.image;
+    }
+    
+    // Fluid: gestisci blocchi multipli con immagini
+    if (type === 'fluid') {
+        blockData.tag = document.getElementById('tag')?.value || '';
+        blockData.intro = document.getElementById('intro')?.value || '';
+        blockData.ctaText = document.getElementById('ctaText')?.value || '';
+        blockData.ctaLink = document.getElementById('ctaLink')?.value || '';
+        blockData.fluidBlocks = collectFluidBlocksData();
+        
+        // Valida che ci sia almeno un blocco
+        if (blockData.fluidBlocks.length === 0) {
+            alert('⚠️ Aggiungi almeno un blocco di testo + immagine!');
+            return;
+        }
     }
     
     try {
@@ -704,6 +778,166 @@ function collectSommarioData() {
     });
     
     return sommario;
+}
+
+// ============================================
+// FLUID BLOCK HELPERS
+// ============================================
+
+// Genera campi per i blocchi fluid
+function generateFluidBlocksFields(fluidBlocks = []) {
+    if (fluidBlocks.length === 0) {
+        return '<p style="color: #94a3b8; font-size: 14px;">Nessun blocco. Clicca "Aggiungi Blocco di Testo + Immagine"</p>';
+    }
+    
+    return fluidBlocks.map((block, index) => `
+        <div class="fluid-block-field" style="background: var(--bg-gradient-light); padding: 20px; border-radius: 12px; margin-bottom: 16px; border: 1px solid rgba(51, 51, 130, 0.1);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <strong style="color: var(--primary); font-size: 14px;">📄 Blocco ${index + 1}</strong>
+                <button type="button" 
+                        onclick="removeFluidBlock(this)" 
+                        class="btn btn-sm btn-danger">
+                    <svg style="width: 14px; height: 14px;" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 30 30"><path d="M 13 3 A 1.0001 1.0001 0 0 0 11.986328 4 L 6 4 A 1.0001 1.0001 0 1 0 6 6 L 24 6 A 1.0001 1.0001 0 1 0 24 4 L 18.013672 4 A 1.0001 1.0001 0 0 0 17 3 L 13 3 z M 6 8 L 6 24 C 6 25.105 6.895 26 8 26 L 22 26 C 23.105 26 24 25.105 24 24 L 24 8 L 6 8 z"/></svg>
+                    Rimuovi
+                </button>
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label style="font-size: 13px; font-weight: 600;">Titolo Sezione (opzionale)</label>
+                <input type="text" 
+                       class="fluid-heading" 
+                       placeholder="Un patrimonio che nasce dal suono" 
+                       value="${block.heading || ''}" 
+                       style="width: 100%;">
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label style="font-size: 13px; font-weight: 600;">Testo *</label>
+                <textarea class="fluid-text" 
+                          rows="4" 
+                          placeholder="Scrivi il testo del blocco..." 
+                          style="width: 100%;">${block.text || ''}</textarea>
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label style="font-size: 13px; font-weight: 600;">Testo in Evidenza (opzionale)</label>
+                <textarea class="fluid-highlight" 
+                          rows="2" 
+                          placeholder="Testo da evidenziare con sfondo e bordo..." 
+                          style="width: 100%;">${block.highlight || ''}</textarea>
+                <small>Questo testo apparirà con sfondo colorato e bordo a sinistra</small>
+            </div>
+            
+            <div class="form-group">
+                <label style="font-size: 13px; font-weight: 600;">URL Immagine *</label>
+                <input type="url" 
+                       class="fluid-image" 
+                       placeholder="https://esempio.com/immagine.jpg" 
+                       value="${block.image || ''}" 
+                       style="width: 100%;">
+                <small>Questa immagine verrà mostrata quando l'utente legge questo blocco</small>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Aggiungi blocco fluid
+function addFluidBlock() {
+    const container = document.getElementById('fluidBlocks');
+    const currentContent = container.innerHTML;
+    
+    // Rimuovi messaggio "Nessun blocco" se presente
+    if (currentContent.includes('Nessun blocco')) {
+        container.innerHTML = '';
+    }
+    
+    const index = container.children.length;
+    const newBlock = document.createElement('div');
+    newBlock.className = 'fluid-block-field';
+    newBlock.style.cssText = 'background: var(--bg-gradient-light); padding: 20px; border-radius: 12px; margin-bottom: 16px; border: 1px solid rgba(51, 51, 130, 0.1);';
+    newBlock.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <strong style="color: var(--primary); font-size: 14px;">📄 Blocco ${index + 1}</strong>
+            <button type="button" 
+                    onclick="removeFluidBlock(this)" 
+                    class="btn btn-sm btn-danger">
+                <svg style="width: 14px; height: 14px;" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 30 30"><path d="M 13 3 A 1.0001 1.0001 0 0 0 11.986328 4 L 6 4 A 1.0001 1.0001 0 1 0 6 6 L 24 6 A 1.0001 1.0001 0 1 0 24 4 L 18.013672 4 A 1.0001 1.0001 0 0 0 17 3 L 13 3 z M 6 8 L 6 24 C 6 25.105 6.895 26 8 26 L 22 26 C 23.105 26 24 25.105 24 24 L 24 8 L 6 8 z"/></svg>
+                Rimuovi
+            </button>
+        </div>
+        
+        <div class="form-group" style="margin-bottom: 12px;">
+            <label style="font-size: 13px; font-weight: 600;">Titolo Sezione (opzionale)</label>
+            <input type="text" 
+                   class="fluid-heading" 
+                   placeholder="Un patrimonio che nasce dal suono" 
+                   style="width: 100%;">
+        </div>
+        
+        <div class="form-group" style="margin-bottom: 12px;">
+            <label style="font-size: 13px; font-weight: 600;">Testo *</label>
+            <textarea class="fluid-text" 
+                      rows="4" 
+                      placeholder="Scrivi il testo del blocco..." 
+                      style="width: 100%;"></textarea>
+        </div>
+        
+        <div class="form-group" style="margin-bottom: 12px;">
+            <label style="font-size: 13px; font-weight: 600;">Testo in Evidenza (opzionale)</label>
+            <textarea class="fluid-highlight" 
+                      rows="2" 
+                      placeholder="Testo da evidenziare con sfondo e bordo..." 
+                      style="width: 100%;"></textarea>
+            <small>Questo testo apparirà con sfondo colorato e bordo a sinistra</small>
+        </div>
+        
+        <div class="form-group">
+            <label style="font-size: 13px; font-weight: 600;">URL Immagine *</label>
+            <input type="url" 
+                   class="fluid-image" 
+                   placeholder="https://esempio.com/immagine.jpg" 
+                   style="width: 100%;">
+            <small>Questa immagine verrà mostrata quando l'utente legge questo blocco</small>
+        </div>
+    `;
+    
+    container.appendChild(newBlock);
+}
+
+// Rimuovi blocco fluid
+function removeFluidBlock(button) {
+    const container = document.getElementById('fluidBlocks');
+    button.closest('.fluid-block-field').remove();
+    
+    // Riaggiorna numerazione
+    const blocks = container.querySelectorAll('.fluid-block-field');
+    blocks.forEach((block, index) => {
+        block.querySelector('strong').textContent = `📄 Blocco ${index + 1}`;
+    });
+    
+    // Se non ci sono più blocchi, mostra messaggio
+    if (blocks.length === 0) {
+        container.innerHTML = '<p style="color: #94a3b8; font-size: 14px;">Nessun blocco. Clicca "Aggiungi Blocco di Testo + Immagine"</p>';
+    }
+}
+
+// Raccogli dati fluid blocks dal form
+function collectFluidBlocksData() {
+    const fields = document.querySelectorAll('.fluid-block-field');
+    const fluidBlocks = [];
+    
+    fields.forEach(field => {
+        const heading = field.querySelector('.fluid-heading')?.value || '';
+        const text = field.querySelector('.fluid-text')?.value || '';
+        const highlight = field.querySelector('.fluid-highlight')?.value || '';
+        const image = field.querySelector('.fluid-image')?.value || '';
+        
+        if (text.trim() && image.trim()) {
+            fluidBlocks.push({ heading, text, highlight, image });
+        }
+    });
+    
+    return fluidBlocks;
 }
 
 // ============================================
