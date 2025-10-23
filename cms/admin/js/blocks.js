@@ -1169,10 +1169,10 @@ async function updateBlockPreview() {
                             </button>
                         </div>
                     </div>
-                    <div style="background: #f1f5f9; border-radius: 0 0 12px 12px; padding: 20px; display: flex; justify-content: center; align-items: flex-start; min-height: ${height};">
-                        <div style="width: ${width}; height: ${height}; background: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); overflow: hidden;">
+                    <div style="background: #f1f5f9; border-radius: 0 0 12px 12px; padding: 20px; display: flex; justify-content: center; align-items: flex-start; min-height: ${height}; overflow: auto;">
+                        <div style="width: ${zoom !== '1' ? parseInt(width) * parseFloat(zoom) + 'px' : width}; height: ${height}; background: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); overflow: hidden; position: relative;">
                             <iframe 
-                                style="width: 100%; height: 100%; border: none; transform: scale(${zoom}); transform-origin: top left; ${zoom !== '1' ? `width: ${200/parseFloat(zoom)}%; height: ${200/parseFloat(zoom)}%;` : ''}"
+                                style="width: ${width}; height: ${zoom !== '1' ? parseInt(height) * (1/parseFloat(zoom)) + 'px' : height}; border: none; transform: scale(${zoom}); transform-origin: top left; position: absolute; top: 0; left: 0;"
                                 srcdoc="${escapeHtml(result.html)}"
                             ></iframe>
                         </div>
