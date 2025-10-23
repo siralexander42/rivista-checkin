@@ -919,12 +919,19 @@ function generateFluidBlocksFields(fluidBlocks = []) {
                 <label style="font-size: 13px; font-weight: 600;">URL Immagine *</label>
                 <input type="url" 
                        class="fluid-image" 
+                       id="fluidImage${index}"
                        placeholder="https://esempio.com/immagine.jpg" 
                        value="${block.image || ''}" 
                        style="width: 100%;"
-                       oninput="updateFluidPreview()">
+                       oninput="updateFluidPreview(); initFluidImageCropper(${index})">
                 <small>Questa immagine verrà mostrata quando l'utente legge questo blocco</small>
             </div>
+            
+            <div class="form-group">
+                <div id="fluidCropper${index}"></div>
+            </div>
+            
+            <input type="hidden" class="fluid-crop-data" value='${JSON.stringify(block.cropData || {})}'>
             </div>
         </div>
     `).join('');
@@ -1008,12 +1015,19 @@ function addFluidBlock() {
         <div class="form-group">
             <label style="font-size: 13px; font-weight: 600;">URL Immagine *</label>
             <input type="url" 
-                   class="fluid-image" 
+                   class="fluid-image"
+                   id="fluidImage${index}" 
                    placeholder="https://esempio.com/immagine.jpg" 
                    style="width: 100%;"
-                   oninput="updateFluidPreview()">
+                   oninput="updateFluidPreview(); initFluidImageCropper(${index})">
             <small>Questa immagine verrà mostrata quando l'utente legge questo blocco</small>
         </div>
+        
+        <div class="form-group">
+            <div id="fluidCropper${index}"></div>
+        </div>
+        
+        <input type="hidden" class="fluid-crop-data" value='{}'>
         </div>
     `;
     
@@ -1049,9 +1063,15 @@ function collectFluidBlocksData() {
         const text = field.querySelector('.fluid-text')?.value || '';
         const highlight = field.querySelector('.fluid-highlight')?.value || '';
         const image = field.querySelector('.fluid-image')?.value || '';
+        const cropDataInput = field.querySelector('.fluid-crop-data');
+        
+        let cropData = {};
+        try {
+            cropData = cropDataInput ? JSON.parse(cropDataInput.value) : {};
+        } catch (e) {}
         
         if (text.trim() && image.trim()) {
-            fluidBlocks.push({ heading, text, highlight, image });
+            fluidBlocks.push({ heading, text, highlight, image, cropData });
         }
     });
     
@@ -1331,3 +1351,62 @@ window.addEventListener('click', (e) => {
         closeEditBlockModal();
     }
 });
+
+// ============================================
+// IMAGE CROPPER PER BLOCCHI FLUID
+// ============================================
+
+// Store dei cropper attivi
+window.fluidCroppers = {};
+
+// Inizializza cropper per un blocco fluid
+function initFluidImageCropper(index) {
+    const imageInput = document.getElementById(`fluidImage${index}`);
+    const cropperContainer = document.getElementById(`fluidCropper${index}`);
+    
+    if (!imageInput || !cropperContainer) return;
+    
+    const imageUrl = imageInput.value.trim();
+    if (!imageUrl || !(imageUrl.startsWith('http://') || imageUrl.startsWith('https://'))) {
+        cropperContainer.innerHTML = '';
+        return;
+    }
+    
+    // Recupera crop data esistente se presente
+    const cropDataInput = imageInput.closest('.fluid-block-content').querySelector('.fluid-crop-data');
+    let existingCropData = {};
+    try {
+        existingCropData = cropDataInput ? JSON.parse(cropDataInput.value) : {};
+    } catch (e) {}
+    
+    // Distruggi cropper esistente
+    if (window.fluidCroppers[index]) {
+        delete window.fluidCroppers[index];
+    }
+    
+    // Crea nuovo cropper
+    setTimeout(() => {
+        window.fluidCroppers[index] = new ImageCropper(`fluidCropper${index}`, {
+            imageUrl: imageUrl,
+            aspectRatio: 16/9, // Aspect ratio standard per parallasse
+            cropData: existingCropData,
+            onChange: (cropData) => {
+                // Aggiorna hidden input con crop data
+                if (cropDataInput) {
+                    cropDataInput.value = JSON.stringify(cropData);
+                }
+            }
+        });
+    }, 100);
+}
+
+// Inizializza tutti i cropper quando si apre il modal di modifica
+function initAllFluidCroppers() {
+    const fluidBlocks = document.querySelectorAll('.fluid-block-field');
+    fluidBlocks.forEach((block, index) => {
+        const imageInput = block.querySelector('.fluid-image');
+        if (imageInput && imageInput.value.trim()) {
+            initFluidImageCropper(index);
+        }
+    });
+}
