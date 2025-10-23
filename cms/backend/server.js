@@ -1818,6 +1818,48 @@ ${blocksHTML}
         ${loadingJS}
     </script>
     ` : ''}
+    
+    <!-- Parallasse Block Script -->
+    <script>
+        // Script dedicato per blocchi Parallasse
+        document.addEventListener('DOMContentLoaded', function() {
+            const cremonaSections = document.querySelectorAll('.cremona-scroll-section');
+            
+            cremonaSections.forEach(section => {
+                const textBlocks = section.querySelectorAll('.cremona-text-block');
+                const images = section.querySelectorAll('.cremona-img');
+                
+                if (textBlocks.length === 0 || images.length === 0) return;
+                
+                // Mostra la prima immagine
+                images[0].classList.add('active');
+                
+                // Observer per rilevare quando i blocchi di testo entrano in viewport
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const block = entry.target;
+                            const imageIndex = parseInt(block.getAttribute('data-image')) - 1;
+                            
+                            if (imageIndex >= 0 && imageIndex < images.length) {
+                                // Rimuovi active da tutte le immagini
+                                images.forEach(img => img.classList.remove('active'));
+                                // Aggiungi active all'immagine corrispondente
+                                images[imageIndex].classList.add('active');
+                            }
+                        }
+                    });
+                }, {
+                    threshold: 0.5,
+                    rootMargin: '-20% 0px -20% 0px'
+                });
+                
+                // Osserva tutti i blocchi di testo
+                textBlocks.forEach(block => observer.observe(block));
+            });
+        });
+    </script>
+    
     <!-- Cremona Scroll Script -->
     <script>
         ${cremonaJS}
