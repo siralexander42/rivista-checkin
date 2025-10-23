@@ -117,7 +117,7 @@ function getBlockTypeName(type) {
         text: 'Testo',
         quote: 'Citazione',
         video: 'Video',
-        fluid: 'Fluid Block',
+        fluid: 'Parallasse Block',
         custom: 'Personalizzato'
     };
     return names[type] || 'Sconosciuto';
@@ -176,10 +176,11 @@ function getBlockPreview(block) {
         case 'fluid':
             const fluidBlocksCount = block.fluidBlocks?.length || 0;
             return `
-                <h3>🌊 ${block.title || 'Fluid Block'}</h3>
+                <h3>🌊 ${block.title || 'Parallasse Block'}</h3>
                 ${block.tag ? `<p><span style="background: rgba(211, 228, 252, 0.2); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">${block.tag}</span></p>` : ''}
                 ${block.intro ? `<p style="color: var(--text-light); margin-top: 8px;">${block.intro.substring(0, 100)}...</p>` : ''}
                 ${fluidBlocksCount > 0 ? `<p style="margin-top: 12px;">📄 ${fluidBlocksCount} blocchi di testo con immagini</p>` : ''}
+                ${block.summaryTitle ? `<p style="margin-top: 8px;">📋 Sommario: ${block.summaryTitle}</p>` : ''}
                 ${block.ctaText ? `<p style="margin-top: 8px;">🔗 CTA: ${block.ctaText}</p>` : ''}
             `;
         
@@ -427,7 +428,7 @@ https://esempio.com/img3.jpg">${(data.images || []).join('\n')}</textarea>
         
         fluid: `
             <div class="form-section">
-                <h4 style="margin-bottom: 16px;">🌊 Fluid Block - Scroll con Immagini Parallasse</h4>
+                <h4 style="margin-bottom: 16px;">🌊 Parallasse Block - Scroll con Immagini Parallasse</h4>
                 <p style="color: var(--text-light); margin-bottom: 24px; line-height: 1.6;">
                     Blocco in stile Apple/Wanderlust: testo scrollabile a sinistra con immagini che cambiano automaticamente a destra.
                     Ogni blocco di testo corrisponde a un'immagine specifica.
@@ -453,6 +454,12 @@ https://esempio.com/img3.jpg">${(data.images || []).join('\n')}</textarea>
                     <label for="previewImage">🖼️ Foto di Anteprima Iniziale *</label>
                     <input type="url" id="previewImage" required value="${data.previewImage || ''}" placeholder="https://...">
                     <small>Questa sarà la prima immagine visualizzata quando si carica il blocco</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="summaryTitle">📋 Titolo per il Sommario *</label>
+                    <input type="text" id="summaryTitle" required value="${data.summaryTitle || ''}" placeholder="Cremona: la città dei liutai">
+                    <small>Questo titolo apparirà nella lista del sommario della rivista</small>
                 </div>
                 
                 <div class="form-group">
@@ -541,6 +548,7 @@ async function handleBlockFormSubmit(e) {
         blockData.tag = document.getElementById('tag')?.value || '';
         blockData.intro = document.getElementById('intro')?.value || '';
         blockData.previewImage = document.getElementById('previewImage')?.value || '';
+        blockData.summaryTitle = document.getElementById('summaryTitle')?.value || '';
         blockData.ctaText = document.getElementById('ctaText')?.value || '';
         blockData.ctaLink = document.getElementById('ctaLink')?.value || '';
         blockData.fluidBlocks = collectFluidBlocksData();
@@ -794,7 +802,8 @@ function collectSommarioData() {
 }
 
 // ============================================
-// FLUID BLOCK HELPERS
+// PARALLASSE BLOCK HELPERS
+// ============================================
 // ============================================
 
 // Genera campi per i blocchi fluid

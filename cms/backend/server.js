@@ -178,12 +178,13 @@ const blockSchema = new mongoose.Schema({
     images: [String], // Per gallery o backgrounds multipli (cover)
     link: String,
     buttonText: String,
-    tag: String, // Per fluid block
-    intro: String, // Per fluid block
-    previewImage: String, // Per fluid block - immagine iniziale/anteprima
-    ctaText: String, // Per fluid block
-    ctaLink: String, // Per fluid block
-    fluidBlocks: [{ // Per fluid block - array di blocchi di testo con immagini
+    tag: String, // Per parallasse block
+    intro: String, // Per parallasse block
+    previewImage: String, // Per parallasse block - immagine iniziale/anteprima
+    summaryTitle: String, // Per parallasse block - titolo da mostrare nel sommario
+    ctaText: String, // Per parallasse block
+    ctaLink: String, // Per parallasse block
+    fluidBlocks: [{ // Per parallasse block - array di blocchi di testo con immagini
         heading: String,
         text: String,
         highlight: String,
@@ -1858,7 +1859,7 @@ function generateBlockHTML(block) {
     </section>`;
         
         case 'fluid':
-            // Fluid Block - Scroll parallax con immagini che cambiano
+            // Parallasse Block - Scroll parallax con immagini che cambiano
             const fluidBlocks = block.fluidBlocks || [];
             // Crea array di immagini: previewImage come prima, poi le immagini dei blocchi
             const fluidBlockImages = fluidBlocks.map(fb => fb.image).filter(Boolean);
@@ -1867,7 +1868,7 @@ function generateBlockHTML(block) {
                 : fluidBlockImages;
             
             return `
-    <!-- Fluid Block (Cremona Style) -->
+    <!-- Parallasse Block (Cremona Style) -->
     <section class="cremona-scroll-section" id="fluid-${block._id}">
         <div class="cremona-container">
             <!-- TESTO SCROLLABILE A SINISTRA -->
