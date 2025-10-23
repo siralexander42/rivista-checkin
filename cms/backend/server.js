@@ -1954,6 +1954,7 @@ app.post('/api/admin/magazines/:id/publish', authenticateToken, async (req, res)
     <!-- Styles -->
     <link rel="stylesheet" href="assets/css/loading.css">
     <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/cremona-scroll.css">
     <link rel="stylesheet" href="assets/css/magazine-generated.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1970,6 +1971,7 @@ ${blocksHTML}
     
     <!-- Scripts -->
     <script src="assets/js/main.js"></script>
+    <script src="assets/js/cremona-scroll.js"></script>
     
     <!-- Script aggiuntivo per Sommario Cover Block -->
     <script>
