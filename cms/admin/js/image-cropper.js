@@ -470,21 +470,30 @@ class ImageCropper {
         const canvasWidth = this.canvas.clientWidth;
         const canvasHeight = this.canvas.clientHeight;
         
-        // Calcola le coordinate in percentuale
-        const cropXPercent = (this.selection.offsetLeft / canvasWidth) * 100;
-        const cropYPercent = (this.selection.offsetTop / canvasHeight) * 100;
-        const cropWidthPercent = (this.selection.offsetWidth / canvasWidth) * 100;
-        const cropHeightPercent = (this.selection.offsetHeight / canvasHeight) * 100;
+        // Posizione e dimensioni del crop in pixel
+        const cropX = this.selection.offsetLeft;
+        const cropY = this.selection.offsetTop;
+        const cropWidth = this.selection.offsetWidth;
+        const cropHeight = this.selection.offsetHeight;
         
-        // Crea anteprima usando CSS clip
+        // Calcola lo scale per mostrare l'immagine completa nel canvas
+        const scaleX = 100 / (cropWidth / canvasWidth);
+        const scaleY = 100 / (cropHeight / canvasHeight);
+        
+        // Posizione dell'immagine nell'anteprima (negativa per spostare a sinistra/alto)
+        const offsetX = -(cropX / cropWidth * 100);
+        const offsetY = -(cropY / cropHeight * 100);
+        
+        // Crea anteprima
         this.previewElement.innerHTML = `
-            <div style="width: 100%; height: 0; padding-bottom: ${(cropHeightPercent/cropWidthPercent*100)}%; position: relative; overflow: hidden; background: #f1f5f9; border-radius: 8px;">
+            <div style="width: 100%; height: 0; padding-bottom: ${(cropHeight/cropWidth*100)}%; position: relative; overflow: hidden; background: #f1f5f9; border-radius: 8px;">
                 <img src="${this.imageUrl}" 
                      style="position: absolute; 
-                            left: -${cropXPercent/(cropWidthPercent/100)}%; 
-                            top: -${cropYPercent/(cropHeightPercent/100)}%; 
-                            width: ${(100/(cropWidthPercent/100))}%; 
-                            height: auto;">
+                            left: ${offsetX}%; 
+                            top: ${offsetY}%; 
+                            width: ${scaleX}%; 
+                            height: auto;
+                            transform-origin: top left;">
             </div>
         `;
     }
