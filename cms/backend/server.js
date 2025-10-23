@@ -1795,6 +1795,55 @@ function generateBlockHTML(block) {
         ${block.content ? `<div class="video-description">${block.content}</div>` : ''}
     </section>`;
         
+        case 'fluid':
+            // Fluid Block - Scroll parallax con immagini che cambiano
+            const fluidBlocks = block.fluidBlocks || [];
+            const fluidImages = fluidBlocks.map(fb => fb.image).filter(Boolean);
+            
+            return `
+    <!-- Fluid Block (Cremona Style) -->
+    <section class="cremona-scroll-section" id="fluid-${block._id}">
+        <div class="cremona-container">
+            <!-- TESTO SCROLLABILE A SINISTRA -->
+            <div class="cremona-text-scroll">
+                <!-- Primo blocco con tag e titolo principale -->
+                <div class="cremona-text-block" data-image="1">
+                    ${block.tag ? `<span class="cremona-tag">${block.tag}</span>` : ''}
+                    ${block.title ? `<h2 class="cremona-title">${block.title}</h2>` : ''}
+                    ${block.intro ? `<p class="cremona-intro">${block.intro}</p>` : ''}
+                </div>
+
+                ${fluidBlocks.map((fb, idx) => `
+                <div class="cremona-text-block" data-image="${idx + 2}">
+                    ${fb.heading ? `<h3>${fb.heading}</h3>` : ''}
+                    ${fb.text ? `<p>${fb.text}</p>` : ''}
+                    ${fb.highlight ? `<p class="cremona-highlight">${fb.highlight}</p>` : ''}
+                </div>
+                `).join('')}
+
+                ${block.ctaText && block.ctaLink ? `
+                <div class="cremona-text-block" data-image="1">
+                    <a href="${block.ctaLink}" class="cremona-cta" target="_blank">
+                        ${block.ctaText}
+                    </a>
+                </div>
+                ` : ''}
+            </div>
+
+            <!-- IMMAGINI FISSE A DESTRA -->
+            <div class="cremona-images-sticky">
+                <div class="cremona-image-wrapper">
+                    ${fluidImages.map((img, idx) => `
+                    <img src="${img}" 
+                         alt="${block.title || 'Image'} ${idx + 1}"
+                         class="cremona-img ${idx === 0 ? 'active' : ''}"
+                         data-index="${idx + 1}">
+                    `).join('')}
+                </div>
+            </div>
+        </div>
+    </section>`;
+        
         case 'cover':
             // Blocco copertina stile CHECK-IN con background multipli e dropdown sommario
             const backgrounds = block.images || [];
