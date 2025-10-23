@@ -1143,7 +1143,7 @@ async function updateBlockPreview() {
         if (result.success && result.html) {
             // Dimensioni originali e scala per miniatura
             const originalWidth = isMobile ? 700 : 1100;
-            const originalHeight = 800; // Altezza maggiore per vedere più contenuto
+            const originalHeight = 1500; // Altezza molto maggiore per vedere tutto
             const thumbnailWidth = 300;
             const scale = thumbnailWidth / originalWidth;
             const thumbnailHeight = originalHeight * scale; // Altezza proporzionale
