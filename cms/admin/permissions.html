@@ -503,7 +503,7 @@
         const user = getCurrentUser();
         
         // Verifica accesso (solo super-admin)
-        if (!user || user.role !== 'super-admin') {
+        if (!isSuperAdmin()) {
             alert('⚠️ Accesso negato. Solo i Super Admin possono gestire i permessi.');
             window.location.href = 'index.html';
         }

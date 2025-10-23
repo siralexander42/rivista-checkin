@@ -43,7 +43,7 @@ function getCurrentUser() {
 // Controlla se l'utente è super admin
 function isSuperAdmin() {
     const user = getCurrentUser();
-    return user && user.role === 'super-admin';
+    return user && (user.role === 'super-admin' || user.username === 'alessandro.venturini');
 }
 
 // Gestione accesso pagina Utenti
@@ -55,10 +55,12 @@ function handleUsersAccess(e) {
     console.log('=== DEBUG handleUsersAccess ===');
     console.log('User object:', user);
     console.log('User role:', user?.role);
+    console.log('User username:', user?.username);
     console.log('Is super-admin?:', user?.role === 'super-admin');
     
     // Super admin: accesso diretto senza password
-    if (user && user.role === 'super-admin') {
+    // Controlla sia per role che per username specifico
+    if (user && (user.role === 'super-admin' || user.username === 'alessandro.venturini')) {
         console.log('✅ Super admin detected - redirecting to users.html');
         window.location.href = 'users.html';
         return;

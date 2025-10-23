@@ -380,7 +380,7 @@
         }
         
         // Show permissions link only for super-admin
-        if (user && user.role === 'super-admin') {
+        if (isSuperAdmin()) {
             document.getElementById('permissionsNavItem').style.display = 'block';
         }
         
