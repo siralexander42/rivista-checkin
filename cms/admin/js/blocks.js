@@ -1141,9 +1141,12 @@ async function updateBlockPreview() {
         });
         
         if (result.success && result.html) {
-            // Dimensioni viewport
-            const width = isMobile ? '700px' : '1100px';
-            const height = '800px';
+            // Dimensioni e scaling
+            const scale = isMobile ? 1 : 0.5; // Desktop scalato al 50%
+            const iframeWidth = isMobile ? 700 : 1100;
+            const iframeHeight = 1200;
+            const containerWidth = iframeWidth * scale;
+            const containerHeight = iframeHeight * scale;
             
             // Crea iframe con HTML reale e CSS della rivista
             previewContainer.innerHTML = `
@@ -1151,7 +1154,7 @@ async function updateBlockPreview() {
                     <div style="padding: 12px 20px; background: linear-gradient(135deg, #333382 0%, #2a2a6b 100%); color: white; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <h3 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 600;">📱 Anteprima Live</h3>
-                            <p style="margin: 0; font-size: 12px; opacity: 0.8;">${getBlockTypeName(blockType)}</p>
+                            <p style="margin: 0; font-size: 12px; opacity: 0.8;">${getBlockTypeName(blockType)} - ${isMobile ? '700px' : '1100px'}</p>
                         </div>
                         <div style="display: flex; gap: 8px; background: rgba(255,255,255,0.1); border-radius: 8px; padding: 4px;">
                             <button 
@@ -1168,10 +1171,10 @@ async function updateBlockPreview() {
                             </button>
                         </div>
                     </div>
-                    <div style="background: #f1f5f9; border-radius: 0 0 12px 12px; padding: 20px; display: flex; justify-content: center; align-items: flex-start; overflow: auto;">
-                        <div style="width: ${width}; height: ${height}; background: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); overflow-y: auto; overflow-x: hidden;">
+                    <div style="background: #f1f5f9; border-radius: 0 0 12px 12px; padding: 20px; display: flex; justify-content: center; align-items: flex-start; min-height: ${containerHeight + 40}px;">
+                        <div style="width: ${containerWidth}px; height: ${containerHeight}px; background: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); overflow: hidden; position: relative;">
                             <iframe 
-                                style="width: ${width}; height: ${height}; border: none;"
+                                style="width: ${iframeWidth}px; height: ${iframeHeight}px; border: none; transform: scale(${scale}); transform-origin: top left; position: absolute; top: 0; left: 0;"
                                 srcdoc="${escapeHtml(result.html)}"
                             ></iframe>
                         </div>
