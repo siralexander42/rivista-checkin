@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const fs = require('fs').promises;
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
@@ -178,6 +180,7 @@ const blockSchema = new mongoose.Schema({
     buttonText: String,
     tag: String, // Per fluid block
     intro: String, // Per fluid block
+    previewImage: String, // Per fluid block - immagine iniziale/anteprima
     ctaText: String, // Per fluid block
     ctaLink: String, // Per fluid block
     fluidBlocks: [{ // Per fluid block - array di blocchi di testo con immagini
@@ -1489,7 +1492,10 @@ app.put('/api/admin/magazines/:id', authenticateToken, async (req, res) => {
 // GENERAZIONE HTML RIVISTA
 // ============================================
 
-// Genera l'HTML completo della rivista dai blocchi
+// Servi file di anteprima statici
+app.use('/preview', express.static(path.join(__dirname, 'preview')));
+
+// Genera l'HTML completo della rivista dai blocchi e salva come file preview
 app.post('/api/admin/magazines/:id/generate-html', authenticateToken, async (req, res) => {
     try {
         const magazine = await Magazine.findById(req.params.id);
@@ -1705,9 +1711,26 @@ ${blocksHTML}
 </body>
 </html>`;
         
+        // Crea la cartella preview se non esiste
+        const previewDir = path.join(__dirname, 'preview');
+        try {
+            await fs.mkdir(previewDir, { recursive: true });
+        } catch (err) {
+            // Directory già esistente, ignora
+        }
+        
+        // Salva il file di anteprima
+        const previewFileName = `${magazine._id}.html`;
+        const previewPath = path.join(previewDir, previewFileName);
+        await fs.writeFile(previewPath, fullHTML, 'utf8');
+        
+        // URL di anteprima (relativo al backend)
+        const previewUrl = `http://localhost:${PORT}/preview/${previewFileName}`;
+        
         res.json({
             success: true,
-            html: fullHTML,
+            previewUrl: previewUrl,
+            message: 'Anteprima generata con successo',
             magazine: {
                 id: magazine._id,
                 name: magazine.name,
@@ -1836,7 +1859,11 @@ function generateBlockHTML(block) {
         case 'fluid':
             // Fluid Block - Scroll parallax con immagini che cambiano
             const fluidBlocks = block.fluidBlocks || [];
-            const fluidImages = fluidBlocks.map(fb => fb.image).filter(Boolean);
+            // Crea array di immagini: previewImage come prima, poi le immagini dei blocchi
+            const fluidBlockImages = fluidBlocks.map(fb => fb.image).filter(Boolean);
+            const fluidImages = block.previewImage 
+                ? [block.previewImage, ...fluidBlockImages]
+                : fluidBlockImages;
             
             return `
     <!-- Fluid Block (Cremona Style) -->
@@ -1953,9 +1980,6 @@ function generateBlockHTML(block) {
 }
 
 // Pubblica la rivista (copia HTML nel file index.html)
-const fs = require('fs').promises;
-const path = require('path');
-
 app.post('/api/admin/magazines/:id/publish', authenticateToken, async (req, res) => {
     try {
         const magazine = await Magazine.findById(req.params.id);

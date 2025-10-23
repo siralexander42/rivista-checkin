@@ -450,6 +450,12 @@ https://esempio.com/img3.jpg">${(data.images || []).join('\n')}</textarea>
                 </div>
                 
                 <div class="form-group">
+                    <label for="previewImage">🖼️ Foto di Anteprima Iniziale *</label>
+                    <input type="url" id="previewImage" required value="${data.previewImage || ''}" placeholder="https://...">
+                    <small>Questa sarà la prima immagine visualizzata quando si carica il blocco</small>
+                </div>
+                
+                <div class="form-group">
                     <label><svg style="width: 16px; height: 16px; display: inline-block; vertical-align: middle;" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 50 50"><path d="M 5 8 A 2.0002 2.0002 0 1 0 5 12 L 45 12 A 2.0002 2.0002 0 1 0 45 8 L 5 8 z M 5 23 A 2.0002 2.0002 0 1 0 5 27 L 45 27 A 2.0002 2.0002 0 1 0 45 23 L 5 23 z M 5 38 A 2.0002 2.0002 0 1 0 5 42 L 45 42 A 2.0002 2.0002 0 1 0 45 38 L 5 38 z"/></svg> Blocchi di Testo + Immagini</label>
                     <small style="display: block; margin-bottom: 16px;">Ogni blocco di testo è associato a un'immagine. Man mano che l'utente scrolla, l'immagine a destra cambia automaticamente.</small>
                     <div id="fluidBlocks" style="margin-top: 12px;">
@@ -534,6 +540,7 @@ async function handleBlockFormSubmit(e) {
     if (type === 'fluid') {
         blockData.tag = document.getElementById('tag')?.value || '';
         blockData.intro = document.getElementById('intro')?.value || '';
+        blockData.previewImage = document.getElementById('previewImage')?.value || '';
         blockData.ctaText = document.getElementById('ctaText')?.value || '';
         blockData.ctaLink = document.getElementById('ctaLink')?.value || '';
         blockData.fluidBlocks = collectFluidBlocksData();
@@ -541,6 +548,12 @@ async function handleBlockFormSubmit(e) {
         // Valida che ci sia almeno un blocco
         if (blockData.fluidBlocks.length === 0) {
             alert('⚠️ Aggiungi almeno un blocco di testo + immagine!');
+            return;
+        }
+        
+        // Valida foto di anteprima
+        if (!blockData.previewImage) {
+            alert('⚠️ Inserisci la foto di anteprima iniziale!');
             return;
         }
     }
@@ -951,11 +964,9 @@ async function previewMagazine() {
             method: 'POST'
         });
         
-        if (response.success && response.html) {
-            // Apri preview in nuova finestra
-            const previewWindow = window.open('', '_blank');
-            previewWindow.document.write(response.html);
-            previewWindow.document.close();
+        if (response.success && response.previewUrl) {
+            // Apri preview tramite URL persistente
+            window.open(response.previewUrl, '_blank');
         }
     } catch (error) {
         console.error('Errore generazione preview:', error);
