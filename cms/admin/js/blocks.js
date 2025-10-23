@@ -938,7 +938,7 @@ function generateFluidBlocksFields(fluidBlocks = []) {
                        placeholder="https://esempio.com/immagine.jpg" 
                        value="${block.image || ''}" 
                        style="width: 100%;"
-                       oninput="updateFluidPreview(); initFluidImageCropper(${index})">
+                       oninput="updateFluidPreview(); initFluidImageCropperByElement(this)">
                 <small>Questa immagine verrà mostrata quando l'utente legge questo blocco</small>
             </div>
             
@@ -1433,21 +1433,23 @@ function initPreviewImageCropper() {
     }, 200);
 }
 
-// Inizializza cropper per un blocco fluid
-function initFluidImageCropper(index) {
-    const imageInput = document.getElementById(`fluidImage${index}`);
+// Inizializza cropper per un blocco fluid usando l'elemento input
+function initFluidImageCropperByElement(inputElement) {
+    if (!inputElement) return;
+    
+    const index = inputElement.id.replace('fluidImage', '');
     const cropperContainer = document.getElementById(`fluidCropper${index}`);
     
-    console.log('initFluidImageCropper chiamata per index:', index);
-    console.log('imageInput:', imageInput);
+    console.log('initFluidImageCropperByElement per index:', index);
+    console.log('inputElement:', inputElement);
     console.log('cropperContainer:', cropperContainer);
     
-    if (!imageInput || !cropperContainer) {
+    if (!inputElement || !cropperContainer) {
         console.warn('Elementi non trovati per index:', index);
         return;
     }
     
-    const imageUrl = imageInput.value.trim();
+    const imageUrl = inputElement.value.trim();
     console.log('imageUrl:', imageUrl);
     
     if (!imageUrl || !(imageUrl.startsWith('http://') || imageUrl.startsWith('https://'))) {
@@ -1456,7 +1458,7 @@ function initFluidImageCropper(index) {
     }
     
     // Recupera crop data esistente se presente
-    const cropDataInput = imageInput.closest('.fluid-block-content').querySelector('.fluid-crop-data');
+    const cropDataInput = inputElement.closest('.fluid-block-content').querySelector('.fluid-crop-data');
     let existingCropData = {};
     try {
         existingCropData = cropDataInput ? JSON.parse(cropDataInput.value) : {};
@@ -1473,7 +1475,7 @@ function initFluidImageCropper(index) {
     setTimeout(() => {
         window.fluidCroppers[index] = new ImageCropper(`fluidCropper${index}`, {
             imageUrl: imageUrl,
-            aspectRatio: 16/9, // Aspect ratio standard per parallasse
+            aspectRatio: 16/9,
             cropData: existingCropData,
             onChange: (cropData) => {
                 // Aggiorna hidden input con crop data
@@ -1484,6 +1486,14 @@ function initFluidImageCropper(index) {
         });
         console.log('Cropper creato per index:', index);
     }, 200);
+}
+
+// Inizializza cropper per un blocco fluid (versione con indice - DEPRECATED, usa initFluidImageCropperByElement)
+function initFluidImageCropper(index) {
+    const imageInput = document.getElementById(`fluidImage${index}`);
+    if (imageInput) {
+        initFluidImageCropperByElement(imageInput);
+    }
 }
 
 // Inizializza tutti i cropper quando si apre il modal di modifica

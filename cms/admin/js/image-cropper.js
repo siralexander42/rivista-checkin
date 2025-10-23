@@ -43,14 +43,7 @@ class ImageCropper {
         this.container.innerHTML = `
             <div class="image-cropper-container">
                 <div class="image-cropper-header">
-                    <h4>🖼️ Selezione Area Immagine</h4>
-                    <div class="cropper-ratio-selector">
-                        <button class="cropper-ratio-btn ${this.aspectRatio === 16/9 ? 'active' : ''}" data-ratio="16:9">16:9</button>
-                        <button class="cropper-ratio-btn ${this.aspectRatio === 4/3 ? 'active' : ''}" data-ratio="4:3">4:3</button>
-                        <button class="cropper-ratio-btn ${this.aspectRatio === 1 ? 'active' : ''}" data-ratio="1:1">1:1</button>
-                        <button class="cropper-ratio-btn ${this.aspectRatio === 3/4 ? 'active' : ''}" data-ratio="3:4">3:4</button>
-                        <button class="cropper-ratio-btn ${this.aspectRatio === null ? 'active' : ''}" data-ratio="free">Libero</button>
-                    </div>
+                    <h4>🖼️ Selezione Area Immagine (16:9)</h4>
                 </div>
                 <div class="image-cropper-body">
                     <div class="cropper-main-area">
@@ -173,12 +166,8 @@ class ImageCropper {
                 <img src="${this.imageUrl}" class="cropper-image" draggable="false" id="cropperImage">
                 <div class="cropper-selection" id="cropperSelection" style="position: absolute; border: 3px solid #3C3D8F; cursor: move;">
                     <div class="cropper-handle nw" style="position: absolute; top: -6px; left: -6px;"></div>
-                    <div class="cropper-handle n" style="position: absolute; top: -6px; left: 50%; margin-left: -6px;"></div>
                     <div class="cropper-handle ne" style="position: absolute; top: -6px; right: -6px;"></div>
-                    <div class="cropper-handle w" style="position: absolute; top: 50%; left: -6px; margin-top: -6px;"></div>
-                    <div class="cropper-handle e" style="position: absolute; top: 50%; right: -6px; margin-top: -6px;"></div>
                     <div class="cropper-handle sw" style="position: absolute; bottom: -6px; left: -6px;"></div>
-                    <div class="cropper-handle s" style="position: absolute; bottom: -6px; left: 50%; margin-left: -6px;"></div>
                     <div class="cropper-handle se" style="position: absolute; bottom: -6px; right: -6px;"></div>
                 </div>
             </div>
@@ -264,15 +253,11 @@ class ImageCropper {
                 console.log('mousedown su handle:', this.className);
                 that.isResizing = true;
                 
-                // Identifica quale handle
+                // Identifica quale handle (solo angoli per mantenere 16:9)
                 if (this.classList.contains('nw')) that.resizeHandle = 'nw';
                 else if (this.classList.contains('ne')) that.resizeHandle = 'ne';
                 else if (this.classList.contains('sw')) that.resizeHandle = 'sw';
                 else if (this.classList.contains('se')) that.resizeHandle = 'se';
-                else if (this.classList.contains('n')) that.resizeHandle = 'n';
-                else if (this.classList.contains('s')) that.resizeHandle = 's';
-                else if (this.classList.contains('w')) that.resizeHandle = 'w';
-                else if (this.classList.contains('e')) that.resizeHandle = 'e';
                 
                 console.log('resizeHandle:', that.resizeHandle);
                 
@@ -361,31 +346,19 @@ class ImageCropper {
                 width += deltaX;
                 height += deltaY;
                 break;
-            case 'n':
-                y += deltaY;
-                height -= deltaY;
-                break;
-            case 's':
-                height += deltaY;
-                break;
-            case 'w':
-                x += deltaX;
-                width -= deltaX;
-                break;
-            case 'e':
-                width += deltaX;
-                break;
         }
         
-        // Aspect ratio constraint
-        if (this.aspectRatio && !['w', 'e'].includes(this.resizeHandle)) {
-            if (['n', 's'].includes(this.resizeHandle)) {
-                width = height * this.aspectRatio;
-                if (this.resizeHandle === 'n') {
-                    x = this.dragStart.selectionX - (width - this.dragStart.selectionWidth) / 2;
-                }
-            } else {
-                height = width / this.aspectRatio;
+        // SEMPRE applica aspect ratio 16:9
+        if (this.aspectRatio) {
+            // Calcola basandoci sulla larghezza
+            height = width / this.aspectRatio;
+            
+            // Aggiusta x,y per handle nord (mantieni bottom-left ancorato)
+            if (this.resizeHandle === 'nw' || this.resizeHandle === 'ne') {
+                y = this.dragStart.selectionY + this.dragStart.selectionHeight - height;
+            }
+            if (this.resizeHandle === 'nw' || this.resizeHandle === 'sw') {
+                x = this.dragStart.selectionX + this.dragStart.selectionWidth - width;
             }
         }
         
@@ -398,6 +371,16 @@ class ImageCropper {
         y = Math.max(0, Math.min(y, canvasRect.height - height));
         width = Math.min(width, canvasRect.width - x);
         height = Math.min(height, canvasRect.height - y);
+        
+        // Riapplica aspect ratio dopo i limiti
+        if (this.aspectRatio) {
+            height = width / this.aspectRatio;
+            // Verifica se l'altezza supera i limiti
+            if (y + height > canvasRect.height) {
+                height = canvasRect.height - y;
+                width = height * this.aspectRatio;
+            }
+        }
         
         this.updateSelection(x, y, width, height);
     }
