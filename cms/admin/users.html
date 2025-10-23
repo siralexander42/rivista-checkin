@@ -29,6 +29,12 @@
                 <a href="logs.html" class="nav-item">
                     <span>Log Accessi</span>
                 </a>
+                <a href="#" class="nav-item" id="devModeNavItem" style="display: none;">
+                    <span>Modalità Sviluppatore</span>
+                </a>
+                <a href="#" class="nav-item" id="advNavItem">
+                    <span>ADV</span>
+                </a>
             </nav>
             
             <div class="sidebar-footer">
@@ -209,6 +215,32 @@
             const user = getCurrentUser();
             if (user && user.name) {
                 document.getElementById('welcomeMessage').textContent = `Ciao ${user.name}`;
+            }
+            
+            // Mostra Modalità Sviluppatore solo per super-admin
+            if (user && user.role === 'super-admin') {
+                const devModeNavItem = document.getElementById('devModeNavItem');
+                if (devModeNavItem) {
+                    devModeNavItem.style.display = 'flex';
+                }
+            }
+            
+            // Gestione click Modalità Sviluppatore
+            const devModeNavItem = document.getElementById('devModeNavItem');
+            if (devModeNavItem) {
+                devModeNavItem.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    alert('🚧 Modalità Sviluppatore in arrivo!\n\nQui potrai gestire configurazioni avanzate del sistema.');
+                });
+            }
+            
+            // Gestione click ADV
+            const advNavItem = document.getElementById('advNavItem');
+            if (advNavItem) {
+                advNavItem.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    alert('📢 Gestione ADV in arrivo!\n\nQui potrai configurare banner pubblicitari e sponsorizzazioni.');
+                });
             }
         });
         
