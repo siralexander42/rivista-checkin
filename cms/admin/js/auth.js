@@ -52,11 +52,19 @@ function handleUsersAccess(e) {
     
     const user = getCurrentUser();
     
+    console.log('=== DEBUG handleUsersAccess ===');
+    console.log('User object:', user);
+    console.log('User role:', user?.role);
+    console.log('Is super-admin?:', user?.role === 'super-admin');
+    
     // Super admin: accesso diretto senza password
     if (user && user.role === 'super-admin') {
+        console.log('✅ Super admin detected - redirecting to users.html');
         window.location.href = 'users.html';
         return;
     }
+    
+    console.log('⚠️ Not super admin - requesting password');
     
     // Altri utenti: richiesta password
     const password = prompt('🔒 Inserisci la password per accedere alla gestione utenti:');

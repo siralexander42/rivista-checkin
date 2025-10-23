@@ -511,7 +511,9 @@
         loadPermissions();
         
         // Welcome message
-        document.getElementById('welcomeMessage').textContent = user.username ? `Super Admin: ${user.username}` : '';
+        if (user && user.name) {
+            document.getElementById('welcomeMessage').textContent = `Ciao ${user.name}`;
+        }
         
         // Navigation
         document.getElementById('usersNavItem').addEventListener('click', handleUsersAccess);

@@ -103,6 +103,9 @@
                 <a href="developer.html" class="nav-item active">
                     <span>Modalità Sviluppatore</span>
                 </a>
+                <a href="#" class="nav-item" id="advNavItem">
+                    <span>ADV</span>
+                </a>
             </nav>
             
             <div class="sidebar-footer">
@@ -371,16 +374,27 @@
         loadMagazines();
         
         // Welcome message
-        const user = JSON.parse(localStorage.getItem('user') || '{}');
-        document.getElementById('welcomeMessage').textContent = user.username ? `Developer: ${user.username}` : '';
+        const user = getCurrentUser();
+        if (user && user.name) {
+            document.getElementById('welcomeMessage').textContent = `Ciao ${user.name}`;
+        }
         
         // Show permissions link only for super-admin
-        if (user.role === 'super-admin') {
+        if (user && user.role === 'super-admin') {
             document.getElementById('permissionsNavItem').style.display = 'block';
         }
         
         // Users nav
         document.getElementById('usersNavItem').addEventListener('click', handleUsersAccess);
+        
+        // ADV nav
+        const advNavItem = document.getElementById('advNavItem');
+        if (advNavItem) {
+            advNavItem.addEventListener('click', (e) => {
+                e.preventDefault();
+                alert('📢 Gestione ADV in arrivo!\n\nQui potrai configurare banner pubblicitari e sponsorizzazioni.');
+            });
+        }
     </script>
 
     <style>
