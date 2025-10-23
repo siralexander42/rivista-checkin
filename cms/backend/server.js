@@ -1630,7 +1630,7 @@ app.post('/api/admin/magazines/:id/generate-html', authenticateToken, async (req
 <body>
     ${showLoadingScreen ? `<!-- LOADING SCREEN -->
     <div class="loading-screen" id="loadingScreen">
-        <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=200" alt="CHECK-IN" class="loading-logo">
+        <img src="https://www.italiaatavola.net/images/testate/checkin-testata-hd.svg" alt="CHECK-IN" class="loading-logo" style="filter: brightness(0) invert(1);">
         
         <!-- Tabellone aeroporto vintage -->
         <div class="departure-board">
