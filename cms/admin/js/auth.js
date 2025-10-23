@@ -52,25 +52,17 @@ function handleUsersAccess(e) {
     
     const user = getCurrentUser();
     
-    console.log('=== DEBUG handleUsersAccess ===');
+    console.log('=== DEBUG handleUsersAccess v2.0 ===');
     console.log('User object:', user);
     console.log('User role:', user?.role);
     console.log('User username:', user?.username);
     console.log('User name:', user?.name);
-    console.log('Is super-admin?:', user?.role === 'super-admin');
-    console.log('Username check:', user?.username === 'alessandro.venturini');
-    console.log('Name check:', user?.name === 'alessandro.venturini');
-    console.log('Name includes alessandro:', user?.name?.toLowerCase().includes('alessandro'));
+    console.log('Role comparison:', user?.role, '===', 'super-admin', '=', user?.role === 'super-admin');
+    console.log('Username comparison:', user?.username, '===', 'alessandro.venturini', '=', user?.username === 'alessandro.venturini');
     
-    // Super admin: accesso diretto senza password
-    // Controlla sia per role che per username/name che contiene alessandro
-    if (user && (
-        user.role === 'super-admin' || 
-        user.username === 'alessandro.venturini' ||
-        user.name?.toLowerCase().includes('alessandro') ||
-        user.username?.toLowerCase().includes('alessandro')
-    )) {
-        console.log('✅ Super admin detected - redirecting to users.html');
+    // BYPASS IMMEDIATO per alessandro.venturini
+    if (user?.username === 'alessandro.venturini' || user?.role === 'super-admin') {
+        console.log('✅✅✅ BYPASS - Accesso garantito!');
         window.location.href = 'users.html';
         return;
     }
