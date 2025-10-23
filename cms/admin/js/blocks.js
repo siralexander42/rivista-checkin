@@ -1129,6 +1129,10 @@ async function updateBlockPreview() {
     // Raccogli i dati del blocco corrente
     const blockData = collectCurrentBlockData();
     
+    // Ottieni modalità viewport (default desktop)
+    const viewportMode = previewContainer.dataset.viewportMode || 'desktop';
+    const isMobile = viewportMode === 'mobile';
+    
     try {
         // Chiama il backend per generare l'HTML con i CSS reali
         const result = await apiRequest('/admin/blocks/preview', {
@@ -1137,17 +1141,40 @@ async function updateBlockPreview() {
         });
         
         if (result.success && result.html) {
+            // Dimensioni e zoom
+            const width = isMobile ? '700px' : '1100px';
+            const height = isMobile ? '700px' : '650px';
+            const zoom = isMobile ? '1' : '0.5'; // Desktop zoomato al 50% per vedere tutto
+            
             // Crea iframe con HTML reale e CSS della rivista
             previewContainer.innerHTML = `
                 <div style="position: sticky; top: 20px;">
-                    <div style="padding: 16px 20px; background: linear-gradient(135deg, #333382 0%, #2a2a6b 100%); color: white; border-radius: 12px 12px 0 0;">
-                        <h3 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 600;">📱 Anteprima Live</h3>
-                        <p style="margin: 0; font-size: 12px; opacity: 0.8;">${getBlockTypeName(blockType)}</p>
+                    <div style="padding: 12px 20px; background: linear-gradient(135deg, #333382 0%, #2a2a6b 100%); color: white; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h3 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 600;">📱 Anteprima Live</h3>
+                            <p style="margin: 0; font-size: 12px; opacity: 0.8;">${getBlockTypeName(blockType)}</p>
+                        </div>
+                        <div style="display: flex; gap: 8px; background: rgba(255,255,255,0.1); border-radius: 8px; padding: 4px;">
+                            <button 
+                                onclick="switchViewport('desktop')" 
+                                style="padding: 6px 12px; border: none; background: ${!isMobile ? 'white' : 'transparent'}; color: ${!isMobile ? '#333382' : 'white'}; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s;">
+                                🖥️ Desktop
+                            </button>
+                            <button 
+                                onclick="switchViewport('mobile')" 
+                                style="padding: 6px 12px; border: none; background: ${isMobile ? 'white' : 'transparent'}; color: ${isMobile ? '#333382' : 'white'}; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s;">
+                                📱 Mobile
+                            </button>
+                        </div>
                     </div>
-                    <iframe 
-                        style="width: 100%; height: 700px; border: none; border-radius: 0 0 12px 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); background: white;"
-                        srcdoc="${escapeHtml(result.html)}"
-                    ></iframe>
+                    <div style="background: #f1f5f9; border-radius: 0 0 12px 12px; padding: 20px; display: flex; justify-content: center; align-items: flex-start; min-height: ${height};">
+                        <div style="width: ${width}; height: ${height}; background: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); overflow: hidden;">
+                            <iframe 
+                                style="width: 100%; height: 100%; border: none; transform: scale(${zoom}); transform-origin: top left; ${zoom !== '1' ? `width: ${200/parseFloat(zoom)}%; height: ${200/parseFloat(zoom)}%;` : ''}"
+                                srcdoc="${escapeHtml(result.html)}"
+                            ></iframe>
+                        </div>
+                    </div>
                 </div>
             `;
         }
@@ -1159,6 +1186,15 @@ async function updateBlockPreview() {
                 <small style="display: block; margin-top: 8px; font-size: 12px;">${error.message || 'Errore sconosciuto'}</small>
             </div>
         `;
+    }
+}
+
+// Switch viewport mode
+function switchViewport(mode) {
+    const previewContainer = document.getElementById('blockPreview');
+    if (previewContainer) {
+        previewContainer.dataset.viewportMode = mode;
+        updateBlockPreview();
     }
 }
 
