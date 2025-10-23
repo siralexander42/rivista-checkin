@@ -1289,8 +1289,11 @@ function updateFluidPreview() {
 
 // Anteprima rivista - Genera HTML su Render e apre l'anteprima
 async function previewMagazine() {
+    // Apri la finestra immediatamente per evitare il blocco popup su iPad/Safari
+    const previewWindow = window.open('about:blank', '_blank');
+    
     try {
-        // Prima genera l'HTML su Render
+        // Genera l'HTML su Render
         const response = await fetch(`https://rivista-checkin.onrender.com/api/admin/magazines/${magazineId}/generate-html`, {
             method: 'POST',
             headers: {
@@ -1301,12 +1304,16 @@ async function previewMagazine() {
         const result = await response.json();
         
         if (result.success && result.previewUrl) {
-            // Apri l'URL generato
-            window.open(result.previewUrl, '_blank');
+            // Aggiorna l'URL della finestra già aperta
+            previewWindow.location.href = result.previewUrl;
         } else {
+            previewWindow.close();
             throw new Error(result.error || 'Errore nella generazione dell\'anteprima');
         }
     } catch (error) {
+        if (previewWindow && !previewWindow.closed) {
+            previewWindow.close();
+        }
         console.error('Errore generazione preview:', error);
         alert('❌ Errore nella generazione dell\'anteprima: ' + error.message);
     }
