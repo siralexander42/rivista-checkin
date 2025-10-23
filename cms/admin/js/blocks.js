@@ -1253,20 +1253,15 @@ function updateFluidPreview() {
 // ANTEPRIMA E PUBBLICAZIONE
 // ============================================
 
-// Anteprima rivista - Genera HTML e apre in nuova finestra
+// Anteprima rivista - Apre direttamente l'URL di produzione su Render
 async function previewMagazine() {
     try {
-        const response = await apiRequest(`/admin/magazines/${magazineId}/generate-html`, {
-            method: 'POST'
-        });
-        
-        if (response.success && response.previewUrl) {
-            // Apri preview tramite URL persistente
-            window.open(response.previewUrl, '_blank');
-        }
+        // Apri direttamente l'URL di produzione su Render
+        const previewUrl = `https://rivista-checkin.onrender.com/preview/${magazineId}.html`;
+        window.open(previewUrl, '_blank');
     } catch (error) {
-        console.error('Errore generazione preview:', error);
-        alert('❌ Errore nella generazione dell\'anteprima: ' + error.message);
+        console.error('Errore apertura preview:', error);
+        alert('❌ Errore nell\'apertura dell\'anteprima: ' + error.message);
     }
 }
 
