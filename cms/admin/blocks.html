@@ -2445,6 +2445,9 @@
                     const result = await response.json();
                     const magazine = result.data;
                     
+                    // Salva dati magazine per uso globale
+                    currentMagazineData = magazine;
+                    
                     // Popola i campi nascosti per l'analisi
                     if (magazine.seo) {
                         const tempTitle = document.createElement('input');
