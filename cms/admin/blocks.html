@@ -394,12 +394,20 @@
             align-items: center;
             gap: 10px;
             margin-bottom: 4px;
+            flex-wrap: wrap;
         }
         
         .block-card-type {
             font-size: 15px;
             font-weight: 600;
             color: #0f172a;
+            letter-spacing: -0.01em;
+        }
+        
+        .block-card-title-inline {
+            font-size: 14px;
+            font-weight: 500;
+            color: #64748b;
             letter-spacing: -0.01em;
         }
         
@@ -931,6 +939,7 @@
         
         .modal-edit-block {
             max-width: 1200px !important;
+            width: 95vw !important;
             padding: 0;
             border-radius: 16px;
             overflow: hidden;
@@ -942,6 +951,7 @@
         .modal-body-form {
             padding: 32px 40px 40px;
             overflow-y: auto;
+            overflow-x: hidden;
             overscroll-behavior: contain;
         }
         
@@ -1044,14 +1054,14 @@
         /* Gestione layout grid nei form */
         #blockFormContent > div[style*="grid"] {
             display: grid !important;
-            grid-template-columns: 1fr 380px !important;
+            grid-template-columns: 1fr 350px !important;
             gap: 24px !important;
             align-items: start !important;
         }
         
         @media (max-width: 1200px) {
             #blockFormContent > div[style*="grid"] {
-                grid-template-columns: 1fr 320px !important;
+                grid-template-columns: 1fr 300px !important;
                 gap: 20px !important;
             }
         }

@@ -110,6 +110,7 @@ function displayBlocks() {
                         <div class="block-card-title-row">
                             <span class="block-card-type">${getBlockTypeName(block.type)}</span>
                             ${!block.visible ? '<span class="block-status-badge hidden">Nascosto</span>' : '<span class="block-status-badge visible">Visibile</span>'}
+                            ${block.data?.title ? `<span class="block-card-title-inline">${block.data.title}</span>` : ''}
                         </div>
                         <div class="block-card-meta">
                             ${getBlockMeta(block)}
@@ -196,34 +197,30 @@ function getBlockTypeName(type) {
 function getBlockMeta(block) {
     const parts = [];
     
+    // Helper per icone SVG inline
+    const icons = {
+        sommario: '<svg style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:2px" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="5" width="18" height="14" rx="2" stroke-width="1.5"/><line x1="7" y1="9" x2="17" y2="9" stroke-width="1.5"/><line x1="7" y1="13" x2="17" y2="13" stroke-width="1.5"/><line x1="7" y1="17" x2="12" y2="17" stroke-width="1.5"/></svg>',
+        image: '<svg style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:2px" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="1.5" stroke-width="1.5"/><path d="M21 15L16 10L5 21" stroke-width="1.5"/></svg>',
+        box: '<svg style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:2px" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2" stroke-width="1.5"/><path d="M3 9h18M9 3v18" stroke-width="1.5"/></svg>',
+        card: '<svg style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:2px" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="6" width="20" height="12" rx="2" stroke-width="1.5"/><path d="M2 10h20" stroke-width="1.5"/></svg>'
+    };
+    
     switch(block.type) {
         case 'cover':
-            if (block.data?.title) {
-                parts.push(`<strong>${block.data.title}</strong>`);
-                if (block.data?.subtitle) parts.push(`${block.data.subtitle}`);
-            }
-            if (block.data?.sommario?.length) parts.push(`📋 ${block.data.sommario.length} voci`);
-            if (block.data?.backgrounds?.length) parts.push(`🖼️ ${block.data.backgrounds.length} sfondi`);
+            if (block.data?.subtitle) parts.push(`${block.data.subtitle}`);
+            if (block.data?.sommario?.length) parts.push(`${icons.sommario}${block.data.sommario.length} voci`);
+            if (block.data?.backgrounds?.length) parts.push(`${icons.image}${block.data.backgrounds.length} sfondi`);
             break;
         case 'fluid':
-            if (block.data?.title) {
-                parts.push(`<strong>${block.data.title}</strong>`);
-            }
-            if (block.data?.fluidBlocks?.length) parts.push(`📦 ${block.data.fluidBlocks.length} sezioni`);
+            if (block.data?.fluidBlocks?.length) parts.push(`${icons.box}${block.data.fluidBlocks.length} sezioni`);
             break;
         case 'gallery':
-            if (block.data?.title) {
-                parts.push(`<strong>${block.data.title}</strong>`);
-                if (block.data?.subtitle) parts.push(`${block.data.subtitle}`);
-            }
-            if (block.data?.images?.length) parts.push(`🖼️ ${block.data.images.length} immagini`);
+            if (block.data?.subtitle) parts.push(`${block.data.subtitle}`);
+            if (block.data?.images?.length) parts.push(`${icons.image}${block.data.images.length} immagini`);
             break;
         case 'carousel':
-            if (block.data?.title) {
-                parts.push(`<strong>${block.data.title}</strong>`);
-                if (block.data?.subtitle) parts.push(`${block.data.subtitle}`);
-            }
-            if (block.data?.cards?.length) parts.push(`🎴 ${block.data.cards.length} card`);
+            if (block.data?.subtitle) parts.push(`${block.data.subtitle}`);
+            if (block.data?.cards?.length) parts.push(`${icons.card}${block.data.cards.length} card`);
             break;
     }
     
