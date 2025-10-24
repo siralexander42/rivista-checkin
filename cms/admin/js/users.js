@@ -27,6 +27,8 @@ async function loadUsers() {
     const container = document.getElementById('usersContainer');
     
     try {
+        container.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div></div>';
+        
         const result = await api.get('/users');
         
         if (!result.success || !result.data) {
@@ -36,29 +38,24 @@ async function loadUsers() {
         const users = result.data;
 
         if (users.length === 0) {
-            container.innerHTML = '<p class="empty-state">Nessun utente trovato</p>';
+            container.innerHTML = `
+                <div class="empty-state-modern">
+                    <i data-lucide="users"></i>
+                    <h3>Nessun utente trovato</h3>
+                    <p>Inizia creando il primo utente</p>
+                </div>
+            `;
+            lucide.createIcons();
             return;
         }
 
-        // Render tabella
+        // Render cards
         container.innerHTML = `
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>Username</th>
-                        <th>Email</th>
-                        <th>Ruolo</th>
-                        <th>Stato</th>
-                        <th>Ultimo Accesso</th>
-                        <th>Azioni</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${users.map(user => renderUserRow(user)).join('')}
-                </tbody>
-            </table>
+            <div class="users-grid">
+                ${users.map(user => renderUserCard(user)).join('')}
+            </div>
         `;
+        lucide.createIcons();
     } catch (error) {
         console.error('Errore caricamento utenti:', error);
         container.innerHTML = `
@@ -71,23 +68,23 @@ async function loadUsers() {
     }
 }
 
-// Render riga utente
-function renderUserRow(user) {
+// Render card utente
+function renderUserCard(user) {
     const roleLabels = {
         'super-admin': 'Super Admin',
         'admin': 'Admin',
         'editor': 'Editor'
     };
 
-    const roleColors = {
-        'super-admin': 'var(--danger)',
-        'admin': 'var(--primary)',
-        'editor': 'var(--gray-600)'
+    const roleClasses = {
+        'super-admin': 'role-super-admin',
+        'admin': 'role-admin',
+        'editor': 'role-editor'
     };
 
     const statusBadge = user.isActive 
-        ? '<span class="badge badge-published">Attivo</span>'
-        : '<span class="badge badge-draft">Disattivato</span>';
+        ? '<span class="status-badge status-active">Attivo</span>'
+        : '<span class="status-badge status-inactive">Disattivato</span>';
 
     const lastLogin = user.lastLogin 
         ? new Date(user.lastLogin).toLocaleString('it-IT', {
@@ -97,36 +94,72 @@ function renderUserRow(user) {
             hour: '2-digit',
             minute: '2-digit'
         })
-        : 'Mai';
+        : 'Mai connesso';
 
     const currentUserId = JSON.parse(localStorage.getItem('cms_user')).id;
     const isSelf = user._id === currentUserId;
 
+    // Iniziali per avatar
+    const initials = user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+
     return `
-        <tr>
-            <td><strong>${user.name}</strong></td>
-            <td><code>${user.username}</code></td>
-            <td>${user.email}</td>
-            <td>
-                <span style="color: ${roleColors[user.role]}; font-weight: 600;">
-                    ${roleLabels[user.role] || user.role}
-                </span>
-            </td>
-            <td>${statusBadge}</td>
-            <td style="font-size: 13px; color: var(--gray-600);">${lastLogin}</td>
-            <td>
-                <div class="action-buttons">
-                    <button onclick="editUser('${user._id}')" class="btn btn-sm btn-secondary" title="Modifica">
-                        ✏️
-                    </button>
-                    ${!isSelf ? `
-                        <button onclick="deleteUser('${user._id}', '${user.name}')" class="btn btn-sm btn-danger" title="Elimina">
-                            🗑️
-                        </button>
-                    ` : ''}
+        <div class="user-card">
+            <div class="user-card-header">
+                <div class="user-avatar">${initials}</div>
+                <div class="user-info">
+                    <h3 class="user-name">
+                        ${user.name}
+                        ${isSelf ? '<span style="font-size: 12px; color: #6366f1;">(Tu)</span>' : ''}
+                    </h3>
+                    <div class="user-username">@${user.username}</div>
+                    <div class="user-email">
+                        <i data-lucide="mail"></i>
+                        ${user.email}
+                    </div>
                 </div>
-            </td>
-        </tr>
+            </div>
+            
+            <div class="user-card-body">
+                <div class="user-meta">
+                    <div class="user-meta-item">
+                        <span class="user-meta-label">
+                            <i data-lucide="shield"></i>
+                            Ruolo
+                        </span>
+                        <span class="user-role-badge ${roleClasses[user.role]}">
+                            ${roleLabels[user.role] || user.role}
+                        </span>
+                    </div>
+                    <div class="user-meta-item">
+                        <span class="user-meta-label">
+                            <i data-lucide="activity"></i>
+                            Stato
+                        </span>
+                        ${statusBadge}
+                    </div>
+                    <div class="user-meta-item">
+                        <span class="user-meta-label">
+                            <i data-lucide="clock"></i>
+                            Ultimo accesso
+                        </span>
+                        <span class="user-last-login">${lastLogin}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="user-card-footer">
+                <button onclick="editUser('${user._id}')" class="btn btn-secondary btn-icon">
+                    <i data-lucide="edit-2"></i>
+                    Modifica
+                </button>
+                ${!isSelf ? `
+                    <button onclick="deleteUser('${user._id}', '${user.name}')" class="btn btn-danger btn-icon">
+                        <i data-lucide="trash-2"></i>
+                        Elimina
+                    </button>
+                ` : ''}
+            </div>
+        </div>
     `;
 }
 
