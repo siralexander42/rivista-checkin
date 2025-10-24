@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
             cards.forEach(card => {
                 const clone = card.cloneNode(true);
                 clone.classList.add('clone');
+                clone.setAttribute('data-cloned', 'end');
                 track.appendChild(clone);
             });
             
@@ -31,17 +32,33 @@ document.addEventListener('DOMContentLoaded', function() {
             [...cards].reverse().forEach(card => {
                 const clone = card.cloneNode(true);
                 clone.classList.add('clone');
+                clone.setAttribute('data-cloned', 'start');
                 track.insertBefore(clone, track.firstChild);
             });
             
             // Start at first real card (after prepended clones)
             currentIndex = cards.length;
-            const cardWidth = cards[0].offsetWidth + 24;
-            track.scrollLeft = currentIndex * cardWidth;
+            // Wait for layout calculation before setting scroll position
+            setTimeout(() => {
+                const currentCardWidth = getCardWidth();
+                track.scrollTo({
+                    left: currentIndex * currentCardWidth,
+                    behavior: 'auto'
+                });
+            }, 10);
         }
         
         const allCards = Array.from(track.querySelectorAll('.carousel-story-card'));
-        const cardWidth = allCards[0].offsetWidth + 24;
+        
+        // Calcola la larghezza della card includendo margini
+        const getCardWidth = () => {
+            if (allCards.length === 0) return 0;
+            const card = allCards[0];
+            const marginRight = parseInt(getComputedStyle(card).marginRight) || 0;
+            return card.offsetWidth + marginRight;
+        };
+        
+        const cardWidth = getCardWidth();
         
         function updateDots() {
             if (isInfinite) {
@@ -57,7 +74,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         function scrollToIndex(index, smooth = true) {
-            const scrollAmount = index * cardWidth;
+            const currentCardWidth = getCardWidth();
+            const scrollAmount = index * currentCardWidth;
             track.scrollTo({
                 left: scrollAmount,
                 behavior: smooth ? 'smooth' : 'auto'
@@ -77,28 +95,41 @@ document.addEventListener('DOMContentLoaded', function() {
             track.addEventListener('scroll', () => {
                 if (isTransitioning) return;
                 
+                const currentCardWidth = getCardWidth();
                 const scrollLeft = track.scrollLeft;
-                const maxScroll = (cards.length * 2 - 1) * cardWidth;
-                const minScroll = cardWidth;
                 
-                // If scrolled past the end clones, teleport to real cards
-                if (scrollLeft >= maxScroll) {
+                // Calcola bounds per il teletrasporto
+                // Total cards = original + clones at start + clones at end
+                const totalCards = cards.length * 3; // original + start clones + end clones
+                const maxScrollThreshold = (cards.length * 2) * currentCardWidth; // End of clones at end
+                const minScrollThreshold = (cards.length - 1) * currentCardWidth; // Start of first clones
+                
+                // If scrolled past the end clones, teleport to equivalent position in original cards
+                if (scrollLeft >= maxScrollThreshold) {
                     isTransitioning = true;
-                    track.scrollLeft = scrollLeft - (cards.length * cardWidth);
-                    currentIndex = currentIndex - cards.length;
+                    const newScrollLeft = scrollLeft - (cards.length * currentCardWidth);
+                    track.scrollTo({
+                        left: newScrollLeft,
+                        behavior: 'auto'
+                    });
+                    currentIndex = Math.round(newScrollLeft / currentCardWidth);
                     updateDots();
-                    setTimeout(() => { isTransitioning = false; }, 50);
+                    setTimeout(() => { isTransitioning = false; }, 100);
                 }
-                // If scrolled before the start clones, teleport to real cards
-                else if (scrollLeft <= minScroll) {
+                // If scrolled before the start clones, teleport to equivalent position in end clones
+                else if (scrollLeft <= minScrollThreshold) {
                     isTransitioning = true;
-                    track.scrollLeft = scrollLeft + (cards.length * cardWidth);
-                    currentIndex = currentIndex + cards.length;
+                    const newScrollLeft = scrollLeft + (cards.length * currentCardWidth);
+                    track.scrollTo({
+                        left: newScrollLeft,
+                        behavior: 'auto'
+                    });
+                    currentIndex = Math.round(newScrollLeft / currentCardWidth);
                     updateDots();
-                    setTimeout(() => { isTransitioning = false; }, 50);
+                    setTimeout(() => { isTransitioning = false; }, 100);
                 } else {
                     // Update current index based on scroll position
-                    currentIndex = Math.round(scrollLeft / cardWidth);
+                    currentIndex = Math.round(scrollLeft / currentCardWidth);
                     updateDots();
                 }
             });
@@ -153,7 +184,14 @@ document.addEventListener('DOMContentLoaded', function() {
             infinite: isInfinite,
             originalCards: cards.length,
             totalCards: allCards.length,
-            currentIndex
+            currentIndex,
+            cardWidth: getCardWidth(),
+            infiniteAttr: track.getAttribute('data-infinite')
         });
+        
+        // Se il carosello è infinito, verifica che abbia abbastanza card
+        if (isInfinite && cards.length < 3) {
+            console.warn(`⚠️ Carosello infinito con ${cards.length} card potrebbe non funzionare correttamente. Raccomandato minimo 3 card.`);
+        }
     });
 });
