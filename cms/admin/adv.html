@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestione ADV - CHECK-IN CMS</title>
+    <link rel="icon" type="image/png" href="https://www.italiaatavola.net/images/contenutiarticoli/logo_check-in-favicon.png">
+    <link rel="stylesheet" href="css/admin.css?v=8.0">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="https://www.italiaatavola.net/images/testate/checkin-testata-hd.svg" alt="CHECK-IN" style="width: 100%; max-width: 180px; filter: brightness(0) invert(1);">
+                <p id="welcomeMessage" style="color: rgba(255, 255, 255, 0.9); font-size: 12px; margin-top: 12px; font-weight: 500; letter-spacing: 0.5px; min-height: 18px;"></p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item">
+                    <span>DASHBOARD</span>
+                </a>
+                <a href="magazines.html" class="nav-item">
+                    <span>RIVISTE</span>
+                </a>
+                <a href="#" class="nav-item" id="usersNavItem">
+                    <span>UTENTI</span>
+                </a>
+                <a href="permissions.html" class="nav-item" id="permissionsNavItem" style="display: none;">
+                    <span>PERMESSI</span>
+                </a>
+                <a href="statistiche.html" class="nav-item">
+                    <span>STATISTICHE</span>
+                </a>
+                <a href="logs.html" class="nav-item">
+                    <span>LOG ACCESSI</span>
+                </a>
+                <a href="#" class="nav-item" id="devModeNavItem" style="display: none;">
+                    <span>MODALITÀ SVILUPPATORE</span>
+                </a>
+                <a href="adv.html" class="nav-item active">
+                    <span>ADV</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button onclick="logout()" class="btn btn-danger btn-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 50 50"><path d="M 25 2 C 12.308594 2 2 12.308594 2 25 C 2 37.691406 12.308594 48 25 48 C 37.691406 48 48 37.691406 48 25 C 48 12.308594 37.691406 2 25 2 Z M 25 4 C 36.609375 4 46 13.390625 46 25 C 46 36.609375 36.609375 46 25 46 C 13.390625 46 4 36.609375 4 25 C 4 13.390625 13.390625 4 25 4 Z M 32.990234 15.986328 A 1.0001 1.0001 0 0 0 32.292969 16.292969 L 25 23.585938 L 17.707031 16.292969 A 1.0001 1.0001 0 0 0 16.990234 15.990234 A 1.0001 1.0001 0 0 0 16.292969 17.707031 L 23.585938 25 L 16.292969 32.292969 A 1.0001 1.0001 0 1 0 17.707031 33.707031 L 25 26.414063 L 32.292969 33.707031 A 1.0001 1.0001 0 1 0 33.707031 32.292969 L 26.414063 25 L 33.707031 17.707031 A 1.0001 1.0001 0 0 0 32.990234 15.986328 Z"/></svg>
+                    CHECK-OUT
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <div>
+                    <h1><i data-lucide="megaphone"></i> Gestione Pubblicità</h1>
+                    <p>Crea e gestisci gli annunci pubblicitari della rivista</p>
+                </div>
+                <button onclick="showCreateAdvModal()" class="btn btn-primary">
+                    <i data-lucide="plus"></i> Nuovo ADV
+                </button>
+            </div>
+            
+            <!-- Filtri -->
+            <div class="filters-bar" style="margin-bottom: 24px; padding: 16px; background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-dark);">Stato</label>
+                        <select id="statusFilter" class="form-control" onchange="filterAdvs()" style="width: 100%;">
+                            <option value="all">Tutti</option>
+                            <option value="active">Attivi</option>
+                            <option value="scheduled">Programmati</option>
+                            <option value="expired">Scaduti</option>
+                            <option value="draft">Bozze</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1; min-width: 200px;">
+                        <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-dark);">Cliente</label>
+                        <select id="clientFilter" class="form-control" onchange="filterAdvs()" style="width: 100%;">
+                            <option value="all">Tutti i clienti</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1; min-width: 200px;">
+                        <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-dark);">Cerca</label>
+                        <input type="text" id="searchAdv" class="form-control" placeholder="Cerca per titolo..." oninput="filterAdvs()" style="width: 100%;">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Lista ADV -->
+            <div class="content-body">
+                <div id="advContainer" class="adv-grid">
+                    <div class="loading"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Crea/Modifica ADV -->
+    <div id="advModal" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h2 id="advModalTitle"><i data-lucide="megaphone"></i> Nuovo Annuncio Pubblicitario</h2>
+                <button onclick="closeAdvModal()" class="modal-close">×</button>
+            </div>
+            <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+                <form id="advForm">
+                    <input type="hidden" id="advId">
+                    
+                    <!-- Info Cliente -->
+                    <div class="form-section">
+                        <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 16px; color: var(--primary); display: flex; align-items: center; gap: 8px;">
+                            <i data-lucide="building" style="width: 20px; height: 20px;"></i>
+                            Informazioni Cliente
+                        </h3>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Nome Cliente *</label>
+                                <input type="text" id="advClientName" class="form-control" placeholder="es. Beachcomber Hotels" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Logo Cliente</label>
+                                <input type="file" id="advClientLogo" class="form-control" accept="image/*">
+                                <small style="color: var(--text-light); font-size: 12px;">PNG o SVG consigliato (max 2MB)</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contenuto Annuncio -->
+                    <div class="form-section">
+                        <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 16px; color: var(--primary); display: flex; align-items: center; gap: 8px;">
+                            <i data-lucide="layout" style="width: 20px; height: 20px;"></i>
+                            Contenuto Pubblicitario
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label>Titolo Principale (Headline) *</label>
+                            <input type="text" id="advHeadline" class="form-control" placeholder="es. Scopri la magia del Natale al Beachcomber" maxlength="100" required>
+                            <small style="color: var(--text-light); font-size: 12px;">Max 100 caratteri</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Sottotitolo / Descrizione</label>
+                            <textarea id="advSubtitle" class="form-control" rows="3" placeholder="es. Approfitta del 40% di sconto su soggiorni dal 20 al 26 dicembre – Regalati un Natale indimenticabile in paradiso." maxlength="250"></textarea>
+                            <small style="color: var(--text-light); font-size: 12px;">Max 250 caratteri</small>
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Testo Call-to-Action *</label>
+                                <input type="text" id="advCtaText" class="form-control" placeholder="es. SCOPRI DI PIÙ" maxlength="30" required>
+                            </div>
+                            <div class="form-group">
+                                <label>URL Destinazione *</label>
+                                <input type="url" id="advCtaUrl" class="form-control" placeholder="https://www.esempio.com/offerta" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Media -->
+                    <div class="form-section">
+                        <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 16px; color: var(--primary); display: flex; align-items: center; gap: 8px;">
+                            <i data-lucide="image" style="width: 20px; height: 20px;"></i>
+                            Immagini e Media
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label>Tipo di Media</label>
+                            <select id="advMediaType" class="form-control" onchange="toggleMediaInput()">
+                                <option value="image">Immagine Singola</option>
+                                <option value="gallery">Gallery (Carousel)</option>
+                                <option value="video">Video Background</option>
+                            </select>
+                        </div>
+                        
+                        <div id="mediaImageSection" class="form-group">
+                            <label>Immagine Hero/Background *</label>
+                            <input type="file" id="advHeroImage" class="form-control" accept="image/*">
+                            <small style="color: var(--text-light); font-size: 12px;">Formato 16:9 consigliato, min 1920x1080px (max 5MB)</small>
+                            <div id="heroPreview" style="margin-top: 12px;"></div>
+                        </div>
+                        
+                        <div id="mediaGallerySection" class="form-group" style="display: none;">
+                            <label>Gallery Immagini (2-5 immagini)</label>
+                            <input type="file" id="advGallery" class="form-control" accept="image/*" multiple>
+                            <small style="color: var(--text-light); font-size: 12px;">Seleziona 2-5 immagini per il carousel automatico</small>
+                            <div id="galleryPreview" style="margin-top: 12px; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px;"></div>
+                        </div>
+                        
+                        <div id="mediaVideoSection" class="form-group" style="display: none;">
+                            <label>URL Video (YouTube/Vimeo) o File MP4</label>
+                            <input type="text" id="advVideoUrl" class="form-control" placeholder="https://www.youtube.com/watch?v=... o upload file">
+                            <input type="file" id="advVideoFile" class="form-control" accept="video/mp4" style="margin-top: 8px;">
+                            <small style="color: var(--text-light); font-size: 12px;">Video in loop come background (max 20MB per file MP4)</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="checkbox" id="advOverlay" checked>
+                                <span>Applica overlay scuro per migliorare leggibilità testo</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Stile e Layout -->
+                    <div class="form-section">
+                        <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 16px; color: var(--primary); display: flex; align-items: center; gap: 8px;">
+                            <i data-lucide="palette" style="width: 20px; height: 20px;"></i>
+                            Stile e Posizionamento
+                        </h3>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Posizione Testo</label>
+                                <select id="advTextPosition" class="form-control">
+                                    <option value="center-center">Centro - Centro</option>
+                                    <option value="center-left">Centro - Sinistra</option>
+                                    <option value="center-right">Centro - Destra</option>
+                                    <option value="top-center">Alto - Centro</option>
+                                    <option value="bottom-center">Basso - Centro</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Colore Testo</label>
+                                <input type="color" id="advTextColor" class="form-control" value="#ffffff">
+                            </div>
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Colore CTA Button</label>
+                                <input type="color" id="advCtaColor" class="form-control" value="#ffffff">
+                            </div>
+                            <div class="form-group">
+                                <label>Colore Testo CTA</label>
+                                <input type="color" id="advCtaTextColor" class="form-control" value="#000000">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Validità e Programmazione -->
+                    <div class="form-section">
+                        <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 16px; color: var(--primary); display: flex; align-items: center; gap: 8px;">
+                            <i data-lucide="calendar" style="width: 20px; height: 20px;"></i>
+                            Validità e Programmazione
+                        </h3>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Data Inizio Pubblicazione</label>
+                                <input type="datetime-local" id="advStartDate" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Data Fine Pubblicazione</label>
+                                <input type="datetime-local" id="advEndDate" class="form-control">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="checkbox" id="advShowCountdown">
+                                <span>Mostra countdown per scadenza offerta</span>
+                            </label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Riviste Target</label>
+                            <select id="advTargetMagazines" class="form-control" multiple size="4">
+                                <!-- Popolato dinamicamente -->
+                            </select>
+                            <small style="color: var(--text-light); font-size: 12px;">Tieni premuto Cmd/Ctrl per selezione multipla. Vuoto = tutte le riviste</small>
+                        </div>
+                    </div>
+
+                    <!-- Note e Termini -->
+                    <div class="form-section">
+                        <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 16px; color: var(--primary); display: flex; align-items: center; gap: 8px;">
+                            <i data-lucide="file-text" style="width: 20px; height: 20px;"></i>
+                            Note e Disclaimer
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label>Termini e Condizioni / Disclaimer</label>
+                            <textarea id="advDisclaimer" class="form-control" rows="2" placeholder="es. Offerta valida solo per nuove prenotazioni. Soggetto a disponibilità." maxlength="200"></textarea>
+                            <small style="color: var(--text-light); font-size: 12px;">Testo in piccolo in fondo all'annuncio (max 200 caratteri)</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Note Interne (non visibili)</label>
+                            <textarea id="advNotes" class="form-control" rows="2" placeholder="Note per uso interno..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Analytics -->
+                    <div class="form-section">
+                        <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 16px; color: var(--primary); display: flex; align-items: center; gap: 8px;">
+                            <i data-lucide="bar-chart" style="width: 20px; height: 20px;"></i>
+                            Tracciamento
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label>Parametri UTM (opzionali)</label>
+                            <div style="display: grid; gap: 8px;">
+                                <input type="text" id="advUtmSource" class="form-control" placeholder="utm_source (es. checkin)">
+                                <input type="text" id="advUtmMedium" class="form-control" placeholder="utm_medium (es. magazine)">
+                                <input type="text" id="advUtmCampaign" class="form-control" placeholder="utm_campaign (es. natale2025)">
+                            </div>
+                            <small style="color: var(--text-light); font-size: 12px;">Parametri aggiunti automaticamente all'URL per tracking Google Analytics</small>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="closeAdvModal()" class="btn btn-secondary">Annulla</button>
+                <button type="button" onclick="saveAdvDraft()" class="btn btn-outline">Salva Bozza</button>
+                <button type="button" onclick="previewAdv()" class="btn btn-info">
+                    <i data-lucide="eye"></i> Anteprima
+                </button>
+                <button type="button" onclick="saveAdv()" class="btn btn-primary">
+                    <i data-lucide="check"></i> Pubblica ADV
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Anteprima ADV -->
+    <div id="previewModal" class="modal">
+        <div class="modal-content" style="max-width: 1200px; padding: 0;">
+            <div class="modal-header" style="border-bottom: 1px solid #e5e7eb;">
+                <h2><i data-lucide="eye"></i> Anteprima Annuncio</h2>
+                <button onclick="closePreviewModal()" class="modal-close">×</button>
+            </div>
+            <div id="previewContainer" style="min-height: 500px; background: #f3f4f6;">
+                <!-- Preview generato dinamicamente -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="js/auth.js?v=1.0"></script>
+    <script src="js/api.js?v=1.0"></script>
+    <script src="js/sidebar.js?v=1.0"></script>
+    <script src="js/adv.js?v=1.0"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
