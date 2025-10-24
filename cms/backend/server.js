@@ -1969,13 +1969,14 @@ app.post('/api/admin/magazines/:id/generate-html', async (req, res) => {
         // Controlla se la rivista ha la loading screen attiva
         const showLoadingScreen = magazine.showLoadingScreen || false;
         
-        // Carica carousel.js come stringa
-        const carouselJSPath = path.join(__dirname, '../../assets/js/carousel.js');
+        // Carica carousel.js come stringa (dalla stessa cartella del server)
+        const carouselJSPath = path.join(__dirname, 'carousel.js');
         let carouselJS = '';
         try {
             carouselJS = await fs.readFile(carouselJSPath, 'utf-8');
+            console.log('✅ Carousel.js caricato, lunghezza:', carouselJS.length);
         } catch(err) {
-            console.warn('⚠️ Carousel.js non trovato, skip');
+            console.error('❌ Carousel.js NON trovato:', err.message);
         }
         
         // Leggi i CSS inline per l'anteprima
