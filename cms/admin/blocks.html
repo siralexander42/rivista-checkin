@@ -80,10 +80,7 @@
                                 <input type="checkbox" id="showLoadingScreen" class="toggle-loading-input">
                                 <span class="toggle-loading-slider"></span>
                             </label>
-                            <div class="toggle-loading-info">
-                                <span class="toggle-loading-title">✈️ Schermata caricamento</span>
-                                <span class="toggle-loading-desc">Tabellone aeroporto animato</span>
-                            </div>
+                            <span style="font-size: 14px; font-weight: 500; color: #475569;">Schermata caricamento</span>
                         </div>
                         
                         <!-- Action Buttons -->
@@ -117,8 +114,11 @@
                 
                 <!-- Pulsante Aggiungi Blocco -->
                 <div class="add-block-section">
-                    <button class="btn btn-primary" onclick="showBlockTypesModal()" style="font-size: 15px; padding: 12px 28px;">
-                        ➕ Aggiungi Blocco
+                    <button class="btn btn-primary" onclick="showBlockTypesModal()" style="font-size: 15px; padding: 12px 28px; display: inline-flex; align-items: center; gap: 8px;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Aggiungi Blocco
                     </button>
                 </div>
                 
@@ -607,22 +607,6 @@
             transform: translateX(22px);
         }
         
-        .toggle-loading-info {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-        
-        .toggle-loading-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #1e293b;
-        }
-        
-        .toggle-loading-desc {
-            font-size: 12px;
-            color: #64748b;
-        }
         
         /* Action Buttons Group */
         .action-buttons-group {
