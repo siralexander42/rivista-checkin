@@ -1594,12 +1594,12 @@ async function updateBlockPreview() {
             // Crea iframe con HTML reale e CSS della rivista
             previewContainer.innerHTML = `
                 <div style="position: sticky; top: 20px;">
-                    <div style="padding: 16px 20px; background: linear-gradient(135deg, #333382 0%, #2a2a6b 100%); color: white; border-radius: 12px 12px 0 0;">
-                        <h3 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 600;">📱 Anteprima Live</h3>
-                        <p style="margin: 0; font-size: 12px; opacity: 0.8;">${getBlockTypeName(blockType)}</p>
+                    <div style="padding: 12px 16px; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: white; border-radius: 10px 10px 0 0;">
+                        <h3 style="margin: 0 0 3px 0; font-size: 14px; font-weight: 600;">📱 Anteprima Live</h3>
+                        <p style="margin: 0; font-size: 11px; opacity: 0.85;">${getBlockTypeName(blockType)}</p>
                     </div>
                     <iframe 
-                        style="width: 100%; height: 700px; border: none; border-radius: 0 0 12px 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); background: white;"
+                        style="width: 100%; height: 500px; border: none; border-radius: 0 0 10px 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); background: white; display: block;"
                         srcdoc="${escapeHtml(result.html)}"
                     ></iframe>
                 </div>
@@ -1608,8 +1608,8 @@ async function updateBlockPreview() {
     } catch (error) {
         console.error('Errore anteprima:', error);
         previewContainer.innerHTML = `
-            <div style="position: sticky; top: 20px; background: #fee; border-radius: 12px; padding: 20px; text-align: center; color: #c00;">
-                <p style="margin: 0;">⚠️ Errore nel caricamento dell'anteprima</p>
+            <div style="position: sticky; top: 20px; background: #fee2e2; border-radius: 10px; padding: 16px; text-align: center; color: #dc2626;">
+                <p style="margin: 0; font-size: 13px;">⚠️ Errore nel caricamento dell'anteprima</p>
             </div>
         `;
     }

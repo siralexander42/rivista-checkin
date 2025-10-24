@@ -1032,6 +1032,60 @@
            END MODERN EDIT BLOCK MODAL
            ============================================ */
         
+        /* ============================================
+           FORM LAYOUT - Responsive Grid
+           ============================================ */
+        
+        /* Grid responsivo per form con anteprima */
+        .modal-body-form .form-section {
+            width: 100%;
+        }
+        
+        /* Gestione layout grid nei form */
+        #blockFormContent > div[style*="grid"] {
+            display: grid !important;
+            grid-template-columns: 1fr minmax(300px, 380px) !important;
+            gap: 24px !important;
+            align-items: start !important;
+        }
+        
+        @media (max-width: 1200px) {
+            #blockFormContent > div[style*="grid"] {
+                grid-template-columns: 1fr minmax(280px, 320px) !important;
+                gap: 20px !important;
+            }
+        }
+        
+        @media (max-width: 1024px) {
+            #blockFormContent > div[style*="grid"] {
+                grid-template-columns: 1fr !important;
+            }
+            
+            #blockPreview {
+                display: none !important;
+            }
+        }
+        
+        /* Anteprima preview sticky */
+        #blockPreview > div {
+            position: sticky;
+            top: 20px;
+        }
+        
+        #blockPreview iframe {
+            width: 100%;
+            max-width: 100%;
+            height: 500px !important;
+            border: none;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            background: white;
+        }
+        
+        /* ============================================
+           END FORM LAYOUT
+           ============================================ */
+        
         /* Block Types Grid */
         .block-types-grid {
             display: grid;
