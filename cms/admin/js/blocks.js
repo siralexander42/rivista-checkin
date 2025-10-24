@@ -877,6 +877,13 @@ async function handleBlockFormSubmit(e) {
         blockData.cards = collectCarouselCardsData();
         blockData.infiniteScroll = document.getElementById('infiniteScroll')?.checked || false;
         
+        console.log('🎠 CAROUSEL SAVE DEBUG:', {
+            infiniteCheckbox: document.getElementById('infiniteScroll'),
+            infiniteChecked: document.getElementById('infiniteScroll')?.checked,
+            infiniteScrollValue: blockData.infiniteScroll,
+            cards: blockData.cards.length
+        });
+        
         // Validazione
         if (blockData.cards.length < 3) {
             alert('⚠️ Inserisci almeno 3 card nel carousel!');
@@ -891,6 +898,7 @@ async function handleBlockFormSubmit(e) {
     try {
         if (blockId) {
             // Update
+            console.log('📤 Sending UPDATE to server:', blockData);
             await apiRequest(`/admin/magazines/${magazineId}/blocks/${blockId}`, {
                 method: 'PUT',
                 body: JSON.stringify(blockData)
@@ -898,6 +906,7 @@ async function handleBlockFormSubmit(e) {
             alert('✅ Blocco aggiornato!');
         } else {
             // Create
+            console.log('📤 Sending CREATE to server:', blockData);
             await apiRequest(`/admin/magazines/${magazineId}/blocks`, {
                 method: 'POST',
                 body: JSON.stringify(blockData)

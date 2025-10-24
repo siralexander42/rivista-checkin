@@ -2812,6 +2812,14 @@ function generateBlockHTML(block) {
             const carouselId = `carousel-${block._id}`;
             const infiniteScroll = block.infiniteScroll || false;
             
+            console.log('🎠 RENDERING CAROUSEL:', {
+                blockId: block._id,
+                infiniteScroll: infiniteScroll,
+                infiniteScrollType: typeof infiniteScroll,
+                cardsCount: carouselCards.length,
+                blockData: block
+            });
+            
             return `
     <!-- Carousel Stories Block -->
     <section class="carousel-stories-section" id="${carouselId}">
