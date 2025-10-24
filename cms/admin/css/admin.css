@@ -301,10 +301,6 @@ body {
     z-index: 100;
 }
 
-.main-content {
-    margin-left: 280px;
-}
-
 .sidebar-header {
     padding: 28px 24px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -471,6 +467,7 @@ body {
    MAIN CONTENT AREA - COMPACT VOGUE STYLE
    ============================================ */
 .main-content {
+    margin-left: 280px;
     flex: 1;
     padding: 28px;
     min-height: 100vh;
