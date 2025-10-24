@@ -286,158 +286,189 @@
         </div>
     </div>
     
-    <!-- Modal Impostazioni Rivista -->
+    <!-- Modal Impostazioni Rivista (stesso di magazines.html) -->
     <div id="magazineSettingsModal" class="modal">
         <div class="modal-content modal-large">
-            <div class="modal-header-modern">
-                <div>
-                    <h2 class="modal-title-modern">⚙️ Impostazioni Rivista</h2>
-                    <p class="modal-subtitle">Modifica informazioni, SEO e impostazioni della rivista</p>
+            <div class="modal-header">
+                <h2 id="modalTitle">Impostazioni Rivista</h2>
+                <button class="modal-close" onclick="closeMagazineSettings()">&times;</button>
+            </div>
+            
+            <form id="magazineSettingsForm" class="modal-body" onsubmit="saveMagazineData(event)">
+                <input type="hidden" id="magazineId">
+                
+                <div class="form-section">
+                    <h3>📝 Informazioni Principali</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Nome Rivista *</label>
+                            <input 
+                                type="text" 
+                                id="name" 
+                                required 
+                                placeholder="es: CHECK-IN #42"
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="slug">URL Slug *</label>
+                            <input 
+                                type="text" 
+                                id="slug" 
+                                required 
+                                placeholder="es: check-in-42"
+                                pattern="[a-z0-9-]+"
+                            >
+                            <small>Solo lettere minuscole, numeri e trattini</small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edition">Edizione *</label>
+                            <input 
+                                type="text" 
+                                id="edition" 
+                                required 
+                                placeholder="es: ottobre"
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="editionNumber">Numero Edizione *</label>
+                            <input 
+                                type="number" 
+                                id="editionNumber" 
+                                required 
+                                min="1"
+                                placeholder="es: 42"
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="subtitle">Sottotitolo</label>
+                            <input 
+                                type="text" 
+                                id="subtitle" 
+                                placeholder="Test"
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">Descrizione</label>
+                        <textarea 
+                            id="description" 
+                            rows="3"
+                            placeholder="Breve descrizione"
+                        ></textarea>
+                    </div>
                 </div>
-                <button class="modal-close-modern" onclick="closeMagazineSettings()">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                    </svg>
-                </button>
-            </div>
-            <div class="modal-body-modern" style="padding: 32px;">
-                <form id="magazineSettingsForm" onsubmit="saveMagazineData(event)">
-                    <input type="hidden" id="edit_magazineId">
+                
+                <div class="form-section">
+                    <h3>🎨 Immagini</h3>
                     
-                    <!-- Informazioni Principali -->
-                    <div class="form-section-modern">
-                        <h3 class="section-title-modern">📝 Informazioni Principali</h3>
-                        
-                        <div class="form-row-modern">
-                            <div class="form-group-modern">
-                                <label class="form-label-modern">Nome Rivista *</label>
-                                <input type="text" id="edit_name" class="form-input-modern" required placeholder="es: CHECK-IN Estate 2025">
-                            </div>
-                            
-                            <div class="form-group-modern">
-                                <label class="form-label-modern">URL Slug *</label>
-                                <input type="text" id="edit_slug" class="form-input-modern" required placeholder="es: estate-2025" pattern="[a-z0-9-]+">
-                                <p class="form-hint">
-                                    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588z"/><circle cx="8" cy="4.5" r="1"/></svg>
-                                    Solo lettere minuscole, numeri e trattini
-                                </p>
-                            </div>
+                    <div class="form-group">
+                        <label for="coverImage">Immagine di Copertina</label>
+                        <input 
+                            type="url" 
+                            id="coverImage" 
+                            placeholder="https://esempio.com/cover.jpg"
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="ogImage">Open Graph Image (Social)</label>
+                        <input 
+                            type="url" 
+                            id="ogImage" 
+                            placeholder="https://esempio.com/og-image.jpg"
+                        >
+                        <small>Immagine per condivisione social (1200x630px)</small>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>🔍 SEO</h3>
+                    
+                    <div class="form-group">
+                        <label for="metaTitle">Meta Title *</label>
+                        <input 
+                            type="text" 
+                            id="metaTitle" 
+                            required 
+                            placeholder="es: CHECK-IN #42 | La rivista del viaggio"
+                            maxlength="60"
+                        >
+                        <small>Massimo 60 caratteri</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="metaDescription">Meta Description *</label>
+                        <textarea 
+                            id="metaDescription" 
+                            required
+                            rows="2"
+                            placeholder="Descrizione che appare nei risultati di ricerca..."
+                            maxlength="160"
+                        ></textarea>
+                        <small>Massimo 160 caratteri</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="metaKeywords">Keywords (separate da virgola)</label>
+                        <input 
+                            type="text" 
+                            id="metaKeywords" 
+                            placeholder="viaggio, turismo, ospitalità, enogastronomia"
+                        >
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>⚙️ Impostazioni</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="status">Stato *</label>
+                            <select id="status" required>
+                                <option value="draft">Bozza</option>
+                                <option value="published">Pubblicata</option>
+                                <option value="archived">Archiviata</option>
+                            </select>
                         </div>
                         
-                        <div class="form-row-modern">
-                            <div class="form-group-modern">
-                                <label class="form-label-modern">Edizione *</label>
-                                <input type="text" id="edit_edition" class="form-input-modern" required placeholder="es: Gennaio 2025">
-                            </div>
-                            
-                            <div class="form-group-modern">
-                                <label class="form-label-modern">Numero Edizione *</label>
-                                <input type="number" id="edit_editionNumber" class="form-input-modern" required min="1" placeholder="es: 1">
-                            </div>
-                        </div>
-                        
-                        <div class="form-group-modern">
-                            <label class="form-label-modern">Sottotitolo</label>
-                            <input type="text" id="edit_subtitle" class="form-input-modern" placeholder="es: Il magazine del viaggio">
-                        </div>
-                        
-                        <div class="form-group-modern">
-                            <label class="form-label-modern">Descrizione</label>
-                            <textarea id="edit_description" class="form-textarea-modern" rows="3" placeholder="Breve descrizione della rivista..."></textarea>
+                        <div class="form-group">
+                            <label for="publishDate">Data Pubblicazione</label>
+                            <input type="datetime-local" id="publishDate">
                         </div>
                     </div>
                     
-                    <!-- Immagini -->
-                    <div class="form-section-modern">
-                        <h3 class="section-title-modern">🎨 Immagini</h3>
-                        
-                        <div class="form-group-modern">
-                            <label class="form-label-modern">Immagine di Copertina</label>
-                            <input type="url" id="edit_coverImage" class="form-input-modern" placeholder="https://esempio.com/cover.jpg">
-                        </div>
-                        
-                        <div class="form-group-modern">
-                            <label class="form-label-modern">Open Graph Image (Social)</label>
-                            <input type="url" id="edit_ogImage" class="form-input-modern" placeholder="https://esempio.com/og-image.jpg">
-                            <p class="form-hint">
-                                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588z"/><circle cx="8" cy="4.5" r="1"/></svg>
-                                Immagine per condivisione social (1200x630px consigliato)
-                            </p>
-                        </div>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="featured">
+                            In Evidenza (Homepage)
+                        </label>
                     </div>
-                    
-                    <!-- SEO -->
-                    <div class="form-section-modern">
-                        <h3 class="section-title-modern">🔍 SEO</h3>
-                        
-                        <div class="form-group-modern">
-                            <label class="form-label-modern">
-                                <span>Meta Title *</span>
-                                <span class="label-badge char-counter" id="edit_titleLength">0</span>
-                                <span style="font-size: 12px; color: #64748b;">/60</span>
-                            </label>
-                            <input type="text" id="edit_metaTitle" class="form-input-modern" required maxlength="60" placeholder="es: CHECK-IN Estate 2025 | La rivista del viaggio">
-                            <p class="form-hint">
-                                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588z"/><circle cx="8" cy="4.5" r="1"/></svg>
-                                Massimo 60 caratteri
-                            </p>
-                        </div>
-                        
-                        <div class="form-group-modern">
-                            <label class="form-label-modern">
-                                <span>Meta Description *</span>
-                                <span class="label-badge char-counter" id="edit_descLength">0</span>
-                                <span style="font-size: 12px; color: #64748b;">/160</span>
-                            </label>
-                            <textarea id="edit_metaDescription" class="form-textarea-modern" required maxlength="160" rows="3" placeholder="Descrizione che appare nei risultati di ricerca..."></textarea>
-                            <p class="form-hint">
-                                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588z"/><circle cx="8" cy="4.5" r="1"/></svg>
-                                Massimo 160 caratteri
-                            </p>
-                        </div>
-                        
-                        <div class="form-group-modern">
-                            <label class="form-label-modern">Keywords (separate da virgola)</label>
-                            <input type="text" id="edit_metaKeywords" class="form-input-modern" placeholder="viaggio, turismo, ospitalità, enogastronomia">
-                        </div>
+                </div>
+                
+                <div class="form-actions">
+                    <div class="form-actions-left">
+                        <!-- Spazio per eventuali pulsanti futuri -->
                     </div>
-                    
-                    <!-- Impostazioni -->
-                    <div class="form-section-modern">
-                        <h3 class="section-title-modern">⚙️ Impostazioni</h3>
-                        
-                        <div class="form-row-modern">
-                            <div class="form-group-modern">
-                                <label class="form-label-modern">Stato *</label>
-                                <select id="edit_status" class="form-select-modern" required>
-                                    <option value="draft">Bozza</option>
-                                    <option value="published">Pubblicata</option>
-                                    <option value="archived">Archiviata</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group-modern">
-                                <label class="form-label-modern">Data Pubblicazione</label>
-                                <input type="datetime-local" id="edit_publishDate" class="form-input-modern">
-                            </div>
-                        </div>
-                        
-                        <div class="form-group-modern">
-                            <label class="checkbox-label-modern">
-                                <input type="checkbox" id="edit_featured">
-                                <span>In Evidenza (Homepage)</span>
-                            </label>
-                        </div>
+                    <div class="form-actions-right">
+                        <button type="button" class="btn btn-secondary" onclick="closeMagazineSettings()">
+                            Annulla
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            💾 Salva Rivista
+                        </button>
                     </div>
-                    
-                    <button type="submit" class="btn-save-modern">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M13.5 3.5L6 11L2.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                        Salva Modifiche
-                    </button>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
     </div>
     
@@ -2101,37 +2132,29 @@
                 const magazine = result.data;
                 currentMagazineData = magazine;
                 
-                // Popola form completo con dati esistenti
-                document.getElementById('edit_magazineId').value = magazine._id;
-                document.getElementById('edit_name').value = magazine.name || '';
-                document.getElementById('edit_slug').value = magazine.slug || '';
-                document.getElementById('edit_edition').value = magazine.edition || '';
-                document.getElementById('edit_editionNumber').value = magazine.editionNumber || '';
-                document.getElementById('edit_subtitle').value = magazine.subtitle || '';
-                document.getElementById('edit_description').value = magazine.description || '';
-                document.getElementById('edit_coverImage').value = magazine.coverImage || '';
-                document.getElementById('edit_ogImage').value = magazine.ogImage || magazine.coverImage || '';
-                document.getElementById('edit_metaTitle').value = magazine.metaTitle || magazine.name || '';
-                document.getElementById('edit_metaDescription').value = magazine.metaDescription || '';
-                document.getElementById('edit_metaKeywords').value = Array.isArray(magazine.metaKeywords) ? magazine.metaKeywords.join(', ') : (magazine.metaKeywords || '');
-                document.getElementById('edit_status').value = magazine.status || 'draft';
-                document.getElementById('edit_featured').checked = magazine.featured || false;
+                // Popola form completo con dati esistenti (ID senza prefisso edit_)
+                document.getElementById('magazineId').value = magazine._id;
+                document.getElementById('name').value = magazine.name || '';
+                document.getElementById('slug').value = magazine.slug || '';
+                document.getElementById('edition').value = magazine.edition || '';
+                document.getElementById('editionNumber').value = magazine.editionNumber || '';
+                document.getElementById('subtitle').value = magazine.subtitle || '';
+                document.getElementById('description').value = magazine.description || '';
+                document.getElementById('coverImage').value = magazine.coverImage || '';
+                document.getElementById('ogImage').value = magazine.ogImage || magazine.coverImage || '';
+                document.getElementById('metaTitle').value = magazine.metaTitle || magazine.name || '';
+                document.getElementById('metaDescription').value = magazine.metaDescription || '';
+                document.getElementById('metaKeywords').value = Array.isArray(magazine.metaKeywords) ? magazine.metaKeywords.join(', ') : (magazine.metaKeywords || '');
+                document.getElementById('status').value = magazine.status || 'draft';
+                document.getElementById('featured').checked = magazine.featured || false;
                 
                 if (magazine.publishDate) {
                     const date = new Date(magazine.publishDate);
-                    document.getElementById('edit_publishDate').value = date.toISOString().slice(0, 16);
+                    document.getElementById('publishDate').value = date.toISOString().slice(0, 16);
                 }
                 
-                // Aggiorna contatori caratteri
-                updateCharCounter('edit_metaTitle', 'edit_titleLength', 60);
-                updateCharCounter('edit_metaDescription', 'edit_descLength', 160);
-                
-                // Apri modal
-                const modal = document.getElementById('magazineSettingsModal');
-                if (modal) {
-                    modal.style.display = 'flex';
-                    setTimeout(() => modal.classList.add('show'), 10);
-                }
+                // Apri modal con lo stesso metodo di magazines.html
+                document.getElementById('magazineSettingsModal').classList.add('active');
                 
             } catch (error) {
                 console.error('Errore caricamento impostazioni:', error);
@@ -2140,14 +2163,10 @@
         }
         
         /**
-         * Chiude il modal delle impostazioni
+         * Chiude il modal delle impostazioni (stesso metodo di magazines.html)
          */
         function closeMagazineSettings() {
-            const modal = document.getElementById('magazineSettingsModal');
-            if (!modal) return;
-            
-            modal.classList.remove('show');
-            setTimeout(() => modal.style.display = 'none', 300);
+            document.getElementById('magazineSettingsModal').classList.remove('active');
         }
         
         /**
@@ -2156,24 +2175,24 @@
         async function saveMagazineData(event) {
             if (event) event.preventDefault();
             
-            const magazineId = document.getElementById('edit_magazineId').value;
+            const magazineId = document.getElementById('magazineId').value;
             if (!magazineId) return;
             
             const magazineData = {
-                name: document.getElementById('edit_name').value.trim(),
-                slug: document.getElementById('edit_slug').value.trim(),
-                edition: document.getElementById('edit_edition').value.trim(),
-                editionNumber: parseInt(document.getElementById('edit_editionNumber').value),
-                subtitle: document.getElementById('edit_subtitle').value.trim(),
-                description: document.getElementById('edit_description').value.trim(),
-                coverImage: document.getElementById('edit_coverImage').value.trim(),
-                ogImage: document.getElementById('edit_ogImage').value.trim(),
-                metaTitle: document.getElementById('edit_metaTitle').value.trim(),
-                metaDescription: document.getElementById('edit_metaDescription').value.trim(),
-                metaKeywords: document.getElementById('edit_metaKeywords').value.trim().split(',').map(k => k.trim()).filter(k => k),
-                status: document.getElementById('edit_status').value,
-                featured: document.getElementById('edit_featured').checked,
-                publishDate: document.getElementById('edit_publishDate').value || null
+                name: document.getElementById('name').value.trim(),
+                slug: document.getElementById('slug').value.trim(),
+                edition: document.getElementById('edition').value.trim(),
+                editionNumber: parseInt(document.getElementById('editionNumber').value),
+                subtitle: document.getElementById('subtitle').value.trim(),
+                description: document.getElementById('description').value.trim(),
+                coverImage: document.getElementById('coverImage').value.trim(),
+                ogImage: document.getElementById('ogImage').value.trim(),
+                metaTitle: document.getElementById('metaTitle').value.trim(),
+                metaDescription: document.getElementById('metaDescription').value.trim(),
+                metaKeywords: document.getElementById('metaKeywords').value.trim().split(',').map(k => k.trim()).filter(k => k),
+                status: document.getElementById('status').value,
+                featured: document.getElementById('featured').checked,
+                publishDate: document.getElementById('publishDate').value || null
             };
             
             try {
