@@ -306,52 +306,40 @@ body {
     transform: translateX(-280px);
 }
 
-.sidebar-toggle {
+/* Pulsante per riaprire quando sidebar è nascosta */
+.sidebar-reopen-btn {
     position: fixed;
-    left: 16px;
-    top: 16px;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
     z-index: 99;
-    width: 36px;
-    height: 36px;
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    width: 32px;
+    height: 80px;
+    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+    border: none;
+    border-radius: 0 8px 8px 0;
     cursor: pointer;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
-    color: #334155;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    opacity: 0;
-    pointer-events: none;
+    color: white;
+    box-shadow: 2px 0 12px rgba(59, 130, 246, 0.3);
+    transition: all 0.3s ease;
 }
 
-.sidebar:hover ~ .sidebar-toggle,
-.sidebar-toggle:hover {
-    opacity: 1;
-    pointer-events: all;
+.sidebar.collapsed ~ .sidebar-reopen-btn {
+    display: flex;
 }
 
-.sidebar.collapsed ~ .sidebar-toggle {
-    opacity: 1;
-    pointer-events: all;
+.sidebar-reopen-btn:hover {
+    width: 36px;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    box-shadow: 2px 0 16px rgba(59, 130, 246, 0.5);
 }
 
-.sidebar-toggle:hover {
-    background: rgba(255, 255, 255, 1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    transform: scale(1.05);
-}
-
-.sidebar-toggle svg {
+.sidebar-reopen-btn svg {
     width: 18px;
     height: 18px;
-    transition: transform 0.3s ease;
-}
-
-.sidebar.collapsed ~ .sidebar-toggle svg {
-    transform: rotate(180deg);
 }
 
 .main-content {
