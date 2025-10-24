@@ -2947,7 +2947,175 @@ ${blocksHTML}
     <!-- Scripts -->
     <script src="assets/js/main.js"></script>
     <script src="assets/js/cremona-scroll.js"></script>
-    <script src="assets/js/carousel.js"></script>
+    
+    <!-- Carousel Stories Script (INLINE) -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.carousel-stories-track').forEach(track => {
+            const carouselId = track.getAttribute('data-carousel');
+            const isInfinite = track.getAttribute('data-infinite') === 'true';
+            const cards = Array.from(track.querySelectorAll('.carousel-story-card'));
+            const prevBtn = document.querySelector(\`.carousel-nav-btn.prev[data-carousel="\${carouselId}"]\`);
+            const nextBtn = document.querySelector(\`.carousel-nav-btn.next[data-carousel="\${carouselId}"]\`);
+            const dots = document.querySelectorAll(\`.carousel-dot[data-carousel="\${carouselId}"]\`);
+            
+            if (cards.length === 0) return;
+            
+            let currentIndex = 0;
+            let isTransitioning = false;
+            
+            if (isInfinite && cards.length > 0) {
+                cards.forEach(card => {
+                    const clone = card.cloneNode(true);
+                    clone.classList.add('clone');
+                    clone.setAttribute('data-cloned', 'end');
+                    track.appendChild(clone);
+                });
+                
+                [...cards].reverse().forEach(card => {
+                    const clone = card.cloneNode(true);
+                    clone.classList.add('clone');
+                    clone.setAttribute('data-cloned', 'start');
+                    track.insertBefore(clone, track.firstChild);
+                });
+                
+                currentIndex = cards.length;
+                setTimeout(() => {
+                    const currentCardWidth = getCardWidth();
+                    track.scrollTo({
+                        left: currentIndex * currentCardWidth,
+                        behavior: 'auto'
+                    });
+                }, 10);
+            }
+            
+            const allCards = Array.from(track.querySelectorAll('.carousel-story-card'));
+            
+            const getCardWidth = () => {
+                if (allCards.length === 0) return 0;
+                const card = allCards[0];
+                const marginRight = parseInt(getComputedStyle(card).marginRight) || 0;
+                return card.offsetWidth + marginRight;
+            };
+            
+            function updateDots() {
+                if (isInfinite) {
+                    const realIndex = (currentIndex - cards.length + cards.length) % cards.length;
+                    dots.forEach((dot, i) => {
+                        dot.classList.toggle('active', i === realIndex);
+                    });
+                } else {
+                    dots.forEach((dot, i) => {
+                        dot.classList.toggle('active', i === currentIndex);
+                    });
+                }
+            }
+            
+            function scrollToIndex(index, smooth = true) {
+                const currentCardWidth = getCardWidth();
+                const scrollAmount = index * currentCardWidth;
+                track.scrollTo({
+                    left: scrollAmount,
+                    behavior: smooth ? 'smooth' : 'auto'
+                });
+                currentIndex = index;
+                updateDots();
+                
+                if (!isInfinite && prevBtn && nextBtn) {
+                    prevBtn.style.opacity = currentIndex > 0 ? '1' : '0';
+                    nextBtn.style.opacity = currentIndex < allCards.length - 1 ? '1' : '0';
+                }
+            }
+            
+            if (isInfinite) {
+                track.addEventListener('scroll', () => {
+                    if (isTransitioning) return;
+                    
+                    const currentCardWidth = getCardWidth();
+                    const scrollLeft = track.scrollLeft;
+                    const maxScrollThreshold = (cards.length * 2) * currentCardWidth;
+                    const minScrollThreshold = (cards.length - 1) * currentCardWidth;
+                    
+                    if (scrollLeft >= maxScrollThreshold) {
+                        isTransitioning = true;
+                        const newScrollLeft = scrollLeft - (cards.length * currentCardWidth);
+                        track.scrollTo({
+                            left: newScrollLeft,
+                            behavior: 'auto'
+                        });
+                        currentIndex = Math.round(newScrollLeft / currentCardWidth);
+                        updateDots();
+                        setTimeout(() => { isTransitioning = false; }, 100);
+                    } else if (scrollLeft <= minScrollThreshold) {
+                        isTransitioning = true;
+                        const newScrollLeft = scrollLeft + (cards.length * currentCardWidth);
+                        track.scrollTo({
+                            left: newScrollLeft,
+                            behavior: 'auto'
+                        });
+                        currentIndex = Math.round(newScrollLeft / currentCardWidth);
+                        updateDots();
+                        setTimeout(() => { isTransitioning = false; }, 100);
+                    } else {
+                        currentIndex = Math.round(scrollLeft / currentCardWidth);
+                        updateDots();
+                    }
+                });
+            }
+            
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    if (isInfinite) {
+                        currentIndex--;
+                        scrollToIndex(currentIndex);
+                    } else {
+                        const newIndex = Math.max(0, currentIndex - 1);
+                        scrollToIndex(newIndex);
+                    }
+                });
+            }
+            
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    if (isInfinite) {
+                        currentIndex++;
+                        scrollToIndex(currentIndex);
+                    } else {
+                        const newIndex = Math.min(allCards.length - 1, currentIndex + 1);
+                        scrollToIndex(newIndex);
+                    }
+                });
+            }
+            
+            dots.forEach(dot => {
+                dot.addEventListener('click', () => {
+                    const index = parseInt(dot.getAttribute('data-index'));
+                    if (isInfinite) {
+                        scrollToIndex(index + cards.length);
+                    } else {
+                        scrollToIndex(index);
+                    }
+                });
+            });
+            
+            if (!isInfinite && prevBtn && nextBtn) {
+                prevBtn.style.opacity = '0';
+                nextBtn.style.opacity = '1';
+            } else if (isInfinite && prevBtn && nextBtn) {
+                prevBtn.style.opacity = '1';
+                nextBtn.style.opacity = '1';
+            }
+            
+            console.log(\`✅ Carousel \${carouselId} initialized:\`, {
+                infinite: isInfinite,
+                originalCards: cards.length,
+                totalCards: allCards.length,
+                currentIndex,
+                cardWidth: getCardWidth()
+            });
+        });
+    });
+    </script>
     
     <!-- Script di inizializzazione gallery e counter -->
     <script>
