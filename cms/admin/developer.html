@@ -74,24 +74,117 @@
             border: 1.5px solid rgba(60, 61, 143, 0.12);
         }
         
+        .blocks-template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
         .block-template-card {
-            background: white;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
+            background: var(--bg-white);
+            border: 1.5px solid var(--border-light);
+            border-radius: var(--radius-lg);
             padding: 20px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
         }
         
         .block-template-card:hover {
-            border-color: #6366f1;
-            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.12);
-            transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+        
+        .block-template-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .block-template-icon {
+            font-size: 32px;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-light) 0%, rgba(99, 102, 241, 0.1) 100%);
+            border-radius: 12px;
+        }
+        
+        .block-template-info h3 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        
+        .block-template-info p {
+            margin: 4px 0 0 0;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        
+        .block-template-fields {
+            margin-bottom: 16px;
+        }
+        
+        .block-template-fields-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        
+        .block-template-field-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            background: var(--bg-light);
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            font-size: 11px;
+            color: var(--text-dark);
+            margin: 4px 4px 4px 0;
+        }
+        
+        .block-template-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-block-action {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1.5px solid var(--border-light);
+            background: var(--bg-white);
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
         
         .btn-block-action:hover {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            border-color: #cbd5e1;
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
             transform: translateY(-1px);
+        }
+        
+        .btn-block-action.secondary:hover {
+            background: var(--bg-light);
+            border-color: var(--border);
+            color: var(--text-dark);
         }
     </style>
 </head>
@@ -154,30 +247,31 @@
             </div>
 
             <!-- Blocchi Attuali Section -->
-            <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 2px solid #7dd3fc; border-radius: 16px; padding: 28px; margin-bottom: 32px;">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+            <div class="section" style="margin-bottom: 32px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
                     <div>
-                        <h2 style="margin: 0; font-size: 24px; font-weight: 700; color: #0c4a6e;">
-                            🧩 Blocchi Attuali
+                        <h2 style="margin: 0; font-size: 20px; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 24px;">🧩</span>
+                            Blocchi Template
                         </h2>
-                        <p style="margin: 4px 0 0 0; color: #475569; font-size: 14px;">
-                            Gestisci i tipi di blocchi disponibili nel sistema
+                        <p style="margin: 4px 0 0 0; color: var(--text-light); font-size: 14px;">
+                            Gestisci i template dei blocchi disponibili nel sistema
                         </p>
                     </div>
-                    <button class="btn btn-primary" onclick="refreshBlockTemplates()" style="display: flex; align-items: center; gap: 8px;">
+                    <button class="btn btn-secondary" onclick="refreshBlockTemplates()" style="display: flex; align-items: center; gap: 8px;">
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M1 8C1 8 3 4 8 4C13 4 15 8 15 8C15 8 13 12 8 12C3 12 1 8 1 8Z" stroke="currentColor" stroke-width="1.5"/>
-                            <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M13.65 2.35C12.2 0.9 10.21 0 8 0C3.58 0 0.01 3.58 0.01 8C0.01 12.42 3.58 16 8 16C11.73 16 14.84 13.45 15.73 10H13.65C12.83 12.33 10.61 14 8 14C4.69 14 2 11.31 2 8C2 4.69 4.69 2 8 2C9.66 2 11.14 2.69 12.22 3.78L9 7H16V0L13.65 2.35Z" fill="currentColor"/>
                         </svg>
                         Ricarica
                     </button>
                 </div>
                 
-                <div id="currentBlocksGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px;">
+                <div id="currentBlocksGrid" class="blocks-template-grid">
                     <!-- Blocks will be loaded here -->
-                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #64748b;">
-                        <div style="font-size: 48px; margin-bottom: 12px;">⏳</div>
-                        <p>Caricamento blocchi...</p>
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--text-light);">
+                        <div style="font-size: 64px; margin-bottom: 16px;">⏳</div>
+                        <p style="font-size: 16px; font-weight: 500;">Caricamento blocchi...</p>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -422,7 +516,7 @@
          */
         async function loadBlockTemplates() {
             try {
-                const response = await fetch('/cms/admin/blocks-templates/index.json');
+                const response = await fetch('blocks-templates/index.json');
                 if (!response.ok) throw new Error('Impossibile caricare index.json');
                 
                 const index = await response.json();
@@ -430,7 +524,7 @@
                 // Carica config per ogni blocco
                 const promises = index.blocks.map(async (block) => {
                     try {
-                        const configResponse = await fetch(`/cms/admin/blocks-templates/${block.configPath}`);
+                        const configResponse = await fetch(`blocks-templates/${block.configPath}`);
                         if (!configResponse.ok) throw new Error(`Config non trovato per ${block.type}`);
                         
                         const config = await configResponse.json();
@@ -469,57 +563,48 @@
             
             if (blockTemplates.length === 0) {
                 grid.innerHTML = `
-                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #64748b;">
-                        <div style="font-size: 48px; margin-bottom: 12px;">📦</div>
-                        <p>Nessun blocco trovato</p>
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--text-light);">
+                        <div style="font-size: 64px; margin-bottom: 16px;">📦</div>
+                        <p style="font-size: 16px; font-weight: 500;">Nessun blocco template trovato</p>
                     </div>
                 `;
                 return;
             }
             
             grid.innerHTML = blockTemplates.map(block => `
-                <div class="block-template-card" data-type="${block.type}">
-                    <div style="display: flex; align-items: start; justify-content: space-between; margin-bottom: 16px;">
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <div style="font-size: 32px;">${block.config.icon || '📦'}</div>
-                            <div>
-                                <div style="font-weight: 700; font-size: 16px; color: #1e293b; margin-bottom: 4px;" id="blockName_${block.type}">
-                                    ${block.config.name}
-                                </div>
-                                <div style="font-size: 11px; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
-                                    Type: ${block.type}
-                                </div>
-                            </div>
+                <div class="block-template-card">
+                    <div class="block-template-header">
+                        <div class="block-template-icon">${block.config.icon || '📦'}</div>
+                        <div class="block-template-info">
+                            <h3 id="blockName_${block.type}">${block.config.name}</h3>
+                            <p>v${block.config.version} • ${block.type}</p>
                         </div>
-                        <span style="background: linear-gradient(135deg, #10b981 0%, #22c55e 100%); color: white; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700;">
-                            v${block.config.version}
-                        </span>
                     </div>
                     
-                    <p style="font-size: 13px; color: #64748b; margin-bottom: 16px; line-height: 1.5;">
+                    <p style="font-size: 13px; color: var(--text-light); margin-bottom: 16px; line-height: 1.6;">
                         ${block.config.description}
                     </p>
                     
-                    <div style="display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;">
-                        ${block.config.fields.map(field => `
-                            <span style="background: #f1f5f9; color: #475569; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">
-                                ${field.label}
-                            </span>
-                        `).join('')}
+                    <div class="block-template-fields">
+                        <div class="block-template-fields-title">${block.config.fields.length} Campi</div>
+                        <div>
+                            ${block.config.fields.slice(0, 4).map(field => `
+                                <span class="block-template-field-tag">${field.label}</span>
+                            `).join('')}
+                            ${block.config.fields.length > 4 ? `<span class="block-template-field-tag">+${block.config.fields.length - 4}</span>` : ''}
+                        </div>
                     </div>
                     
-                    <div style="border-top: 1px solid #e2e8f0; padding-top: 12px; display: flex; gap: 8px;">
-                        <button class="btn-block-action" onclick="editBlockName('${block.type}')" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 12px; background: white; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 12px; font-weight: 600; color: #475569; cursor: pointer; transition: all 0.2s;">
+                    <div class="block-template-actions">
+                        <button class="btn-block-action" onclick="editBlockName('${block.type}')">
                             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M11.334 2.00004C11.5091 1.82494 11.7169 1.68605 11.9457 1.59129C12.1745 1.49653 12.4197 1.44775 12.6673 1.44775C12.9149 1.44775 13.1601 1.49653 13.3889 1.59129C13.6177 1.68605 13.8256 1.82494 14.0007 2.00004C14.1757 2.17513 14.3146 2.383 14.4094 2.61178C14.5042 2.84055 14.5529 3.08575 14.5529 3.33337C14.5529 3.58099 14.5042 3.82619 14.4094 4.05497C14.3146 4.28374 14.1757 4.49161 14.0007 4.66671L5.00065 13.6667L1.33398 14.6667L2.33398 11L11.334 2.00004Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                             Rinomina
                         </button>
-                        <button class="btn-block-action" onclick="viewBlockFiles('${block.type}')" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 12px; background: white; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 12px; font-weight: 600; color: #475569; cursor: pointer; transition: all 0.2s;">
+                        <button class="btn-block-action secondary" onclick="viewBlockFiles('${block.type}')">
                             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M6.66667 2H2.66667C2.29848 2 2 2.29848 2 2.66667V13.3333C2 13.7015 2.29848 14 2.66667 14H13.3333C13.7015 14 14 13.7015 14 13.3333V9.33333" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                                <path d="M9.33333 2H14V6.66667" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M6.66667 9.33333L14 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M14 2H8.66667L6.66667 0H2C0.89543 0 0 0.89543 0 2V14C0 15.1046 0.89543 16 2 16H14C15.1046 16 16 15.1046 16 14V4C16 2.89543 15.1046 2 14 2Z" fill="currentColor"/>
                             </svg>
                             File
                         </button>
