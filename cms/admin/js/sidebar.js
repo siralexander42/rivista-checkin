@@ -55,9 +55,9 @@ function applySidebarOrder() {
             else if (href === 'statistiche.html') itemId = 'statistiche';
             else if (href === 'permissions.html') itemId = 'permissions';
             else if (href === 'logs.html') itemId = 'logs';
+            else if (href === 'adv.html') itemId = 'adv';
             else if (id === 'usersNavItem') itemId = 'users';
             else if (id === 'devModeNavItem') itemId = 'developer';
-            else if (id === 'advNavItem') itemId = 'adv';
             
             if (itemId) {
                 itemsMap[itemId] = item;
