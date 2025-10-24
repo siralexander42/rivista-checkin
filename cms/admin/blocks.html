@@ -2408,7 +2408,8 @@
          */
         function getMagazineId() {
             const params = new URLSearchParams(window.location.search);
-            return params.get('id');
+            // Cerca sia 'magazine' che 'id' per retrocompatibilità
+            return params.get('magazine') || params.get('id');
         }
         
         /**
