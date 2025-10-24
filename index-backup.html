@@ -833,11 +833,139 @@
 
     <!-- JavaScript -->
     <script src="assets/js/loading.js"></script>
-    <script src="anssets/js/rss-loader.js"></script>
+    <script src="assets/js/rss-loader.js"></script>
     <script src="assets/js/main.js"></script>
     <script src="assets/js/carnival.js"></script>
     <script src="assets/js/cremona-scroll.js"></script>
     <script src="assets/js/movement.js"></script>
     <script src="assets/js/sommario-floating.js"></script>
+    
+    <!-- SPLIT-FLAP EFFECT INLINE -->
+    <script>
+    (function() {
+        'use strict';
+        
+        console.log('🚀 SPLIT-FLAP INLINE LOADING...');
+
+        class SplitFlapEffect {
+            constructor() {
+                this.sections = Array.from(document.querySelectorAll('section'));
+                this.currentSection = null;
+                console.log('📚 Found', this.sections.length, 'sections total');
+                this.init();
+            }
+
+            init() {
+                console.log('✈️ Split-Flap Effect - INITIALIZING');
+                
+                // TEST IMMEDIATO dopo 3 secondi
+                setTimeout(() => {
+                    const testSection = this.sections.find(s => 
+                        !s.classList.contains('hero-simple') && 
+                        !s.classList.contains('cremona-scroll-section')
+                    );
+                    if (testSection) {
+                        console.log('🧪 TEST: Applying flip to', testSection.className);
+                        testSection.classList.add('flipped');
+                    }
+                }, 3000);
+                
+                // Listener scroll
+                let scrollEndTimeout;
+                window.addEventListener('scroll', () => {
+                    clearTimeout(scrollEndTimeout);
+                    scrollEndTimeout = setTimeout(() => {
+                        this.triggerFlipOnCurrentSection();
+                    }, 150);
+                }, { passive: true });
+                
+                console.log('✅ Listeners attached');
+            }
+
+            triggerFlipOnCurrentSection() {
+                const windowHeight = window.innerHeight;
+                const windowCenter = windowHeight / 2;
+                
+                let closestSection = null;
+                let minDistance = Infinity;
+                
+                this.sections.forEach(section => {
+                    if (section.classList.contains('hero-simple') || 
+                        section.classList.contains('cremona-scroll-section')) {
+                        return;
+                    }
+
+                    const rect = section.getBoundingClientRect();
+                    const sectionCenter = rect.top + (rect.height / 2);
+                    const distance = Math.abs(sectionCenter - windowCenter);
+                    
+                    if (distance < minDistance && rect.top < windowHeight && rect.bottom > 0) {
+                        minDistance = distance;
+                        closestSection = section;
+                    }
+                });
+                
+                if (closestSection && closestSection !== this.currentSection) {
+                    const sectionId = closestSection.id || closestSection.className.split(' ')[0];
+                    console.log('📖 FLIP TRIGGERED!', sectionId, 'distance:', minDistance.toFixed(0));
+                    
+                    if (this.currentSection) {
+                        this.currentSection.classList.remove('flipped');
+                    }
+                    
+                    closestSection.classList.remove('flipped');
+                    void closestSection.offsetWidth;
+                    closestSection.classList.add('flipped');
+                    
+                    this.currentSection = closestSection;
+                }
+            }
+        }
+
+        function initFlip() {
+            console.log('🎬 Document ready, creating SplitFlapEffect...');
+            new SplitFlapEffect();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initFlip);
+        } else {
+            initFlip();
+        }
+    })();
+    </script>
 </body>
 </html>
+<script>
+// EFFETTO FLIP SEMPLICE
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('📖 Flip Effect Ready');
+    
+    function triggerFlip() {
+        const sections = document.querySelectorAll('section:not(.hero-simple):not(.cremona-scroll-section)');
+        
+        sections.forEach(section => {
+            const rect = section.getBoundingClientRect();
+            const isInCenter = rect.top >= -100 && rect.top <= 100;
+            
+            if (isInCenter) {
+                console.log('✨ FLIP:', section.id || section.className);
+                section.classList.add('flipped');
+                
+                setTimeout(() => section.classList.remove('flipped'), 700);
+            }
+        });
+    }
+    
+    // Trigger dopo scroll
+    window.addEventListener('scroll', function() {
+        setTimeout(triggerFlip, 100);
+    });
+    
+    // Trigger iniziale
+    setTimeout(triggerFlip, 1000);
+});
+</script>
+</body>
+</html>
+</body>
