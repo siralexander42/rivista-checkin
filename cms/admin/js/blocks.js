@@ -412,7 +412,7 @@ https://esempio.com/bg4.jpg" oninput="updateBlockPreview()">${(data.images || []
                 <div class="form-section">
                 <h4 style="margin-bottom: 16px;">🖼️ Gallery Story - Blocco Completo con Stats, Citazioni e Immagini</h4>
                 <p style="color: var(--text-light); margin-bottom: 24px; line-height: 1.6;">
-                    Blocco ricco che combina testo, statistiche animate, citazioni, features list e galleria immagini.
+                    Blocco ricco che combina testo, statistiche animate, citazioni, features list e galleria immagini scrollabili.
                 </p>
                 
                 <div class="form-group">
@@ -423,19 +423,19 @@ https://esempio.com/bg4.jpg" oninput="updateBlockPreview()">${(data.images || []
                 
                 <div class="form-group">
                     <label for="title">Titolo Principale *</label>
-                    <input type="text" id="title" required value="${data.title || ''}" placeholder="Repubblica Ceca:\\nLa magia del Natale" oninput="updateGalleryPreview()">
-                    <small>Usa \\n per andare a capo</small>
+                    <input type="text" id="title" required value="${data.title || ''}" placeholder="Repubblica Ceca: La magia del Natale" oninput="updateGalleryPreview()">
+                    <small>Usa <br> per andare a capo nel titolo</small>
                 </div>
                 
                 <div class="form-group">
                     <label for="intro">Sommario/Lead Text *</label>
-                    <textarea id="intro" rows="4" required placeholder="Praga si trasforma in un villaggio incantato..." oninput="updateGalleryPreview()">${data.intro || ''}</textarea>
+                    <textarea id="intro" rows="4" required placeholder="Praga si trasforma in un villaggio incantato quando arriva novembre. I mercatini natalizi illuminano le strade medievali..." oninput="updateGalleryPreview()">${data.intro || ''}</textarea>
                 </div>
                 
                 <div class="form-group">
                     <label>
                         <input type="checkbox" id="showStats" ${data.showStats !== false ? 'checked' : ''} onchange="toggleStatsFields(); updateGalleryPreview()">
-                        Mostra Statistiche/Numbers Animate
+                        📊 Mostra Statistiche/Numbers Animate
                     </label>
                 </div>
                 
@@ -471,7 +471,7 @@ https://esempio.com/bg4.jpg" oninput="updateBlockPreview()">${(data.images || []
                 <div class="form-group">
                     <label>
                         <input type="checkbox" id="showQuote" ${data.showQuote ? 'checked' : ''} onchange="toggleQuoteFields(); updateGalleryPreview()">
-                        Mostra Citazione
+                        💬 Mostra Citazione
                     </label>
                 </div>
                 
@@ -489,32 +489,34 @@ https://esempio.com/bg4.jpg" oninput="updateBlockPreview()">${(data.images || []
                 <div class="form-group">
                     <label>
                         <input type="checkbox" id="showFeatures" ${data.showFeatures ? 'checked' : ''} onchange="toggleFeaturesFields(); updateGalleryPreview()">
-                        Mostra Elenco Puntato
+                        ✓ Mostra Elenco Puntato
                     </label>
                 </div>
                 
                 <div id="featuresFields" style="display: ${data.showFeatures ? 'block' : 'none'}; margin-left: 24px; padding: 16px; background: rgba(99, 102, 241, 0.05); border-radius: 8px; border-left: 3px solid var(--primary);">
                     <div class="form-group">
                         <label for="features">Voci Elenco (una per riga)</label>
-                        <textarea id="features" rows="5" placeholder="Suite storiche restaurate\\nSpa con trattamenti esclusivi\\nRistorante gourmet\\nGiardini all'italiana" oninput="updateGalleryPreview()">${(data.features || []).join('\\n')}</textarea>
+                        <textarea id="features" rows="5" placeholder="Suite storiche restaurate\nSpa con trattamenti esclusivi\nRistorante gourmet\nGiardini all'italiana" oninput="updateGalleryPreview()">${(data.features || []).join('\n')}</textarea>
                         <small>Ogni riga sarà una voce dell'elenco con checkmark ✓</small>
                     </div>
                 </div>
                 
-                <div class="form-group">
-                    <label for="images">URL Immagini Gallery (una per riga) *</label>
-                    <textarea id="images" rows="6" required placeholder="https://esempio.com/img1.jpg\\nhttps://esempio.com/img2.jpg\\nhttps://esempio.com/img3.jpg" oninput="updateGalleryPreview()">${(data.images || []).join('\\n')}</textarea>
-                    <small>Inserisci almeno 3 immagini. Gli utenti potranno scorrere tra di esse</small>
+                <h4 style="margin: 32px 0 16px 0; padding-top: 24px; border-top: 2px solid rgba(99, 102, 241, 0.2);">📸 Galleria Immagini</h4>
+                
+                <div id="galleryImagesList">
+                    ${generateGalleryImagesFields(data.galleryImages || [])}
                 </div>
                 
-                <div class="form-group">
-                    <label for="imageCaptions">Didascalie Immagini (una per riga, opzionale)</label>
-                    <textarea id="imageCaptions" rows="6" placeholder="Praga: la magia del Natale\\nBrno: seconda città\\nCesky Krumlov" oninput="updateGalleryPreview()">${(data.imageCaptions || []).join('\\n')}</textarea>
-                    <small>Una didascalia per ogni immagine (stesso ordine)</small>
-                </div>
+                <button type="button" onclick="addGalleryImage()" class="btn btn-secondary" style="margin-top: 12px;">
+                    <svg style="width: 14px; height: 14px;" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 50 50"><path d="M 25 2 C 24.730469 2 24.476563 2.105469 24.292969 2.292969 L 2.292969 24.292969 C 1.90625 24.679688 1.90625 25.320313 2.292969 25.707031 L 24.292969 47.707031 C 24.683594 48.097656 25.316406 48.097656 25.707031 47.707031 L 47.707031 25.707031 C 48.097656 25.316406 48.097656 24.683594 47.707031 24.292969 L 25.707031 2.292969 C 25.523438 2.105469 25.269531 2 25 2 Z M 25 4.414063 L 45.585938 25 L 25 45.585938 L 4.414063 25 Z M 24 16 L 24 26 L 14 26 L 14 28 L 24 28 L 24 38 L 26 38 L 26 28 L 36 28 L 36 26 L 26 26 L 26 16 Z"/></svg>
+                    Aggiungi Immagine
+                </button>
+                <small style="display: block; margin-top: 8px; color: var(--text-light);">Inserisci almeno 3 immagini con didascalie</small>
+                
+                <h4 style="margin: 32px 0 16px 0; padding-top: 24px; border-top: 2px solid rgba(99, 102, 241, 0.2);">🔗 Call to Action</h4>
                 
                 <div class="form-group">
-                    <label for="ctaText">Testo Bottone CTA *</label>
+                    <label for="ctaText">Testo Bottone *</label>
                     <input type="text" id="ctaText" required value="${data.ctaText || ''}" placeholder="Leggi la storia completa →" oninput="updateGalleryPreview()">
                 </div>
                 
@@ -527,13 +529,6 @@ https://esempio.com/bg4.jpg" oninput="updateBlockPreview()">${(data.images || []
                     <label for="summaryTitle">📋 Titolo per il Sommario *</label>
                     <input type="text" id="summaryTitle" required value="${data.summaryTitle || ''}" placeholder="Repubblica Ceca: la magia del Natale">
                     <small>Questo titolo apparirà nella lista del sommario della rivista</small>
-                </div>
-                
-                <div class="form-group">
-                    <label>
-                        <input type="checkbox" id="darkMode" ${data.darkMode ? 'checked' : ''} onchange="updateGalleryPreview()">
-                        Modalità Scura (sfondo nero)
-                    </label>
                 </div>
             </div>
             <div id="blockPreview" style="position: relative;">
@@ -726,18 +721,14 @@ async function handleBlockFormSubmit(e) {
     
     // Gallery: converti textarea in array e raccogli tutti i dati
     if (type === 'gallery') {
-        const imagesText = document.getElementById('images').value;
-        blockData.images = imagesText.split('\n').filter(url => url.trim());
-        
-        const captionsText = document.getElementById('imageCaptions')?.value || '';
-        blockData.imageCaptions = captionsText.split('\n').filter(cap => cap.trim());
+        // Raccogli immagini con didascalie
+        blockData.galleryImages = collectGalleryImagesData();
         
         blockData.tag = document.getElementById('tag')?.value || '';
         blockData.intro = document.getElementById('intro')?.value || '';
         blockData.summaryTitle = document.getElementById('summaryTitle')?.value || '';
         blockData.ctaText = document.getElementById('ctaText')?.value || '';
         blockData.ctaLink = document.getElementById('ctaLink')?.value || '';
-        blockData.darkMode = document.getElementById('darkMode')?.checked || false;
         
         // Stats
         blockData.showStats = document.getElementById('showStats')?.checked !== false;
@@ -768,8 +759,15 @@ async function handleBlockFormSubmit(e) {
             blockData.features = featuresText.split('\n').filter(f => f.trim());
         }
         
+        // Validazione
+        if (blockData.galleryImages.length < 3) {
+            alert('⚠️ Inserisci almeno 3 immagini nella galleria!');
+            return;
+        }
+        
         delete blockData.image;
         delete blockData.content;
+        delete blockData.images;
     }
     
     // Fluid: gestisci blocchi multipli con immagini
@@ -1738,3 +1736,160 @@ function updateGalleryPreview() {
     console.log("Gallery preview update");
 }
 
+// Genera campi per le immagini della gallery
+function generateGalleryImagesFields(images = []) {
+    if (images.length === 0) {
+        return '<p style="color: #94a3b8; font-size: 14px; padding: 20px; text-align: center; background: rgba(148, 163, 184, 0.1); border-radius: 8px;">Nessuna immagine. Clicca "Aggiungi Immagine"</p>';
+    }
+    
+    return images.map((img, index) => `
+        <div class="gallery-image-field" draggable="true" style="background: var(--bg-gradient-light); border-radius: 12px; margin-bottom: 16px; border: 1px solid rgba(51, 51, 130, 0.1); cursor: move;">
+            <div class="gallery-image-header" onclick="toggleGalleryImage(this)" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; cursor: pointer; user-select: none;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span class="drag-handle" style="cursor: grab; color: var(--text-light);">⠿</span>
+                    <strong style="color: var(--primary); font-size: 14px;">📸 Immagine ${index + 1}</strong>
+                    <span class="gallery-image-preview" style="color: var(--text-light); font-size: 12px; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${img.caption || 'Senza didascalia'}...</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span class="toggle-icon" style="transition: transform 0.3s; color: var(--primary);">▼</span>
+                    <button type="button" 
+                            onclick="event.stopPropagation(); removeGalleryImage(this)" 
+                            class="btn btn-sm btn-danger" style="padding: 4px 8px;">
+                        <svg style="width: 14px; height: 14px;" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 30 30"><path d="M 13 3 A 1.0001 1.0001 0 0 0 11.986328 4 L 6 4 A 1.0001 1.0001 0 1 0 6 6 L 24 6 A 1.0001 1.0001 0 1 0 24 4 L 18.013672 4 A 1.0001 1.0001 0 0 0 17 3 L 13 3 z M 6 8 L 6 24 C 6 25.105 6.895 26 8 26 L 22 26 C 23.105 26 24 25.105 24 24 L 24 8 L 6 8 z"/></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="gallery-image-content" style="padding: 0 20px 20px; display: block;">
+            
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label style="font-size: 13px; font-weight: 600;">URL Immagine *</label>
+                <input type="url" 
+                       class="gallery-image-url" 
+                       placeholder="https://esempio.com/immagine.jpg" 
+                       value="${img.url || ''}" 
+                       style="width: 100%;"
+                       oninput="updateGalleryPreview()">
+            </div>
+            
+            <div class="form-group">
+                <label style="font-size: 13px; font-weight: 600;">Didascalia</label>
+                <input type="text" 
+                       class="gallery-image-caption" 
+                       placeholder="Praga: la magia del Natale" 
+                       value="${img.caption || ''}" 
+                       style="width: 100%;"
+                       oninput="updateGalleryPreview()">
+                <small>Questa didascalia apparirà sotto l'immagine</small>
+            </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Toggle espansione immagine gallery
+function toggleGalleryImage(header) {
+    const content = header.nextElementSibling;
+    const icon = header.querySelector('.toggle-icon');
+    
+    if (content.style.display === 'none') {
+        content.style.display = 'block';
+        icon.style.transform = 'rotate(0deg)';
+    } else {
+        content.style.display = 'none';
+        icon.style.transform = 'rotate(-90deg)';
+    }
+}
+
+// Aggiungi immagine gallery
+function addGalleryImage() {
+    const container = document.getElementById('galleryImagesList');
+    const currentContent = container.innerHTML;
+    
+    // Rimuovi messaggio "Nessuna immagine" se presente
+    if (currentContent.includes('Nessuna immagine')) {
+        container.innerHTML = '';
+    }
+    
+    const index = container.children.length;
+    const newImage = document.createElement('div');
+    newImage.className = 'gallery-image-field';
+    newImage.draggable = true;
+    newImage.style.cssText = 'background: var(--bg-gradient-light); border-radius: 12px; margin-bottom: 16px; border: 1px solid rgba(51, 51, 130, 0.1); cursor: move;';
+    
+    newImage.innerHTML = `
+        <div class="gallery-image-header" onclick="toggleGalleryImage(this)" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; cursor: pointer; user-select: none;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <span class="drag-handle" style="cursor: grab; color: var(--text-light);">⠿</span>
+                <strong style="color: var(--primary); font-size: 14px;">📸 Immagine ${index + 1}</strong>
+                <span class="gallery-image-preview" style="color: var(--text-light); font-size: 12px;">Nuova immagine...</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="toggle-icon" style="transition: transform 0.3s; color: var(--primary);">▼</span>
+                <button type="button" 
+                        onclick="event.stopPropagation(); removeGalleryImage(this)" 
+                        class="btn btn-sm btn-danger" style="padding: 4px 8px;">
+                    <svg style="width: 14px; height: 14px;" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 30 30"><path d="M 13 3 A 1.0001 1.0001 0 0 0 11.986328 4 L 6 4 A 1.0001 1.0001 0 1 0 6 6 L 24 6 A 1.0001 1.0001 0 1 0 24 4 L 18.013672 4 A 1.0001 1.0001 0 0 0 17 3 L 13 3 z M 6 8 L 6 24 C 6 25.105 6.895 26 8 26 L 22 26 C 23.105 26 24 25.105 24 24 L 24 8 L 6 8 z"/></svg>
+                </button>
+            </div>
+        </div>
+        <div class="gallery-image-content" style="padding: 0 20px 20px; display: block;">
+        
+        <div class="form-group" style="margin-bottom: 12px;">
+            <label style="font-size: 13px; font-weight: 600;">URL Immagine *</label>
+            <input type="url" 
+                   class="gallery-image-url" 
+                   placeholder="https://esempio.com/immagine.jpg" 
+                   value="" 
+                   style="width: 100%;"
+                   oninput="updateGalleryPreview()">
+        </div>
+        
+        <div class="form-group">
+            <label style="font-size: 13px; font-weight: 600;">Didascalia</label>
+            <input type="text" 
+                   class="gallery-image-caption" 
+                   placeholder="Praga: la magia del Natale" 
+                   value="" 
+                   style="width: 100%;"
+                   oninput="updateGalleryPreview()">
+            <small>Questa didascalia apparirà sotto l'immagine</small>
+        </div>
+        </div>
+    `;
+    
+    container.appendChild(newImage);
+    updateGalleryPreview();
+}
+
+// Rimuovi immagine gallery
+function removeGalleryImage(button) {
+    const field = button.closest('.gallery-image-field');
+    field.remove();
+    updateGalleryPreview();
+    
+    // Se non ci sono più immagini, mostra il messaggio
+    const container = document.getElementById('galleryImagesList');
+    if (container.children.length === 0) {
+        container.innerHTML = '<p style="color: #94a3b8; font-size: 14px; padding: 20px; text-align: center; background: rgba(148, 163, 184, 0.1); border-radius: 8px;">Nessuna immagine. Clicca "Aggiungi Immagine"</p>';
+    }
+}
+
+// Raccogli dati delle immagini gallery
+function collectGalleryImagesData() {
+    const fields = document.querySelectorAll('.gallery-image-field');
+    const images = [];
+    
+    fields.forEach((field) => {
+        const url = field.querySelector('.gallery-image-url')?.value.trim();
+        const caption = field.querySelector('.gallery-image-caption')?.value.trim();
+        
+        if (url) {
+            images.push({
+                url,
+                caption: caption || ''
+            });
+        }
+    });
+    
+    return images;
+}
