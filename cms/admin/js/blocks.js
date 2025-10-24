@@ -914,6 +914,19 @@ async function handleBlockFormSubmit(e) {
             alert('✅ Blocco aggiunto!');
         }
         
+        // 🔄 RIGENERA AUTOMATICAMENTE L'HTML DOPO OGNI SALVATAGGIO
+        console.log('🔄 Rigenerazione automatica HTML...');
+        try {
+            await fetch(`https://rivista-checkin.onrender.com/api/admin/magazines/${magazineId}/generate-html`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            console.log('✅ HTML rigenerato automaticamente');
+        } catch (regenError) {
+            console.error('⚠️ Errore rigenerazione HTML:', regenError);
+            // Non bloccare il flusso se la rigenerazione fallisce
+        }
+        
         closeEditBlockModal();
         loadMagazine();
     } catch (error) {
@@ -939,6 +952,14 @@ async function toggleBlockVisibility(blockId) {
             body: JSON.stringify({ visible: !block.visible })
         });
         
+        // 🔄 RIGENERA HTML dopo modifica visibilità
+        try {
+            await fetch(`https://rivista-checkin.onrender.com/api/admin/magazines/${magazineId}/generate-html`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+        } catch (e) { console.error('⚠️ Errore rigenerazione:', e); }
+        
         loadMagazine();
     } catch (error) {
         console.error('Errore toggle visibilità:', error);
@@ -954,6 +975,14 @@ async function deleteBlock(blockId) {
         await apiRequest(`/admin/magazines/${magazineId}/blocks/${blockId}`, {
             method: 'DELETE'
         });
+        
+        // 🔄 RIGENERA HTML dopo eliminazione
+        try {
+            await fetch(`https://rivista-checkin.onrender.com/api/admin/magazines/${magazineId}/generate-html`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+        } catch (e) { console.error('⚠️ Errore rigenerazione:', e); }
         
         alert('✅ Blocco eliminato!');
         loadMagazine();
@@ -1035,6 +1064,15 @@ async function updateBlocksOrder() {
             method: 'PUT',
             body: JSON.stringify({ blocks: newOrder })
         });
+        
+        // 🔄 RIGENERA HTML dopo riordino
+        try {
+            await fetch(`https://rivista-checkin.onrender.com/api/admin/magazines/${magazineId}/generate-html`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+        } catch (e) { console.error('⚠️ Errore rigenerazione:', e); }
+        
     } catch (error) {
         console.error('Errore riordinamento:', error);
     }
