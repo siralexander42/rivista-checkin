@@ -434,12 +434,12 @@ https://esempio.com/bg4.jpg" oninput="updateBlockPreview()">${(data.images || []
                 
                 <div class="form-group">
                     <label>
-                        <input type="checkbox" id="showStats" ${data.showStats !== false ? 'checked' : ''} onchange="toggleStatsFields(); updateGalleryPreview()">
+                        <input type="checkbox" id="showStats" ${data.showStats ? 'checked' : ''} onchange="toggleStatsFields(); updateGalleryPreview()">
                         📊 Mostra Statistiche/Numbers Animate
                     </label>
                 </div>
                 
-                <div id="statsFields" style="display: ${data.showStats !== false ? 'block' : 'none'}; margin-left: 24px; padding: 16px; background: rgba(99, 102, 241, 0.05); border-radius: 8px; border-left: 3px solid var(--primary);">
+                <div id="statsFields" style="display: ${data.showStats ? 'block' : 'none'}; margin-left: 24px; padding: 16px; background: rgba(99, 102, 241, 0.05); border-radius: 8px; border-left: 3px solid var(--primary);">
                     <div class="form-group">
                         <label for="stat1Number">Statistica 1 - Numero</label>
                         <input type="text" id="stat1Number" value="${data.stats?.[0]?.number || ''}" placeholder="150+" oninput="updateGalleryPreview()">
@@ -1765,11 +1765,18 @@ function generateGalleryImagesFields(images = []) {
                 <label style="font-size: 13px; font-weight: 600;">URL Immagine *</label>
                 <input type="url" 
                        class="gallery-image-url" 
+                       id="galleryImage${index}"
                        placeholder="https://esempio.com/immagine.jpg" 
                        value="${img.url || ''}" 
                        style="width: 100%;"
-                       oninput="updateGalleryPreview()">
+                       oninput="updateGalleryPreview(); initGalleryImageCropperByElement(this)">
             </div>
+            
+            <div class="form-group">
+                <div id="galleryCropper${index}"></div>
+            </div>
+            
+            <input type="hidden" class="gallery-crop-data" value='${JSON.stringify(img.cropData || {})}'>
             
             <div class="form-group">
                 <label style="font-size: 13px; font-weight: 600;">Didascalia</label>
@@ -1838,7 +1845,24 @@ function addGalleryImage() {
             <label style="font-size: 13px; font-weight: 600;">URL Immagine *</label>
             <input type="url" 
                    class="gallery-image-url" 
+                   id="galleryImage${index}"
                    placeholder="https://esempio.com/immagine.jpg" 
+                   value="" 
+                   style="width: 100%;"
+                   oninput="updateGalleryPreview(); initGalleryImageCropperByElement(this)">
+        </div>
+        
+        <div class="form-group">
+            <div id="galleryCropper${index}"></div>
+        </div>
+        
+        <input type="hidden" class="gallery-crop-data" value='{}'>
+        
+        <div class="form-group">
+            <label style="font-size: 13px; font-weight: 600;">Didascalia</label>
+            <input type="text" 
+                   class="gallery-image-caption" 
+                   placeholder="Praga: la magia del Natale" 
                    value="" 
                    style="width: 100%;"
                    oninput="updateGalleryPreview()">
@@ -1864,6 +1888,18 @@ function addGalleryImage() {
 // Rimuovi immagine gallery
 function removeGalleryImage(button) {
     const field = button.closest('.gallery-image-field');
+    
+    // Trova l'indice e distruggi il cropper se esiste
+    const imageInput = field.querySelector('.gallery-image-url');
+    if (imageInput && imageInput.id) {
+        const index = imageInput.id.replace('galleryImage', '');
+        if (window.galleryCroppers && window.galleryCroppers[index]) {
+            console.log('Distruggo gallery cropper index:', index);
+            window.galleryCroppers[index].destroy();
+            delete window.galleryCroppers[index];
+        }
+    }
+    
     field.remove();
     updateGalleryPreview();
     
@@ -1882,14 +1918,97 @@ function collectGalleryImagesData() {
     fields.forEach((field) => {
         const url = field.querySelector('.gallery-image-url')?.value.trim();
         const caption = field.querySelector('.gallery-image-caption')?.value.trim();
+        const cropDataInput = field.querySelector('.gallery-crop-data');
+        
+        let cropData = {};
+        try {
+            cropData = cropDataInput ? JSON.parse(cropDataInput.value) : {};
+        } catch (e) {}
         
         if (url) {
             images.push({
                 url,
-                caption: caption || ''
+                caption: caption || '',
+                cropData
             });
         }
     });
     
     return images;
+}
+
+// Inizializza cropper per immagine gallery usando l'elemento input
+function initGalleryImageCropperByElement(inputElement) {
+    if (!inputElement) return;
+    
+    const index = inputElement.id.replace('galleryImage', '');
+    const cropperContainer = document.getElementById(`galleryCropper${index}`);
+    
+    console.log('initGalleryImageCropperByElement per index:', index);
+    console.log('inputElement:', inputElement);
+    console.log('cropperContainer:', cropperContainer);
+    
+    if (!inputElement || !cropperContainer) {
+        console.warn('Elementi non trovati per gallery image index:', index);
+        return;
+    }
+    
+    const imageUrl = inputElement.value.trim();
+    console.log('Gallery imageUrl:', imageUrl);
+    
+    if (!imageUrl || !(imageUrl.startsWith('http://') || imageUrl.startsWith('https://'))) {
+        cropperContainer.innerHTML = '';
+        return;
+    }
+    
+    // Recupera crop data esistente se presente
+    const cropDataInput = inputElement.closest('.gallery-image-content').querySelector('.gallery-crop-data');
+    
+    console.log('Gallery cropDataInput trovato:', cropDataInput);
+    console.log('Gallery cropDataInput value:', cropDataInput?.value);
+    
+    let existingCropData = {};
+    try {
+        existingCropData = cropDataInput ? JSON.parse(cropDataInput.value) : {};
+    } catch (e) {}
+    
+    console.log('Creazione gallery cropper per:', imageUrl);
+    console.log('Existing crop data:', existingCropData);
+    
+    // Distruggi cropper esistente
+    if (window.galleryCroppers && window.galleryCroppers[index]) {
+        window.galleryCroppers[index].destroy();
+        delete window.galleryCroppers[index];
+    }
+    
+    // Inizializza array se non esiste
+    if (!window.galleryCroppers) {
+        window.galleryCroppers = {};
+    }
+    
+    // Crea nuovo cropper con riferimento esplicito al cropDataInput
+    setTimeout(() => {
+        // Cattura il riferimento in una variabile locale per evitare problemi di closure
+        const targetCropDataInput = cropDataInput;
+        
+        window.galleryCroppers[index] = new ImageCropper(`galleryCropper${index}`, {
+            imageUrl: imageUrl,
+            aspectRatio: 16/9,
+            cropData: existingCropData,
+            onChange: (cropData) => {
+                console.log(`onChange chiamato per gallery cropper ${index}`, cropData);
+                console.log('targetCropDataInput:', targetCropDataInput);
+                
+                // Aggiorna hidden input con crop data
+                if (targetCropDataInput) {
+                    console.log('Aggiornamento cropData per gallery image index', index);
+                    targetCropDataInput.value = JSON.stringify(cropData);
+                    console.log('Nuovo valore:', targetCropDataInput.value);
+                } else {
+                    console.error('cropDataInput non trovato per gallery image index', index);
+                }
+            }
+        });
+        console.log('Gallery cropper creato per index:', index);
+    }, 200);
 }
