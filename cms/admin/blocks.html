@@ -280,7 +280,7 @@
     <script src="js/auth.js?v=2.0"></script>
     <script src="js/api.js?v=2.0"></script>
     <script src="js/image-cropper.js?v=2.0"></script>
-    <script src="js/blocks.js?v=8.0"></script>
+    <script src="js/blocks.js?v=9.0"></script>
     
     <style>
         /* Blocks Page Styles */
@@ -1077,9 +1077,15 @@
         }
         
         /* Anteprima preview sticky */
+        #blockPreview {
+            max-width: 350px;
+            width: 100%;
+        }
+        
         #blockPreview > div {
             position: sticky;
             top: 20px;
+            max-width: 100%;
         }
         
         #blockPreview iframe {

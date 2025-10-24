@@ -197,12 +197,14 @@ function getBlockTypeName(type) {
 function getBlockMeta(block) {
     const parts = [];
     
-    // Helper per icone SVG inline
+    // Helper per icone SVG colorate inline (mini versione delle icone del modal)
+    const icon = (svg, gradient) => `<span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:6px;background:${gradient};margin-right:6px;flex-shrink:0">${svg}</span>`;
+    
     const icons = {
-        sommario: '<svg style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:2px" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="5" width="18" height="14" rx="2" stroke-width="1.5"/><line x1="7" y1="9" x2="17" y2="9" stroke-width="1.5"/><line x1="7" y1="13" x2="17" y2="13" stroke-width="1.5"/><line x1="7" y1="17" x2="12" y2="17" stroke-width="1.5"/></svg>',
-        image: '<svg style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:2px" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="1.5" stroke-width="1.5"/><path d="M21 15L16 10L5 21" stroke-width="1.5"/></svg>',
-        box: '<svg style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:2px" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2" stroke-width="1.5"/><path d="M3 9h18M9 3v18" stroke-width="1.5"/></svg>',
-        card: '<svg style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:2px" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="6" width="20" height="12" rx="2" stroke-width="1.5"/><path d="M2 10h20" stroke-width="1.5"/></svg>'
+        sommario: icon('<svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="14" rx="2" stroke="white" stroke-width="2"/><line x1="7" y1="9" x2="17" y2="9" stroke="white" stroke-width="2"/><line x1="7" y1="13" x2="17" y2="13" stroke="white" stroke-width="2"/></svg>', 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'),
+        image: icon('<svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="18" height="18" rx="2" stroke="white" stroke-width="2"/><circle cx="8.5" cy="8.5" r="1.5" stroke="white" stroke-width="2"/><path d="M21 15L16 10L5 21" stroke="white" stroke-width="2"/></svg>', 'linear-gradient(135deg, #30cfd0 0%, #330867 100%)'),
+        box: icon('<svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 12C3 12 5.5 7 12 7C18.5 7 21 12 21 12C21 12 18.5 17 12 17C5.5 17 3 12 3 12Z" stroke="white" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="white" stroke-width="2"/></svg>', 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)'),
+        card: icon('<svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="6" width="20" height="12" rx="2" stroke="white" stroke-width="2"/><circle cx="12" cy="12" r="2" fill="white"/></svg>', 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)')
     };
     
     switch(block.type) {
