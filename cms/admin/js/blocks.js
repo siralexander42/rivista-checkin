@@ -1159,7 +1159,7 @@ function handleDragEnd(e) {
 }
 
 function getDragAfterElement(container, y) {
-    const draggableElements = [...container.querySelectorAll('.block-item:not(.dragging)')];
+    const draggableElements = [...container.querySelectorAll('.block-card-modern:not(.dragging)')];
     
     return draggableElements.reduce((closest, child) => {
         const box = child.getBoundingClientRect();
@@ -1175,7 +1175,7 @@ function getDragAfterElement(container, y) {
 
 // Aggiorna ordine blocchi
 async function updateBlocksOrder() {
-    const blockItems = document.querySelectorAll('.block-item');
+    const blockItems = document.querySelectorAll('.block-card-modern');
     const newOrder = Array.from(blockItems).map((item, index) => ({
         id: item.dataset.blockId,
         position: index
