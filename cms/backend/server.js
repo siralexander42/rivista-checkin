@@ -1720,43 +1720,49 @@ app.post('/api/admin/blocks/preview', async (req, res) => {
                 const prevBtn = document.querySelector(\`.carousel-nav-btn.prev[data-carousel="\${carouselId}"]\`);
                 const nextBtn = document.querySelector(\`.carousel-nav-btn.next[data-carousel="\${carouselId}"]\`);
                 const dots = document.querySelectorAll(\`.carousel-dot[data-carousel="\${carouselId}"]\`);
-                
-                console.log('🎠 PREVIEW Carousel Debug:', {
-                    carouselId,
-                    infiniteAttr: track.getAttribute('data-infinite'),
-                    isInfinite,
-                    cardsCount: cards.length,
-                    hasPrevBtn: !!prevBtn,
-                    hasNextBtn: !!nextBtn
-                });
-                
+
                 if (cards.length === 0) return;
-                
+
                 let currentIndex = 0;
                 let isTransitioning = false;
-                
-                // For infinite mode: clone ALL cards to create seamless loop
-                if (isInfinite) {
-                    // Clone ALL cards and append to end
+
+                if (isInfinite && cards.length > 0) {
                     cards.forEach(card => {
                         const clone = card.cloneNode(true);
-                        clone.classList.add('cloned-card');
+                        clone.classList.add('clone');
+                        clone.setAttribute('data-cloned', 'end');
                         track.appendChild(clone);
                     });
-                    
-                    // Clone ALL cards and prepend to start
+
                     [...cards].reverse().forEach(card => {
                         const clone = card.cloneNode(true);
-                        clone.classList.add('cloned-card');
+                        clone.classList.add('clone');
+                        clone.setAttribute('data-cloned', 'start');
                         track.insertBefore(clone, track.firstChild);
                     });
-                    
-                    // Start at the first real card (after prepended clones)
+
                     currentIndex = cards.length;
                 }
-                
-                const cardWidth = cards[0].offsetWidth + 24;
-                
+
+                const allCards = Array.from(track.querySelectorAll('.carousel-story-card'));
+
+                const getCardWidth = () => {
+                    if (allCards.length === 0) return 0;
+                    const card = allCards[0];
+                    const marginRight = parseInt(getComputedStyle(card).marginRight) || 0;
+                    return card.offsetWidth + marginRight;
+                };
+
+                if (isInfinite && cards.length > 0) {
+                    setTimeout(() => {
+                        const currentCardWidth = getCardWidth();
+                        track.scrollTo({
+                            left: currentIndex * currentCardWidth,
+                            behavior: 'auto'
+                        });
+                    }, 10);
+                }
+
                 function updateDots() {
                     if (isInfinite) {
                         const realIndex = (currentIndex - cards.length + cards.length) % cards.length;
@@ -1769,55 +1775,59 @@ app.post('/api/admin/blocks/preview', async (req, res) => {
                         });
                     }
                 }
-                
+
                 function scrollToIndex(index, smooth = true) {
-                    const scrollAmount = index * cardWidth;
+                    const currentCardWidth = getCardWidth();
+                    const scrollAmount = index * currentCardWidth;
                     track.scrollTo({
                         left: scrollAmount,
                         behavior: smooth ? 'smooth' : 'auto'
                     });
                     currentIndex = index;
                     updateDots();
-                    
-                    // Update button visibility (only for non-infinite)
+
                     if (!isInfinite && prevBtn && nextBtn) {
                         prevBtn.style.opacity = currentIndex > 0 ? '1' : '0';
-                        nextBtn.style.opacity = currentIndex < cards.length - 1 ? '1' : '0';
+                        nextBtn.style.opacity = currentIndex < allCards.length - 1 ? '1' : '0';
                     }
                 }
-                
-                // Infinite scroll: monitor scroll position and teleport seamlessly
+
                 if (isInfinite) {
                     track.addEventListener('scroll', () => {
                         if (isTransitioning) return;
-                        
+
+                        const currentCardWidth = getCardWidth();
                         const scrollLeft = track.scrollLeft;
-                        const maxScroll = (cards.length * 2 - 1) * cardWidth;
-                        const minScroll = cardWidth;
-                        
-                        // If scrolled past the end clones, teleport to real cards
-                        if (scrollLeft >= maxScroll) {
+                        const maxScrollThreshold = (cards.length * 2) * currentCardWidth;
+                        const minScrollThreshold = (cards.length - 1) * currentCardWidth;
+
+                        if (scrollLeft >= maxScrollThreshold) {
                             isTransitioning = true;
-                            track.scrollLeft = scrollLeft - (cards.length * cardWidth);
-                            currentIndex = currentIndex - cards.length;
+                            const newScrollLeft = scrollLeft - (cards.length * currentCardWidth);
+                            track.scrollTo({
+                                left: newScrollLeft,
+                                behavior: 'auto'
+                            });
+                            currentIndex = Math.round(newScrollLeft / currentCardWidth);
                             updateDots();
-                            setTimeout(() => { isTransitioning = false; }, 50);
-                        }
-                        // If scrolled before the start clones, teleport to real cards
-                        else if (scrollLeft <= minScroll) {
+                            setTimeout(() => { isTransitioning = false; }, 100);
+                        } else if (scrollLeft <= minScrollThreshold) {
                             isTransitioning = true;
-                            track.scrollLeft = scrollLeft + (cards.length * cardWidth);
-                            currentIndex = currentIndex + cards.length;
+                            const newScrollLeft = scrollLeft + (cards.length * currentCardWidth);
+                            track.scrollTo({
+                                left: newScrollLeft,
+                                behavior: 'auto'
+                            });
+                            currentIndex = Math.round(newScrollLeft / currentCardWidth);
                             updateDots();
-                            setTimeout(() => { isTransitioning = false; }, 50);
+                            setTimeout(() => { isTransitioning = false; }, 100);
                         } else {
-                            // Update current index based on scroll position
-                            currentIndex = Math.round(scrollLeft / cardWidth);
+                            currentIndex = Math.round(scrollLeft / currentCardWidth);
                             updateDots();
                         }
                     });
                 }
-                
+
                 if (prevBtn) {
                     prevBtn.addEventListener('click', () => {
                         if (isInfinite) {
@@ -1829,38 +1839,38 @@ app.post('/api/admin/blocks/preview', async (req, res) => {
                         }
                     });
                 }
-                
+
                 if (nextBtn) {
                     nextBtn.addEventListener('click', () => {
                         if (isInfinite) {
                             currentIndex++;
                             scrollToIndex(currentIndex);
                         } else {
-                            const newIndex = Math.min(cards.length - 1, currentIndex + 1);
+                            const newIndex = Math.min(allCards.length - 1, currentIndex + 1);
                             scrollToIndex(newIndex);
                         }
                     });
                 }
-                
+
                 dots.forEach(dot => {
                     dot.addEventListener('click', () => {
                         const index = parseInt(dot.getAttribute('data-index'));
-                        const actualIndex = isInfinite ? index + cards.length : index;
-                        scrollToIndex(actualIndex);
+                        if (isInfinite) {
+                            scrollToIndex(index + cards.length);
+                        } else {
+                            scrollToIndex(index);
+                        }
                     });
                 });
-                
-                // Initialize
-                scrollToIndex(currentIndex, false);
-                
+
+                updateDots();
+
                 if (!isInfinite && prevBtn && nextBtn) {
                     prevBtn.style.opacity = '0';
                     nextBtn.style.opacity = '1';
-                    console.log('✅ Carousel modalità NORMALE: prev hidden, next visible');
                 } else if (isInfinite && prevBtn && nextBtn) {
                     prevBtn.style.opacity = '1';
                     nextBtn.style.opacity = '1';
-                    console.log('✅ Carousel modalità INFINITA: both buttons visible');
                 }
             });
             

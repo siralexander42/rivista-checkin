@@ -1501,6 +1501,12 @@ function collectCurrentBlockData() {
         data.fluidBlocks = collectFluidBlocksData();
     }
     
+    if (type === 'carousel') {
+        data.summaryTitle = document.getElementById('summaryTitle')?.value || '';
+        data.cards = collectCarouselCardsData();
+        data.infiniteScroll = document.getElementById('infiniteScroll')?.checked || false;
+    }
+    
     return data;
 }
 
