@@ -2428,6 +2428,15 @@ ${blocksHTML}
                     });
                 }
             });
+            
+            // Forza re-inizializzazione controlli gallery
+            console.log('🔄 Re-inizializzazione controlli gallery...');
+            if (typeof initImageControls === 'function') {
+                initImageControls();
+            }
+            if (typeof initCounterAnimation === 'function') {
+                initCounterAnimation();
+            }
         });
     </script>
 </body>
