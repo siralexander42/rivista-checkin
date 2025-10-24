@@ -1953,28 +1953,26 @@ document.addEventListener('DOMContentLoaded', function() {
         if (cards.length === 0) return;
         
         let currentIndex = 0;
-        let isTransitioning = false;
+        let isScrolling = false;
         
+        // INFINITE: Clona le card MOLTE volte per creare un loop lunghissimo
         if (isInfinite && cards.length > 0) {
-            cards.forEach(card => {
-                const clone = card.cloneNode(true);
-                clone.classList.add('clone');
-                clone.setAttribute('data-cloned', 'end');
-                track.appendChild(clone);
-            });
+            const cloneCount = 20; // Crea 20 set di card = loop molto lungo
             
-            [...cards].reverse().forEach(card => {
-                const clone = card.cloneNode(true);
-                clone.classList.add('clone');
-                clone.setAttribute('data-cloned', 'start');
-                track.insertBefore(clone, track.firstChild);
-            });
+            for (let i = 0; i < cloneCount; i++) {
+                cards.forEach(card => {
+                    const clone = card.cloneNode(true);
+                    clone.classList.add('clone');
+                    track.appendChild(clone);
+                });
+            }
             
-            currentIndex = cards.length;
+            // Parti dal set centrale
+            currentIndex = Math.floor(cloneCount / 2) * cards.length;
             setTimeout(function() {
-                const currentCardWidth = getCardWidth();
+                const cardWidth = cards[0].offsetWidth + parseInt(getComputedStyle(cards[0]).marginRight || 0);
                 track.scrollTo({
-                    left: currentIndex * currentCardWidth,
+                    left: currentIndex * cardWidth,
                     behavior: 'auto'
                 });
             }, 10);
@@ -1990,16 +1988,10 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         
         function updateDots() {
-            if (isInfinite) {
-                const realIndex = (currentIndex - cards.length + cards.length) % cards.length;
-                dots.forEach(function(dot, i) {
-                    dot.classList.toggle('active', i === realIndex);
-                });
-            } else {
-                dots.forEach(function(dot, i) {
-                    dot.classList.toggle('active', i === currentIndex);
-                });
-            }
+            const realIndex = currentIndex % cards.length;
+            dots.forEach(function(dot, i) {
+                dot.classList.toggle('active', i === realIndex);
+            });
         }
         
         function scrollToIndex(index, smooth) {
@@ -2019,47 +2011,23 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
+        // Aggiorna dots durante lo scroll manuale
         if (isInfinite) {
             track.addEventListener('scroll', function() {
-                if (isTransitioning) return;
-                
+                if (isScrolling) return;
                 const currentCardWidth = getCardWidth();
-                const scrollLeft = track.scrollLeft;
-                const maxScrollThreshold = (cards.length * 2) * currentCardWidth;
-                const minScrollThreshold = (cards.length - 1) * currentCardWidth;
-                
-                if (scrollLeft >= maxScrollThreshold) {
-                    isTransitioning = true;
-                    const newScrollLeft = scrollLeft - (cards.length * currentCardWidth);
-                    track.scrollTo({
-                        left: newScrollLeft,
-                        behavior: 'auto'
-                    });
-                    currentIndex = Math.round(newScrollLeft / currentCardWidth);
-                    updateDots();
-                    setTimeout(function() { isTransitioning = false; }, 100);
-                } else if (scrollLeft <= minScrollThreshold) {
-                    isTransitioning = true;
-                    const newScrollLeft = scrollLeft + (cards.length * currentCardWidth);
-                    track.scrollTo({
-                        left: newScrollLeft,
-                        behavior: 'auto'
-                    });
-                    currentIndex = Math.round(newScrollLeft / currentCardWidth);
-                    updateDots();
-                    setTimeout(function() { isTransitioning = false; }, 100);
-                } else {
-                    currentIndex = Math.round(scrollLeft / currentCardWidth);
-                    updateDots();
-                }
+                currentIndex = Math.round(track.scrollLeft / currentCardWidth);
+                updateDots();
             });
         }
         
         if (prevBtn) {
             prevBtn.addEventListener('click', function() {
                 if (isInfinite) {
+                    isScrolling = true;
                     currentIndex--;
                     scrollToIndex(currentIndex);
+                    setTimeout(function() { isScrolling = false; }, 500);
                 } else {
                     const newIndex = Math.max(0, currentIndex - 1);
                     scrollToIndex(newIndex);
@@ -2070,8 +2038,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (nextBtn) {
             nextBtn.addEventListener('click', function() {
                 if (isInfinite) {
+                    isScrolling = true;
                     currentIndex++;
                     scrollToIndex(currentIndex);
+                    setTimeout(function() { isScrolling = false; }, 500);
                 } else {
                     const newIndex = Math.min(allCards.length - 1, currentIndex + 1);
                     scrollToIndex(newIndex);
@@ -2081,11 +2051,15 @@ document.addEventListener('DOMContentLoaded', function() {
         
         dots.forEach(function(dot) {
             dot.addEventListener('click', function() {
-                const index = parseInt(dot.getAttribute('data-index'));
+                const dotIndex = parseInt(dot.getAttribute('data-index'));
                 if (isInfinite) {
-                    scrollToIndex(index + cards.length);
+                    isScrolling = true;
+                    var currentSet = Math.floor(currentIndex / cards.length);
+                    currentIndex = currentSet * cards.length + dotIndex;
+                    scrollToIndex(currentIndex);
+                    setTimeout(function() { isScrolling = false; }, 500);
                 } else {
-                    scrollToIndex(index);
+                    scrollToIndex(dotIndex);
                 }
             });
         });
@@ -2098,12 +2072,7 @@ document.addEventListener('DOMContentLoaded', function() {
             nextBtn.style.opacity = '1';
         }
         
-        console.log('✅ Carousel ' + carouselId + ' initialized:', {
-            infinite: isInfinite,
-            originalCards: cards.length,
-            totalCards: allCards.length,
-            currentIndex: currentIndex
-        });
+        updateDots();
     });
 });
 `;
