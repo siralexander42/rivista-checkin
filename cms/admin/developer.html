@@ -8,78 +8,268 @@
     <link rel="stylesheet" href="css/admin.css?v=8.0">
     <link rel="stylesheet" href="css/image-cropper.css?v=1.0">
     <style>
+        /* VS Code Theme - Dark Mode */
+        body {
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+
+        .admin-container {
+            background: #1e1e1e;
+        }
+
+        .main-content {
+            background: #1e1e1e;
+            margin-left: 280px;
+        }
+
+        /* VS Code Style Header */
+        .page-header {
+            background: #252526;
+            border-bottom: 1px solid #3e3e42;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-header h1 {
+            color: #cccccc;
+            font-size: 18px;
+            font-weight: 400;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         .dev-mode-badge {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            background: #007acc;
             color: white;
-            padding: 4px 12px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 600;
             letter-spacing: 0.5px;
             text-transform: uppercase;
-            display: inline-block;
-            margin-left: 12px;
-            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
         }
-        
+
+        /* VS Code Activity Bar (Tabs) */
+        .vscode-tabs {
+            background: #252526;
+            border-bottom: 1px solid #3e3e42;
+            display: flex;
+            gap: 0;
+            padding: 0;
+            overflow-x: auto;
+        }
+
+        .vscode-tab {
+            background: #2d2d30;
+            border: none;
+            border-right: 1px solid #3e3e42;
+            color: #969696;
+            padding: 10px 20px;
+            font-size: 13px;
+            font-weight: 400;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .vscode-tab:hover {
+            background: #2a2d2e;
+            color: #cccccc;
+        }
+
+        .vscode-tab.active {
+            background: #1e1e1e;
+            color: #ffffff;
+            border-top: 1px solid #007acc;
+        }
+
+        /* VS Code Editor Area */
+        .vscode-editor {
+            background: #1e1e1e;
+            padding: 20px 24px;
+            min-height: calc(100vh - 200px);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Code Editor */
         .code-editor {
             background: #1e1e1e;
             color: #d4d4d4;
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
             padding: 16px;
-            border-radius: 8px;
+            border-radius: 0;
             overflow-x: auto;
             white-space: pre;
-            border: 1px solid rgba(60, 61, 143, 0.2);
-        }
-        
-        .json-viewer {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        
-        .block-preview-card {
-            background: white;
-            border: 1.5px solid rgba(60, 61, 143, 0.12);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 16px;
-            transition: all 0.3s ease;
-        }
-        
-        .block-preview-card:hover {
-            box-shadow: 0 4px 12px rgba(60, 61, 143, 0.15);
-            transform: translateY(-2px);
-        }
-        
-        .block-type-label {
-            display: inline-block;
-            padding: 4px 10px;
-            background: linear-gradient(135deg, rgba(211, 228, 252, 0.5) 0%, rgba(232, 241, 253, 0.5) 100%);
-            border: 1px solid rgba(60, 61, 143, 0.15);
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .magazine-selector {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 24px;
-            border: 1.5px solid rgba(60, 61, 143, 0.12);
+            border: 1px solid #3e3e42;
         }
 
-        /* Sidebar Order List Styles */
+        /* VS Code Sidebar Panel */
+        .vscode-panel {
+            background: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 4px;
+            margin-bottom: 16px;
+        }
+
+        .vscode-panel-header {
+            background: #2d2d30;
+            padding: 10px 16px;
+            border-bottom: 1px solid #3e3e42;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .vscode-panel-title {
+            color: #cccccc;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .vscode-panel-body {
+            padding: 16px;
+        }
+
+        /* VS Code Buttons */
+        .vscode-btn {
+            background: #0e639c;
+            border: 1px solid #0e639c;
+            color: #ffffff;
+            padding: 6px 14px;
+            font-size: 13px;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .vscode-btn:hover {
+            background: #1177bb;
+            border-color: #1177bb;
+        }
+
+        .vscode-btn-secondary {
+            background: #3e3e42;
+            border: 1px solid #3e3e42;
+            color: #cccccc;
+        }
+
+        .vscode-btn-secondary:hover {
+            background: #505050;
+            border-color: #505050;
+        }
+
+        /* Magazine Selector VS Code Style */
+        .magazine-selector {
+            background: #252526;
+            border: 1px solid #3e3e42;
+            padding: 16px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+        }
+
+        .magazine-selector label {
+            color: #cccccc;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .magazine-selector select {
+            background: #3c3c3c;
+            border: 1px solid #3e3e42;
+            color: #cccccc;
+            padding: 6px 12px;
+            border-radius: 2px;
+            width: 100%;
+            max-width: 400px;
+            font-size: 13px;
+        }
+
+        .magazine-selector select:focus {
+            outline: 1px solid #007acc;
+            border-color: #007acc;
+        }
+
+        /* Block Cards VS Code Style */
+        .block-preview-card {
+            background: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 4px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.15s ease;
+        }
+
+        .block-preview-card:hover {
+            background: #2d2d30;
+            border-color: #007acc;
+        }
+
+        .block-type-label {
+            background: #094771;
+            border: 1px solid #007acc;
+            color: #4fc3f7;
+            padding: 2px 8px;
+            border-radius: 2px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        /* JSON Viewer */
+        .json-viewer {
+            max-height: 500px;
+            overflow-y: auto;
+            background: #1e1e1e;
+            border: 1px solid #3e3e42;
+            border-radius: 4px;
+        }
+
+        /* Scrollbar VS Code Style */
+        .json-viewer::-webkit-scrollbar {
+            width: 14px;
+        }
+
+        .json-viewer::-webkit-scrollbar-track {
+            background: #1e1e1e;
+        }
+
+        .json-viewer::-webkit-scrollbar-thumb {
+            background: #424242;
+            border-radius: 0;
+        }
+
+        .json-viewer::-webkit-scrollbar-thumb:hover {
+            background: #4e4e4e;
+        }
+
+        /* Sidebar Order List VS Code Style */
         .sidebar-order-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            max-width: 600px;
+            gap: 8px;
+            max-width: 700px;
         }
 
         .sidebar-item {

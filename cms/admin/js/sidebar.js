@@ -17,11 +17,68 @@ function initSidebar(activePage = '') {
     // Gestisci visibilità elementi basati sul ruolo
     handleRoleBasedVisibility(user);
     
+    // Applica ordine personalizzato dalla modalità sviluppatore
+    applySidebarOrder();
+    
     // Imposta la pagina attiva
     setActivePage(activePage);
     
     // Aggiungi event listeners
     setupSidebarEventListeners();
+}
+
+/**
+ * Applica l'ordine personalizzato della sidebar salvato nel localStorage
+ */
+function applySidebarOrder() {
+    const savedOrder = localStorage.getItem('sidebarOrder');
+    if (!savedOrder) return;
+    
+    try {
+        const sidebarOrder = JSON.parse(savedOrder);
+        const sidebarNav = document.querySelector('.sidebar-nav');
+        if (!sidebarNav) return;
+        
+        // Ottieni tutti gli elementi nav-item
+        const navItems = Array.from(sidebarNav.querySelectorAll('.nav-item'));
+        
+        // Crea una mappa ID -> elemento
+        const itemsMap = {};
+        navItems.forEach(item => {
+            const href = item.getAttribute('href');
+            const id = item.getAttribute('id');
+            
+            // Determina l'ID dell'elemento
+            let itemId = null;
+            if (href === 'index.html') itemId = 'dashboard';
+            else if (href === 'magazines.html') itemId = 'magazines';
+            else if (href === 'statistiche.html') itemId = 'statistiche';
+            else if (href === 'permissions.html') itemId = 'permissions';
+            else if (href === 'logs.html') itemId = 'logs';
+            else if (id === 'usersNavItem') itemId = 'users';
+            else if (id === 'devModeNavItem') itemId = 'developer';
+            else if (id === 'advNavItem') itemId = 'adv';
+            
+            if (itemId) {
+                itemsMap[itemId] = item;
+            }
+        });
+        
+        // Riordina gli elementi secondo l'ordine salvato
+        const orderedItems = sidebarOrder
+            .sort((a, b) => a.order - b.order)
+            .map(item => itemsMap[item.id])
+            .filter(item => item !== undefined);
+        
+        // Svuota la sidebar nav e ri-aggiungi gli elementi nell'ordine corretto
+        sidebarNav.innerHTML = '';
+        orderedItems.forEach(item => {
+            sidebarNav.appendChild(item);
+        });
+        
+    } catch (e) {
+        console.error('Errore applicazione ordine sidebar:', e);
+    }
 }
 
 /**
