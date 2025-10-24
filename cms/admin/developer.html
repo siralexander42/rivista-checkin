@@ -73,6 +73,130 @@
             margin-bottom: 24px;
             border: 1.5px solid rgba(60, 61, 143, 0.12);
         }
+
+        /* Sidebar Order List Styles */
+        .sidebar-order-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 600px;
+        }
+
+        .sidebar-item {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: move;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .sidebar-item:hover {
+            border-color: #6366f1;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+            transform: translateX(4px);
+        }
+
+        .sidebar-item.dragging {
+            opacity: 0.5;
+            transform: scale(0.98);
+        }
+
+        .sidebar-item.drag-over {
+            border-color: #6366f1;
+            border-style: dashed;
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .sidebar-item.locked {
+            cursor: not-allowed;
+            opacity: 0.6;
+            background: #f8fafc;
+        }
+
+        .sidebar-item.locked:hover {
+            border-color: #e2e8f0;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .drag-handle {
+            font-size: 20px;
+            color: #94a3b8;
+            cursor: grab;
+        }
+
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+
+        .sidebar-item.locked .drag-handle {
+            cursor: not-allowed;
+        }
+
+        .sidebar-item-order {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-item.locked .sidebar-item-order {
+            background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+        }
+
+        .sidebar-item-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sidebar-item-label {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-item-meta {
+            font-size: 12px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .visibility-badge {
+            padding: 2px 8px;
+            background: rgba(99, 102, 241, 0.1);
+            color: #6366f1;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 11px;
+        }
+
+        .locked-badge {
+            padding: 2px 8px;
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 11px;
+        }
     </style>
 </head>
 <body>
@@ -86,22 +210,25 @@
             
             <nav class="sidebar-nav">
                 <a href="index.html" class="nav-item">
-                    <span>Dashboard</span>
+                    <span>DASHBOARD</span>
                 </a>
                 <a href="magazines.html" class="nav-item">
-                    <span>Riviste</span>
+                    <span>RIVISTE</span>
                 </a>
                 <a href="#" class="nav-item" id="usersNavItem">
-                    <span>Utenti</span>
+                    <span>UTENTI</span>
                 </a>
                 <a href="permissions.html" class="nav-item" id="permissionsNavItem" style="display: none;">
-                    <span>Permessi</span>
+                    <span>PERMESSI</span>
+                </a>
+                <a href="statistiche.html" class="nav-item">
+                    <span>STATISTICHE</span>
                 </a>
                 <a href="logs.html" class="nav-item">
-                    <span>Log Accessi</span>
+                    <span>LOG ACCESSI</span>
                 </a>
                 <a href="developer.html" class="nav-item active">
-                    <span>Modalità Sviluppatore</span>
+                    <span>MODALITÀ SVILUPPATORE</span>
                 </a>
                 <a href="#" class="nav-item" id="advNavItem">
                     <span>ADV</span>
@@ -144,6 +271,9 @@
                     </button>
                     <button class="tab-btn" data-tab="create">
                         ➕ Crea Blocco
+                    </button>
+                    <button class="tab-btn" data-tab="sidebar">
+                        📋 Sidebar
                     </button>
                 </div>
             </div>
@@ -191,6 +321,29 @@
                         <p style="font-size: 13px; color: var(--text-light); margin-top: 8px;">
                             Per ora usa l'editor normale nella pagina della rivista
                         </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Sidebar -->
+            <div class="tab-content" data-tab="sidebar">
+                <div style="background: white; padding: 24px; border-radius: 12px; border: 1.5px solid rgba(60, 61, 143, 0.12);">
+                    <h3 style="margin-bottom: 16px;">⚙️ Gestione Ordine Sidebar</h3>
+                    <p style="color: var(--text-light); margin-bottom: 24px;">
+                        Trascina le voci per riordinare la sidebar. Le modifiche verranno salvate automaticamente.
+                    </p>
+                    
+                    <div id="sidebarOrderList" class="sidebar-order-list">
+                        <!-- Popolato dinamicamente -->
+                    </div>
+                    
+                    <div style="margin-top: 24px; padding: 16px; background: rgba(99, 102, 241, 0.05); border-radius: 8px; border: 1px solid rgba(99, 102, 241, 0.2);">
+                        <h4 style="margin: 0 0 8px 0; font-size: 14px; color: var(--primary);">ℹ️ Informazioni</h4>
+                        <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: var(--text-light);">
+                            <li>Le voci con icona 🔒 hanno una posizione fissa e non possono essere spostate</li>
+                            <li>Le voci con visibilità condizionale mantengono le loro regole di visualizzazione</li>
+                            <li>L'ordine viene salvato automaticamente quando rilasci un elemento</li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -374,8 +527,189 @@
                 // Update content
                 document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
                 document.querySelector(`.tab-content[data-tab="${tab}"]`).classList.add('active');
+                
+                // Load sidebar order when switching to sidebar tab
+                if (tab === 'sidebar') {
+                    loadSidebarOrder();
+                }
             });
         });
+
+        // ========================================
+        // SIDEBAR ORDER MANAGEMENT
+        // ========================================
+        
+        const sidebarItems = [
+            { id: 'dashboard', label: 'DASHBOARD', href: 'index.html', locked: true },
+            { id: 'magazines', label: 'RIVISTE', href: 'magazines.html', locked: false },
+            { id: 'users', label: 'UTENTI', href: '#', conditional: true, condition: 'usersNavItem', locked: false },
+            { id: 'permissions', label: 'PERMESSI', href: 'permissions.html', conditional: true, condition: 'permissionsNavItem', locked: false },
+            { id: 'statistiche', label: 'STATISTICHE', href: 'statistiche.html', locked: false },
+            { id: 'logs', label: 'LOG ACCESSI', href: 'logs.html', locked: false },
+            { id: 'developer', label: 'MODALITÀ SVILUPPATORE', href: '#', conditional: true, condition: 'devModeNavItem', locked: false },
+            { id: 'adv', label: 'ADV', href: '#', locked: false }
+        ];
+
+        let currentSidebarOrder = [];
+
+        function loadSidebarOrder() {
+            // Carica ordine salvato o usa quello di default
+            const savedOrder = localStorage.getItem('sidebarOrder');
+            if (savedOrder) {
+                try {
+                    currentSidebarOrder = JSON.parse(savedOrder);
+                } catch (e) {
+                    currentSidebarOrder = sidebarItems.map((item, idx) => ({ ...item, order: idx }));
+                }
+            } else {
+                currentSidebarOrder = sidebarItems.map((item, idx) => ({ ...item, order: idx }));
+            }
+
+            renderSidebarOrder();
+        }
+
+        function renderSidebarOrder() {
+            const container = document.getElementById('sidebarOrderList');
+            if (!container) return;
+
+            // Ordina per posizione
+            const sorted = [...currentSidebarOrder].sort((a, b) => a.order - b.order);
+
+            container.innerHTML = sorted.map((item, index) => `
+                <div class="sidebar-item ${item.locked ? 'locked' : ''}" 
+                     draggable="${!item.locked}" 
+                     data-id="${item.id}"
+                     data-order="${index}">
+                    <span class="drag-handle">${item.locked ? '🔒' : '☰'}</span>
+                    <div class="sidebar-item-order">${index + 1}</div>
+                    <div class="sidebar-item-content">
+                        <div class="sidebar-item-label">
+                            ${item.label}
+                            ${item.locked ? '<span style="font-size: 11px; opacity: 0.6;">(Fisso)</span>' : ''}
+                        </div>
+                        <div class="sidebar-item-meta">
+                            <span>📄 ${item.href}</span>
+                            ${item.conditional ? '<span class="visibility-badge">Condizionale</span>' : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Aggiungi event listeners per drag and drop
+            setupDragAndDrop();
+        }
+
+        let draggedElement = null;
+
+        function setupDragAndDrop() {
+            const items = document.querySelectorAll('.sidebar-item:not(.locked)');
+
+            items.forEach(item => {
+                item.addEventListener('dragstart', handleDragStart);
+                item.addEventListener('dragend', handleDragEnd);
+                item.addEventListener('dragover', handleDragOver);
+                item.addEventListener('drop', handleDrop);
+                item.addEventListener('dragenter', handleDragEnter);
+                item.addEventListener('dragleave', handleDragLeave);
+            });
+        }
+
+        function handleDragStart(e) {
+            draggedElement = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.innerHTML);
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+            
+            // Rimuovi tutti gli indicatori drag-over
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('drag-over');
+            });
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+
+        function handleDragEnter(e) {
+            if (this !== draggedElement && !this.classList.contains('locked')) {
+                this.classList.add('drag-over');
+            }
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+
+            if (draggedElement !== this && !this.classList.contains('locked')) {
+                const draggedId = draggedElement.dataset.id;
+                const targetId = this.dataset.id;
+
+                // Trova gli indici
+                const draggedIndex = currentSidebarOrder.findIndex(item => item.id === draggedId);
+                const targetIndex = currentSidebarOrder.findIndex(item => item.id === targetId);
+
+                if (draggedIndex !== -1 && targetIndex !== -1) {
+                    // Scambia le posizioni
+                    const temp = currentSidebarOrder[draggedIndex].order;
+                    currentSidebarOrder[draggedIndex].order = currentSidebarOrder[targetIndex].order;
+                    currentSidebarOrder[targetIndex].order = temp;
+
+                    // Salva e re-renderizza
+                    saveSidebarOrder();
+                    renderSidebarOrder();
+                }
+            }
+
+            return false;
+        }
+
+        function saveSidebarOrder() {
+            localStorage.setItem('sidebarOrder', JSON.stringify(currentSidebarOrder));
+            
+            // Mostra notifica
+            showNotification('✅ Ordine sidebar salvato!');
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                color: white;
+                padding: 16px 24px;
+                border-radius: 8px;
+                box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+                font-weight: 600;
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 2000);
+        }
+
+        // ========================================
+        // END SIDEBAR ORDER MANAGEMENT
+        // ========================================
 
         // Init
         loadMagazines();
@@ -433,6 +767,28 @@
         
         .tab-content.active {
             display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
         }
     </style>
 </body>
