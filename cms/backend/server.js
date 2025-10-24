@@ -1721,6 +1721,15 @@ app.post('/api/admin/blocks/preview', async (req, res) => {
                 const nextBtn = document.querySelector(\`.carousel-nav-btn.next[data-carousel="\${carouselId}"]\`);
                 const dots = document.querySelectorAll(\`.carousel-dot[data-carousel="\${carouselId}"]\`);
                 
+                console.log('🎠 PREVIEW Carousel Debug:', {
+                    carouselId,
+                    infiniteAttr: track.getAttribute('data-infinite'),
+                    isInfinite,
+                    cardsCount: cards.length,
+                    hasPrevBtn: !!prevBtn,
+                    hasNextBtn: !!nextBtn
+                });
+                
                 if (cards.length === 0) return;
                 
                 let currentIndex = 0;
@@ -1781,9 +1790,11 @@ app.post('/api/admin/blocks/preview', async (req, res) => {
                 if (!isInfinite && prevBtn && nextBtn) {
                     prevBtn.style.opacity = '0';
                     nextBtn.style.opacity = '1';
+                    console.log('✅ Carousel modalità NORMALE: prev hidden, next visible');
                 } else if (isInfinite && prevBtn && nextBtn) {
                     prevBtn.style.opacity = '1';
                     nextBtn.style.opacity = '1';
+                    console.log('✅ Carousel modalità INFINITA: both buttons visible');
                 }
             });
             
