@@ -224,6 +224,15 @@ function getBlockPreview(block) {
                 ${block.ctaText ? `<p style="margin-top: 8px;">🔗 CTA: ${block.ctaText}</p>` : ''}
             `;
         
+        case 'carousel':
+            const cardsCount = block.cards?.length || 0;
+            return `
+                <h3>🎠 ${block.title || 'Carousel Storie'}</h3>
+                ${block.subtitle ? `<p style="color: var(--text-light); margin-top: 8px;">${block.subtitle}</p>` : ''}
+                <p style="margin-top: 12px;">🗂️ ${cardsCount} ${cardsCount === 1 ? 'card' : 'cards'}</p>
+                ${cardsCount > 0 ? `<p style="margin-top: 8px; font-size: 12px; color: var(--text-light);">Clicca per modificare le card</p>` : ''}
+            `;
+        
         default:
             return '<p>Blocco personalizzato</p>';
     }
@@ -659,6 +668,48 @@ https://esempio.com/bg4.jpg" oninput="updateBlockPreview()">${(data.images || []
                 <!-- Anteprima live verrà inserita qui -->
             </div>
             </div>
+        `,
+        
+        carousel: `
+            <div style="display: grid; grid-template-columns: 1fr 400px; gap: 24px; align-items: start;">
+                <div class="form-section">
+                <h4 style="margin-bottom: 16px;">🎠 Carousel Stories - Stile Relais & Châteaux</h4>
+                <p style="color: var(--text-light); margin-bottom: 24px; line-height: 1.6;">
+                    Carousel orizzontale con card che linkano ad articoli o storie. Design ispirato a Relais & Châteaux.
+                </p>
+                
+                <div class="form-group">
+                    <label for="title">Titolo Sezione *</label>
+                    <input type="text" id="title" required value="${data.title || ''}" placeholder="Viaggiare secondo i propri desideri" oninput="updateBlockPreview()">
+                </div>
+                
+                <div class="form-group">
+                    <label for="subtitle">Sottotitolo</label>
+                    <input type="text" id="subtitle" value="${data.subtitle || ''}" placeholder="Scopri le nostre destinazioni" oninput="updateBlockPreview()">
+                </div>
+                
+                <h4 style="margin: 32px 0 16px 0; padding-top: 24px; border-top: 2px solid rgba(99, 102, 241, 0.2);">🎴 Card Carousel</h4>
+                
+                <div id="carouselCardsList">
+                    ${generateCarouselCardsFields(data.cards || [])}
+                </div>
+                
+                <button type="button" onclick="addCarouselCard()" class="btn btn-secondary" style="margin-top: 12px;">
+                    <svg style="width: 14px; height: 14px;" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 50 50"><path d="M 25 2 C 24.730469 2 24.476563 2.105469 24.292969 2.292969 L 2.292969 24.292969 C 1.90625 24.679688 1.90625 25.320313 2.292969 25.707031 L 24.292969 47.707031 C 24.683594 48.097656 25.316406 48.097656 25.707031 47.707031 L 47.707031 25.707031 C 48.097656 25.316406 48.097656 24.683594 47.707031 24.292969 L 25.707031 2.292969 C 25.523438 2.105469 25.269531 2 25 2 Z M 25 4.414063 L 45.585938 25 L 25 45.585938 L 4.414063 25 Z M 24 16 L 24 26 L 14 26 L 14 28 L 24 28 L 24 38 L 26 38 L 26 28 L 36 28 L 36 26 L 26 26 L 26 16 Z"/></svg>
+                    Aggiungi Card
+                </button>
+                <small style="display: block; margin-top: 8px; color: var(--text-light);">Inserisci almeno 3 card per il carousel</small>
+                
+                <div class="form-group">
+                    <label for="summaryTitle">📋 Titolo per il Sommario *</label>
+                    <input type="text" id="summaryTitle" required value="${data.summaryTitle || ''}" placeholder="Storie dal mondo">
+                    <small>Questo titolo apparirà nella lista del sommario della rivista</small>
+                </div>
+            </div>
+            <div id="blockPreview" style="position: relative;">
+                <!-- Anteprima live verrà inserita qui -->
+            </div>
+            </div>
         `
     };
     
@@ -806,6 +857,22 @@ async function handleBlockFormSubmit(e) {
             alert('⚠️ Inserisci la foto di anteprima iniziale!');
             return;
         }
+    }
+    
+    // Carousel: gestisci card multiple
+    if (type === 'carousel') {
+        blockData.summaryTitle = document.getElementById('summaryTitle')?.value || '';
+        blockData.cards = collectCarouselCardsData();
+        
+        // Validazione
+        if (blockData.cards.length < 3) {
+            alert('⚠️ Inserisci almeno 3 card nel carousel!');
+            return;
+        }
+        
+        delete blockData.image;
+        delete blockData.content;
+        delete blockData.link;
     }
     
     try {
@@ -2019,3 +2086,230 @@ function initGalleryImageCropperByElement(inputElement) {
         console.log('Gallery cropper creato per index:', index);
     }, 200);
 }
+
+// ============================
+// CAROUSEL FUNCTIONS
+// ============================
+
+// Genera campi per le card del carousel
+function generateCarouselCardsFields(cards = []) {
+    if (cards.length === 0) {
+        return '<p style="color: #94a3b8; font-size: 14px; padding: 20px; text-align: center; background: rgba(148, 163, 184, 0.1); border-radius: 8px;">Nessuna card. Clicca "Aggiungi Card"</p>';
+    }
+    
+    return cards.map((card, index) => `
+        <div class="carousel-card-field" draggable="true" style="background: var(--bg-gradient-light); border-radius: 12px; margin-bottom: 16px; border: 1px solid rgba(99, 102, 241, 0.2); cursor: move;">
+            <div class="carousel-card-header" onclick="toggleCarouselCard(this)" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; cursor: pointer; user-select: none;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span class="drag-handle" style="cursor: grab; color: var(--text-light);">⠿</span>
+                    <strong style="color: var(--primary); font-size: 14px;">🎴 Card ${index + 1}</strong>
+                    <span class="carousel-card-preview" style="color: var(--text-light); font-size: 12px; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${card.title || 'Senza titolo'}...</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span class="toggle-icon" style="transition: transform 0.3s; color: var(--primary);">▼</span>
+                    <button type="button" 
+                            onclick="event.stopPropagation(); removeCarouselCard(this)" 
+                            class="btn btn-sm btn-danger" style="padding: 4px 8px;">
+                        <svg style="width: 14px; height: 14px;" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 30 30"><path d="M 13 3 A 1.0001 1.0001 0 0 0 11.986328 4 L 6 4 A 1.0001 1.0001 0 1 0 6 6 L 24 6 A 1.0001 1.0001 0 1 0 24 4 L 18.013672 4 A 1.0001 1.0001 0 0 0 17 3 L 13 3 z M 6 8 L 6 24 C 6 25.105 6.895 26 8 26 L 22 26 C 23.105 26 24 25.105 24 24 L 24 8 L 6 8 z"/></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="carousel-card-content" style="padding: 0 20px 20px; display: block;">
+            
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label style="font-size: 13px; font-weight: 600;">URL Immagine *</label>
+                <input type="url" 
+                       class="carousel-card-image" 
+                       placeholder="https://esempio.com/immagine.jpg" 
+                       value="${card.image || ''}" 
+                       style="width: 100%;"
+                       oninput="updateBlockPreview()">
+            </div>
+            
+            <div class="form-group">
+                <label style="font-size: 13px; font-weight: 600;">Titolo *</label>
+                <input type="text" 
+                       class="carousel-card-title" 
+                       placeholder="Titolo della storia" 
+                       value="${card.title || ''}" 
+                       style="width: 100%;"
+                       oninput="updateBlockPreview()">
+            </div>
+            
+            <div class="form-group">
+                <label style="font-size: 13px; font-weight: 600;">Descrizione</label>
+                <textarea class="carousel-card-description" 
+                          rows="3"
+                          placeholder="Breve descrizione della storia..." 
+                          style="width: 100%;"
+                          oninput="updateBlockPreview()">${card.description || ''}</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label style="font-size: 13px; font-weight: 600;">Categoria</label>
+                <input type="text" 
+                       class="carousel-card-category" 
+                       placeholder="Es: Arte e Cultura" 
+                       value="${card.category || ''}" 
+                       style="width: 100%;"
+                       oninput="updateBlockPreview()">
+            </div>
+            
+            <div class="form-group">
+                <label style="font-size: 13px; font-weight: 600;">Link *</label>
+                <input type="url" 
+                       class="carousel-card-link" 
+                       placeholder="https://..." 
+                       value="${card.link || ''}" 
+                       style="width: 100%;"
+                       oninput="updateBlockPreview()">
+                <small>Link all'articolo o storia completa</small>
+            </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Toggle espansione card carousel
+function toggleCarouselCard(header) {
+    const content = header.nextElementSibling;
+    const icon = header.querySelector('.toggle-icon');
+    
+    if (content.style.display === 'none') {
+        content.style.display = 'block';
+        icon.style.transform = 'rotate(0deg)';
+    } else {
+        content.style.display = 'none';
+        icon.style.transform = 'rotate(-90deg)';
+    }
+}
+
+// Aggiungi card carousel
+function addCarouselCard() {
+    const container = document.getElementById('carouselCardsList');
+    const currentContent = container.innerHTML;
+    
+    // Rimuovi messaggio "Nessuna card" se presente
+    if (currentContent.includes('Nessuna card')) {
+        container.innerHTML = '';
+    }
+    
+    const index = container.children.length;
+    const newCard = document.createElement('div');
+    newCard.className = 'carousel-card-field';
+    newCard.draggable = true;
+    newCard.style.cssText = 'background: var(--bg-gradient-light); border-radius: 12px; margin-bottom: 16px; border: 1px solid rgba(99, 102, 241, 0.2); cursor: move;';
+    
+    newCard.innerHTML = `
+        <div class="carousel-card-header" onclick="toggleCarouselCard(this)" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; cursor: pointer; user-select: none;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <span class="drag-handle" style="cursor: grab; color: var(--text-light);">⠿</span>
+                <strong style="color: var(--primary); font-size: 14px;">🎴 Card ${index + 1}</strong>
+                <span class="carousel-card-preview" style="color: var(--text-light); font-size: 12px;">Nuova card...</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="toggle-icon" style="transition: transform 0.3s; color: var(--primary);">▼</span>
+                <button type="button" 
+                        onclick="event.stopPropagation(); removeCarouselCard(this)" 
+                        class="btn btn-sm btn-danger" style="padding: 4px 8px;">
+                    <svg style="width: 14px; height: 14px;" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 30 30"><path d="M 13 3 A 1.0001 1.0001 0 0 0 11.986328 4 L 6 4 A 1.0001 1.0001 0 1 0 6 6 L 24 6 A 1.0001 1.0001 0 1 0 24 4 L 18.013672 4 A 1.0001 1.0001 0 0 0 17 3 L 13 3 z M 6 8 L 6 24 C 6 25.105 6.895 26 8 26 L 22 26 C 23.105 26 24 25.105 24 24 L 24 8 L 6 8 z"/></svg>
+                </button>
+            </div>
+        </div>
+        <div class="carousel-card-content" style="padding: 0 20px 20px; display: block;">
+        
+        <div class="form-group" style="margin-bottom: 12px;">
+            <label style="font-size: 13px; font-weight: 600;">URL Immagine *</label>
+            <input type="url" 
+                   class="carousel-card-image" 
+                   placeholder="https://esempio.com/immagine.jpg" 
+                   value="" 
+                   style="width: 100%;"
+                   oninput="updateBlockPreview()">
+        </div>
+        
+        <div class="form-group">
+            <label style="font-size: 13px; font-weight: 600;">Titolo *</label>
+            <input type="text" 
+                   class="carousel-card-title" 
+                   placeholder="Titolo della storia" 
+                   value="" 
+                   style="width: 100%;"
+                   oninput="updateBlockPreview()">
+        </div>
+        
+        <div class="form-group">
+            <label style="font-size: 13px; font-weight: 600;">Descrizione</label>
+            <textarea class="carousel-card-description" 
+                      rows="3"
+                      placeholder="Breve descrizione della storia..." 
+                      style="width: 100%;"
+                      oninput="updateBlockPreview()"></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label style="font-size: 13px; font-weight: 600;">Categoria</label>
+            <input type="text" 
+                   class="carousel-card-category" 
+                   placeholder="Es: Arte e Cultura" 
+                   value="" 
+                   style="width: 100%;"
+                   oninput="updateBlockPreview()">
+        </div>
+        
+        <div class="form-group">
+            <label style="font-size: 13px; font-weight: 600;">Link *</label>
+            <input type="url" 
+                   class="carousel-card-link" 
+                   placeholder="https://..." 
+                   value="" 
+                   style="width: 100%;"
+                   oninput="updateBlockPreview()">
+            <small>Link all'articolo o storia completa</small>
+        </div>
+        </div>
+    `;
+    
+    container.appendChild(newCard);
+    updateBlockPreview();
+}
+
+// Rimuovi card carousel
+function removeCarouselCard(button) {
+    const field = button.closest('.carousel-card-field');
+    field.remove();
+    updateBlockPreview();
+    
+    // Se non ci sono più card, mostra il messaggio
+    const container = document.getElementById('carouselCardsList');
+    if (container.children.length === 0) {
+        container.innerHTML = '<p style="color: #94a3b8; font-size: 14px; padding: 20px; text-align: center; background: rgba(148, 163, 184, 0.1); border-radius: 8px;">Nessuna card. Clicca "Aggiungi Card"</p>';
+    }
+}
+
+// Raccogli dati delle card carousel
+function collectCarouselCardsData() {
+    const fields = document.querySelectorAll('.carousel-card-field');
+    const cards = [];
+    
+    fields.forEach((field) => {
+        const image = field.querySelector('.carousel-card-image')?.value.trim();
+        const title = field.querySelector('.carousel-card-title')?.value.trim();
+        const description = field.querySelector('.carousel-card-description')?.value.trim();
+        const category = field.querySelector('.carousel-card-category')?.value.trim();
+        const link = field.querySelector('.carousel-card-link')?.value.trim();
+        
+        if (image && title && link) {
+            cards.push({
+                image,
+                title,
+                description: description || '',
+                category: category || '',
+                link
+            });
+        }
+    });
+    
+    return cards;
+}
+

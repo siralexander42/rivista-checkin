@@ -1,0 +1,282 @@
+/* ============================================
+   CAROUSEL STORIES BLOCK - Relais & Châteaux Style
+   ============================================ */
+
+.carousel-stories-section {
+    padding: 100px 0;
+    background: linear-gradient(180deg, #f9fafb 0%, #ffffff 100%);
+    overflow: hidden;
+}
+
+.carousel-stories-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 40px;
+}
+
+.carousel-stories-title {
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 16px;
+    color: #1a1a2e;
+    letter-spacing: -0.02em;
+}
+
+.carousel-stories-subtitle {
+    font-size: 18px;
+    color: #64748b;
+    text-align: center;
+    margin-bottom: 60px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.carousel-stories-wrapper {
+    position: relative;
+    margin: 0 60px;
+}
+
+.carousel-stories-track {
+    display: flex;
+    gap: 24px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+    padding: 20px 0;
+    scroll-snap-type: x mandatory;
+}
+
+.carousel-stories-track::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+.carousel-story-card {
+    flex: 0 0 calc(33.333% - 16px);
+    min-width: 320px;
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    scroll-snap-align: start;
+}
+
+.carousel-story-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+                0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.carousel-card-image {
+    position: relative;
+    width: 100%;
+    height: 280px;
+    overflow: hidden;
+}
+
+.carousel-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.carousel-story-card:hover .carousel-card-image img {
+    transform: scale(1.08);
+}
+
+.carousel-card-category {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1a2e;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.carousel-card-content {
+    padding: 24px;
+}
+
+.carousel-card-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #1a1a2e;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.carousel-card-description {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #64748b;
+    margin-bottom: 20px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.carousel-card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #3b82f6;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.carousel-card-link:hover {
+    gap: 12px;
+    color: #2563eb;
+}
+
+.carousel-card-link svg {
+    transition: transform 0.3s ease;
+}
+
+.carousel-card-link:hover svg {
+    transform: translateX(4px);
+}
+
+/* Navigation Buttons */
+.carousel-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: white;
+    border: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.carousel-nav-btn:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-nav-btn.prev {
+    left: 0;
+}
+
+.carousel-nav-btn.next {
+    right: 0;
+}
+
+.carousel-nav-btn svg {
+    color: #1a1a2e;
+}
+
+/* Dots Navigation */
+.carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 40px;
+}
+
+.carousel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #cbd5e1;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.carousel-dot:hover {
+    background: #94a3b8;
+    transform: scale(1.2);
+}
+
+.carousel-dot.active {
+    background: #3b82f6;
+    width: 24px;
+    border-radius: 4px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .carousel-story-card {
+        flex: 0 0 calc(50% - 12px);
+        min-width: 280px;
+    }
+    
+    .carousel-stories-wrapper {
+        margin: 0 50px;
+    }
+}
+
+@media (max-width: 768px) {
+    .carousel-stories-section {
+        padding: 60px 0;
+    }
+    
+    .carousel-stories-container {
+        padding: 0 20px;
+    }
+    
+    .carousel-story-card {
+        flex: 0 0 85%;
+        min-width: 260px;
+    }
+    
+    .carousel-stories-wrapper {
+        margin: 0 40px;
+    }
+    
+    .carousel-nav-btn {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .carousel-card-image {
+        height: 220px;
+    }
+    
+    .carousel-card-title {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    .carousel-stories-wrapper {
+        margin: 0;
+    }
+    
+    .carousel-nav-btn {
+        display: none;
+    }
+    
+    .carousel-story-card {
+        flex: 0 0 90%;
+    }
+}

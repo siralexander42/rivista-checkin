@@ -1698,6 +1698,56 @@ app.post('/api/admin/blocks/preview', async (req, res) => {
             initCounterAnimation();
             initImageControls();
             
+            // === CAROUSEL STORIES ===
+            document.querySelectorAll('.carousel-stories-track').forEach(track => {
+                const carouselId = track.getAttribute('data-carousel');
+                const cards = track.querySelectorAll('.carousel-story-card');
+                const prevBtn = document.querySelector(\`.carousel-nav-btn.prev[data-carousel="\${carouselId}"]\`);
+                const nextBtn = document.querySelector(\`.carousel-nav-btn.next[data-carousel="\${carouselId}"]\`);
+                const dots = document.querySelectorAll(\`.carousel-dot[data-carousel="\${carouselId}"]\`);
+                
+                if (cards.length === 0) return;
+                
+                let currentIndex = 0;
+                const cardWidth = cards[0].offsetWidth + 24; // card width + gap
+                
+                function scrollToIndex(index) {
+                    const scrollAmount = index * cardWidth;
+                    track.scrollTo({
+                        left: scrollAmount,
+                        behavior: 'smooth'
+                    });
+                    currentIndex = index;
+                    
+                    // Update dots
+                    dots.forEach((dot, i) => {
+                        dot.classList.toggle('active', i === index);
+                    });
+                }
+                
+                if (prevBtn) {
+                    prevBtn.addEventListener('click', () => {
+                        const newIndex = Math.max(0, currentIndex - 1);
+                        scrollToIndex(newIndex);
+                    });
+                }
+                
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', () => {
+                        const maxIndex = cards.length - 1;
+                        const newIndex = Math.min(maxIndex, currentIndex + 1);
+                        scrollToIndex(newIndex);
+                    });
+                }
+                
+                dots.forEach(dot => {
+                    dot.addEventListener('click', () => {
+                        const index = parseInt(dot.getAttribute('data-index'));
+                        scrollToIndex(index);
+                    });
+                });
+            });
+            
             // IntersectionObserver per Parallasse Block
             const cremonaSections = document.querySelectorAll('.cremona-scroll-section');
             cremonaSections.forEach(section => {
@@ -2179,6 +2229,55 @@ ${blocksHTML}
             initImageControls();
             initCounterAnimation();
             
+            // Inizializza carousel stories
+            document.querySelectorAll('.carousel-stories-track').forEach(track => {
+                const carouselId = track.getAttribute('data-carousel');
+                const cards = track.querySelectorAll('.carousel-story-card');
+                const prevBtn = document.querySelector(\`.carousel-nav-btn.prev[data-carousel="\${carouselId}"]\`);
+                const nextBtn = document.querySelector(\`.carousel-nav-btn.next[data-carousel="\${carouselId}"]\`);
+                const dots = document.querySelectorAll(\`.carousel-dot[data-carousel="\${carouselId}"]\`);
+                
+                if (cards.length === 0) return;
+                
+                let currentIndex = 0;
+                const cardWidth = cards[0].offsetWidth + 24;
+                
+                function scrollToIndex(index) {
+                    const scrollAmount = index * cardWidth;
+                    track.scrollTo({
+                        left: scrollAmount,
+                        behavior: 'smooth'
+                    });
+                    currentIndex = index;
+                    
+                    dots.forEach((dot, i) => {
+                        dot.classList.toggle('active', i === index);
+                    });
+                }
+                
+                if (prevBtn) {
+                    prevBtn.addEventListener('click', () => {
+                        const newIndex = Math.max(0, currentIndex - 1);
+                        scrollToIndex(newIndex);
+                    });
+                }
+                
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', () => {
+                        const maxIndex = cards.length - 1;
+                        const newIndex = Math.min(maxIndex, currentIndex + 1);
+                        scrollToIndex(newIndex);
+                    });
+                }
+                
+                dots.forEach(dot => {
+                    dot.addEventListener('click', () => {
+                        const index = parseInt(dot.getAttribute('data-index'));
+                        scrollToIndex(index);
+                    });
+                });
+            });
+            
             // Inizializza alternanza sfondi hero
             initHeroBackgrounds();
             
@@ -2616,6 +2715,67 @@ function generateBlockHTML(block) {
                 <span>Scorri per esplorare</span>
                 <div class="scroll-arrow">↓</div>
             </div>
+        </div>
+    </section>`;
+        
+        case 'carousel':
+            // Carousel Stories Block - Blocco carousel orizzontale con card storie/articoli
+            const carouselCards = block.cards || [];
+            const carouselId = `carousel-${block._id}`;
+            
+            return `
+    <!-- Carousel Stories Block -->
+    <section class="carousel-stories-section" id="${carouselId}">
+        <div class="carousel-stories-container">
+            ${block.title ? `<h2 class="carousel-stories-title">${block.title}</h2>` : ''}
+            ${block.subtitle ? `<p class="carousel-stories-subtitle">${block.subtitle}</p>` : ''}
+            
+            <div class="carousel-stories-wrapper">
+                <button class="carousel-nav-btn prev" data-carousel="${block._id}" aria-label="Previous">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+                
+                <div class="carousel-stories-track" data-carousel="${block._id}">
+                    ${carouselCards.map((card, idx) => `
+                    <article class="carousel-story-card" data-index="${idx}">
+                        ${card.image ? `
+                        <div class="carousel-card-image">
+                            <img src="${card.image}" alt="${card.title || ''}" loading="lazy">
+                            ${card.category ? `<span class="carousel-card-category">${card.category}</span>` : ''}
+                        </div>
+                        ` : ''}
+                        <div class="carousel-card-content">
+                            ${card.title ? `<h3 class="carousel-card-title">${card.title}</h3>` : ''}
+                            ${card.description ? `<p class="carousel-card-description">${card.description}</p>` : ''}
+                            ${card.link ? `
+                            <a href="${card.link}" class="carousel-card-link">
+                                Scopri di più
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                                </svg>
+                            </a>
+                            ` : ''}
+                        </div>
+                    </article>
+                    `).join('')}
+                </div>
+                
+                <button class="carousel-nav-btn next" data-carousel="${block._id}" aria-label="Next">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
+            </div>
+            
+            ${carouselCards.length > 3 ? `
+            <div class="carousel-dots" data-carousel="${block._id}">
+                ${carouselCards.map((_, idx) => `
+                <button class="carousel-dot ${idx === 0 ? 'active' : ''}" data-index="${idx}" aria-label="Go to slide ${idx + 1}"></button>
+                `).join('')}
+            </div>
+            ` : ''}
         </div>
     </section>`;
         
