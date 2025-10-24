@@ -169,7 +169,6 @@ function displayMagazines(filteredMagazines = null) {
                         ✏️ Modifica
                     </button>
                     ${magazine.status === 'published' ? `
-                    ${magazine.status === 'published' ? `
                     <button class="btn btn-sm btn-success" onclick="window.open('/${magazine.slug}', '_blank')" title="Apri Rivista">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
                             <path d="M18 13v6a2 2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -184,10 +183,7 @@ function displayMagazines(filteredMagazines = null) {
                     <button class="btn btn-sm btn-secondary" onclick="editMagazine('${magazine._id}')" title="Impostazioni">
                         ⚙️
                     </button>
-                    ` : ''}
-                    <button class="btn btn-sm btn-secondary" onclick="editMagazine('${magazine._id}')" title="Impostazioni">
-                        ⚙️
-                    </button>
+                </div>
                 </div>
             </div>
         </div>

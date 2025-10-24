@@ -78,7 +78,10 @@
                         <!-- Visualizzazioni -->
                         <div class="chart-card">
                             <div class="chart-header">
-                                <h3>👁️ Visualizzazioni</h3>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <img src="https://img.icons8.com/fluency/32/visible.png" alt="views"/>
+                                    <h3>Visualizzazioni</h3>
+                                </div>
                                 <span class="chart-trend trend-up">+12%</span>
                             </div>
                             <div class="chart-bars" id="viewsChart">
@@ -89,7 +92,10 @@
                         <!-- Click -->
                         <div class="chart-card">
                             <div class="chart-header">
-                                <h3>🖱️ Click</h3>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <img src="https://img.icons8.com/fluency/32/hand-cursor.png" alt="clicks"/>
+                                    <h3>Click</h3>
+                                </div>
                                 <span class="chart-trend trend-up">+8%</span>
                             </div>
                             <div class="chart-bars" id="clicksChart">
@@ -100,7 +106,10 @@
                         <!-- Tempo di Permanenza -->
                         <div class="chart-card">
                             <div class="chart-header">
-                                <h3>⏱️ Tempo Medio</h3>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <img src="https://img.icons8.com/fluency/32/clock.png" alt="time"/>
+                                    <h3>Tempo Medio</h3>
+                                </div>
                                 <span class="chart-trend trend-down">-3%</span>
                             </div>
                             <div class="chart-bars" id="timeChart">
@@ -400,15 +409,13 @@
             }
             
             seoGrid.innerHTML = magazines.map(mag => {
-                // Score fittizio
-                const score = Math.floor(Math.random() * 40) + 60; // 60-100
-                const scoreClass = score >= 85 ? 'excellent' : score >= 70 ? 'good' : 'poor';
+                // Metriche fittizie individuali
+                const titleScore = Math.floor(Math.random() * 40) + 60;
+                const metaScore = Math.floor(Math.random() * 40) + 60;
+                const imagesScore = Math.floor(Math.random() * 40) + 60;
+                const speedScore = Math.floor(Math.random() * 40) + 60;
                 
-                // Metriche fittizie
-                const titleLength = Math.floor(Math.random() * 20) + 50;
-                const metaLength = Math.floor(Math.random() * 50) + 120;
-                const images = Math.floor(Math.random() * 10) + 5;
-                const loadTime = (Math.random() * 2 + 1).toFixed(1);
+                const getScoreClass = (score) => score >= 85 ? 'excellent' : score >= 70 ? 'good' : 'poor';
                 
                 return `
                     <div class="seo-card">
@@ -417,24 +424,50 @@
                                 <div class="seo-card-title">${mag.name}</div>
                                 <div class="seo-card-edition">${mag.edition}</div>
                             </div>
-                            <div class="seo-score ${scoreClass}">${score}</div>
                         </div>
-                        <div class="seo-metrics">
-                            <div class="seo-metric">
-                                <span class="seo-metric-label">📝 Titolo</span>
-                                <span class="seo-metric-value ${titleLength <= 60 ? 'success' : 'warning'}">${titleLength} caratteri</span>
+                        <div class="seo-metrics-split">
+                            <div class="seo-metric-item">
+                                <img src="https://img.icons8.com/fluency/48/title.png" alt="title" class="seo-icon"/>
+                                <div class="seo-metric-content">
+                                    <div class="seo-metric-label">Titolo</div>
+                                    <div class="seo-metric-bar">
+                                        <div class="seo-metric-fill ${getScoreClass(titleScore)}" style="width: ${titleScore}%"></div>
+                                    </div>
+                                </div>
+                                <div class="seo-score-badge ${getScoreClass(titleScore)}">${titleScore}</div>
                             </div>
-                            <div class="seo-metric">
-                                <span class="seo-metric-label">📄 Meta Description</span>
-                                <span class="seo-metric-value ${metaLength <= 160 ? 'success' : 'warning'}">${metaLength} caratteri</span>
+                            
+                            <div class="seo-metric-item">
+                                <img src="https://img.icons8.com/fluency/48/document.png" alt="meta" class="seo-icon"/>
+                                <div class="seo-metric-content">
+                                    <div class="seo-metric-label">Meta Description</div>
+                                    <div class="seo-metric-bar">
+                                        <div class="seo-metric-fill ${getScoreClass(metaScore)}" style="width: ${metaScore}%"></div>
+                                    </div>
+                                </div>
+                                <div class="seo-score-badge ${getScoreClass(metaScore)}">${metaScore}</div>
                             </div>
-                            <div class="seo-metric">
-                                <span class="seo-metric-label">🖼️ Immagini Ottimizzate</span>
-                                <span class="seo-metric-value success">${images}/${images + 2}</span>
+                            
+                            <div class="seo-metric-item">
+                                <img src="https://img.icons8.com/fluency/48/image.png" alt="images" class="seo-icon"/>
+                                <div class="seo-metric-content">
+                                    <div class="seo-metric-label">Ottimizzazione Immagini</div>
+                                    <div class="seo-metric-bar">
+                                        <div class="seo-metric-fill ${getScoreClass(imagesScore)}" style="width: ${imagesScore}%"></div>
+                                    </div>
+                                </div>
+                                <div class="seo-score-badge ${getScoreClass(imagesScore)}">${imagesScore}</div>
                             </div>
-                            <div class="seo-metric">
-                                <span class="seo-metric-label">⚡ Tempo Caricamento</span>
-                                <span class="seo-metric-value ${loadTime < 2 ? 'success' : 'warning'}">${loadTime}s</span>
+                            
+                            <div class="seo-metric-item">
+                                <img src="https://img.icons8.com/fluency/48/speed.png" alt="speed" class="seo-icon"/>
+                                <div class="seo-metric-content">
+                                    <div class="seo-metric-label">Velocità Caricamento</div>
+                                    <div class="seo-metric-bar">
+                                        <div class="seo-metric-fill ${getScoreClass(speedScore)}" style="width: ${speedScore}%"></div>
+                                    </div>
+                                </div>
+                                <div class="seo-score-badge ${getScoreClass(speedScore)}">${speedScore}</div>
                             </div>
                         </div>
                     </div>
