@@ -14,6 +14,9 @@
     }
 
     function initDepartureBoard() {
+        // Blocca scroll durante loading
+        document.body.style.overflow = 'hidden';
+        
         const flipLetters = document.querySelectorAll('.flip-letter[data-flips]');
         
         let maxDuration = 0;
