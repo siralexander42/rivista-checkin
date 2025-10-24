@@ -18,28 +18,24 @@ document.addEventListener('DOMContentLoaded', function() {
         let currentIndex = 0;
         let isTransitioning = false;
         
-        // INFINITE LOOP: Clone first and last cards
+        // INFINITE LOOP: Clone ALL cards
         if (isInfinite && cards.length > 0) {
-            // Clone first 3 cards and append to end
-            const firstClones = cards.slice(0, 3).map(card => {
+            // Clone ALL cards and append to end
+            cards.forEach(card => {
                 const clone = card.cloneNode(true);
                 clone.classList.add('clone');
-                return clone;
+                track.appendChild(clone);
             });
             
-            // Clone last 3 cards and prepend to start
-            const lastClones = cards.slice(-3).map(card => {
+            // Clone ALL cards and prepend to start
+            [...cards].reverse().forEach(card => {
                 const clone = card.cloneNode(true);
                 clone.classList.add('clone');
-                return clone;
+                track.insertBefore(clone, track.firstChild);
             });
-            
-            // Add clones
-            lastClones.forEach(clone => track.insertBefore(clone, track.firstChild));
-            firstClones.forEach(clone => track.appendChild(clone));
             
             // Start at first real card (after prepended clones)
-            currentIndex = 3;
+            currentIndex = cards.length;
             const cardWidth = cards[0].offsetWidth + 24;
             track.scrollLeft = currentIndex * cardWidth;
         }
@@ -59,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Update dots (only for real cards, not clones)
             if (isInfinite) {
-                const realIndex = (index - 3 + cards.length) % cards.length;
+                const realIndex = (index - cards.length + cards.length) % cards.length;
                 dots.forEach((dot, i) => {
                     dot.classList.toggle('active', i === realIndex);
                 });
@@ -84,12 +80,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     currentIndex--;
                     scrollToIndex(currentIndex);
                     
-                    // Check if we need to "teleport"
-                    if (currentIndex <= 2) {
+                    // If we've gone into the prepended clones, teleport to the real cards at the end
+                    if (currentIndex < cards.length) {
                         isTransitioning = true;
                         setTimeout(() => {
-                            // Jump to end (without animation)
-                            currentIndex = cards.length + 2;
+                            currentIndex = currentIndex + cards.length;
                             scrollToIndex(currentIndex, false);
                             isTransitioning = false;
                         }, 300);
@@ -109,12 +104,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     currentIndex++;
                     scrollToIndex(currentIndex);
                     
-                    // Check if we need to "teleport"
-                    if (currentIndex >= cards.length + 3) {
+                    // If we've gone into the appended clones, teleport to the real cards at the start
+                    if (currentIndex >= cards.length * 2) {
                         isTransitioning = true;
                         setTimeout(() => {
-                            // Jump to start (without animation)
-                            currentIndex = 3;
+                            currentIndex = currentIndex - cards.length;
                             scrollToIndex(currentIndex, false);
                             isTransitioning = false;
                         }, 300);
@@ -130,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
             dot.addEventListener('click', () => {
                 const index = parseInt(dot.getAttribute('data-index'));
                 if (isInfinite) {
-                    scrollToIndex(index + 3); // Offset for clones
+                    scrollToIndex(index + cards.length); // Offset for prepended clones
                 } else {
                     scrollToIndex(index);
                 }

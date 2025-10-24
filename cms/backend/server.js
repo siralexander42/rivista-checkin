@@ -1735,26 +1735,24 @@ app.post('/api/admin/blocks/preview', async (req, res) => {
                 let currentIndex = 0;
                 let isTransitioning = false;
                 
-                // For infinite mode: clone cards to create seamless loop
+                // For infinite mode: clone ALL cards to create seamless loop
                 if (isInfinite) {
-                    const cloneCount = Math.min(3, cards.length);
-                    const firstClones = cards.slice(0, cloneCount).map(card => {
+                    // Clone ALL cards and append to end
+                    cards.forEach(card => {
                         const clone = card.cloneNode(true);
                         clone.classList.add('cloned-card');
-                        return clone;
-                    });
-                    const lastClones = cards.slice(-cloneCount).map(card => {
-                        const clone = card.cloneNode(true);
-                        clone.classList.add('cloned-card');
-                        return clone;
+                        track.appendChild(clone);
                     });
                     
-                    // Prepend last clones and append first clones
-                    lastClones.forEach(clone => track.insertBefore(clone, track.firstChild));
-                    firstClones.forEach(clone => track.appendChild(clone));
+                    // Clone ALL cards and prepend to start
+                    [...cards].reverse().forEach(card => {
+                        const clone = card.cloneNode(true);
+                        clone.classList.add('cloned-card');
+                        track.insertBefore(clone, track.firstChild);
+                    });
                     
                     // Start at the first real card (after prepended clones)
-                    currentIndex = cloneCount;
+                    currentIndex = cards.length;
                 }
                 
                 const cardWidth = cards[0].offsetWidth + 24;
@@ -1768,7 +1766,7 @@ app.post('/api/admin/blocks/preview', async (req, res) => {
                     currentIndex = index;
                     
                     // Update dots (map clone indices to real card indices)
-                    const realIndex = isInfinite ? (index - (isInfinite ? Math.min(3, cards.length) : 0) + cards.length) % cards.length : index;
+                    const realIndex = isInfinite ? (index - cards.length + cards.length) % cards.length : index;
                     dots.forEach((dot, i) => {
                         dot.classList.toggle('active', i === realIndex);
                     });
@@ -1784,23 +1782,21 @@ app.post('/api/admin/blocks/preview', async (req, res) => {
                     prevBtn.addEventListener('click', () => {
                         if (isTransitioning) return;
                         
-                        let newIndex;
                         if (isInfinite) {
-                            newIndex = currentIndex - 1;
-                            scrollToIndex(newIndex);
+                            currentIndex--;
+                            scrollToIndex(currentIndex);
                             
-                            // Check if we've scrolled into the cloned section at the start
-                            const cloneCount = Math.min(3, cards.length);
-                            if (newIndex <= cloneCount - 1) {
+                            // If we've gone into the prepended clones, teleport to the real cards at the end
+                            if (currentIndex < cards.length) {
                                 isTransitioning = true;
                                 setTimeout(() => {
-                                    // Jump to the corresponding real card at the end
-                                    scrollToIndex(cards.length + cloneCount - 1, false);
+                                    currentIndex = currentIndex + cards.length;
+                                    scrollToIndex(currentIndex, false);
                                     isTransitioning = false;
                                 }, 300);
                             }
                         } else {
-                            newIndex = Math.max(0, currentIndex - 1);
+                            const newIndex = Math.max(0, currentIndex - 1);
                             scrollToIndex(newIndex);
                         }
                     });
@@ -1810,24 +1806,21 @@ app.post('/api/admin/blocks/preview', async (req, res) => {
                     nextBtn.addEventListener('click', () => {
                         if (isTransitioning) return;
                         
-                        let newIndex;
                         if (isInfinite) {
-                            newIndex = currentIndex + 1;
-                            scrollToIndex(newIndex);
+                            currentIndex++;
+                            scrollToIndex(currentIndex);
                             
-                            // Check if we've scrolled into the cloned section at the end
-                            const cloneCount = Math.min(3, cards.length);
-                            const totalCards = cards.length + (2 * cloneCount);
-                            if (newIndex >= cards.length + cloneCount) {
+                            // If we've gone into the appended clones, teleport to the real cards at the start
+                            if (currentIndex >= cards.length * 2) {
                                 isTransitioning = true;
                                 setTimeout(() => {
-                                    // Jump to the corresponding real card at the start
-                                    scrollToIndex(cloneCount, false);
+                                    currentIndex = currentIndex - cards.length;
+                                    scrollToIndex(currentIndex, false);
                                     isTransitioning = false;
                                 }, 300);
                             }
                         } else {
-                            newIndex = Math.min(cards.length - 1, currentIndex + 1);
+                            const newIndex = Math.min(cards.length - 1, currentIndex + 1);
                             scrollToIndex(newIndex);
                         }
                     });
@@ -1836,7 +1829,7 @@ app.post('/api/admin/blocks/preview', async (req, res) => {
                 dots.forEach(dot => {
                     dot.addEventListener('click', () => {
                         const index = parseInt(dot.getAttribute('data-index'));
-                        const actualIndex = isInfinite ? index + Math.min(3, cards.length) : index;
+                        const actualIndex = isInfinite ? index + cards.length : index;
                         scrollToIndex(actualIndex);
                     });
                 });
@@ -2465,26 +2458,24 @@ ${blocksHTML}
                 let currentIndex = 0;
                 let isTransitioning = false;
                 
-                // For infinite mode: clone cards to create seamless loop
+                // For infinite mode: clone ALL cards to create seamless loop
                 if (isInfinite) {
-                    const cloneCount = Math.min(3, cards.length);
-                    const firstClones = cards.slice(0, cloneCount).map(card => {
+                    // Clone ALL cards and append to end
+                    cards.forEach(card => {
                         const clone = card.cloneNode(true);
                         clone.classList.add('cloned-card');
-                        return clone;
-                    });
-                    const lastClones = cards.slice(-cloneCount).map(card => {
-                        const clone = card.cloneNode(true);
-                        clone.classList.add('cloned-card');
-                        return clone;
+                        track.appendChild(clone);
                     });
                     
-                    // Prepend last clones and append first clones
-                    lastClones.forEach(clone => track.insertBefore(clone, track.firstChild));
-                    firstClones.forEach(clone => track.appendChild(clone));
+                    // Clone ALL cards and prepend to start
+                    [...cards].reverse().forEach(card => {
+                        const clone = card.cloneNode(true);
+                        clone.classList.add('cloned-card');
+                        track.insertBefore(clone, track.firstChild);
+                    });
                     
                     // Start at the first real card (after prepended clones)
-                    currentIndex = cloneCount;
+                    currentIndex = cards.length;
                 }
                 
                 const cardWidth = cards[0].offsetWidth + 24;
@@ -2498,7 +2489,7 @@ ${blocksHTML}
                     currentIndex = index;
                     
                     // Update dots (map clone indices to real card indices)
-                    const realIndex = isInfinite ? (index - (isInfinite ? Math.min(3, cards.length) : 0) + cards.length) % cards.length : index;
+                    const realIndex = isInfinite ? (index - cards.length + cards.length) % cards.length : index;
                     dots.forEach((dot, i) => {
                         dot.classList.toggle('active', i === realIndex);
                     });
@@ -2514,23 +2505,21 @@ ${blocksHTML}
                     prevBtn.addEventListener('click', () => {
                         if (isTransitioning) return;
                         
-                        let newIndex;
                         if (isInfinite) {
-                            newIndex = currentIndex - 1;
-                            scrollToIndex(newIndex);
+                            currentIndex--;
+                            scrollToIndex(currentIndex);
                             
-                            // Check if we've scrolled into the cloned section at the start
-                            const cloneCount = Math.min(3, cards.length);
-                            if (newIndex <= cloneCount - 1) {
+                            // If we've gone into the prepended clones, teleport to the real cards at the end
+                            if (currentIndex < cards.length) {
                                 isTransitioning = true;
                                 setTimeout(() => {
-                                    // Jump to the corresponding real card at the end
-                                    scrollToIndex(cards.length + cloneCount - 1, false);
+                                    currentIndex = currentIndex + cards.length;
+                                    scrollToIndex(currentIndex, false);
                                     isTransitioning = false;
                                 }, 300);
                             }
                         } else {
-                            newIndex = Math.max(0, currentIndex - 1);
+                            const newIndex = Math.max(0, currentIndex - 1);
                             scrollToIndex(newIndex);
                         }
                     });
@@ -2540,24 +2529,21 @@ ${blocksHTML}
                     nextBtn.addEventListener('click', () => {
                         if (isTransitioning) return;
                         
-                        let newIndex;
                         if (isInfinite) {
-                            newIndex = currentIndex + 1;
-                            scrollToIndex(newIndex);
+                            currentIndex++;
+                            scrollToIndex(currentIndex);
                             
-                            // Check if we've scrolled into the cloned section at the end
-                            const cloneCount = Math.min(3, cards.length);
-                            const totalCards = cards.length + (2 * cloneCount);
-                            if (newIndex >= cards.length + cloneCount) {
+                            // If we've gone into the appended clones, teleport to the real cards at the start
+                            if (currentIndex >= cards.length * 2) {
                                 isTransitioning = true;
                                 setTimeout(() => {
-                                    // Jump to the corresponding real card at the start
-                                    scrollToIndex(cloneCount, false);
+                                    currentIndex = currentIndex - cards.length;
+                                    scrollToIndex(currentIndex, false);
                                     isTransitioning = false;
                                 }, 300);
                             }
                         } else {
-                            newIndex = Math.min(cards.length - 1, currentIndex + 1);
+                            const newIndex = Math.min(cards.length - 1, currentIndex + 1);
                             scrollToIndex(newIndex);
                         }
                     });
@@ -2566,7 +2552,7 @@ ${blocksHTML}
                 dots.forEach(dot => {
                     dot.addEventListener('click', () => {
                         const index = parseInt(dot.getAttribute('data-index'));
-                        const actualIndex = isInfinite ? index + Math.min(3, cards.length) : index;
+                        const actualIndex = isInfinite ? index + cards.length : index;
                         scrollToIndex(actualIndex);
                     });
                 });
