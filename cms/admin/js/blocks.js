@@ -247,18 +247,6 @@ function toggleBlockCard(header) {
 
 // Preview contenuto blocco
 function getBlockPreview(block) {
-    // Helper per icone SVG inline
-    const iconSVG = (path, size = 16) => `<svg style="width:${size}px;height:${size}px;display:inline-block;vertical-align:middle;margin-right:4px;opacity:0.7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">${path}</svg>`;
-    
-    const icons = {
-        document: iconSVG('<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="7" y1="9" x2="17" y2="9"/><line x1="7" y1="13" x2="17" y2="13"/><line x1="7" y1="17" x2="12" y2="17"/>'),
-        image: iconSVG('<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15L16 10L5 21"/>'),
-        box: iconSVG('<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/>'),
-        card: iconSVG('<rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 10h20"/>'),
-        tag: iconSVG('<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>'),
-        quote: iconSVG('<path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/>')
-    };
-    
     switch (block.type) {
         case 'cover':
             const sommarioCount = block.data?.sommario?.length || 0;
@@ -266,8 +254,8 @@ function getBlockPreview(block) {
             return `
                 <h3 style="font-size: 16px; font-weight: 600; color: #0f172a; margin-bottom: 12px;">${block.data?.title || 'Copertina'}</h3>
                 ${block.data?.subtitle ? `<p style="color: #64748b; margin-bottom: 8px;">${block.data.subtitle}</p>` : ''}
-                ${backgroundsCount > 0 ? `<p style="color: #64748b; font-size: 14px; margin-bottom: 6px;">${icons.image}${backgroundsCount} sfondi</p>` : ''}
-                ${sommarioCount > 0 ? `<p style="color: #64748b; font-size: 14px;">${icons.document}${sommarioCount} voci sommario</p>` : ''}
+                ${backgroundsCount > 0 ? `<p style="color: #64748b; font-size: 14px; margin-bottom: 6px;">🖼️ ${backgroundsCount} sfondi</p>` : ''}
+                ${sommarioCount > 0 ? `<p style="color: #64748b; font-size: 14px;">📋 ${sommarioCount} voci sommario</p>` : ''}
             `;
         
         case 'hero':
@@ -289,7 +277,7 @@ function getBlockPreview(block) {
             return `
                 <h3 style="font-size: 16px; font-weight: 600; color: #0f172a; margin-bottom: 8px;">${block.data?.title || 'Gallery Story'}</h3>
                 ${block.data?.subtitle ? `<p style="color: #64748b; margin-bottom: 12px;">${block.data.subtitle}</p>` : ''}
-                ${imagesCount > 0 ? `<p style="color: #64748b; font-size: 14px;">${icons.image}${imagesCount} immagini</p>` : ''}
+                ${imagesCount > 0 ? `<p style="color: #64748b; font-size: 14px;">🖼️ ${imagesCount} immagini</p>` : ''}
             `;
         
         case 'text':
@@ -300,14 +288,14 @@ function getBlockPreview(block) {
         
         case 'quote':
             return `
-                <p style="font-style: italic; font-size: 16px; color: #475569;">${icons.quote}"${block.data?.content || 'Citazione'}"</p>
+                <p style="font-style: italic; font-size: 16px; color: #475569;">💬 "${block.data?.content || 'Citazione'}"</p>
                 ${block.data?.subtitle ? `<p style="margin-top: 8px; color: #64748b;">— ${block.data.subtitle}</p>` : ''}
             `;
         
         case 'video':
             return `
                 <h3 style="font-size: 16px; font-weight: 600; color: #0f172a;">${block.data?.title || 'Video'}</h3>
-                ${block.data?.link ? `<p style="color: #64748b; margin-top: 8px;">${block.data.link}</p>` : '<p style="color: #94a3b8;">Nessun video collegato</p>'}
+                ${block.data?.link ? `<p style="color: #64748b; margin-top: 8px;">🎥 ${block.data.link}</p>` : '<p style="color: #94a3b8;">Nessun video collegato</p>'}
             `;
         
         case 'fluid':
@@ -315,7 +303,7 @@ function getBlockPreview(block) {
             return `
                 <h3 style="font-size: 16px; font-weight: 600; color: #0f172a; margin-bottom: 8px;">${block.data?.title || 'Parallasse Block'}</h3>
                 ${block.data?.subtitle ? `<p style="color: #64748b; margin-bottom: 12px;">${block.data.subtitle}</p>` : ''}
-                ${fluidBlocksCount > 0 ? `<p style="color: #64748b; font-size: 14px;">${icons.box}${fluidBlocksCount} sezioni</p>` : ''}
+                ${fluidBlocksCount > 0 ? `<p style="color: #64748b; font-size: 14px;">📦 ${fluidBlocksCount} sezioni</p>` : ''}
             `;
         
         case 'carousel':
@@ -323,7 +311,7 @@ function getBlockPreview(block) {
             return `
                 <h3 style="font-size: 16px; font-weight: 600; color: #0f172a; margin-bottom: 8px;">${block.data?.title || 'Carousel Storie'}</h3>
                 ${block.data?.subtitle ? `<p style="color: #64748b; margin-bottom: 12px;">${block.data.subtitle}</p>` : ''}
-                ${cardsCount > 0 ? `<p style="color: #64748b; font-size: 14px;">${icons.card}${cardsCount} card</p>` : ''}
+                ${cardsCount > 0 ? `<p style="color: #64748b; font-size: 14px;">🎴 ${cardsCount} card</p>` : ''}
             `;
         
         default:
