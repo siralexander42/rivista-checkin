@@ -700,6 +700,18 @@ https://esempio.com/bg4.jpg" oninput="updateBlockPreview()">${(data.images || []
                 </button>
                 <small style="display: block; margin-top: 8px; color: var(--text-light);">Inserisci almeno 3 card per il carousel</small>
                 
+                <h4 style="margin: 32px 0 16px 0; padding-top: 24px; border-top: 2px solid rgba(99, 102, 241, 0.2);">⚙️ Impostazioni</h4>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="infiniteScroll" ${data.infiniteScroll ? 'checked' : ''} onchange="updateBlockPreview()">
+                        🔄 Scroll Infinito (Circolare)
+                    </label>
+                    <small style="display: block; margin-top: 8px; color: var(--text-light);">
+                        Se attivo, il carousel scorrerà all'infinito tornando alla prima card dopo l'ultima. Altrimenti avrà un inizio e una fine.
+                    </small>
+                </div>
+                
                 <div class="form-group">
                     <label for="summaryTitle">📋 Titolo per il Sommario *</label>
                     <input type="text" id="summaryTitle" required value="${data.summaryTitle || ''}" placeholder="Storie dal mondo">
@@ -863,6 +875,7 @@ async function handleBlockFormSubmit(e) {
     if (type === 'carousel') {
         blockData.summaryTitle = document.getElementById('summaryTitle')?.value || '';
         blockData.cards = collectCarouselCardsData();
+        blockData.infiniteScroll = document.getElementById('infiniteScroll')?.checked || false;
         
         // Validazione
         if (blockData.cards.length < 3) {

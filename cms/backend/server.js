@@ -217,6 +217,10 @@ const blockSchema = new mongoose.Schema({
         link: String,
         cropData: mongoose.Schema.Types.Mixed
     }],
+    infiniteScroll: { // Scroll infinito per carousel
+        type: Boolean,
+        default: false
+    },
     backgroundImage: String, // Immagine di sfondo per gallery block
     position: {
         type: Number,
@@ -1711,6 +1715,7 @@ app.post('/api/admin/blocks/preview', async (req, res) => {
             // === CAROUSEL STORIES ===
             document.querySelectorAll('.carousel-stories-track').forEach(track => {
                 const carouselId = track.getAttribute('data-carousel');
+                const isInfinite = track.getAttribute('data-infinite') === 'true';
                 const cards = track.querySelectorAll('.carousel-story-card');
                 const prevBtn = document.querySelector(\`.carousel-nav-btn.prev[data-carousel="\${carouselId}"]\`);
                 const nextBtn = document.querySelector(\`.carousel-nav-btn.next[data-carousel="\${carouselId}"]\`);
@@ -1733,19 +1738,34 @@ app.post('/api/admin/blocks/preview', async (req, res) => {
                     dots.forEach((dot, i) => {
                         dot.classList.toggle('active', i === index);
                     });
+                    
+                    // Update button visibility (only for non-infinite)
+                    if (!isInfinite && prevBtn && nextBtn) {
+                        prevBtn.style.opacity = currentIndex > 0 ? '1' : '0';
+                        nextBtn.style.opacity = currentIndex < cards.length - 1 ? '1' : '0';
+                    }
                 }
                 
                 if (prevBtn) {
                     prevBtn.addEventListener('click', () => {
-                        const newIndex = Math.max(0, currentIndex - 1);
+                        let newIndex;
+                        if (isInfinite) {
+                            newIndex = currentIndex - 1 < 0 ? cards.length - 1 : currentIndex - 1;
+                        } else {
+                            newIndex = Math.max(0, currentIndex - 1);
+                        }
                         scrollToIndex(newIndex);
                     });
                 }
                 
                 if (nextBtn) {
                     nextBtn.addEventListener('click', () => {
-                        const maxIndex = cards.length - 1;
-                        const newIndex = Math.min(maxIndex, currentIndex + 1);
+                        let newIndex;
+                        if (isInfinite) {
+                            newIndex = (currentIndex + 1) % cards.length;
+                        } else {
+                            newIndex = Math.min(cards.length - 1, currentIndex + 1);
+                        }
                         scrollToIndex(newIndex);
                     });
                 }
@@ -1756,6 +1776,15 @@ app.post('/api/admin/blocks/preview', async (req, res) => {
                         scrollToIndex(index);
                     });
                 });
+                
+                // Initialize button visibility
+                if (!isInfinite && prevBtn && nextBtn) {
+                    prevBtn.style.opacity = '0';
+                    nextBtn.style.opacity = '1';
+                } else if (isInfinite && prevBtn && nextBtn) {
+                    prevBtn.style.opacity = '1';
+                    nextBtn.style.opacity = '1';
+                }
             });
             
             // IntersectionObserver per Parallasse Block
@@ -2357,6 +2386,7 @@ ${blocksHTML}
             // === CAROUSEL STORIES ===
             document.querySelectorAll('.carousel-stories-track').forEach(track => {
                 const carouselId = track.getAttribute('data-carousel');
+                const isInfinite = track.getAttribute('data-infinite') === 'true';
                 const cards = track.querySelectorAll('.carousel-story-card');
                 const prevBtn = document.querySelector(\`.carousel-nav-btn.prev[data-carousel="\${carouselId}"]\`);
                 const nextBtn = document.querySelector(\`.carousel-nav-btn.next[data-carousel="\${carouselId}"]\`);
@@ -2379,19 +2409,34 @@ ${blocksHTML}
                     dots.forEach((dot, i) => {
                         dot.classList.toggle('active', i === index);
                     });
+                    
+                    // Update button visibility (only for non-infinite)
+                    if (!isInfinite && prevBtn && nextBtn) {
+                        prevBtn.style.opacity = currentIndex > 0 ? '1' : '0';
+                        nextBtn.style.opacity = currentIndex < cards.length - 1 ? '1' : '0';
+                    }
                 }
                 
                 if (prevBtn) {
                     prevBtn.addEventListener('click', () => {
-                        const newIndex = Math.max(0, currentIndex - 1);
+                        let newIndex;
+                        if (isInfinite) {
+                            newIndex = currentIndex - 1 < 0 ? cards.length - 1 : currentIndex - 1;
+                        } else {
+                            newIndex = Math.max(0, currentIndex - 1);
+                        }
                         scrollToIndex(newIndex);
                     });
                 }
                 
                 if (nextBtn) {
                     nextBtn.addEventListener('click', () => {
-                        const maxIndex = cards.length - 1;
-                        const newIndex = Math.min(maxIndex, currentIndex + 1);
+                        let newIndex;
+                        if (isInfinite) {
+                            newIndex = (currentIndex + 1) % cards.length;
+                        } else {
+                            newIndex = Math.min(cards.length - 1, currentIndex + 1);
+                        }
                         scrollToIndex(newIndex);
                     });
                 }
@@ -2403,16 +2448,14 @@ ${blocksHTML}
                     });
                 });
                 
-                // Update button visibility on scroll
-                track.addEventListener('scroll', () => {
-                    if (prevBtn) {
-                        prevBtn.style.opacity = track.scrollLeft > 10 ? '1' : '0';
-                    }
-                    if (nextBtn) {
-                        const maxScroll = track.scrollWidth - track.clientWidth;
-                        nextBtn.style.opacity = track.scrollLeft < maxScroll - 10 ? '1' : '0';
-                    }
-                });
+                // Initialize button visibility
+                if (!isInfinite && prevBtn && nextBtn) {
+                    prevBtn.style.opacity = '0';
+                    nextBtn.style.opacity = '1';
+                } else if (isInfinite && prevBtn && nextBtn) {
+                    prevBtn.style.opacity = '1';
+                    nextBtn.style.opacity = '1';
+                }
             });
         });
     </script>
@@ -2809,6 +2852,7 @@ function generateBlockHTML(block) {
             // Carousel Stories Block - Blocco carousel orizzontale con card storie/articoli
             const carouselCards = block.cards || [];
             const carouselId = `carousel-${block._id}`;
+            const infiniteScroll = block.infiniteScroll || false;
             
             return `
     <!-- Carousel Stories Block -->
@@ -2824,7 +2868,7 @@ function generateBlockHTML(block) {
                     </svg>
                 </button>
                 
-                <div class="carousel-stories-track" data-carousel="${block._id}">
+                <div class="carousel-stories-track" data-carousel="${block._id}" data-infinite="${infiniteScroll}">
                     ${carouselCards.map((card, idx) => `
                     <article class="carousel-story-card" data-index="${idx}">
                         ${card.image ? `
