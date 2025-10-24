@@ -2120,11 +2120,18 @@ function generateCarouselCardsFields(cards = []) {
                 <label style="font-size: 13px; font-weight: 600;">URL Immagine *</label>
                 <input type="url" 
                        class="carousel-card-image" 
+                       id="carouselCardImage${index}"
                        placeholder="https://esempio.com/immagine.jpg" 
                        value="${card.image || ''}" 
                        style="width: 100%;"
-                       oninput="updateBlockPreview()">
+                       oninput="updateBlockPreview(); initCarouselCardCropperByElement(this)">
             </div>
+            
+            <div class="form-group">
+                <div id="carouselCropper${index}"></div>
+            </div>
+            
+            <input type="hidden" class="carousel-crop-data" value='${JSON.stringify(card.cropData || {})}'>
             
             <div class="form-group">
                 <label style="font-size: 13px; font-weight: 600;">Titolo *</label>
@@ -2222,11 +2229,18 @@ function addCarouselCard() {
             <label style="font-size: 13px; font-weight: 600;">URL Immagine *</label>
             <input type="url" 
                    class="carousel-card-image" 
+                   id="carouselCardImage${index}"
                    placeholder="https://esempio.com/immagine.jpg" 
                    value="" 
                    style="width: 100%;"
-                   oninput="updateBlockPreview()">
+                   oninput="updateBlockPreview(); initCarouselCardCropperByElement(this)">
         </div>
+        
+        <div class="form-group">
+            <div id="carouselCropper${index}"></div>
+        </div>
+        
+        <input type="hidden" class="carousel-crop-data" value='{}'>
         
         <div class="form-group">
             <label style="font-size: 13px; font-weight: 600;">Titolo *</label>
@@ -2277,6 +2291,18 @@ function addCarouselCard() {
 // Rimuovi card carousel
 function removeCarouselCard(button) {
     const field = button.closest('.carousel-card-field');
+    
+    // Trova l'indice e distruggi il cropper se esiste
+    const imageInput = field.querySelector('.carousel-card-image');
+    if (imageInput && imageInput.id) {
+        const index = imageInput.id.replace('carouselCardImage', '');
+        if (window.carouselCroppers && window.carouselCroppers[index]) {
+            console.log('Distruggo carousel cropper index:', index);
+            window.carouselCroppers[index].destroy();
+            delete window.carouselCroppers[index];
+        }
+    }
+    
     field.remove();
     updateBlockPreview();
     
@@ -2298,6 +2324,12 @@ function collectCarouselCardsData() {
         const description = field.querySelector('.carousel-card-description')?.value.trim();
         const category = field.querySelector('.carousel-card-category')?.value.trim();
         const link = field.querySelector('.carousel-card-link')?.value.trim();
+        const cropDataInput = field.querySelector('.carousel-crop-data');
+        
+        let cropData = {};
+        try {
+            cropData = cropDataInput ? JSON.parse(cropDataInput.value) : {};
+        } catch (e) {}
         
         if (image && title && link) {
             cards.push({
@@ -2305,11 +2337,82 @@ function collectCarouselCardsData() {
                 title,
                 description: description || '',
                 category: category || '',
-                link
+                link,
+                cropData
             });
         }
     });
     
     return cards;
+}
+
+// Inizializza cropper per card carousel usando l'elemento input
+function initCarouselCardCropperByElement(inputElement) {
+    if (!inputElement) return;
+    
+    const imageUrl = inputElement.value.trim();
+    if (!imageUrl) return;
+    
+    // Trova l'indice dal campo
+    const index = inputElement.id ? inputElement.id.replace('carouselCardImage', '') : '';
+    if (!index) {
+        console.error('Impossibile determinare index per carousel card cropper');
+        return;
+    }
+    
+    console.log('initCarouselCardCropperByElement per index:', index);
+    
+    // Trova il container del cropper e il campo hidden per crop data
+    const cropperContainer = document.getElementById(`carouselCropper${index}`);
+    const cardField = inputElement.closest('.carousel-card-field');
+    const cropDataInput = cardField ? cardField.querySelector('.carousel-crop-data') : null;
+    
+    if (!cropperContainer || !cropDataInput) {
+        console.error('Container cropper o cropDataInput non trovato per carousel card index:', index);
+        return;
+    }
+    
+    // Leggi crop data esistente
+    let existingCropData = {};
+    try {
+        existingCropData = cropDataInput ? JSON.parse(cropDataInput.value) : {};
+    } catch (e) {}
+    
+    console.log('Creazione carousel cropper per:', imageUrl);
+    console.log('Existing crop data:', existingCropData);
+    
+    // Distruggi cropper esistente
+    if (window.carouselCroppers && window.carouselCroppers[index]) {
+        window.carouselCroppers[index].destroy();
+        delete window.carouselCroppers[index];
+    }
+    
+    // Inizializza array se non esiste
+    if (!window.carouselCroppers) {
+        window.carouselCroppers = {};
+    }
+    
+    // Crea nuovo cropper con aspect ratio 2:3 (stile portrait per carousel)
+    setTimeout(() => {
+        const targetCropDataInput = cropDataInput;
+        
+        window.carouselCroppers[index] = new ImageCropper(`carouselCropper${index}`, {
+            imageUrl: imageUrl,
+            aspectRatio: 2/3,
+            cropData: existingCropData,
+            onChange: (cropData) => {
+                console.log(`onChange chiamato per carousel cropper ${index}`, cropData);
+                
+                if (targetCropDataInput) {
+                    console.log('Aggiornamento cropData per carousel card index', index);
+                    targetCropDataInput.value = JSON.stringify(cropData);
+                    console.log('Nuovo valore:', targetCropDataInput.value);
+                } else {
+                    console.error('cropDataInput non trovato per carousel card index', index);
+                }
+            }
+        });
+        console.log('Carousel cropper creato per index:', index);
+    }, 200);
 }
 

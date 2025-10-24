@@ -168,7 +168,7 @@ const LoginLog = mongoose.model('LoginLog', loginLogSchema);
 const blockSchema = new mongoose.Schema({
     type: {
         type: String,
-        enum: ['cover', 'hero', 'article', 'gallery', 'text', 'quote', 'video', 'fluid', 'custom'],
+        enum: ['cover', 'hero', 'article', 'gallery', 'text', 'quote', 'video', 'fluid', 'carousel', 'custom'],
         required: true
     },
     title: String,
@@ -206,6 +206,15 @@ const blockSchema = new mongoose.Schema({
     galleryImages: [{ // Gallery images con crop data
         url: String,
         caption: String,
+        cropData: mongoose.Schema.Types.Mixed
+    }],
+    // CAROUSEL BLOCK - Campi specifici
+    cards: [{ // Card carousel con immagini e link
+        image: String,
+        title: String,
+        description: String,
+        category: String,
+        link: String,
         cropData: mongoose.Schema.Types.Mixed
     }],
     backgroundImage: String, // Immagine di sfondo per gallery block
