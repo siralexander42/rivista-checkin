@@ -2081,9 +2081,13 @@ function generateBlockHTML(block) {
             // Genera ID univoco per i controlli immagini
             const storyId = `story-${block._id}`;
             
+            // Background image personalizzata o default
+            const bgImage = block.backgroundImage || 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&q=80';
+            const bgStyle = `background: linear-gradient(180deg, var(--dark) 0%, rgba(26, 26, 46, 0.5) 100%), url('${bgImage}') center/cover fixed;`;
+            
             return `
     <!-- Gallery Story Block -->
-    <section class="story-section${block.style?.backgroundColor === 'dark' ? ' dark' : ''}" id="${storyId}">
+    <section class="story-section${block.style?.backgroundColor === 'dark' ? ' dark' : ''}" id="${storyId}" style="${bgStyle}">
         <div class="story-container">
             <!-- COLONNA SINISTRA: TESTO FISSO -->
             <div class="story-text">
