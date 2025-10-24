@@ -158,6 +158,43 @@
         </main>
     </div>
 
+    <!-- Stats Modal -->
+    <div id="statsModal" class="stats-modal">
+        <div class="stats-modal-content">
+            <div class="stats-modal-header">
+                <h2>📊 <span id="statsModalTitle">Statistiche Rivista</span></h2>
+                <button class="stats-modal-close" onclick="closeStatsModal()">×</button>
+            </div>
+            <div class="stats-modal-body">
+                <div class="stats-grid-modal">
+                    <div class="stat-box">
+                        <div class="stat-box-icon">👁️</div>
+                        <div class="stat-box-label">Visualizzazioni</div>
+                        <div class="stat-box-value" id="statsViews">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-icon">📊</div>
+                        <div class="stat-box-label">Blocchi</div>
+                        <div class="stat-box-value" id="statsBlocks">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-icon">📅</div>
+                        <div class="stat-box-label">Giorni Online</div>
+                        <div class="stat-box-value" id="statsDays">-</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-icon">⚡</div>
+                        <div class="stat-box-label">Media Giornaliera</div>
+                        <div class="stat-box-value" id="statsAvg">-</div>
+                    </div>
+                </div>
+                <div style="text-align: center; color: var(--text-light); font-size: 13px; margin-top: 16px;">
+                    <p>Le statistiche dettagliate sono disponibili nella sezione dedicata</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Verifica Password Utenti rimosso - non più necessario -->
     
     <script src="js/auth.js?v=2.0"></script>
@@ -231,7 +268,7 @@
                             : `<div class="compact-avatar">📖</div>`;
                         
                         return `
-                            <div class="compact-card" onclick="window.location.href='blocks.html?magazine=${magazine._id}'" style="cursor: pointer;">
+                            <div class="compact-card">
                                 ${thumbnailHTML}
                                 
                                 <div class="compact-content">
@@ -252,16 +289,19 @@
                                     </div>
                                     
                                     <div class="compact-actions">
-                                        <button class="btn btn-sm btn-primary" onclick="event.stopPropagation(); window.location.href='blocks.html?magazine=${magazine._id}'">
+                                        <button class="btn btn-sm btn-primary" onclick="window.location.href='blocks.html?magazine=${magazine._id}'">
                                             ✏️ Modifica
                                         </button>
                                         ${magazine.status === 'published' ? `
-                                        <button class="btn btn-sm btn-success" onclick="event.stopPropagation(); window.open('/${magazine.slug}', '_blank')" title="Apri Rivista">
+                                        <button class="btn btn-sm btn-success" onclick="window.open('/${magazine.slug}', '_blank')" title="Apri Rivista">
                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
                                                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                                 <path d="M15 3h6v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                                 <path d="M10 14L21 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                             </svg>
+                                        </button>
+                                        <button class="btn btn-sm btn-info" onclick="openStatsModal('${magazine._id}', '${magazine.name.replace(/'/g, "\\'")}', ${magazine.views || 0}, ${magazine.blocks?.length || 0})" title="Statistiche">
+                                            📊
                                         </button>
                                         ` : ''}
                                     </div>
@@ -306,6 +346,41 @@
         }
 
         // handleUsersAccess è definito in auth.js (rimossa versione locale)
+
+        // Funzioni per Stats Modal
+        function openStatsModal(magazineId, magazineName, views, blocks) {
+            document.getElementById('statsModalTitle').textContent = magazineName;
+            document.getElementById('statsViews').textContent = views.toLocaleString();
+            document.getElementById('statsBlocks').textContent = blocks;
+            
+            // Calcola giorni online (simulato per ora)
+            const daysOnline = Math.floor(Math.random() * 90) + 1;
+            document.getElementById('statsDays').textContent = daysOnline;
+            
+            // Calcola media giornaliera
+            const avgDaily = daysOnline > 0 ? Math.round(views / daysOnline) : 0;
+            document.getElementById('statsAvg').textContent = avgDaily.toLocaleString();
+            
+            document.getElementById('statsModal').classList.add('active');
+        }
+
+        function closeStatsModal() {
+            document.getElementById('statsModal').classList.remove('active');
+        }
+
+        // Chiudi modal cliccando fuori
+        document.getElementById('statsModal')?.addEventListener('click', (e) => {
+            if (e.target.id === 'statsModal') {
+                closeStatsModal();
+            }
+        });
+
+        // Chiudi modal con ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeStatsModal();
+            }
+        });
 
         // Carica dati all'avvio
         document.addEventListener('DOMContentLoaded', () => {

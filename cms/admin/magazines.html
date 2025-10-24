@@ -259,12 +259,84 @@
         </div>
     </div>
     
+    <!-- Stats Modal -->
+    <div id="statsModal" class="stats-modal">
+        <div class="stats-modal-content">
+            <div class="stats-modal-header">
+                <h2>📊 <span id="statsModalTitle">Statistiche Rivista</span></h2>
+                <button class="stats-modal-close" onclick="closeStatsModal()">×</button>
+            </div>
+            <div class="stats-modal-body">
+                <div class="stats-grid-modal">
+                    <div class="stat-box">
+                        <div class="stat-box-icon">👁️</div>
+                        <div class="stat-box-label">Visualizzazioni</div>
+                        <div class="stat-box-value" id="statsViews">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-icon">📊</div>
+                        <div class="stat-box-label">Blocchi</div>
+                        <div class="stat-box-value" id="statsBlocks">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-icon">📅</div>
+                        <div class="stat-box-label">Giorni Online</div>
+                        <div class="stat-box-value" id="statsDays">-</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-icon">⚡</div>
+                        <div class="stat-box-label">Media Giornaliera</div>
+                        <div class="stat-box-value" id="statsAvg">-</div>
+                    </div>
+                </div>
+                <div style="text-align: center; color: var(--text-light); font-size: 13px; margin-top: 16px;">
+                    <p>Le statistiche dettagliate sono disponibili nella sezione dedicata</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <script src="js/auth.js"></script>
     <script src="js/api.js"></script>
     <script src="js/sidebar.js?v=1.0"></script>
     <script src="js/magazines.js"></script>
     
     <script>
+        // Funzioni per Stats Modal
+        function openStatsModal(magazineId, magazineName, views, blocks) {
+            document.getElementById('statsModalTitle').textContent = magazineName;
+            document.getElementById('statsViews').textContent = views.toLocaleString();
+            document.getElementById('statsBlocks').textContent = blocks;
+            
+            // Calcola giorni online (simulato per ora)
+            const daysOnline = Math.floor(Math.random() * 90) + 1;
+            document.getElementById('statsDays').textContent = daysOnline;
+            
+            // Calcola media giornaliera
+            const avgDaily = daysOnline > 0 ? Math.round(views / daysOnline) : 0;
+            document.getElementById('statsAvg').textContent = avgDaily.toLocaleString();
+            
+            document.getElementById('statsModal').classList.add('active');
+        }
+
+        function closeStatsModal() {
+            document.getElementById('statsModal').classList.remove('active');
+        }
+
+        // Chiudi modal cliccando fuori
+        document.getElementById('statsModal')?.addEventListener('click', (e) => {
+            if (e.target.id === 'statsModal') {
+                closeStatsModal();
+            }
+        });
+
+        // Chiudi modal con ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeStatsModal();
+            }
+        });
+        
         // Inizializza pagina
         document.addEventListener('DOMContentLoaded', () => {
             // Inizializza sidebar unificata

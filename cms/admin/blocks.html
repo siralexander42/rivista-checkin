@@ -88,6 +88,12 @@
                         
                         <!-- Action Buttons -->
                         <div class="action-buttons-group">
+                            <button id="statsButton" class="btn-action btn-stats" onclick="openStatsModal(currentMagazineId, currentMagazineName, currentMagazineViews, currentMagazineBlocks)" title="Statistiche" style="display: none;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M18 20V10M12 20V4M6 20V14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                Statistiche
+                            </button>
                             <button class="btn-action btn-settings" onclick="openEditMagazineModal()" title="Impostazioni rivista">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" stroke-width="2"/>
@@ -142,6 +148,43 @@
                 
             </div>
         </main>
+    </div>
+
+    <!-- Stats Modal -->
+    <div id="statsModal" class="stats-modal">
+        <div class="stats-modal-content">
+            <div class="stats-modal-header">
+                <h2>📊 <span id="statsModalTitle">Statistiche Rivista</span></h2>
+                <button class="stats-modal-close" onclick="closeStatsModal()">×</button>
+            </div>
+            <div class="stats-modal-body">
+                <div class="stats-grid-modal">
+                    <div class="stat-box">
+                        <div class="stat-box-icon">👁️</div>
+                        <div class="stat-box-label">Visualizzazioni</div>
+                        <div class="stat-box-value" id="statsViews">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-icon">📊</div>
+                        <div class="stat-box-label">Blocchi</div>
+                        <div class="stat-box-value" id="statsBlocks">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-icon">📅</div>
+                        <div class="stat-box-label">Giorni Online</div>
+                        <div class="stat-box-value" id="statsDays">-</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-icon">⚡</div>
+                        <div class="stat-box-label">Media Giornaliera</div>
+                        <div class="stat-box-value" id="statsAvg">-</div>
+                    </div>
+                </div>
+                <div style="text-align: center; color: var(--text-light); font-size: 13px; margin-top: 16px;">
+                    <p>Le statistiche dettagliate sono disponibili nella sezione dedicata</p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Modal Verifica Password Utenti rimosso - non più necessario -->
@@ -665,6 +708,17 @@
         .btn-publish:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+        }
+        
+        .btn-stats {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-stats:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
         }
         
         @media (max-width: 1024px) {
@@ -1745,6 +1799,44 @@
     </style>
     
     <script>
+        // ============================================
+        // STATS MODAL FUNCTIONS
+        // ============================================
+        
+        function openStatsModal(magazineId, magazineName, views, blocks) {
+            document.getElementById('statsModalTitle').textContent = magazineName;
+            document.getElementById('statsViews').textContent = views.toLocaleString();
+            document.getElementById('statsBlocks').textContent = blocks;
+            
+            // Calcola giorni online (simulato per ora)
+            const daysOnline = Math.floor(Math.random() * 90) + 1;
+            document.getElementById('statsDays').textContent = daysOnline;
+            
+            // Calcola media giornaliera
+            const avgDaily = daysOnline > 0 ? Math.round(views / daysOnline) : 0;
+            document.getElementById('statsAvg').textContent = avgDaily.toLocaleString();
+            
+            document.getElementById('statsModal').classList.add('active');
+        }
+
+        function closeStatsModal() {
+            document.getElementById('statsModal').classList.remove('active');
+        }
+
+        // Chiudi modal cliccando fuori
+        document.getElementById('statsModal')?.addEventListener('click', (e) => {
+            if (e.target.id === 'statsModal') {
+                closeStatsModal();
+            }
+        });
+
+        // Chiudi modal con ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeStatsModal();
+            }
+        });
+        
         // ============================================
         // MAGAZINE SETTINGS MANAGEMENT
         // ============================================

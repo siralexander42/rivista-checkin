@@ -27,6 +27,24 @@ async function loadMagazine() {
         const response = await apiRequest(`/admin/magazines/${magazineId}`);
         magazine = response.data;
         
+        // Salva dati globali per stats modal
+        window.currentMagazineId = magazine._id;
+        window.currentMagazineName = magazine.name;
+        window.currentMagazineViews = magazine.views || 0;
+        window.currentMagazineBlocks = (magazine.blocks || []).length;
+        
+        // Mostra/nascondi pulsante statistiche
+        const statsButton = document.getElementById('statsButton');
+        if (statsButton && magazine.status === 'published') {
+            statsButton.style.display = 'flex';
+            statsButton.onclick = () => openStatsModal(
+                magazine._id, 
+                magazine.name, 
+                magazine.views || 0, 
+                (magazine.blocks || []).length
+            );
+        }
+        
         // Aggiorna header
         document.getElementById('magazineName').textContent = magazine.name;
         document.getElementById('magazineEdition').textContent = `Edizione ${magazine.editionNumber} • ${magazine.edition}`;
