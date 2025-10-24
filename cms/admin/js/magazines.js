@@ -53,6 +53,7 @@ async function loadMagazines() {
         const response = await apiRequest('/admin/magazines');
         magazines = response.data;
         
+        populateYearFilter();
         displayMagazines();
     } catch (error) {
         console.error('Errore caricamento riviste:', error);
@@ -66,6 +67,32 @@ async function loadMagazines() {
             </div>
         `;
     }
+}
+
+// Popola filtro anni
+function populateYearFilter() {
+    const yearFilter = document.getElementById('yearFilter');
+    if (!yearFilter) return;
+    
+    // Estrai anni unici dalle riviste
+    const years = [...new Set(magazines.map(m => {
+        // Estrai anno dalla data di creazione o dall'edizione
+        if (m.createdAt) {
+            return new Date(m.createdAt).getFullYear();
+        }
+        // Prova a estrarre anno dall'edizione (es. "GENNAIO 25" -> 2025)
+        const match = m.edition.match(/\d{2,4}/);
+        if (match) {
+            let year = parseInt(match[0]);
+            if (year < 100) year += 2000; // Converti 25 in 2025
+            return year;
+        }
+        return new Date().getFullYear();
+    }))].sort((a, b) => b - a); // Ordina decrescente
+    
+    // Aggiungi opzioni
+    yearFilter.innerHTML = '<option value="">Tutti gli anni</option>' + 
+        years.map(year => `<option value="${year}">${year}</option>`).join('');
 }
 
 // Mostra riviste
@@ -141,6 +168,15 @@ function displayMagazines(filteredMagazines = null) {
                     <button class="btn btn-sm btn-primary" onclick="editBlocks('${magazine._id}')" title="Modifica Blocchi">
                         ✏️ Modifica
                     </button>
+                    ${magazine.status === 'published' ? `
+                    <button class="btn btn-sm btn-success" onclick="window.open('/${magazine.slug}', '_blank')" title="Apri Rivista">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M15 3h6v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M10 14L21 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                    ` : ''}
                     <button class="btn btn-sm btn-secondary" onclick="editMagazine('${magazine._id}')" title="Impostazioni">
                         ⚙️
                     </button>
@@ -154,6 +190,7 @@ function displayMagazines(filteredMagazines = null) {
 function filterMagazines() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
     const statusFilter = document.getElementById('statusFilter').value;
+    const yearFilter = document.getElementById('yearFilter')?.value;
     
     const filtered = magazines.filter(magazine => {
         const matchesSearch = !searchTerm || 
@@ -163,7 +200,24 @@ function filterMagazines() {
         
         const matchesStatus = !statusFilter || magazine.status === statusFilter;
         
-        return matchesSearch && matchesStatus;
+        // Filtro per anno
+        let matchesYear = true;
+        if (yearFilter) {
+            const year = parseInt(yearFilter);
+            if (magazine.createdAt) {
+                matchesYear = new Date(magazine.createdAt).getFullYear() === year;
+            } else {
+                // Prova a estrarre anno dall'edizione
+                const match = magazine.edition.match(/\d{2,4}/);
+                if (match) {
+                    let editionYear = parseInt(match[0]);
+                    if (editionYear < 100) editionYear += 2000;
+                    matchesYear = editionYear === year;
+                }
+            }
+        }
+        
+        return matchesSearch && matchesStatus && matchesYear;
     });
     
     displayMagazines(filtered);
