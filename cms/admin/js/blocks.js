@@ -247,84 +247,87 @@ function toggleBlockCard(header) {
 
 // Preview contenuto blocco
 function getBlockPreview(block) {
+    // Helper per icone SVG inline
+    const iconSVG = (path, size = 16) => `<svg style="width:${size}px;height:${size}px;display:inline-block;vertical-align:middle;margin-right:4px;opacity:0.7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">${path}</svg>`;
+    
+    const icons = {
+        document: iconSVG('<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="7" y1="9" x2="17" y2="9"/><line x1="7" y1="13" x2="17" y2="13"/><line x1="7" y1="17" x2="12" y2="17"/>'),
+        image: iconSVG('<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15L16 10L5 21"/>'),
+        box: iconSVG('<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/>'),
+        card: iconSVG('<rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 10h20"/>'),
+        tag: iconSVG('<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>'),
+        quote: iconSVG('<path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/>')
+    };
+    
     switch (block.type) {
         case 'cover':
-            const sommarioCount = block.settings?.sommario?.length || 0;
+            const sommarioCount = block.data?.sommario?.length || 0;
+            const backgroundsCount = block.data?.backgrounds?.length || 0;
             return `
-                <h3>📰 ${block.title || 'Copertina'}</h3>
-                ${block.subtitle ? `<p><strong>${block.subtitle}</strong></p>` : ''}
-                ${block.images?.length ? `<p>🖼️ ${block.images.length} immagini di sfondo</p>` : ''}
-                ${sommarioCount > 0 ? `<p>📋 ${sommarioCount} voci nel sommario</p>` : ''}
+                <h3 style="font-size: 16px; font-weight: 600; color: #0f172a; margin-bottom: 12px;">${block.data?.title || 'Copertina'}</h3>
+                ${block.data?.subtitle ? `<p style="color: #64748b; margin-bottom: 8px;">${block.data.subtitle}</p>` : ''}
+                ${backgroundsCount > 0 ? `<p style="color: #64748b; font-size: 14px; margin-bottom: 6px;">${icons.image}${backgroundsCount} sfondi</p>` : ''}
+                ${sommarioCount > 0 ? `<p style="color: #64748b; font-size: 14px;">${icons.document}${sommarioCount} voci sommario</p>` : ''}
             `;
         
         case 'hero':
             return `
-                <h3>${block.title || 'Hero senza titolo'}</h3>
-                ${block.subtitle ? `<p>${block.subtitle}</p>` : ''}
-                ${block.image ? `<img src="${block.image}" alt="${block.title}">` : ''}
+                <h3 style="font-size: 16px; font-weight: 600; color: #0f172a;">${block.data?.title || 'Hero senza titolo'}</h3>
+                ${block.data?.subtitle ? `<p style="color: #64748b; margin-top: 8px;">${block.data.subtitle}</p>` : ''}
+                ${block.data?.image ? `<img src="${block.data.image}" alt="${block.data.title}" style="margin-top: 12px; max-width: 100%; border-radius: 8px;">` : ''}
             `;
         
         case 'article':
             return `
-                <h3>${block.title || 'Articolo senza titolo'}</h3>
-                ${block.content ? `<p>${block.content.substring(0, 150)}...</p>` : ''}
-                ${block.image ? `<img src="${block.image}" alt="${block.title}">` : ''}
+                <h3 style="font-size: 16px; font-weight: 600; color: #0f172a;">${block.data?.title || 'Articolo senza titolo'}</h3>
+                ${block.data?.content ? `<p style="color: #64748b; margin-top: 8px;">${block.data.content.substring(0, 150)}...</p>` : ''}
+                ${block.data?.image ? `<img src="${block.data.image}" alt="${block.data.title}" style="margin-top: 12px; max-width: 100%; border-radius: 8px;">` : ''}
             `;
         
         case 'gallery':
-            const statsCount = block.stats?.length || 0;
-            const featuresCount = block.features?.length || 0;
+            const imagesCount = block.data?.images?.length || 0;
             return `
-                <h3>🖼️ ${block.title || 'Gallery Story'}</h3>
-                ${block.tag ? `<p><span style="background: rgba(34, 197, 94, 0.2); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">${block.tag}</span></p>` : ''}
-                ${block.intro ? `<p style="color: var(--text-light); margin-top: 8px;">${block.intro.substring(0, 100)}...</p>` : ''}
-                ${statsCount > 0 ? `<p style="margin-top: 8px;">📊 ${statsCount} statistiche</p>` : ''}
-                ${block.showQuote && block.quote?.text ? `<p style="margin-top: 8px;">💬 Citazione presente</p>` : ''}
-                ${featuresCount > 0 ? `<p style="margin-top: 8px;">✓ ${featuresCount} features</p>` : ''}
-                <p>🖼️ ${block.images?.length || 0} immagini</p>
-                ${block.darkMode ? '<p style="margin-top: 8px;">🌙 Modalità scura</p>' : ''}
+                <h3 style="font-size: 16px; font-weight: 600; color: #0f172a; margin-bottom: 8px;">${block.data?.title || 'Gallery Story'}</h3>
+                ${block.data?.subtitle ? `<p style="color: #64748b; margin-bottom: 12px;">${block.data.subtitle}</p>` : ''}
+                ${imagesCount > 0 ? `<p style="color: #64748b; font-size: 14px;">${icons.image}${imagesCount} immagini</p>` : ''}
             `;
         
         case 'text':
             return `
-                ${block.title ? `<h3>${block.title}</h3>` : ''}
-                <p>${block.content?.substring(0, 200) || 'Nessun contenuto'}...</p>
+                ${block.data?.title ? `<h3 style="font-size: 16px; font-weight: 600; color: #0f172a; margin-bottom: 8px;">${block.data.title}</h3>` : ''}
+                <p style="color: #64748b;">${block.data?.content?.substring(0, 200) || 'Nessun contenuto'}...</p>
             `;
         
         case 'quote':
             return `
-                <p style="font-style: italic; font-size: 18px;">"${block.content || 'Citazione'}"</p>
-                ${block.subtitle ? `<p style="margin-top: 8px;">— ${block.subtitle}</p>` : ''}
+                <p style="font-style: italic; font-size: 16px; color: #475569;">${icons.quote}"${block.data?.content || 'Citazione'}"</p>
+                ${block.data?.subtitle ? `<p style="margin-top: 8px; color: #64748b;">— ${block.data.subtitle}</p>` : ''}
             `;
         
         case 'video':
             return `
-                <h3>${block.title || 'Video'}</h3>
-                ${block.link ? `<p>🎥 ${block.link}</p>` : '<p>Nessun video collegato</p>'}
+                <h3 style="font-size: 16px; font-weight: 600; color: #0f172a;">${block.data?.title || 'Video'}</h3>
+                ${block.data?.link ? `<p style="color: #64748b; margin-top: 8px;">${block.data.link}</p>` : '<p style="color: #94a3b8;">Nessun video collegato</p>'}
             `;
         
         case 'fluid':
-            const fluidBlocksCount = block.fluidBlocks?.length || 0;
+            const fluidBlocksCount = block.data?.fluidBlocks?.length || 0;
             return `
-                <h3>🌊 ${block.title || 'Parallasse Block'}</h3>
-                ${block.tag ? `<p><span style="background: rgba(211, 228, 252, 0.2); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">${block.tag}</span></p>` : ''}
-                ${block.intro ? `<p style="color: var(--text-light); margin-top: 8px;">${block.intro.substring(0, 100)}...</p>` : ''}
-                ${fluidBlocksCount > 0 ? `<p style="margin-top: 12px;">📄 ${fluidBlocksCount} blocchi di testo con immagini</p>` : ''}
-                ${block.summaryTitle ? `<p style="margin-top: 8px;">📋 Sommario: ${block.summaryTitle}</p>` : ''}
-                ${block.ctaText ? `<p style="margin-top: 8px;">🔗 CTA: ${block.ctaText}</p>` : ''}
+                <h3 style="font-size: 16px; font-weight: 600; color: #0f172a; margin-bottom: 8px;">${block.data?.title || 'Parallasse Block'}</h3>
+                ${block.data?.subtitle ? `<p style="color: #64748b; margin-bottom: 12px;">${block.data.subtitle}</p>` : ''}
+                ${fluidBlocksCount > 0 ? `<p style="color: #64748b; font-size: 14px;">${icons.box}${fluidBlocksCount} sezioni</p>` : ''}
             `;
         
         case 'carousel':
-            const cardsCount = block.cards?.length || 0;
+            const cardsCount = block.data?.cards?.length || 0;
             return `
-                <h3>🎠 ${block.title || 'Carousel Storie'}</h3>
-                ${block.subtitle ? `<p style="color: var(--text-light); margin-top: 8px;">${block.subtitle}</p>` : ''}
-                <p style="margin-top: 12px;">🗂️ ${cardsCount} ${cardsCount === 1 ? 'card' : 'cards'}</p>
-                ${cardsCount > 0 ? `<p style="margin-top: 8px; font-size: 12px; color: var(--text-light);">Clicca per modificare le card</p>` : ''}
+                <h3 style="font-size: 16px; font-weight: 600; color: #0f172a; margin-bottom: 8px;">${block.data?.title || 'Carousel Storie'}</h3>
+                ${block.data?.subtitle ? `<p style="color: #64748b; margin-bottom: 12px;">${block.data.subtitle}</p>` : ''}
+                ${cardsCount > 0 ? `<p style="color: #64748b; font-size: 14px;">${icons.card}${cardsCount} card</p>` : ''}
             `;
         
         default:
-            return '<p>Blocco personalizzato</p>';
+            return '<p style="color: #94a3b8;">Blocco personalizzato</p>';
     }
 }
 
