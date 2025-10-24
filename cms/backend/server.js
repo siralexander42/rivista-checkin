@@ -1942,6 +1942,9 @@ app.post('/api/admin/blocks/preview', async (req, res) => {
 // Servi file di anteprima statici
 app.use('/preview', express.static(path.join(__dirname, 'preview')));
 
+// Servi file statici assets (CSS, JS, immagini) dalla root del progetto
+app.use('/assets', express.static(path.join(__dirname, '../../assets')));
+
 // Genera l'HTML completo della rivista dai blocchi e salva come file preview
 app.post('/api/admin/magazines/:id/generate-html', async (req, res) => {
     try {
