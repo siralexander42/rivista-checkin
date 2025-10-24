@@ -118,38 +118,120 @@
 
     <!-- Modal Verifica Password Utenti rimosso - non più necessario -->
     
-    <!-- Modal Selezione Tipo Blocco -->
+    <!-- Modal Selezione Tipo Blocco - Modern Design -->
     <div id="blockTypesModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Seleziona Tipo di Blocco</h2>
-                <button class="modal-close" onclick="closeBlockTypesModal()">&times;</button>
+        <div class="modal-content modal-block-selector">
+            <div class="modal-header-modern">
+                <div>
+                    <h2 class="modal-title-modern">Crea un nuovo blocco</h2>
+                    <p class="modal-subtitle">Scegli il tipo di contenuto che vuoi aggiungere alla rivista</p>
+                </div>
+                <button class="modal-close-modern" onclick="closeBlockTypesModal()">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                </button>
             </div>
-            <div class="modal-body">
-                <div class="block-types-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; max-width: 800px; margin: 0 auto;">
-                    <div class="block-type-card" onclick="addBlock('cover')" style="background: linear-gradient(135deg, #3C3D8F 0%, #5B5FC7 100%); color: white;">
-                        <div class="block-type-icon" style="font-size: 4rem;">📰</div>
-                        <h3 style="font-size: 1.5rem; margin: 1rem 0;">Copertina</h3>
-                        <p style="font-size: 1rem;">Copertina rivista con sommario dropdown e sfondi multipli animati</p>
+            
+            <div class="modal-body-modern">
+                <div class="block-types-modern-grid">
+                    
+                    <!-- Cover Block -->
+                    <div class="block-type-modern" onclick="addBlock('cover')" data-type="cover">
+                        <div class="block-icon-wrapper" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="3" y="3" width="18" height="18" rx="2" stroke="white" stroke-width="1.5"/>
+                                <path d="M3 9H21" stroke="white" stroke-width="1.5"/>
+                                <path d="M9 9V21" stroke="white" stroke-width="1.5"/>
+                            </svg>
+                        </div>
+                        <div class="block-content-wrapper">
+                            <h3 class="block-title-modern">Copertina</h3>
+                            <p class="block-description-modern">Copertina rivista con sommario dropdown e sfondi multipli animati</p>
+                            <div class="block-tags">
+                                <span class="block-tag">Hero</span>
+                                <span class="block-tag">Animato</span>
+                            </div>
+                        </div>
+                        <div class="block-arrow">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
                     </div>
                     
-                    <div class="block-type-card" onclick="addBlock('fluid')" style="background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%); color: white; border: 1px solid rgba(211, 228, 252, 0.2);">
-                        <div class="block-type-icon" style="font-size: 4rem;">🌊</div>
-                        <h3 style="font-size: 1.5rem; margin: 1rem 0;">Fluid Block</h3>
-                        <p style="font-size: 1rem;">Testo scrollabile con immagini che cambiano in parallelo. Stile Apple/Wanderlust</p>
+                    <!-- Fluid Block -->
+                    <div class="block-type-modern" onclick="addBlock('fluid')" data-type="fluid">
+                        <div class="block-icon-wrapper" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3 12C3 12 5.5 7 12 7C18.5 7 21 12 21 12C21 12 18.5 17 12 17C5.5 17 3 12 3 12Z" stroke="white" stroke-width="1.5"/>
+                                <circle cx="12" cy="12" r="3" stroke="white" stroke-width="1.5"/>
+                            </svg>
+                        </div>
+                        <div class="block-content-wrapper">
+                            <h3 class="block-title-modern">Fluid Block</h3>
+                            <p class="block-description-modern">Testo scrollabile con immagini che cambiano in parallelo. Stile Apple</p>
+                            <div class="block-tags">
+                                <span class="block-tag">Parallasse</span>
+                                <span class="block-tag">Premium</span>
+                            </div>
+                        </div>
+                        <div class="block-arrow">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
                     </div>
                     
-                    <div class="block-type-card" onclick="addBlock('gallery')" style="background: linear-gradient(135deg, #134e4a 0%, #047857 100%); color: white;">
-                        <div class="block-type-icon" style="font-size: 4rem;">🖼️</div>
-                        <h3 style="font-size: 1.5rem; margin: 1rem 0;">Gallery Story</h3>
-                        <p style="font-size: 1rem;">Blocco completo con galleria, stats animate, citazione e features. Mix dei migliori elementi</p>
+                    <!-- Gallery Story -->
+                    <div class="block-type-modern" onclick="addBlock('gallery')" data-type="gallery">
+                        <div class="block-icon-wrapper" style="background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="2" y="6" width="20" height="14" rx="2" stroke="white" stroke-width="1.5"/>
+                                <path d="M2 14L7 9L12 14L17 9L22 14" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="8.5" cy="10.5" r="1.5" fill="white"/>
+                            </svg>
+                        </div>
+                        <div class="block-content-wrapper">
+                            <h3 class="block-title-modern">Gallery Story</h3>
+                            <p class="block-description-modern">Blocco completo con galleria, stats animate e citazioni premium</p>
+                            <div class="block-tags">
+                                <span class="block-tag">Rich Media</span>
+                                <span class="block-tag">Stats</span>
+                            </div>
+                        </div>
+                        <div class="block-arrow">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
                     </div>
                     
-                    <div class="block-type-card" onclick="addBlock('carousel')" style="background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%); color: white;">
-                        <div class="block-type-icon" style="font-size: 4rem;">🎠</div>
-                        <h3 style="font-size: 1.5rem; margin: 1rem 0;">Carousel Storie</h3>
-                        <p style="font-size: 1rem;">Carousel orizzontale con card storie/articoli. Stile Relais & Châteaux per presentare contenuti</p>
+                    <!-- Carousel -->
+                    <div class="block-type-modern" onclick="addBlock('carousel')" data-type="carousel">
+                        <div class="block-icon-wrapper" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="5" y="4" width="14" height="16" rx="2" stroke="white" stroke-width="1.5"/>
+                                <path d="M2 8V16C2 16.5523 2.44772 17 3 17H4" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                                <path d="M22 8V16C22 16.5523 21.5523 17 21 17H20" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                                <circle cx="12" cy="12" r="2" fill="white"/>
+                            </svg>
+                        </div>
+                        <div class="block-content-wrapper">
+                            <h3 class="block-title-modern">Carousel Storie</h3>
+                            <p class="block-description-modern">Carousel orizzontale con card storie. Perfetto per presentare contenuti</p>
+                            <div class="block-tags">
+                                <span class="block-tag">Swipe</span>
+                                <span class="block-tag">Multi-card</span>
+                            </div>
+                        </div>
+                        <div class="block-arrow">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
                     </div>
+                    
                 </div>
             </div>
         </div>
@@ -277,6 +359,264 @@
             border-radius: var(--radius-sm);
             margin-top: 12px;
         }
+        
+        
+        /* ============================================
+           MODERN BLOCK SELECTOR - Premium Design
+           ============================================ */
+        
+        /* Keyframe Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        /* Modal Base Styles */
+        .modal-block-selector {
+            max-width: 920px !important;
+            padding: 0;
+            border-radius: 16px;
+            overflow: hidden;
+            animation: fadeIn 0.2s ease;
+        }
+        
+        /* Modern Modal Header */
+        .modal-header-modern {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 32px 40px 24px;
+            background: linear-gradient(180deg, #fafbfc 0%, #ffffff 100%);
+            border-bottom: 1px solid #f0f1f3;
+        }
+        
+        .modal-title-modern {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0;
+            letter-spacing: -0.02em;
+        }
+        
+        .modal-subtitle {
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 6px;
+            font-weight: 400;
+        }
+        
+        .modal-close-modern {
+            background: transparent;
+            border: none;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #64748b;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            flex-shrink: 0;
+        }
+        
+        .modal-close-modern:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+        
+        .modal-close-modern:active {
+            transform: scale(0.95);
+        }
+        
+        /* Modern Modal Body */
+        .modal-body-modern {
+            padding: 32px 40px 40px;
+            background: #ffffff;
+        }
+        
+        /* Block Types Grid - Modern Layout */
+        .block-types-modern-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+            gap: 16px;
+        }
+        
+        @media (max-width: 920px) {
+            .block-types-modern-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Modern Block Type Card */
+        .block-type-modern {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px;
+            background: #ffffff;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .block-type-modern::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.03) 0%, rgba(168, 85, 247, 0.03) 100%);
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+        
+        .block-type-modern:hover {
+            border-color: #6366f1;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.12), 0 0 0 1px rgba(99, 102, 241, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .block-type-modern:hover .block-icon-wrapper {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            transform: scale(1.05);
+        }
+        
+        .block-type-modern:hover::before {
+            opacity: 1;
+        }
+        
+        .block-type-modern:active {
+            transform: translateY(0);
+        }
+        
+        /* Icon Wrapper */
+        .block-icon-wrapper {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Content Wrapper */
+        .block-content-wrapper {
+            flex: 1;
+            min-width: 0;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .block-title-modern {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0f172a;
+            margin: 0 0 6px 0;
+            letter-spacing: -0.01em;
+        }
+        
+        .block-description-modern {
+            font-size: 13px;
+            color: #64748b;
+            line-height: 1.5;
+            margin: 0 0 10px 0;
+        }
+        
+        /* Tags */
+        .block-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        
+        .block-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 8px;
+            background: #f1f5f9;
+            color: #475569;
+            font-size: 11px;
+            font-weight: 500;
+            border-radius: 6px;
+            letter-spacing: 0.01em;
+        }
+        
+        /* Arrow */
+        .block-arrow {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #cbd5e1;
+            transition: all 0.25s ease;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .block-type-modern:hover .block-arrow {
+            color: #6366f1;
+            transform: translateX(4px);
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 600px) {
+            .modal-header-modern {
+                padding: 24px 24px 20px;
+            }
+            
+            .modal-body-modern {
+                padding: 24px;
+            }
+            
+            .modal-title-modern {
+                font-size: 20px;
+            }
+            
+            .block-type-modern {
+                padding: 16px;
+            }
+            
+            .block-icon-wrapper {
+                width: 48px;
+                height: 48px;
+            }
+            
+            .block-icon-wrapper svg {
+                width: 24px;
+                height: 24px;
+            }
+        }
+        
+        /* ============================================
+           END MODERN BLOCK SELECTOR
+           ============================================ */
         
         /* Block Types Grid */
         .block-types-grid {

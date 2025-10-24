@@ -238,14 +238,32 @@ function getBlockPreview(block) {
     }
 }
 
-// Mostra modal tipi blocco
+// Mostra modal tipi blocco con animazione moderna
 function showBlockTypesModal() {
-    document.getElementById('blockTypesModal').classList.add('active');
+    const modal = document.getElementById('blockTypesModal');
+    modal.classList.add('active');
+    
+    // Anima le card in sequenza
+    setTimeout(() => {
+        const cards = modal.querySelectorAll('.block-type-modern');
+        cards.forEach((card, index) => {
+            setTimeout(() => {
+                card.style.animation = 'slideInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards';
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 10);
+            }, index * 60);
+        });
+    }, 50);
 }
 
 // Chiudi modal tipi blocco
 function closeBlockTypesModal() {
-    document.getElementById('blockTypesModal').classList.remove('active');
+    const modal = document.getElementById('blockTypesModal');
+    modal.classList.remove('active');
 }
 
 // Aggiungi nuovo blocco
