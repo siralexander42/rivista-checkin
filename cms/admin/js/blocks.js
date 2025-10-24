@@ -243,6 +243,9 @@ function showBlockTypesModal() {
     const modal = document.getElementById('blockTypesModal');
     modal.classList.add('active');
     
+    // Blocca scroll della pagina sottostante
+    document.body.style.overflow = 'hidden';
+    
     // Anima le card in sequenza
     setTimeout(() => {
         const cards = modal.querySelectorAll('.block-type-modern');
@@ -264,6 +267,9 @@ function showBlockTypesModal() {
 function closeBlockTypesModal() {
     const modal = document.getElementById('blockTypesModal');
     modal.classList.remove('active');
+    
+    // Ripristina scroll della pagina
+    document.body.style.overflow = '';
 }
 
 // Aggiungi nuovo blocco
@@ -281,6 +287,9 @@ async function addBlock(type) {
     generateBlockForm(type);
     
     document.getElementById('editBlockModal').classList.add('active');
+    
+    // Blocca scroll della pagina sottostante
+    document.body.style.overflow = 'hidden';
 }
 
 // Modifica blocco esistente
@@ -298,6 +307,9 @@ function editBlock(blockId) {
     generateBlockForm(block.type, block);
     
     document.getElementById('editBlockModal').classList.add('active');
+    
+    // Blocca scroll della pagina sottostante
+    document.body.style.overflow = 'hidden';
 }
 
 // Genera form dinamico basato sul tipo di blocco
@@ -957,6 +969,9 @@ async function handleBlockFormSubmit(e) {
 function closeEditBlockModal() {
     document.getElementById('editBlockModal').classList.remove('active');
     currentBlock = null;
+    
+    // Ripristina scroll della pagina
+    document.body.style.overflow = '';
 }
 
 // Toggle visibilità blocco
