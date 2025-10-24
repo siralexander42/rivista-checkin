@@ -129,7 +129,9 @@ function setActivePage(activePage) {
         'logs': { href: 'logs.html' },
         'developer': { id: 'devModeNavItem' },
         'blocks': { href: 'blocks.html' },
-        'articles': { href: 'articles.html' }
+        'articles': { href: 'articles.html' },
+        'adv': { href: 'adv.html' },
+        'statistiche': { href: 'statistiche.html' }
     };
     
     const target = pageMap[activePage];
@@ -219,7 +221,7 @@ function renderSidebar() {
                 <a href="#" class="nav-item" id="devModeNavItem" style="display: none;">
                     <span>Modalità Sviluppatore</span>
                 </a>
-                <a href="#" class="nav-item" id="advNavItem">
+                <a href="adv.html" class="nav-item">
                     <span>ADV</span>
                 </a>
             </nav>
