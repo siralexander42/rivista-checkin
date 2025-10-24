@@ -89,36 +89,72 @@ function displayBlocks() {
     blocksList.style.display = 'flex';
     emptyState.style.display = 'none';
     
-    blocksList.innerHTML = blocks.map((block, index) => `
-        <div class="block-item" draggable="true" data-block-id="${block._id}" data-position="${index}">
-            <div class="block-header">
-                <div style="display: flex; align-items: center; gap: 16px;">
-                    <svg class="drag-handle" title="Trascina per riordinare" style="width: 20px; height: 20px; color: var(--text-light); cursor: grab;" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 50 50"><path d="M 0 7.5 L 0 12.5 L 50 12.5 L 50 7.5 Z M 0 22.5 L 0 27.5 L 50 27.5 L 50 22.5 Z M 0 37.5 L 0 42.5 L 50 42.5 L 50 37.5 Z"/></svg>
-                    <div>
-                        <div class="block-type-badge">
-                            ${getBlockIcon(block.type)}
-                            ${getBlockTypeName(block.type)}
+    blocksList.innerHTML = blocks.map((block, index) => {
+        const preview = getBlockPreview(block);
+        const hasContent = preview && preview.trim().length > 0;
+        
+        return `
+        <div class="block-card-modern" draggable="true" data-block-id="${block._id}" data-position="${index}">
+            <!-- Header Card - Sempre Visibile -->
+            <div class="block-card-header" onclick="toggleBlockCard(this)">
+                <div class="block-card-left">
+                    <svg class="drag-handle-modern" title="Trascina per riordinare" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 50 50">
+                        <path d="M 0 7.5 L 0 12.5 L 50 12.5 L 50 7.5 Z M 0 22.5 L 0 27.5 L 50 27.5 L 50 22.5 Z M 0 37.5 L 0 42.5 L 50 42.5 L 50 37.5 Z"/>
+                    </svg>
+                    
+                    <div class="block-icon-badge">
+                        ${getBlockIcon(block.type)}
+                    </div>
+                    
+                    <div class="block-card-info">
+                        <div class="block-card-title-row">
+                            <span class="block-card-type">${getBlockTypeName(block.type)}</span>
+                            ${!block.visible ? '<span class="block-status-badge hidden">Nascosto</span>' : '<span class="block-status-badge visible">Visibile</span>'}
                         </div>
-                        ${!block.visible ? '<span class="badge" style="margin-left: 8px; background: #fef3c7; color: #92400e;"><svg style="width: 14px; height: 14px; display: inline-block; vertical-align: middle;" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 50 50"><path d="M 4.9375 3.96875 L 3.96875 4.9375 L 10.21875 11.1875 C 7.753906 13.691406 5.882813 16.679688 4.625 19.40625 C 4.429688 19.839844 4.425781 20.335938 4.613281 20.769531 C 7.929688 28.683594 15.757813 34 25 34 C 28.347656 34 31.515625 33.234375 34.34375 31.90625 L 45.0625 42.625 L 46.03125 41.65625 Z M 25 7 C 21.652344 7 18.484375 7.765625 15.65625 9.09375 L 18.28125 11.71875 C 20.394531 10.617188 22.851563 10 25 10 C 33.527344 10 40.664063 15.773438 43.375 23.8125 C 42.699219 25.621094 41.800781 27.308594 40.75 28.875 L 43.0625 31.1875 C 44.535156 29.160156 45.734375 26.945313 46.59375 24.59375 C 46.789063 24.160156 46.792969 23.664063 46.605469 23.230469 C 43.289063 15.316406 35.460938 10 25 10 C 24.996094 10 25.003906 10 25 10 Z M 25 15 C 23.203125 15 21.585938 15.605469 20.3125 16.59375 L 23.40625 19.6875 C 23.910156 19.265625 24.523438 19 25.1875 19 C 26.746094 19 28 20.253906 28 21.8125 C 28 22.476563 27.734375 23.089844 27.3125 23.59375 L 30.40625 26.6875 C 31.394531 25.414063 32 23.796875 32 22 C 32 18.136719 28.863281 15 25 15 Z M 12.5 17.15625 C 11.027344 19.183594 9.828125 21.398438 8.96875 23.75 C 8.773438 24.183594 8.769531 24.679688 8.957031 25.113281 C 12.273438 33.027344 20.101563 38.34375 30.34375 38.34375 C 32.898438 38.34375 35.328125 37.878906 37.5625 37.0625 L 34.75 34.25 C 31.921875 35.566406 28.753906 36.34375 25.40625 36.34375 C 16.878906 36.34375 9.742188 30.570313 7.03125 22.53125 C 7.707031 20.722656 8.605469 19.035156 9.65625 17.46875 Z M 25 24 C 25.203125 24 25.402344 24.019531 25.59375 24.0625 L 20.0625 18.53125 C 20.019531 18.722656 20 18.921875 20 19.125 C 20 21.886719 22.238281 24.125 25 24.125 Z"/></svg> Nascosto</span>' : ''}
+                        <div class="block-card-meta">
+                            ${getBlockMeta(block)}
+                        </div>
                     </div>
                 </div>
-                <div class="block-actions">
-                    <button class="btn btn-sm btn-secondary" onclick="editBlock('${block._id}')">
-                        <svg style="width: 14px; height: 14px;" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 50 50"><path d="M 43.125 2 C 41.878906 2 40.636719 2.488281 39.6875 3.4375 L 38.875 4.25 L 45.75 11.125 C 45.746094 11.128906 46.5625 10.3125 46.5625 10.3125 C 48.464844 8.410156 48.460938 5.335938 46.5625 3.4375 C 45.609375 2.484375 44.371094 2 43.125 2 Z M 37.34375 6.03125 C 37.117188 6.0625 36.90625 6.175781 36.75 6.34375 L 4.3125 38.8125 C 4.183594 38.929688 4.085938 39.082031 4.03125 39.25 L 2.03125 46.75 C 1.941406 47.09375 2.042969 47.457031 2.292969 47.707031 C 2.542969 47.957031 2.90625 48.058594 3.25 47.96875 L 10.75 45.96875 C 10.917969 45.914063 11.070313 45.816406 11.1875 45.6875 L 43.65625 13.25 C 44.054688 12.863281 44.058594 12.226563 43.671875 11.828125 C 43.285156 11.429688 42.648438 11.425781 42.25 11.8125 L 9.96875 44.09375 L 5.90625 40.03125 L 38.1875 7.75 C 38.488281 7.460938 38.578125 7.011719 38.410156 6.628906 C 38.242188 6.246094 37.855469 6.007813 37.4375 6.03125 C 37.40625 6.03125 37.375 6.03125 37.34375 6.03125 Z"/></svg> Modifica
+                
+                <div class="block-card-right">
+                    <button class="btn-icon-modern btn-icon-edit" onclick="event.stopPropagation(); editBlock('${block._id}')" title="Modifica">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M18.5 2.50001C18.8978 2.10219 19.4374 1.87869 20 1.87869C20.5626 1.87869 21.1022 2.10219 21.5 2.50001C21.8978 2.89784 22.1213 3.43741 22.1213 4.00001C22.1213 4.56262 21.8978 5.10219 21.5 5.50001L12 15L8 16L9 12L18.5 2.50001Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
                     </button>
-                    <button class="btn btn-sm ${block.visible ? 'btn-secondary' : 'btn-success'}" onclick="toggleBlockVisibility('${block._id}')">
-                        ${block.visible ? '<svg style="width: 14px; height: 14px;" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 50 50"><path d="M 4.9375 3.96875 L 3.96875 4.9375 L 10.21875 11.1875 C 7.753906 13.691406 5.882813 16.679688 4.625 19.40625 C 4.429688 19.839844 4.425781 20.335938 4.613281 20.769531 C 7.929688 28.683594 15.757813 34 25 34 C 28.347656 34 31.515625 33.234375 34.34375 31.90625 L 45.0625 42.625 L 46.03125 41.65625 Z M 25 7 C 21.652344 7 18.484375 7.765625 15.65625 9.09375 L 18.28125 11.71875 C 20.394531 10.617188 22.851563 10 25 10 C 33.527344 10 40.664063 15.773438 43.375 23.8125 C 42.699219 25.621094 41.800781 27.308594 40.75 28.875 L 43.0625 31.1875 C 44.535156 29.160156 45.734375 26.945313 46.59375 24.59375 C 46.789063 24.160156 46.792969 23.664063 46.605469 23.230469 C 43.289063 15.316406 35.460938 10 25 10 C 24.996094 10 25.003906 10 25 10 Z M 25 15 C 23.203125 15 21.585938 15.605469 20.3125 16.59375 L 23.40625 19.6875 C 23.910156 19.265625 24.523438 19 25.1875 19 C 26.746094 19 28 20.253906 28 21.8125 C 28 22.476563 27.734375 23.089844 27.3125 23.59375 L 30.40625 26.6875 C 31.394531 25.414063 32 23.796875 32 22 C 32 18.136719 28.863281 15 25 15 Z M 12.5 17.15625 C 11.027344 19.183594 9.828125 21.398438 8.96875 23.75 C 8.773438 24.183594 8.769531 24.679688 8.957031 25.113281 C 12.273438 33.027344 20.101563 38.34375 30.34375 38.34375 C 32.898438 38.34375 35.328125 37.878906 37.5625 37.0625 L 34.75 34.25 C 31.921875 35.566406 28.753906 36.34375 25.40625 36.34375 C 16.878906 36.34375 9.742188 30.570313 7.03125 22.53125 C 7.707031 20.722656 8.605469 19.035156 9.65625 17.46875 Z M 25 24 C 25.203125 24 25.402344 24.019531 25.59375 24.0625 L 20.0625 18.53125 C 20.019531 18.722656 20 18.921875 20 19.125 C 20 21.886719 22.238281 24.125 25 24.125 Z"/></svg>' : '<svg style="width: 14px; height: 14px;" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 50 50"><path d="M 25 7 C 14.757813 7 6.929688 15.316406 3.613281 23.230469 C 3.425781 23.664063 3.429688 24.160156 3.625 24.59375 C 6.941406 32.507813 14.769531 40.824219 25.011719 40.824219 C 35.253906 40.824219 43.082031 32.507813 46.398438 24.59375 C 46.59375 24.160156 46.597656 23.664063 46.410156 23.230469 C 43.09375 15.316406 35.265625 7 25 7 Z M 25 10 C 33.527344 10 40.664063 16.726563 43.375 23.8125 C 40.675781 30.886719 33.539063 37.613281 25.011719 37.613281 C 16.484375 37.613281 9.347656 30.886719 6.636719 23.8125 C 9.335938 16.726563 16.472656 10 25 10 Z M 25 15 C 21.136719 15 18 18.136719 18 22 C 18 25.863281 21.136719 29 25 29 C 28.863281 29 32 25.863281 32 22 C 32 18.136719 28.863281 15 25 15 Z M 25 19 C 26.746094 19 28 20.253906 28 22 C 28 23.746094 26.746094 25 25 25 C 23.253906 25 22 23.746094 22 22 C 22 20.253906 23.253906 19 25 19 Z"/></svg>'} ${block.visible ? 'Nascondi' : 'Mostra'}
+                    <button class="btn-icon-modern ${block.visible ? 'btn-icon-hide' : 'btn-icon-show'}" onclick="event.stopPropagation(); toggleBlockVisibility('${block._id}')" title="${block.visible ? 'Nascondi' : 'Mostra'}">
+                        ${block.visible ? 
+                            '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.94 17.94C16.2306 19.243 14.1491 19.9649 12 20C5 20 1 12 1 12C2.24389 9.68192 3.96914 7.65663 6.06 6.06L17.94 17.94Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M1 1L23 23" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.59 10.59C10.2087 10.9712 9.9092 11.4251 9.70848 11.9241C9.50777 12.4232 9.40997 12.9575 9.42054 13.4952C9.43111 14.0329 9.54989 14.5631 9.77005 15.0535C9.99022 15.5439 10.3071 15.9845 10.7019 16.3481C11.0967 16.7118 11.5613 16.9915 12.0679 17.1695C12.5745 17.3474 13.1122 17.4198 13.6495 17.3826C14.1869 17.3454 14.7118 17.1993 15.1914 16.9532C15.671 16.7071 16.0958 16.3663 16.4401 15.9501" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' :
+                            '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+                        }
                     </button>
-                    <button class="btn btn-sm btn-danger" onclick="deleteBlock('${block._id}')">
-                        <svg style="width: 14px; height: 14px;" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 30 30"><path d="M 13 3 A 1.0001 1.0001 0 0 0 11.986328 4 L 6 4 A 1.0001 1.0001 0 1 0 6 6 L 24 6 A 1.0001 1.0001 0 1 0 24 4 L 18.013672 4 A 1.0001 1.0001 0 0 0 17 3 L 13 3 z M 6 8 L 6 24 C 6 25.105 6.895 26 8 26 L 22 26 C 23.105 26 24 25.105 24 24 L 24 8 L 6 8 z"/></svg> Elimina
+                    <button class="btn-icon-modern btn-icon-delete" onclick="event.stopPropagation(); deleteBlock('${block._id}')" title="Elimina">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 6H5H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                    <button class="btn-icon-modern btn-icon-expand" title="${hasContent ? 'Espandi/Comprimi' : 'Nessun contenuto'}">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
                     </button>
                 </div>
             </div>
-            <div class="block-content-preview">
-                ${getBlockPreview(block)}
+            
+            <!-- Body Card - Collassabile -->
+            ${hasContent ? `
+            <div class="block-card-body">
+                <div class="block-card-content">
+                    ${preview}
+                </div>
             </div>
+            ` : ''}
         </div>
-    `).join('');
+        `;
+    }).join('');
     
     // Aggiungi drag & drop
     initDragAndDrop();
@@ -149,10 +185,55 @@ function getBlockTypeName(type) {
         text: 'Testo',
         quote: 'Citazione',
         video: 'Video',
-        fluid: 'Parallasse Block',
+        fluid: 'Fluid Block',
+        carousel: 'Carousel',
         custom: 'Personalizzato'
     };
     return names[type] || 'Sconosciuto';
+}
+
+// Meta info per ogni tipo di blocco
+function getBlockMeta(block) {
+    const parts = [];
+    
+    switch(block.type) {
+        case 'cover':
+            if (block.data?.title) parts.push(`📝 ${block.data.title}`);
+            if (block.data?.sommario?.length) parts.push(`📋 ${block.data.sommario.length} voci sommario`);
+            if (block.data?.backgrounds?.length) parts.push(`🖼️ ${block.data.backgrounds.length} sfondi`);
+            break;
+        case 'fluid':
+            if (block.data?.fluidBlocks?.length) parts.push(`📦 ${block.data.fluidBlocks.length} sezioni`);
+            break;
+        case 'gallery':
+            if (block.data?.title) parts.push(`📝 ${block.data.title}`);
+            if (block.data?.images?.length) parts.push(`🖼️ ${block.data.images.length} immagini`);
+            break;
+        case 'carousel':
+            if (block.data?.title) parts.push(`📝 ${block.data.title}`);
+            if (block.data?.cards?.length) parts.push(`🎴 ${block.data.cards.length} card`);
+            break;
+    }
+    
+    return parts.length > 0 ? parts.join(' • ') : 'Nessuna info disponibile';
+}
+
+// Toggle espansione card
+function toggleBlockCard(header) {
+    const card = header.closest('.block-card-modern');
+    const body = card.querySelector('.block-card-body');
+    const expandBtn = card.querySelector('.btn-icon-expand');
+    
+    if (!body) return; // Nessun contenuto da mostrare
+    
+    card.classList.toggle('expanded');
+    
+    // Anima l'icona
+    if (card.classList.contains('expanded')) {
+        expandBtn.style.transform = 'rotate(180deg)';
+    } else {
+        expandBtn.style.transform = 'rotate(0deg)';
+    }
 }
 
 // Preview contenuto blocco
@@ -1027,9 +1108,10 @@ async function deleteBlock(blockId) {
 
 // Drag & Drop per riordinamento
 function initDragAndDrop() {
-    const blockItems = document.querySelectorAll('.block-item');
+    const blockItems = document.querySelectorAll('.block-card-modern, .block-item');
     
     blockItems.forEach(item => {
+        item.setAttribute('draggable', 'true');
         item.addEventListener('dragstart', handleDragStart);
         item.addEventListener('dragover', handleDragOver);
         item.addEventListener('drop', handleDrop);
