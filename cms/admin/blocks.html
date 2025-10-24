@@ -2130,20 +2130,12 @@
             
             try {
                 console.log('📡 Caricamento dati rivista...');
-                const response = await fetch(`/api/admin/magazines/${magazineId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    }
-                });
                 
-                if (!response.ok) {
-                    console.error('❌ Errore response:', response.status);
-                    throw new Error('Errore caricamento rivista');
-                }
-                
-                const result = await response.json();
+                // Usa apiRequest invece di fetch per usare il corretto API_BASE_URL
+                const result = await apiRequest(`/admin/magazines/${magazineId}`);
                 const magazine = result.data;
                 currentMagazineData = magazine;
+                
                 console.log('✅ Dati caricati:', magazine);
                 
                 // Popola form completo con dati esistenti (ID senza prefisso edit_)
@@ -2222,16 +2214,11 @@
             };
             
             try {
-                const response = await fetch(`/api/admin/magazines/${magazineId}`, {
+                // Usa apiRequest invece di fetch
+                await apiRequest(`/admin/magazines/${magazineId}`, {
                     method: 'PUT',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    },
                     body: JSON.stringify(magazineData)
                 });
-                
-                if (!response.ok) throw new Error('Errore salvataggio');
                 
                 showNotification('Impostazioni salvate con successo', 'success');
                 closeMagazineSettings();
