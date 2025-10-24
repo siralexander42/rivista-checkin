@@ -74,6 +74,24 @@
                     </div>
                     
                     <div class="header-actions-modern">
+                        <!-- SEO Score Display -->
+                        <div class="seo-score-badge" id="seoScoreBadge" onclick="showSEODetails()" title="Clicca per dettagli SEO">
+                            <div class="seo-score-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9 11L12 14L22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M21 12V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="seo-score-info">
+                                <span class="seo-score-label">SEO Score</span>
+                                <div class="seo-score-display-header">
+                                    <span id="seoScoreValue" class="seo-score-number">--</span>
+                                    <span id="seoScoreGrade" class="seo-score-grade">--</span>
+                                </div>
+                            </div>
+                            <div class="seo-score-indicator" id="seoScoreIndicator"></div>
+                        </div>
+                        
                         <!-- Toggle Loading Screen -->
                         <div class="toggle-loading-wrapper">
                             <label class="toggle-loading-label">
@@ -273,8 +291,8 @@
         <div class="modal-content modal-large">
             <div class="modal-header-modern">
                 <div>
-                    <h2 class="modal-title-modern">⚙️ Impostazioni Rivista</h2>
-                    <p class="modal-subtitle">Configurazione SEO e metadati</p>
+                    <h2 class="modal-title-modern">⚙️ Impostazioni SEO</h2>
+                    <p class="modal-subtitle">Ottimizza la tua rivista per i motori di ricerca</p>
                 </div>
                 <button class="modal-close-modern" onclick="closeMagazineSettings()">
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -284,59 +302,62 @@
             </div>
             <div class="modal-body-modern" style="padding: 32px;">
                 <form id="magazineSettingsForm">
-                    <!-- SEO Score Display -->
-                    <div id="seoScoreContainer" style="margin-bottom: 32px;">
-                        <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 2px solid #86efac; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
-                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                <h3 style="margin: 0; font-size: 18px; color: #166534;">🎯 SEO Score</h3>
-                                <div id="seoScoreValue" style="font-size: 48px; font-weight: 700; color: #16a34a;">--</div>
-                            </div>
-                            <div id="seoProgress" style="height: 8px; background: #d1fae5; border-radius: 4px; overflow: hidden;">
-                                <div id="seoProgressBar" style="height: 100%; background: linear-gradient(90deg, #16a34a 0%, #22c55e 100%); width: 0%; transition: width 0.5s ease;"></div>
-                            </div>
-                        </div>
-                        <div id="seoIssues"></div>
-                    </div>
-                    
                     <!-- Meta Title -->
                     <div class="form-group-modern">
                         <label class="form-label-modern">
                             <span>Meta Title</span>
-                            <span class="label-badge" id="titleLength">0/60</span>
+                            <span class="label-badge char-counter" id="titleLength">0</span>
+                            <span style="font-size: 12px; color: #64748b;">/60</span>
                         </label>
                         <input type="text" id="metaTitle" class="form-input-modern" maxlength="60" placeholder="Titolo ottimizzato per i motori di ricerca">
-                        <p class="form-hint">Massimo 60 caratteri. Deve essere descrittivo e contenere keywords rilevanti.</p>
+                        <p class="form-hint">
+                            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588z"/><circle cx="8" cy="4.5" r="1"/></svg>
+                            Massimo 60 caratteri. Deve essere descrittivo e contenere keywords rilevanti.
+                        </p>
                     </div>
                     
                     <!-- Meta Description -->
                     <div class="form-group-modern">
                         <label class="form-label-modern">
                             <span>Meta Description</span>
-                            <span class="label-badge" id="descLength">0/160</span>
+                            <span class="label-badge char-counter" id="descLength">0</span>
+                            <span style="font-size: 12px; color: #64748b;">/160</span>
                         </label>
                         <textarea id="metaDescription" class="form-textarea-modern" maxlength="160" rows="3" placeholder="Descrizione coinvolgente della rivista per i risultati di ricerca"></textarea>
-                        <p class="form-hint">Massimo 160 caratteri. Deve invogliare al click e includere keywords strategiche.</p>
+                        <p class="form-hint">
+                            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588z"/><circle cx="8" cy="4.5" r="1"/></svg>
+                            Massimo 160 caratteri. Deve invogliare al click e includere keywords strategiche.
+                        </p>
                     </div>
                     
                     <!-- Keywords -->
                     <div class="form-group-modern">
                         <label class="form-label-modern">Keywords</label>
                         <input type="text" id="metaKeywords" class="form-input-modern" placeholder="viaggi, turismo, italia, check-in">
-                        <p class="form-hint">Parole chiave separate da virgola. Max 10 keywords.</p>
+                        <p class="form-hint">
+                            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588z"/><circle cx="8" cy="4.5" r="1"/></svg>
+                            Parole chiave separate da virgola. Max 10 keywords.
+                        </p>
                     </div>
                     
                     <!-- Canonical URL -->
                     <div class="form-group-modern">
                         <label class="form-label-modern">Canonical URL</label>
                         <input type="url" id="canonicalUrl" class="form-input-modern" placeholder="https://www.example.com/magazine/42">
-                        <p class="form-hint">URL canonico per evitare duplicati. Lascia vuoto per usare l'URL corrente.</p>
+                        <p class="form-hint">
+                            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588z"/><circle cx="8" cy="4.5" r="1"/></svg>
+                            URL canonico per evitare duplicati. Lascia vuoto per usare l'URL corrente.
+                        </p>
                     </div>
                     
                     <!-- Open Graph Image -->
                     <div class="form-group-modern">
                         <label class="form-label-modern">Immagine Social (Open Graph)</label>
                         <input type="url" id="ogImage" class="form-input-modern" placeholder="https://www.example.com/images/og-image.jpg">
-                        <p class="form-hint">Immagine mostrata quando la rivista viene condivisa sui social (1200x630px consigliato).</p>
+                        <p class="form-hint">
+                            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588z"/><circle cx="8" cy="4.5" r="1"/></svg>
+                            Immagine mostrata quando la rivista viene condivisa sui social (1200x630px consigliato).
+                        </p>
                     </div>
                     
                     <!-- Robots Meta -->
@@ -348,16 +369,51 @@
                             <option value="index,nofollow">Index, No Follow</option>
                             <option value="noindex,nofollow">No Index, No Follow</option>
                         </select>
-                        <p class="form-hint">Controlla come i motori di ricerca indicizzano questa rivista.</p>
+                        <p class="form-hint">
+                            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588z"/><circle cx="8" cy="4.5" r="1"/></svg>
+                            Controlla come i motori di ricerca indicizzano questa rivista.
+                        </p>
                     </div>
                     
-                    <button type="button" class="btn btn-primary-modern" onclick="saveMagazineSettings()" style="width: 100%; margin-top: 24px;">
+                    <button type="button" class="btn-save-modern" onclick="saveMagazineSettings()">
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M13.5 3.5L6 11L2.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
-                        Salva Impostazioni
+                        Salva Impostazioni SEO
                     </button>
                 </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Dettagli SEO (separato) -->
+    <div id="seoDetailsModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header-modern">
+                <div>
+                    <h2 class="modal-title-modern">🎯 Analisi SEO Dettagliata</h2>
+                    <p class="modal-subtitle">Report completo e suggerimenti di ottimizzazione</p>
+                </div>
+                <button class="modal-close-modern" onclick="closeSEODetails()">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body-modern" style="padding: 32px;">
+                <!-- SEO Score Grande -->
+                <div class="seo-score-display">
+                    <div class="score-header">
+                        <span class="score-label">Punteggio Complessivo</span>
+                        <span id="seoScoreValueModal" class="score-value">--</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div id="seoProgressBarModal" class="progress-bar-fill" style="width: 0%;"></div>
+                    </div>
+                </div>
+                
+                <!-- Dettagli Issues -->
+                <div id="seoIssuesModal" class="seo-issues-container"></div>
             </div>
         </div>
     </div>
@@ -493,6 +549,96 @@
             align-items: center;
             gap: 16px;
             flex-wrap: wrap;
+        }
+        
+        /* SEO Score Badge in Header */
+        .seo-score-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 18px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-width: 180px;
+        }
+        
+        .seo-score-badge:hover {
+            transform: translateY(-2px);
+            border-color: #6366f1;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.15);
+        }
+        
+        .seo-score-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .seo-score-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .seo-score-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        
+        .seo-score-display-header {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+        }
+        
+        .seo-score-number {
+            font-size: 24px;
+            font-weight: 800;
+            color: #1e293b;
+            line-height: 1;
+        }
+        
+        .seo-score-grade {
+            font-size: 14px;
+            font-weight: 700;
+            color: #64748b;
+        }
+        
+        .seo-score-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #cbd5e1;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .seo-score-badge.score-excellent .seo-score-indicator {
+            background: #10b981;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+        }
+        
+        .seo-score-badge.score-good .seo-score-indicator {
+            background: #f59e0b;
+            box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+        }
+        
+        .seo-score-badge.score-poor .seo-score-indicator {
+            background: #ef4444;
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
         }
         
         /* Toggle Loading Screen Styles */
@@ -1939,20 +2085,113 @@
          */
         function performSEOAnalysis() {
             const seoData = {
-                metaTitle: document.getElementById('metaTitle').value,
-                metaDescription: document.getElementById('metaDescription').value,
-                metaKeywords: document.getElementById('metaKeywords').value,
-                canonicalUrl: document.getElementById('canonicalUrl').value,
-                ogImage: document.getElementById('ogImage').value,
-                robotsMeta: document.getElementById('robotsMeta').value
+                metaTitle: document.getElementById('metaTitle')?.value || '',
+                metaDescription: document.getElementById('metaDescription')?.value || '',
+                metaKeywords: document.getElementById('metaKeywords')?.value || '',
+                canonicalUrl: document.getElementById('canonicalUrl')?.value || '',
+                ogImage: document.getElementById('ogImage')?.value || '',
+                robotsMeta: document.getElementById('robotsMeta')?.value || 'index,follow'
             };
             
-            // Usa l'analizzatore SEO
-            const result = analyzeSEO(seoData);
+            // TODO: Recupera Schema.org data dal backend quando disponibile
+            const schemaData = null;
             
-            // Renderizza risultati
-            renderSEOResults(result);
+            // Usa l'analizzatore SEO con supporto Schema.org
+            const result = analyzeSEO(seoData, schemaData);
+            
+            // Aggiorna badge SEO nell'header
+            updateSEOBadge(result);
+            
+            // Aggiorna modal dettagli SEO se aperto
+            if (document.getElementById('seoDetailsModal')?.classList.contains('show')) {
+                renderSEODetailsModal(result);
+            }
         }
+        
+        /**
+         * Aggiorna il badge SEO nell'header
+         */
+        function updateSEOBadge(result) {
+            const scoreElement = document.getElementById('seoScoreValue');
+            const gradeElement = document.getElementById('seoScoreGrade');
+            const badgeElement = document.getElementById('seoScoreBadge');
+            
+            if (!scoreElement || !gradeElement || !badgeElement) return;
+            
+            scoreElement.textContent = result.score;
+            gradeElement.textContent = result.grade;
+            
+            // Rimuovi classi score precedenti
+            badgeElement.classList.remove('score-excellent', 'score-good', 'score-poor');
+            
+            // Aggiungi classe basata sul punteggio
+            if (result.score >= 80) {
+                badgeElement.classList.add('score-excellent');
+            } else if (result.score >= 60) {
+                badgeElement.classList.add('score-good');
+            } else {
+                badgeElement.classList.add('score-poor');
+            }
+        }
+        
+        /**
+         * Mostra modal dettagli SEO
+         */
+        function showSEODetails() {
+            performSEOAnalysis();
+            
+            const modal = document.getElementById('seoDetailsModal');
+            if (!modal) return;
+            
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+        
+        /**
+         * Chiude modal dettagli SEO
+         */
+        function closeSEODetails() {
+            const modal = document.getElementById('seoDetailsModal');
+            if (!modal) return;
+            
+            modal.classList.remove('show');
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
+        
+        /**
+         * Renderizza i dettagli SEO nel modal
+         */
+        function renderSEODetailsModal(result) {
+            const scoreValueModal = document.getElementById('seoScoreValueModal');
+            const progressBarModal = document.getElementById('seoProgressBarModal');
+            const issuesModal = document.getElementById('seoIssuesModal');
+            
+            if (scoreValueModal) {
+                scoreValueModal.textContent = result.score;
+                scoreValueModal.style.color = getScoreColor(result.score);
+            }
+            
+            if (progressBarModal) {
+                progressBarModal.style.width = result.score + '%';
+                progressBarModal.style.background = getProgressGradient(result.score);
+            }
+            
+            if (issuesModal) {
+                let html = '';
+                const errors = result.issues.filter(i => i.type === 'error');
+                const warnings = result.issues.filter(i => i.type === 'warning');
+                const successes = result.issues.filter(i => i.type === 'success');
+                const infos = result.issues.filter(i => i.type === 'info');
+                
+                if (errors.length > 0) html += renderIssueGroup('Errori Critici', errors, '#ef4444');
+                if (warnings.length > 0) html += renderIssueGroup('Avvisi', warnings, '#f59e0b');
+                if (successes.length > 0) html += renderIssueGroup('Elementi Ottimali', successes, '#10b981');
+                if (infos.length > 0) html += renderIssueGroup('Suggerimenti', infos, '#3b82f6');
+                
+                issuesModal.innerHTML = html;
+            }
+        }
+
         
         /**
          * Aggiorna il contatore caratteri
@@ -2040,6 +2279,9 @@
             // Inizializza sidebar unificata
             initSidebar('blocks');
             
+            // Carica dati SEO e esegui prima analisi
+            loadMagazineSEOData();
+            
             // Setup event listeners per contatori caratteri
             const metaTitleInput = document.getElementById('metaTitle');
             const metaDescInput = document.getElementById('metaDescription');
@@ -2066,6 +2308,81 @@
                 }
             });
         });
+        
+        /**
+         * Carica i dati SEO della rivista all'avvio
+         */
+        async function loadMagazineSEOData() {
+            const magazineId = getMagazineId();
+            if (!magazineId) {
+                // Esegui analisi con dati vuoti
+                performSEOAnalysis();
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/admin/magazines/${magazineId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    const magazine = result.data;
+                    
+                    // Popola i campi nascosti per l'analisi
+                    if (magazine.seo) {
+                        const tempTitle = document.createElement('input');
+                        const tempDesc = document.createElement('input');
+                        const tempKeywords = document.createElement('input');
+                        const tempCanonical = document.createElement('input');
+                        const tempOg = document.createElement('input');
+                        const tempRobots = document.createElement('input');
+                        
+                        tempTitle.id = 'metaTitle';
+                        tempDesc.id = 'metaDescription';
+                        tempKeywords.id = 'metaKeywords';
+                        tempCanonical.id = 'canonicalUrl';
+                        tempOg.id = 'ogImage';
+                        tempRobots.id = 'robotsMeta';
+                        
+                        tempTitle.value = magazine.seo.metaTitle || magazine.metaTitle || '';
+                        tempDesc.value = magazine.seo.metaDescription || magazine.metaDescription || '';
+                        tempKeywords.value = magazine.seo.metaKeywords || '';
+                        tempCanonical.value = magazine.seo.canonicalUrl || '';
+                        tempOg.value = magazine.seo.ogImage || magazine.ogImage || '';
+                        tempRobots.value = magazine.seo.robotsMeta || 'index,follow';
+                        
+                        // Aggiungi al DOM temporaneamente
+                        document.body.appendChild(tempTitle);
+                        document.body.appendChild(tempDesc);
+                        document.body.appendChild(tempKeywords);
+                        document.body.appendChild(tempCanonical);
+                        document.body.appendChild(tempOg);
+                        document.body.appendChild(tempRobots);
+                        
+                        // Esegui analisi
+                        performSEOAnalysis();
+                        
+                        // Rimuovi elementi temporanei
+                        setTimeout(() => {
+                            tempTitle.remove();
+                            tempDesc.remove();
+                            tempKeywords.remove();
+                            tempCanonical.remove();
+                            tempOg.remove();
+                            tempRobots.remove();
+                        }, 100);
+                    } else {
+                        performSEOAnalysis();
+                    }
+                }
+            } catch (error) {
+                console.error('Errore caricamento dati SEO:', error);
+                performSEOAnalysis();
+            }
+        }
 
         lucide.createIcons();
     </script>

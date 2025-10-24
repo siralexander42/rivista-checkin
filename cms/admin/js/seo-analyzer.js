@@ -1,12 +1,13 @@
 // seo-analyzer.js - Sistema di Analisi SEO
-// Basato su best practices SEO e linee guida Google
+// Basato su best practices SEO, linee guida Google e Schema.org
 
 /**
  * Analizza i metadati SEO e restituisce un punteggio
  * @param {Object} data - Dati SEO da analizzare
+ * @param {Object} schemaData - Dati Schema.org (opzionale)
  * @returns {Object} - Score e issues rilevati
  */
-function analyzeSEO(data) {
+function analyzeSEO(data, schemaData = null) {
     const issues = [];
     let score = 100;
     
@@ -217,6 +218,53 @@ function analyzeSEO(data) {
             message: 'Configurazione robots ottimale',
             impact: 0
         });
+    }
+    
+    // Analisi Schema.org (Structured Data)
+    if (schemaData && typeof schemaData === 'object') {
+        const hasRequiredFields = schemaData['@type'] && schemaData.name;
+        
+        if (!hasRequiredFields) {
+            issues.push({
+                type: 'warning',
+                category: 'Schema.org',
+                message: 'Dati strutturati incompleti',
+                impact: -8,
+                suggestion: 'Assicurati che Schema.org includa @type e name'
+            });
+            score -= 8;
+        } else {
+            issues.push({
+                type: 'success',
+                category: 'Schema.org',
+                message: 'Dati strutturati configurati',
+                impact: 0
+            });
+            
+            // Check campi raccomandati per Magazine/Article
+            const recommendedFields = ['description', 'image', 'datePublished', 'author'];
+            const missingFields = recommendedFields.filter(field => !schemaData[field]);
+            
+            if (missingFields.length > 0) {
+                issues.push({
+                    type: 'info',
+                    category: 'Schema.org',
+                    message: `Campi Schema.org opzionali mancanti: ${missingFields.join(', ')}`,
+                    impact: -3,
+                    suggestion: 'Aggiungi questi campi per migliorare l\'aspetto nei risultati di ricerca arricchiti'
+                });
+                score -= 3;
+            }
+        }
+    } else {
+        issues.push({
+            type: 'warning',
+            category: 'Schema.org',
+            message: 'Nessun dato strutturato Schema.org trovato',
+            impact: -12,
+            suggestion: 'Implementa Schema.org type "Magazine" o "Periodical" per rich snippets nei motori di ricerca'
+        });
+        score -= 12;
     }
     
     // Limita score a 0-100
