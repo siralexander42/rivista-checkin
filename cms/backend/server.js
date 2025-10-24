@@ -1543,6 +1543,7 @@ app.post('/api/admin/blocks/preview', async (req, res) => {
     <link rel="stylesheet" href="${process.env.BASE_URL || 'http://localhost:3001'}/assets/css/main.css">
     <link rel="stylesheet" href="${process.env.BASE_URL || 'http://localhost:3001'}/assets/css/cremona-scroll.css">
     <link rel="stylesheet" href="${process.env.BASE_URL || 'http://localhost:3001'}/assets/css/sommario.css">
+    <link rel="stylesheet" href="${process.env.BASE_URL || 'http://localhost:3001'}/assets/css/carousel-stories.css">
     <link rel="stylesheet" href="${process.env.BASE_URL || 'http://localhost:3001'}/assets/css/mobile.css">
     <style>
         body {
@@ -1853,6 +1854,7 @@ app.post('/api/admin/magazines/:id/generate-html', async (req, res) => {
         const cssPath = path.join(__dirname, '../../assets/css/magazine-generated.css');
         const cremonaCssPath = path.join(__dirname, '../../assets/css/cremona-scroll.css');
         const mainCssPath = path.join(__dirname, '../../assets/css/main.css');
+        const carouselCssPath = path.join(__dirname, '../../assets/css/carousel-stories.css');
         const loadingCssPath = path.join(__dirname, '../../assets/css/loading.css');
         const cremonaJsPath = path.join(__dirname, '../../assets/js/cremona-scroll.js');
         const loadingJsPath = path.join(__dirname, '../../assets/js/loading.js');
@@ -1860,6 +1862,7 @@ app.post('/api/admin/magazines/:id/generate-html', async (req, res) => {
         let inlineCSS = '';
         let cremonaCSS = '';
         let mainCSS = '';
+        let carouselCSS = '';
         let loadingCSS = '';
         let cremonaJS = '';
         let loadingJS = '';
@@ -1880,6 +1883,12 @@ app.post('/api/admin/magazines/:id/generate-html', async (req, res) => {
             mainCSS = await fs.readFile(mainCssPath, 'utf8');
         } catch (err) {
             console.warn('main.css not found');
+        }
+        
+        try {
+            carouselCSS = await fs.readFile(carouselCssPath, 'utf8');
+        } catch (err) {
+            console.warn('carousel-stories.css not found');
         }
         
         if (showLoadingScreen) {
@@ -1945,6 +1954,9 @@ app.post('/api/admin/magazines/:id/generate-html', async (req, res) => {
         
         /* Cremona Scroll CSS */
         ${cremonaCSS}
+        
+        /* Carousel Stories CSS */
+        ${carouselCSS}
         
         /* Magazine Generated CSS */
         ${inlineCSS}
@@ -2338,6 +2350,72 @@ ${blocksHTML}
         ${loadingJS}
     </script>
     ` : ''}
+    
+    <!-- Carousel Stories Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // === CAROUSEL STORIES ===
+            document.querySelectorAll('.carousel-stories-track').forEach(track => {
+                const carouselId = track.getAttribute('data-carousel');
+                const cards = track.querySelectorAll('.carousel-story-card');
+                const prevBtn = document.querySelector(\`.carousel-nav-btn.prev[data-carousel="\${carouselId}"]\`);
+                const nextBtn = document.querySelector(\`.carousel-nav-btn.next[data-carousel="\${carouselId}"]\`);
+                const dots = document.querySelectorAll(\`.carousel-dot[data-carousel="\${carouselId}"]\`);
+                
+                if (cards.length === 0) return;
+                
+                let currentIndex = 0;
+                const cardWidth = cards[0].offsetWidth + 24; // card width + gap
+                
+                function scrollToIndex(index) {
+                    const scrollAmount = index * cardWidth;
+                    track.scrollTo({
+                        left: scrollAmount,
+                        behavior: 'smooth'
+                    });
+                    currentIndex = index;
+                    
+                    // Update dots
+                    dots.forEach((dot, i) => {
+                        dot.classList.toggle('active', i === index);
+                    });
+                }
+                
+                if (prevBtn) {
+                    prevBtn.addEventListener('click', () => {
+                        const newIndex = Math.max(0, currentIndex - 1);
+                        scrollToIndex(newIndex);
+                    });
+                }
+                
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', () => {
+                        const maxIndex = cards.length - 1;
+                        const newIndex = Math.min(maxIndex, currentIndex + 1);
+                        scrollToIndex(newIndex);
+                    });
+                }
+                
+                dots.forEach(dot => {
+                    dot.addEventListener('click', () => {
+                        const index = parseInt(dot.getAttribute('data-index'));
+                        scrollToIndex(index);
+                    });
+                });
+                
+                // Update button visibility on scroll
+                track.addEventListener('scroll', () => {
+                    if (prevBtn) {
+                        prevBtn.style.opacity = track.scrollLeft > 10 ? '1' : '0';
+                    }
+                    if (nextBtn) {
+                        const maxScroll = track.scrollWidth - track.clientWidth;
+                        nextBtn.style.opacity = track.scrollLeft < maxScroll - 10 ? '1' : '0';
+                    }
+                });
+            });
+        });
+    </script>
     
     <!-- Parallasse Block Script -->
     <script>
