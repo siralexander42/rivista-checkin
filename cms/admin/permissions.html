@@ -411,7 +411,13 @@
 
     <script src="js/auth.js"></script>
     <script src="js/api.js"></script>
+    <script src="js/sidebar.js?v=1.0"></script>
     <script>
+        // Inizializza sidebar
+        document.addEventListener('DOMContentLoaded', () => {
+            initSidebar('permissions');
+        });
+        
         let permissions = {};
 
         // Carica permessi attuali

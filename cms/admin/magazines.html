@@ -291,6 +291,7 @@
     
     <script src="js/auth.js"></script>
     <script src="js/api.js"></script>
+    <script src="js/sidebar.js?v=1.0"></script>
     <script src="js/magazines.js"></script>
     
     <style>
@@ -498,51 +499,11 @@
     </style>
     
     <script>
-        // Mostra benvenuto (senza animazione nelle pagine secondarie)
+        // Inizializza pagina
         document.addEventListener('DOMContentLoaded', () => {
-            const user = getCurrentUser();
-            if (user && user.name) {
-                document.getElementById('welcomeMessage').textContent = `Ciao ${user.name}`;
-                
-                // Mostra "Modalità Sviluppatore" e "Permessi" solo per super-admin
-                if (user.role === 'super-admin') {
-                    const devModeNavItem = document.getElementById('devModeNavItem');
-                    if (devModeNavItem) {
-                        devModeNavItem.style.display = 'flex';
-                    }
-                    const permissionsNavItem = document.getElementById('permissionsNavItem');
-                    if (permissionsNavItem) {
-                        permissionsNavItem.style.display = 'flex';
-                    }
-                }
-            }
-            
-            // Gestione click su Utenti
-            const usersNavItem = document.getElementById('usersNavItem');
-            if (usersNavItem) {
-                usersNavItem.addEventListener('click', handleUsersAccess);
-            }
-            
-            // Gestione click su Modalità Sviluppatore
-            const devModeNavItem = document.getElementById('devModeNavItem');
-            if (devModeNavItem) {
-                devModeNavItem.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    window.location.href = 'developer.html';
-                });
-            }
-            
-            // Gestione click su ADV
-            const advNavItem = document.getElementById('advNavItem');
-            if (advNavItem) {
-                advNavItem.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    alert('ADV - Coming Soon!');
-                });
-            }
+            // Inizializza sidebar unificata
+            initSidebar('magazines');
         });
-        
-        // handleUsersAccess è definito in auth.js (rimossa versione locale)
 
         // Enter per verificare password
         document.addEventListener('keypress', (e) => {
