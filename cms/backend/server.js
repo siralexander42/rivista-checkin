@@ -2955,9 +2955,9 @@ ${blocksHTML}
             const carouselId = track.getAttribute('data-carousel');
             const isInfinite = track.getAttribute('data-infinite') === 'true';
             const cards = Array.from(track.querySelectorAll('.carousel-story-card'));
-            const prevBtn = document.querySelector(\`.carousel-nav-btn.prev[data-carousel="\${carouselId}"]\`);
-            const nextBtn = document.querySelector(\`.carousel-nav-btn.next[data-carousel="\${carouselId}"]\`);
-            const dots = document.querySelectorAll(\`.carousel-dot[data-carousel="\${carouselId}"]\`);
+            const prevBtn = document.querySelector('.carousel-nav-btn.prev[data-carousel="' + carouselId + '"]');
+            const nextBtn = document.querySelector('.carousel-nav-btn.next[data-carousel="' + carouselId + '"]');
+            const dots = document.querySelectorAll('.carousel-dot[data-carousel="' + carouselId + '"]');
             
             if (cards.length === 0) return;
             
@@ -3106,7 +3106,7 @@ ${blocksHTML}
                 nextBtn.style.opacity = '1';
             }
             
-            console.log(\`✅ Carousel \${carouselId} initialized:\`, {
+            console.log('✅ Carousel ' + carouselId + ' initialized:', {
                 infinite: isInfinite,
                 originalCards: cards.length,
                 totalCards: allCards.length,
