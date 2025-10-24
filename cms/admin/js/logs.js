@@ -66,29 +66,56 @@ async function loadLogs() {
         const logs = result.data;
 
         if (logs.length === 0) {
-            container.innerHTML = '<p class="empty-state">Nessun log trovato con i filtri selezionati</p>';
+            container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📋</div><h3>Nessun log trovato</h3><p>Nessun accesso con i filtri selezionati</p></div>';
             return;
         }
 
-        // Render tabella
-        container.innerHTML = `
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Data/Ora</th>
-                        <th>Username</th>
-                        <th>Email</th>
-                        <th>Esito</th>
-                        <th>Errore</th>
-                        <th>IP Address</th>
-                        <th>User Agent</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${logs.map(log => renderLogRow(log)).join('')}
-                </tbody>
-            </table>
-        `;
+        // Render con layout compatto
+        container.innerHTML = logs.map(log => {
+            const date = new Date(log.createdAt).toLocaleString('it-IT', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            const statusClass = log.success ? 'status-published' : 'status-inactive';
+            const statusLabel = log.success ? 'Riuscito' : 'Fallito';
+            const statusIcon = log.success ? '✅' : '❌';
+
+            const errorMsg = log.errorMessage || '';
+            const email = log.email || '-';
+            const ipAddress = log.ipAddress || '-';
+            const userAgent = log.userAgent ? truncate(log.userAgent, 60) : '-';
+
+            return `
+                <div class="compact-card ${!log.success ? 'log-failed' : ''}" style="${!log.success ? 'border-color: #fee2e2; background: #fff5f5;' : ''}">
+                    <div class="compact-avatar" style="${log.success ? 'background: linear-gradient(135deg, #10b981 0%, #059669 100%);' : 'background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);'}">
+                        ${statusIcon}
+                    </div>
+                    
+                    <div class="compact-content">
+                        <div class="compact-main">
+                            <div class="compact-title">
+                                ${log.username}
+                                ${!log.success && errorMsg ? `<span style="font-size: 11px; color: #ef4444; font-weight: 500;">(${errorMsg})</span>` : ''}
+                            </div>
+                            <div class="compact-details">
+                                <span>📧 ${email}</span>
+                                <span>🌐 ${ipAddress}</span>
+                                <span>🕐 ${date}</span>
+                            </div>
+                            ${userAgent !== '-' ? `<div style="font-size: 11px; color: #9ca3af; margin-top: 4px;" title="${log.userAgent || ''}">${userAgent}</div>` : ''}
+                        </div>
+                        
+                        <div class="compact-meta">
+                            <span class="compact-badge ${statusClass}">${statusLabel}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
     } catch (error) {
         console.error('Errore caricamento log:', error);
         
@@ -108,39 +135,6 @@ async function loadLogs() {
             </div>
         `;
     }
-}
-
-// Render riga log
-function renderLogRow(log) {
-    const date = new Date(log.createdAt).toLocaleString('it-IT', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-    });
-
-    const statusBadge = log.success 
-        ? '<span class="badge badge-published">✅ Riuscito</span>'
-        : '<span class="badge badge-danger">❌ Fallito</span>';
-
-    const errorMsg = log.errorMessage || '-';
-    const email = log.email || '-';
-    const ipAddress = log.ipAddress || '-';
-    const userAgent = log.userAgent ? truncate(log.userAgent, 50) : '-';
-
-    return `
-        <tr class="${!log.success ? 'log-failed' : ''}">
-            <td style="white-space: nowrap;">${date}</td>
-            <td><code>${log.username}</code></td>
-            <td style="font-size: 13px;">${email}</td>
-            <td>${statusBadge}</td>
-            <td style="color: var(--danger); font-size: 13px;">${errorMsg}</td>
-            <td><code style="font-size: 12px;">${ipAddress}</code></td>
-            <td style="font-size: 11px; color: var(--gray-600);" title="${log.userAgent || ''}">${userAgent}</td>
-        </tr>
-    `;
 }
 
 // Filtra per username (debounced)
