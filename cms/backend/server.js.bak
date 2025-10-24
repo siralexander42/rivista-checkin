@@ -2081,13 +2081,9 @@ function generateBlockHTML(block) {
             // Genera ID univoco per i controlli immagini
             const storyId = `story-${block._id}`;
             
-            // Background image personalizzata o default
-            const bgImage = block.backgroundImage || 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&q=80';
-            const bgStyle = `background: linear-gradient(180deg, var(--dark) 0%, rgba(26, 26, 46, 0.5) 100%), url('${bgImage}') center/cover fixed;`;
-            
             return `
     <!-- Gallery Story Block -->
-    <section class="story-section${block.style?.backgroundColor === 'dark' ? ' dark' : ''}" id="${storyId}" style="${bgStyle}">
+    <section class="story-section${block.style?.backgroundColor === 'dark' ? ' dark' : ''}" id="${storyId}">
         <div class="story-container">
             <!-- COLONNA SINISTRA: TESTO FISSO -->
             <div class="story-text">
@@ -2435,31 +2431,12 @@ ${blocksHTML}
             
             // Forza re-inizializzazione controlli gallery
             console.log('🔄 Re-inizializzazione controlli gallery...');
-            
-            // Aspetta che main.js sia caricato
-            setTimeout(() => {
-                if (typeof initImageControls === 'function') {
-                    console.log('✅ initImageControls trovata, eseguo...');
-                    initImageControls();
-                } else {
-                    console.error('❌ initImageControls non trovata');
-                }
-                
-                if (typeof initCounterAnimation === 'function') {
-                    console.log('✅ initCounterAnimation trovata, eseguo...');
-                    initCounterAnimation();
-                } else {
-                    console.error('❌ initCounterAnimation non trovata');
-                }
-                
-                // Forza animazione counter se già visibili
-                document.querySelectorAll('.detail-item strong').forEach(counter => {
-                    if (!counter.classList.contains('counted') && typeof animateCounter === 'function') {
-                        counter.classList.add('counted');
-                        animateCounter(counter);
-                    }
-                });
-            }, 500);
+            if (typeof initImageControls === 'function') {
+                initImageControls();
+            }
+            if (typeof initCounterAnimation === 'function') {
+                initCounterAnimation();
+            }
         });
     </script>
 </body>

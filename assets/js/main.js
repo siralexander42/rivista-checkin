@@ -99,6 +99,11 @@ document.addEventListener('DOMContentLoaded', () => {
     initHolographicEffect();
 });
 
+// Esponi funzioni globalmente per reinizializzazione dinamica
+window.initCounterAnimation = initCounterAnimation;
+window.initImageControls = initImageControls;
+window.animateCounter = animateCounter;
+
 // Counter animato per i numeri
 function initCounterAnimation() {
     const counters = document.querySelectorAll('.detail-item strong');
