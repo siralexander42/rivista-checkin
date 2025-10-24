@@ -49,9 +49,9 @@ async function loadUsers() {
             return;
         }
 
-        // Render cards
+        // Render list
         container.innerHTML = `
-            <div class="users-grid">
+            <div class="users-list">
                 ${users.map(user => renderUserCard(user)).join('')}
             </div>
         `;
@@ -84,17 +84,7 @@ function renderUserCard(user) {
 
     const statusBadge = user.isActive 
         ? '<span class="status-badge status-active">Attivo</span>'
-        : '<span class="status-badge status-inactive">Disattivato</span>';
-
-    const lastLogin = user.lastLogin 
-        ? new Date(user.lastLogin).toLocaleString('it-IT', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        })
-        : 'Mai connesso';
+        : '<span class="status-badge status-inactive">Inattivo</span>';
 
     const currentUserId = JSON.parse(localStorage.getItem('cms_user')).id;
     const isSelf = user._id === currentUserId;
@@ -104,57 +94,35 @@ function renderUserCard(user) {
 
     return `
         <div class="user-card">
-            <div class="user-card-header">
-                <div class="user-avatar">${initials}</div>
-                <div class="user-info">
+            <div class="user-avatar">${initials}</div>
+            <div class="user-info">
+                <div class="user-main">
                     <h3 class="user-name">
                         ${user.name}
-                        ${isSelf ? '<span style="font-size: 11px; color: #6366f1; font-weight: 600;">(Tu)</span>' : ''}
+                        ${isSelf ? '<span style="font-size: 11px; color: #6366f1; font-weight: 500;">(Tu)</span>' : ''}
                     </h3>
-                    <div class="user-username">@${user.username}</div>
-                    <div class="user-email">
-                        <i data-lucide="mail"></i>${user.email}
+                    <div class="user-details">
+                        <span class="user-username">@${user.username}</span>
+                        <span class="user-email">
+                            <i data-lucide="mail"></i>
+                            ${user.email}
+                        </span>
                     </div>
                 </div>
-            </div>
-            
-            <div class="user-card-body">
                 <div class="user-meta">
-                    <div class="user-meta-item">
-                        <span class="user-meta-label">
-                            <i data-lucide="shield"></i>
-                            Ruolo
-                        </span>
-                        <span class="user-role-badge ${roleClasses[user.role]}">
-                            ${roleLabels[user.role] || user.role}
-                        </span>
-                    </div>
-                    <div class="user-meta-item">
-                        <span class="user-meta-label">
-                            <i data-lucide="activity"></i>
-                            Stato
-                        </span>
-                        ${statusBadge}
-                    </div>
-                    <div class="user-meta-item">
-                        <span class="user-meta-label">
-                            <i data-lucide="clock"></i>
-                            Ultimo accesso
-                        </span>
-                        <span class="user-last-login">${lastLogin}</span>
-                    </div>
+                    <span class="user-role-badge ${roleClasses[user.role]}">
+                        ${roleLabels[user.role] || user.role}
+                    </span>
+                    ${statusBadge}
                 </div>
             </div>
-            
-            <div class="user-card-footer">
-                <button onclick="editUser('${user._id}')" class="btn btn-secondary btn-icon">
+            <div class="user-actions">
+                <button onclick="editUser('${user._id}')" class="btn btn-secondary btn-icon-only" title="Modifica">
                     <i data-lucide="edit-2"></i>
-                    Modifica
                 </button>
                 ${!isSelf ? `
-                    <button onclick="deleteUser('${user._id}', '${user.name}')" class="btn btn-danger btn-icon">
+                    <button onclick="deleteUser('${user._id}', '${user.name}')" class="btn btn-danger btn-icon-only" title="Elimina">
                         <i data-lucide="trash-2"></i>
-                        Elimina
                     </button>
                 ` : ''}
             </div>
