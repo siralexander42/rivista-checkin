@@ -141,7 +141,7 @@ function showCreateModal() {
     document.getElementById('passwordHint').style.display = 'none';
     document.getElementById('userPassword').required = true;
     document.getElementById('formError').style.display = 'none';
-    document.getElementById('userModal').style.display = 'flex';
+    document.getElementById('userModal').classList.add('active');
 }
 
 // Modifica utente
@@ -167,7 +167,7 @@ async function editUser(userId) {
         document.getElementById('passwordRequired').style.display = 'none';
         document.getElementById('passwordHint').style.display = 'block';
         document.getElementById('formError').style.display = 'none';
-        document.getElementById('userModal').style.display = 'flex';
+        document.getElementById('userModal').classList.add('active');
     } catch (error) {
         alert('Errore nel caricamento dell\'utente: ' + error.message);
     }
@@ -241,7 +241,7 @@ async function saveUser() {
 function deleteUser(userId, userName) {
     userToDelete = userId;
     document.getElementById('deleteUserName').textContent = userName;
-    document.getElementById('deleteModal').style.display = 'flex';
+    document.getElementById('deleteModal').classList.add('active');
 }
 
 // Conferma eliminazione
@@ -262,12 +262,12 @@ async function confirmDelete() {
 
 // Chiudi modal
 function closeUserModal() {
-    document.getElementById('userModal').style.display = 'none';
+    document.getElementById('userModal').classList.remove('active');
     currentUser = null;
 }
 
 function closeDeleteModal() {
-    document.getElementById('deleteModal').style.display = 'none';
+    document.getElementById('deleteModal').classList.remove('active');
     userToDelete = null;
 }
 

@@ -22,31 +22,46 @@ async function loadArticles() {
         }
         
         if (articles.length === 0) {
-            container.innerHTML = '<p class="loading">Nessun articolo trovato</p>';
+            container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📝</div><h3>Nessun articolo trovato</h3><p>Crea il tuo primo articolo!</p></div>';
             return;
         }
         
-        // Renderizza articoli
-        container.innerHTML = articles.map(article => `
-            <div class="article-item">
-                <div class="article-info">
-                    <h3>${article.title}</h3>
-                    <p>
-                        ${getCategoryIcon(article.category)} ${article.category} • 
-                        ${article.status === 'published' ? '✅ Pubblicato' : '📋 Bozza'}
-                        ${article.featured ? ' • ⭐ In evidenza' : ''}
-                    </p>
-                </div>
-                <div class="article-actions">
-                    <button class="btn btn-sm btn-secondary" onclick="editArticle('${article._id}')">
-                        ✏️ Modifica
-                    </button>
-                    <button class="btn btn-sm btn-danger" onclick="deleteArticle('${article._id}', '${article.title}')">
-                        🗑️ Elimina
-                    </button>
+        // Renderizza articoli con layout compatto
+        container.innerHTML = articles.map(article => {
+            const statusClass = article.status === 'published' ? 'status-published' : 'status-draft';
+            const statusLabel = article.status === 'published' ? 'Pubblicato' : 'Bozza';
+            
+            return `
+            <div class="compact-card" data-id="${article._id}">
+                ${article.image ? `<img src="${article.image}" alt="${article.title}" class="compact-thumbnail">` : '<div class="compact-avatar">📝</div>'}
+                
+                <div class="compact-content">
+                    <div class="compact-main">
+                        <div class="compact-title">
+                            ${article.title}
+                            ${article.featured ? '<span style="color: #f59e0b;">⭐</span>' : ''}
+                        </div>
+                        <div class="compact-details">
+                            <span>${getCategoryIcon(article.category)} ${article.category}</span>
+                            ${article.author ? `<span>✍️ ${article.author}</span>` : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="compact-meta">
+                        <span class="compact-badge ${statusClass}">${statusLabel}</span>
+                    </div>
+                    
+                    <div class="compact-actions">
+                        <button class="btn btn-sm btn-primary" onclick="editArticle('${article._id}')">
+                            ✏️ Modifica
+                        </button>
+                        <button class="btn btn-sm btn-danger btn-icon-only" onclick="deleteArticle('${article._id}', '${article.title.replace(/'/g, "\\'")}')">
+                            🗑️
+                        </button>
+                    </div>
                 </div>
             </div>
-        `).join('');
+        `}).join('');
         
     } catch (error) {
         console.error('Errore caricamento articoli:', error);

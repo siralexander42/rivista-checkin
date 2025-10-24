@@ -1942,5 +1942,203 @@ tbody td {
     margin-bottom: 24px;
 }
 
+/* ============================================
+   UNIFIED COMPACT LIST STYLES
+   Stile unificato per tutte le liste del CMS
+   ============================================ */
+
+/* Lista compatta verticale */
+.compact-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Card item compatta */
+.compact-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px 20px;
+    border: 1.5px solid #e2e8f0;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.compact-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(60, 61, 143, 0.1);
+    transform: translateX(4px);
+}
+
+/* Thumbnail/Avatar */
+.compact-thumbnail {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.compact-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+}
+
+/* Content area */
+.compact-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.compact-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.compact-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 2px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.compact-details {
+    font-size: 13px;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.compact-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+/* Actions */
+.compact-actions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.compact-actions .btn {
+    padding: 6px 12px;
+    font-size: 13px;
+    min-width: auto;
+}
+
+.btn-icon-only {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon-only i {
+    width: 16px;
+    height: 16px;
+}
+
+/* Badges compatti */
+.compact-badge {
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* Stati */
+.status-published {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-draft {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-archived {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+.status-active {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-active::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #10b981;
+    display: inline-block;
+    margin-right: 4px;
+}
+
+.status-inactive {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .compact-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .compact-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .compact-meta {
+        width: 100%;
+        justify-content: flex-start;
+        gap: 8px;
+    }
+
+    .compact-actions {
+        width: 100%;
+        justify-content: stretch;
+    }
+
+    .compact-actions .btn {
+        flex: 1;
+    }
+}
+
 /* Fine del CSS - CHECK-IN CMS */
 

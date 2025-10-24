@@ -97,54 +97,57 @@ function displayMagazines(filteredMagazines = null) {
             }
         }
         
-        const coverHTML = coverImage 
-            ? `<img src="${coverImage}" alt="${magazine.name}">`
-            : '📖';
+        // Status badge
+        const statusBadges = {
+            'draft': 'status-draft',
+            'published': 'status-published',
+            'archived': 'status-archived'
+        };
+        const statusClass = statusBadges[magazine.status] || 'status-draft';
+        const statusLabels = {
+            'draft': 'Bozza',
+            'published': 'Pubblicata',
+            'archived': 'Archiviata'
+        };
+        const statusLabel = statusLabels[magazine.status] || magazine.status;
+        
+        // Thumbnail
+        const thumbnailHTML = coverImage 
+            ? `<img src="${coverImage}" alt="${magazine.name}" class="compact-thumbnail">`
+            : `<div class="compact-avatar">📖</div>`;
         
         return `
-        <div class="magazine-card" data-id="${magazine._id}">
-            <div class="magazine-cover">
-                ${coverHTML}
-                <div class="magazine-status-badge">
-                    ${getBadgeHTML(magazine.status)}
-                </div>
-            </div>
+        <div class="compact-card" data-id="${magazine._id}">
+            ${thumbnailHTML}
             
-            <div class="magazine-content">
-                <div class="magazine-header">
-                    <div class="magazine-edition">
-                        Edizione ${magazine.editionNumber} • ${magazine.edition}
+            <div class="compact-content">
+                <div class="compact-main">
+                    <div class="compact-title">
+                        ${magazine.name}
+                        ${magazine.featured ? '<span style="color: #f59e0b;">⭐</span>' : ''}
                     </div>
-                    <h3 class="magazine-title">${magazine.name}</h3>
-                    ${magazine.subtitle ? `<p class="magazine-subtitle">${magazine.subtitle}</p>` : ''}
+                    <div class="compact-details">
+                        <span>📅 ${magazine.edition}</span>
+                        <span>📊 ${magazine.blocks?.length || 0} blocchi</span>
+                        <span>👁️ ${magazine.views || 0} visite</span>
+                    </div>
                 </div>
                 
-                <div class="magazine-meta">
-                    <span>📊 ${magazine.blocks?.length || 0} blocchi</span>
-                    <span>👁️ ${magazine.views || 0} visite</span>
+                <div class="compact-meta">
+                    <span class="compact-badge ${statusClass}">${statusLabel}</span>
                 </div>
                 
-                <div class="magazine-actions">
-                    <button class="btn btn-sm btn-secondary" onclick="editBlocks('${magazine._id}')">
+                <div class="compact-actions">
+                    <button class="btn btn-sm btn-primary" onclick="editBlocks('${magazine._id}')" title="Modifica Blocchi">
                         ✏️ Modifica
                     </button>
-                    <button class="btn btn-sm btn-secondary" onclick="editMagazine('${magazine._id}')">
-                        ⚙️ Impostazioni
+                    <button class="btn btn-sm btn-secondary" onclick="editMagazine('${magazine._id}')" title="Impostazioni">
+                        ⚙️
                     </button>
                 </div>
             </div>
         </div>
     `}).join('');
-}
-
-// Badge status
-function getBadgeHTML(status) {
-    const badges = {
-        'draft': '<span class="badge badge-draft">Bozza</span>',
-        'published': '<span class="badge badge-published">Pubblicata</span>',
-        'archived': '<span class="badge badge-archived">Archiviata</span>'
-    };
-    return badges[status] || '';
 }
 
 // Filtra riviste
