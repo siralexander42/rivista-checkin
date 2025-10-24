@@ -43,27 +43,27 @@ document.addEventListener('DOMContentLoaded', function() {
         const allCards = Array.from(track.querySelectorAll('.carousel-story-card'));
         const cardWidth = allCards[0].offsetWidth + 24;
         
+        function updateDots() {
+            if (isInfinite) {
+                const realIndex = (currentIndex - cards.length + cards.length) % cards.length;
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === realIndex);
+                });
+            } else {
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === currentIndex);
+                });
+            }
+        }
+        
         function scrollToIndex(index, smooth = true) {
-            if (isTransitioning) return;
-            
             const scrollAmount = index * cardWidth;
             track.scrollTo({
                 left: scrollAmount,
                 behavior: smooth ? 'smooth' : 'auto'
             });
             currentIndex = index;
-            
-            // Update dots (only for real cards, not clones)
-            if (isInfinite) {
-                const realIndex = (index - cards.length + cards.length) % cards.length;
-                dots.forEach((dot, i) => {
-                    dot.classList.toggle('active', i === realIndex);
-                });
-            } else {
-                dots.forEach((dot, i) => {
-                    dot.classList.toggle('active', i === index);
-                });
-            }
+            updateDots();
             
             // Update button visibility (only for non-infinite)
             if (!isInfinite && prevBtn && nextBtn) {
@@ -72,23 +72,43 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        if (prevBtn) {
-            prevBtn.addEventListener('click', () => {
+        // Infinite scroll: monitor scroll position and teleport seamlessly
+        if (isInfinite) {
+            track.addEventListener('scroll', () => {
                 if (isTransitioning) return;
                 
+                const scrollLeft = track.scrollLeft;
+                const maxScroll = (cards.length * 2 - 1) * cardWidth;
+                const minScroll = cardWidth;
+                
+                // If scrolled past the end clones, teleport to real cards
+                if (scrollLeft >= maxScroll) {
+                    isTransitioning = true;
+                    track.scrollLeft = scrollLeft - (cards.length * cardWidth);
+                    currentIndex = currentIndex - cards.length;
+                    updateDots();
+                    setTimeout(() => { isTransitioning = false; }, 50);
+                }
+                // If scrolled before the start clones, teleport to real cards
+                else if (scrollLeft <= minScroll) {
+                    isTransitioning = true;
+                    track.scrollLeft = scrollLeft + (cards.length * cardWidth);
+                    currentIndex = currentIndex + cards.length;
+                    updateDots();
+                    setTimeout(() => { isTransitioning = false; }, 50);
+                } else {
+                    // Update current index based on scroll position
+                    currentIndex = Math.round(scrollLeft / cardWidth);
+                    updateDots();
+                }
+            });
+        }
+        
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
                 if (isInfinite) {
                     currentIndex--;
                     scrollToIndex(currentIndex);
-                    
-                    // If we've gone into the prepended clones, teleport to the real cards at the end
-                    if (currentIndex < cards.length) {
-                        isTransitioning = true;
-                        setTimeout(() => {
-                            currentIndex = currentIndex + cards.length;
-                            scrollToIndex(currentIndex, false);
-                            isTransitioning = false;
-                        }, 300);
-                    }
                 } else {
                     const newIndex = Math.max(0, currentIndex - 1);
                     scrollToIndex(newIndex);
@@ -98,21 +118,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (nextBtn) {
             nextBtn.addEventListener('click', () => {
-                if (isTransitioning) return;
-                
                 if (isInfinite) {
                     currentIndex++;
                     scrollToIndex(currentIndex);
-                    
-                    // If we've gone into the appended clones, teleport to the real cards at the start
-                    if (currentIndex >= cards.length * 2) {
-                        isTransitioning = true;
-                        setTimeout(() => {
-                            currentIndex = currentIndex - cards.length;
-                            scrollToIndex(currentIndex, false);
-                            isTransitioning = false;
-                        }, 300);
-                    }
                 } else {
                     const newIndex = Math.min(allCards.length - 1, currentIndex + 1);
                     scrollToIndex(newIndex);
