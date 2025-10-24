@@ -50,20 +50,24 @@
 
         .user-card-header {
             display: flex;
-            align-items: flex-start;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
             gap: 16px;
             margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0;
         }
 
         .user-avatar {
-            width: 56px;
-            height: 56px;
-            border-radius: 14px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
             background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 32px;
             font-weight: 700;
             color: white;
             flex-shrink: 0;
@@ -71,18 +75,19 @@
         }
 
         .user-info {
-            flex: 1;
-            min-width: 0;
+            width: 100%;
         }
 
         .user-name {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 700;
             color: #1e293b;
-            margin: 0 0 4px 0;
+            margin: 0 0 8px 0;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
+            flex-wrap: wrap;
         }
 
         .user-username {
@@ -90,32 +95,32 @@
             color: #64748b;
             font-family: 'Monaco', 'Courier New', monospace;
             background: #f1f5f9;
-            padding: 4px 10px;
+            padding: 6px 12px;
             border-radius: 6px;
             display: inline-block;
             margin-bottom: 8px;
         }
 
         .user-email {
-            font-size: 14px;
+            font-size: 13px;
             color: #475569;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-top: 4px;
+            display: block;
+            margin-top: 8px;
+            word-break: break-all;
+            line-height: 1.4;
         }
 
         .user-email i {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             color: #94a3b8;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 4px;
         }
 
         .user-card-body {
             margin: 16px 0;
-            padding: 16px 0;
-            border-top: 1px solid #e2e8f0;
-            border-bottom: 1px solid #e2e8f0;
         }
 
         .user-meta {
@@ -126,27 +131,32 @@
 
         .user-meta-item {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 14px;
+            flex-direction: column;
+            gap: 6px;
+            text-align: center;
         }
 
         .user-meta-label {
             color: #64748b;
             font-weight: 500;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 6px;
         }
 
         .user-meta-label i {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
         }
 
         .user-meta-value {
             font-weight: 600;
             color: #334155;
+            font-size: 14px;
         }
 
         .user-role-badge {

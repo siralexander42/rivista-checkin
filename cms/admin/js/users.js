@@ -109,12 +109,11 @@ function renderUserCard(user) {
                 <div class="user-info">
                     <h3 class="user-name">
                         ${user.name}
-                        ${isSelf ? '<span style="font-size: 12px; color: #6366f1;">(Tu)</span>' : ''}
+                        ${isSelf ? '<span style="font-size: 11px; color: #6366f1; font-weight: 600;">(Tu)</span>' : ''}
                     </h3>
                     <div class="user-username">@${user.username}</div>
                     <div class="user-email">
-                        <i data-lucide="mail"></i>
-                        ${user.email}
+                        <i data-lucide="mail"></i>${user.email}
                     </div>
                 </div>
             </div>
