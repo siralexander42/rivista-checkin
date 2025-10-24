@@ -264,60 +264,83 @@
             background: #4e4e4e;
         }
 
-        /* Sidebar Order List VS Code Style */
+        /* Sidebar Order List - VS Code Dark Theme */
+        .sidebar-order-section {
+            background: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 4px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-order-section h3 {
+            color: #cccccc;
+            font-size: 13px;
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-order-description {
+            color: #858585;
+            font-size: 12px;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
         .sidebar-order-list {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            max-width: 700px;
+            gap: 4px;
         }
 
         .sidebar-item {
-            background: white;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 16px 20px;
+            background: #2d2d30;
+            border: 1px solid #3e3e42;
+            border-radius: 3px;
+            padding: 10px 12px;
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
             cursor: move;
-            transition: all 0.2s ease;
+            transition: all 0.1s ease;
             user-select: none;
         }
 
         .sidebar-item:hover {
-            border-color: #6366f1;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
-            transform: translateX(4px);
+            background: #2a2d2e;
+            border-color: #007acc;
         }
 
         .sidebar-item.dragging {
             opacity: 0.5;
-            transform: scale(0.98);
+            background: #1e1e1e;
         }
 
         .sidebar-item.drag-over {
-            border-color: #6366f1;
+            border-color: #007acc;
             border-style: dashed;
-            background: rgba(99, 102, 241, 0.05);
+            background: rgba(0, 122, 204, 0.1);
         }
 
         .sidebar-item.locked {
             cursor: not-allowed;
-            opacity: 0.6;
-            background: #f8fafc;
+            opacity: 0.5;
         }
 
         .sidebar-item.locked:hover {
-            border-color: #e2e8f0;
-            box-shadow: none;
-            transform: none;
+            background: #2d2d30;
+            border-color: #3e3e42;
         }
 
         .drag-handle {
-            font-size: 20px;
-            color: #94a3b8;
+            font-size: 14px;
+            color: #858585;
             cursor: grab;
+            display: flex;
+            align-items: center;
         }
 
         .drag-handle:active {
@@ -326,66 +349,68 @@
 
         .sidebar-item.locked .drag-handle {
             cursor: not-allowed;
+            color: #505050;
         }
 
         .sidebar-item-order {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            color: white;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 14px;
+            min-width: 28px;
+            height: 28px;
+            background: #5a5a5a;
+            color: #cccccc;
+            border-radius: 3px;
+            font-weight: 600;
+            font-size: 12px;
             flex-shrink: 0;
         }
 
         .sidebar-item.locked .sidebar-item-order {
-            background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+            background: #3e3e42;
+            color: #858585;
         }
 
         .sidebar-item-content {
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 3px;
         }
 
         .sidebar-item-label {
-            font-weight: 600;
-            color: #1e293b;
-            font-size: 15px;
+            font-weight: 500;
+            color: #cccccc;
+            font-size: 13px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
         .sidebar-item-meta {
-            font-size: 12px;
-            color: #64748b;
+            font-size: 11px;
+            color: #858585;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .visibility-badge {
-            padding: 2px 8px;
-            background: rgba(99, 102, 241, 0.1);
-            color: #6366f1;
-            border-radius: 4px;
-            font-weight: 600;
-            font-size: 11px;
+            padding: 1px 6px;
+            background: rgba(0, 122, 204, 0.2);
+            color: #4fc1ff;
+            border-radius: 2px;
+            font-weight: 500;
+            font-size: 10px;
         }
 
         .locked-badge {
-            padding: 2px 8px;
-            background: rgba(239, 68, 68, 0.1);
-            color: #dc2626;
-            border-radius: 4px;
-            font-weight: 600;
-            font-size: 11px;
+            padding: 1px 6px;
+            background: rgba(255, 68, 68, 0.2);
+            color: #f48771;
+            border-radius: 2px;
+            font-weight: 500;
+            font-size: 10px;
         }
     </style>
 </head>
@@ -436,10 +461,7 @@
         <!-- Main Content -->
         <main class="main-content">
             <div class="page-header">
-                <div>
-                    <h1>⚙️ Modalità Sviluppatore <span class="dev-mode-badge">DEV MODE</span></h1>
-                    <p>Gestisci blocchi avanzati e configurazioni del sistema</p>
-                </div>
+                <h1>⚙️ Modalità Sviluppatore <span class="dev-mode-badge">DEV MODE</span></h1>
             </div>
 
             <!-- Magazine Selector -->
@@ -450,76 +472,77 @@
                 </select>
             </div>
 
-            <!-- Tabs -->
-            <div style="margin-bottom: 24px; border-bottom: 2px solid var(--border-light);">
-                <div style="display: flex; gap: 8px;">
-                    <button class="tab-btn active" data-tab="blocks">
-                        📦 Blocchi
-                    </button>
-                    <button class="tab-btn" data-tab="json">
-                        🔧 JSON Editor
-                    </button>
-                    <button class="tab-btn" data-tab="create">
-                        ➕ Crea Blocco
-                    </button>
-                    <button class="tab-btn" data-tab="sidebar">
-                        📋 Sidebar
-                    </button>
-                </div>
+            <!-- Tabs VS Code Style -->
+            <div class="vscode-tabs">
+                <button class="vscode-tab active" data-tab="blocks">
+                    📦 Blocchi
+                </button>
+                <button class="vscode-tab" data-tab="json">
+                    🔧 JSON Editor
+                </button>
+                <button class="vscode-tab" data-tab="create">
+                    ➕ Crea Blocco
+                </button>
+                <button class="vscode-tab" data-tab="sidebar">
+                    📋 Sidebar
+                </button>
             </div>
 
-            <!-- Tab: Blocchi -->
-            <div class="tab-content active" data-tab="blocks">
-                <div id="blocksList">
-                    <div style="text-align: center; padding: 60px 20px; color: var(--text-light);">
-                        <div style="font-size: 64px; margin-bottom: 16px;">📦</div>
-                        <p>Seleziona una rivista per vedere i blocchi</p>
+            <!-- Editor Area -->
+            <div class="vscode-editor">
+
+                <!-- Tab: Blocchi -->
+                <div class="tab-content active" data-tab="blocks">
+                    <div id="blocksList">
+                        <div style="text-align: center; padding: 60px 20px; color: #858585;">
+                            <div style="font-size: 64px; margin-bottom: 16px;">📦</div>
+                            <p>Seleziona una rivista per vedere i blocchi</p>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Tab: JSON Editor -->
-            <div class="tab-content" data-tab="json">
-                <div style="background: white; padding: 24px; border-radius: 12px; border: 1.5px solid rgba(60, 61, 143, 0.12);">
-                    <h3 style="margin-bottom: 16px;">JSON Completo della Rivista</h3>
-                    <div class="json-viewer">
-                        <pre class="code-editor" id="jsonEditor">{
+                <!-- Tab: JSON Editor -->
+                <div class="tab-content" data-tab="json">
+                    <div class="sidebar-order-section">
+                        <h3>JSON Completo della Rivista</h3>
+                        <div class="json-viewer">
+                            <pre class="code-editor" id="jsonEditor">{
   "message": "Seleziona una rivista per vedere il JSON"
 }</pre>
-                    </div>
-                    <div style="margin-top: 16px; display: flex; gap: 12px;">
-                        <button class="btn btn-secondary" onclick="copyJSON()">
-                            📋 Copia JSON
-                        </button>
-                        <button class="btn btn-primary" onclick="downloadJSON()">
-                            💾 Scarica JSON
-                        </button>
+                        </div>
+                        <div style="margin-top: 16px; display: flex; gap: 8px;">
+                            <button class="vscode-btn-secondary" onclick="copyJSON()">
+                                📋 Copia JSON
+                            </button>
+                            <button class="vscode-btn" onclick="downloadJSON()">
+                                💾 Scarica JSON
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Tab: Crea Blocco -->
-            <div class="tab-content" data-tab="create">
-                <div style="background: white; padding: 24px; border-radius: 12px; border: 1.5px solid rgba(60, 61, 143, 0.12);">
-                    <h3 style="margin-bottom: 16px;">Crea Nuovo Blocco</h3>
-                    <p style="color: var(--text-light); margin-bottom: 24px;">
-                        Questa funzionalità ti permetterà di creare blocchi direttamente dal JSON o con un editor visuale avanzato.
-                    </p>
-                    <div style="text-align: center; padding: 40px; background: var(--bg-light); border-radius: 8px;">
-                        <div style="font-size: 48px; margin-bottom: 12px;">🚧</div>
-                        <p style="font-weight: 600;">In sviluppo...</p>
-                        <p style="font-size: 13px; color: var(--text-light); margin-top: 8px;">
-                            Per ora usa l'editor normale nella pagina della rivista
+                <!-- Tab: Crea Blocco -->
+                <div class="tab-content" data-tab="create">
+                    <div class="sidebar-order-section">
+                        <h3>Crea Nuovo Blocco</h3>
+                        <p class="sidebar-order-description">
+                            Questa funzionalità ti permetterà di creare blocchi direttamente dal JSON o con un editor visuale avanzato.
                         </p>
-                    </div>
+                        <div style="text-align: center; padding: 40px; background: #2d2d30; border-radius: 4px; border: 1px solid #3e3e42;">
+                            <div style="font-size: 48px; margin-bottom: 12px;">🚧</div>
+                            <p style="font-weight: 600; color: #cccccc;">In sviluppo...</p>
+                            <p style="font-size: 12px; color: #858585; margin-top: 8px;">
+                                Per ora usa l'editor normale nella pagina della rivista
+                            </p>
+                        </div>
                 </div>
             </div>
 
             <!-- Tab: Sidebar -->
             <div class="tab-content" data-tab="sidebar">
-                <div style="background: white; padding: 24px; border-radius: 12px; border: 1.5px solid rgba(60, 61, 143, 0.12);">
-                    <h3 style="margin-bottom: 16px;">⚙️ Gestione Ordine Sidebar</h3>
-                    <p style="color: var(--text-light); margin-bottom: 24px;">
+                <div class="sidebar-order-section">
+                    <h3>⚙️ Gestione Ordine Sidebar</h3>
+                    <p class="sidebar-order-description">
                         Trascina le voci per riordinare la sidebar. Le modifiche verranno salvate automaticamente.
                     </p>
                     
@@ -527,9 +550,9 @@
                         <!-- Popolato dinamicamente -->
                     </div>
                     
-                    <div style="margin-top: 24px; padding: 16px; background: rgba(99, 102, 241, 0.05); border-radius: 8px; border: 1px solid rgba(99, 102, 241, 0.2);">
-                        <h4 style="margin: 0 0 8px 0; font-size: 14px; color: var(--primary);">ℹ️ Informazioni</h4>
-                        <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: var(--text-light);">
+                    <div style="margin-top: 16px; padding: 12px; background: rgba(0, 122, 204, 0.1); border-radius: 4px; border: 1px solid rgba(0, 122, 204, 0.3);">
+                        <h4 style="margin: 0 0 8px 0; font-size: 12px; color: #4fc1ff;">ℹ️ Informazioni</h4>
+                        <ul style="margin: 0; padding-left: 20px; font-size: 11px; color: #858585; line-height: 1.6;">
                             <li>Le voci con icona 🔒 hanno una posizione fissa e non possono essere spostate</li>
                             <li>Le voci con visibilità condizionale mantengono le loro regole di visualizzazione</li>
                             <li>L'ordine viene salvato automaticamente quando rilasci un elemento</li>
@@ -538,6 +561,7 @@
                 </div>
             </div>
 
+            </div> <!-- Close vscode-editor -->
         </main>
     </div>
 
@@ -706,12 +730,12 @@
         }
 
         // Tab switching
-        document.querySelectorAll('.tab-btn').forEach(btn => {
+        document.querySelectorAll('.vscode-tab').forEach(btn => {
             btn.addEventListener('click', () => {
                 const tab = btn.dataset.tab;
                 
                 // Update buttons
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.vscode-tab').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 
                 // Update content
