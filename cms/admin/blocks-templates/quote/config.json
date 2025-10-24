@@ -1,0 +1,21 @@
+{
+  "type": "quote",
+  "name": "Citazione",
+  "description": "Blocco citazione evidenziata",
+  "icon": "💬",
+  "version": "1.0.0",
+  "fields": [
+    {
+      "name": "quote",
+      "label": "Citazione",
+      "type": "textarea",
+      "required": true
+    },
+    {
+      "name": "author",
+      "label": "Autore",
+      "type": "text",
+      "required": false
+    }
+  ]
+}

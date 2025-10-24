@@ -1,0 +1,22 @@
+{
+  "type": "instagram",
+  "name": "Instagram",
+  "description": "Feed Instagram integrato",
+  "icon": "📸",
+  "version": "1.0.0",
+  "fields": [
+    {
+      "name": "username",
+      "label": "Username Instagram",
+      "type": "text",
+      "required": true
+    },
+    {
+      "name": "limit",
+      "label": "Numero Post",
+      "type": "number",
+      "required": false,
+      "default": 6
+    }
+  ]
+}

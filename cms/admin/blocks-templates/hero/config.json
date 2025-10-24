@@ -1,0 +1,27 @@
+{
+  "type": "hero",
+  "name": "Hero",
+  "description": "Blocco hero principale con titolo, sottotitolo e immagine",
+  "icon": "🦸",
+  "version": "1.0.0",
+  "fields": [
+    {
+      "name": "title",
+      "label": "Titolo",
+      "type": "text",
+      "required": true
+    },
+    {
+      "name": "subtitle",
+      "label": "Sottotitolo",
+      "type": "text",
+      "required": false
+    },
+    {
+      "name": "imageUrl",
+      "label": "URL Immagine",
+      "type": "image",
+      "required": true
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "type": "text",
+  "name": "Testo",
+  "description": "Blocco di testo semplice con titolo e contenuto",
+  "icon": "📝",
+  "version": "1.0.0",
+  "fields": [
+    {
+      "name": "title",
+      "label": "Titolo",
+      "type": "text",
+      "required": true
+    },
+    {
+      "name": "content",
+      "label": "Contenuto",
+      "type": "textarea",
+      "required": true
+    }
+  ]
+}

@@ -3543,6 +3543,106 @@ app.use((req, res) => {
 });
 
 // ============================================
+// BLOCK TEMPLATES MANAGEMENT
+// ============================================
+
+const fsPromises = require('fs').promises;
+const pathModule = require('path');
+
+// GET - Ottieni tutti i template dei blocchi
+app.get('/api/admin/block-templates', authenticateToken, async (req, res) => {
+    try {
+        const indexPath = pathModule.join(__dirname, '../admin/blocks-templates/index.json');
+        const indexData = await fsPromises.readFile(indexPath, 'utf8');
+        const index = JSON.parse(indexData);
+        
+        res.json({
+            success: true,
+            data: index
+        });
+    } catch (error) {
+        console.error('Errore GET /api/admin/block-templates:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Errore nel recupero dei template blocchi'
+        });
+    }
+});
+
+// PUT - Aggiorna nome di un blocco
+app.put('/api/admin/block-templates/:type', authenticateToken, async (req, res) => {
+    try {
+        const { type } = req.params;
+        const { name } = req.body;
+        
+        if (!name) {
+            return res.status(400).json({
+                success: false,
+                error: 'Nome blocco richiesto'
+            });
+        }
+        
+        // Leggi config del blocco
+        const configPath = pathModule.join(__dirname, `../admin/blocks-templates/${type}/config.json`);
+        const configData = await fsPromises.readFile(configPath, 'utf8');
+        const config = JSON.parse(configData);
+        
+        // Aggiorna nome
+        config.name = name;
+        
+        // Salva config aggiornato
+        await fsPromises.writeFile(configPath, JSON.stringify(config, null, 2), 'utf8');
+        
+        res.json({
+            success: true,
+            message: 'Nome blocco aggiornato con successo',
+            data: config
+        });
+        
+    } catch (error) {
+        console.error('Errore PUT /api/admin/block-templates/:type:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Errore nell\'aggiornamento del blocco'
+        });
+    }
+});
+
+// GET - Ottieni file di un blocco specifico
+app.get('/api/admin/block-templates/:type/:file', authenticateToken, async (req, res) => {
+    try {
+        const { type, file } = req.params;
+        
+        // Validazione file
+        const allowedFiles = ['config.json', 'template.html', 'styles.css', 'script.js'];
+        if (!allowedFiles.includes(file)) {
+            return res.status(400).json({
+                success: false,
+                error: 'File non valido'
+            });
+        }
+        
+        const filePath = pathModule.join(__dirname, `../admin/blocks-templates/${type}/${file}`);
+        const fileContent = await fsPromises.readFile(filePath, 'utf8');
+        
+        res.json({
+            success: true,
+            data: {
+                file: file,
+                content: fileContent
+            }
+        });
+        
+    } catch (error) {
+        console.error('Errore GET /api/admin/block-templates/:type/:file:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Errore nel recupero del file'
+        });
+    }
+});
+
+// ============================================
 // ERROR Handler
 // ============================================
 
