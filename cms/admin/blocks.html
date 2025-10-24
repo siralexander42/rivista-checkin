@@ -2262,8 +2262,23 @@
          * Mostra modal dettagli SEO
          */
         function showSEODetails() {
-            performSEOAnalysis();
+            // Esegui analisi SEO
+            const seoData = {
+                metaTitle: currentMagazineData?.metaTitle || '',
+                metaDescription: currentMagazineData?.metaDescription || '',
+                metaKeywords: Array.isArray(currentMagazineData?.metaKeywords) ? currentMagazineData.metaKeywords.join(', ') : (currentMagazineData?.metaKeywords || ''),
+                canonicalUrl: currentMagazineData?.canonicalUrl || '',
+                ogImage: currentMagazineData?.ogImage || currentMagazineData?.coverImage || '',
+                robotsMeta: currentMagazineData?.robotsMeta || 'index,follow'
+            };
             
+            const schemaData = null; // TODO: recuperare da backend
+            const result = analyzeSEO(seoData, schemaData);
+            
+            // Renderizza i dettagli nel modal
+            renderSEODetailsModal(result);
+            
+            // Apri modal
             const modal = document.getElementById('seoDetailsModal');
             if (!modal) return;
             
