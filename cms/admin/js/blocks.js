@@ -145,7 +145,7 @@ function getBlockTypeName(type) {
         cover: 'Copertina',
         hero: 'Hero Section',
         article: 'Articolo',
-        gallery: 'Gallery',
+        gallery: 'Gallery Story',
         text: 'Testo',
         quote: 'Citazione',
         video: 'Video',
@@ -182,9 +182,17 @@ function getBlockPreview(block) {
             `;
         
         case 'gallery':
+            const statsCount = block.stats?.length || 0;
+            const featuresCount = block.features?.length || 0;
             return `
-                <h3>${block.title || 'Gallery'}</h3>
-                <p>${block.images?.length || 0} immagini</p>
+                <h3>🖼️ ${block.title || 'Gallery Story'}</h3>
+                ${block.tag ? `<p><span style="background: rgba(34, 197, 94, 0.2); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">${block.tag}</span></p>` : ''}
+                ${block.intro ? `<p style="color: var(--text-light); margin-top: 8px;">${block.intro.substring(0, 100)}...</p>` : ''}
+                ${statsCount > 0 ? `<p style="margin-top: 8px;">📊 ${statsCount} statistiche</p>` : ''}
+                ${block.showQuote && block.quote?.text ? `<p style="margin-top: 8px;">💬 Citazione presente</p>` : ''}
+                ${featuresCount > 0 ? `<p style="margin-top: 8px;">✓ ${featuresCount} features</p>` : ''}
+                <p>🖼️ ${block.images?.length || 0} immagini</p>
+                ${block.darkMode ? '<p style="margin-top: 8px;">🌙 Modalità scura</p>' : ''}
             `;
         
         case 'text':
@@ -400,19 +408,137 @@ https://esempio.com/bg4.jpg" oninput="updateBlockPreview()">${(data.images || []
         `,
         
         gallery: `
-            <div class="form-section">
+            <div style="display: grid; grid-template-columns: 1fr 400px; gap: 24px; align-items: start;">
+                <div class="form-section">
+                <h4 style="margin-bottom: 16px;">🖼️ Gallery Story - Blocco Completo con Stats, Citazioni e Immagini</h4>
+                <p style="color: var(--text-light); margin-bottom: 24px; line-height: 1.6;">
+                    Blocco ricco che combina testo, statistiche animate, citazioni, features list e galleria immagini.
+                </p>
+                
                 <div class="form-group">
-                    <label for="title">Titolo</label>
-                    <input type="text" id="title" value="${data.title || ''}" placeholder="Gallery">
+                    <label for="tag">Occhiello/Categoria *</label>
+                    <input type="text" id="tag" required value="${data.tag || ''}" placeholder="Destinazioni" oninput="updateGalleryPreview()">
+                    <small>Es: "Destinazioni", "Enogastronomia", "Ospitalità"</small>
                 </div>
                 
                 <div class="form-group">
-                    <label for="images">URL Immagini (una per riga)</label>
-                    <textarea id="images" rows="6" placeholder="https://esempio.com/img1.jpg
-https://esempio.com/img2.jpg
-https://esempio.com/img3.jpg">${(data.images || []).join('\n')}</textarea>
-                    <small>Inserisci un URL per riga</small>
+                    <label for="title">Titolo Principale *</label>
+                    <input type="text" id="title" required value="${data.title || ''}" placeholder="Repubblica Ceca:\\nLa magia del Natale" oninput="updateGalleryPreview()">
+                    <small>Usa \\n per andare a capo</small>
                 </div>
+                
+                <div class="form-group">
+                    <label for="intro">Sommario/Lead Text *</label>
+                    <textarea id="intro" rows="4" required placeholder="Praga si trasforma in un villaggio incantato..." oninput="updateGalleryPreview()">${data.intro || ''}</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="showStats" ${data.showStats !== false ? 'checked' : ''} onchange="toggleStatsFields(); updateGalleryPreview()">
+                        Mostra Statistiche/Numbers Animate
+                    </label>
+                </div>
+                
+                <div id="statsFields" style="display: ${data.showStats !== false ? 'block' : 'none'}; margin-left: 24px; padding: 16px; background: rgba(99, 102, 241, 0.05); border-radius: 8px; border-left: 3px solid var(--primary);">
+                    <div class="form-group">
+                        <label for="stat1Number">Statistica 1 - Numero</label>
+                        <input type="text" id="stat1Number" value="${data.stats?.[0]?.number || ''}" placeholder="150+" oninput="updateGalleryPreview()">
+                    </div>
+                    <div class="form-group">
+                        <label for="stat1Label">Statistica 1 - Etichetta</label>
+                        <input type="text" id="stat1Label" value="${data.stats?.[0]?.label || ''}" placeholder="Mercatini" oninput="updateGalleryPreview()">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="stat2Number">Statistica 2 - Numero</label>
+                        <input type="text" id="stat2Number" value="${data.stats?.[1]?.number || ''}" placeholder="30 giorni" oninput="updateGalleryPreview()">
+                    </div>
+                    <div class="form-group">
+                        <label for="stat2Label">Statistica 2 - Etichetta</label>
+                        <input type="text" id="stat2Label" value="${data.stats?.[1]?.label || ''}" placeholder="Di festa" oninput="updateGalleryPreview()">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="stat3Number">Statistica 3 - Numero (opzionale)</label>
+                        <input type="text" id="stat3Number" value="${data.stats?.[2]?.number || ''}" placeholder="1094" oninput="updateGalleryPreview()">
+                    </div>
+                    <div class="form-group">
+                        <label for="stat3Label">Statistica 3 - Etichetta</label>
+                        <input type="text" id="stat3Label" value="${data.stats?.[2]?.label || ''}" placeholder="Anno di origine" oninput="updateGalleryPreview()">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="showQuote" ${data.showQuote ? 'checked' : ''} onchange="toggleQuoteFields(); updateGalleryPreview()">
+                        Mostra Citazione
+                    </label>
+                </div>
+                
+                <div id="quoteFields" style="display: ${data.showQuote ? 'block' : 'none'}; margin-left: 24px; padding: 16px; background: rgba(99, 102, 241, 0.05); border-radius: 8px; border-left: 3px solid var(--primary);">
+                    <div class="form-group">
+                        <label for="quoteText">Testo Citazione</label>
+                        <textarea id="quoteText" rows="3" placeholder="La vera cucina napoletana è un atto d'amore..." oninput="updateGalleryPreview()">${data.quote?.text || ''}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="quoteAuthor">Autore Citazione</label>
+                        <input type="text" id="quoteAuthor" value="${data.quote?.author || ''}" placeholder="Massimo Cosmo" oninput="updateGalleryPreview()">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="showFeatures" ${data.showFeatures ? 'checked' : ''} onchange="toggleFeaturesFields(); updateGalleryPreview()">
+                        Mostra Elenco Puntato
+                    </label>
+                </div>
+                
+                <div id="featuresFields" style="display: ${data.showFeatures ? 'block' : 'none'}; margin-left: 24px; padding: 16px; background: rgba(99, 102, 241, 0.05); border-radius: 8px; border-left: 3px solid var(--primary);">
+                    <div class="form-group">
+                        <label for="features">Voci Elenco (una per riga)</label>
+                        <textarea id="features" rows="5" placeholder="Suite storiche restaurate\\nSpa con trattamenti esclusivi\\nRistorante gourmet\\nGiardini all'italiana" oninput="updateGalleryPreview()">${(data.features || []).join('\\n')}</textarea>
+                        <small>Ogni riga sarà una voce dell'elenco con checkmark ✓</small>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="images">URL Immagini Gallery (una per riga) *</label>
+                    <textarea id="images" rows="6" required placeholder="https://esempio.com/img1.jpg\\nhttps://esempio.com/img2.jpg\\nhttps://esempio.com/img3.jpg" oninput="updateGalleryPreview()">${(data.images || []).join('\\n')}</textarea>
+                    <small>Inserisci almeno 3 immagini. Gli utenti potranno scorrere tra di esse</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="imageCaptions">Didascalie Immagini (una per riga, opzionale)</label>
+                    <textarea id="imageCaptions" rows="6" placeholder="Praga: la magia del Natale\\nBrno: seconda città\\nCesky Krumlov" oninput="updateGalleryPreview()">${(data.imageCaptions || []).join('\\n')}</textarea>
+                    <small>Una didascalia per ogni immagine (stesso ordine)</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="ctaText">Testo Bottone CTA *</label>
+                    <input type="text" id="ctaText" required value="${data.ctaText || ''}" placeholder="Leggi la storia completa →" oninput="updateGalleryPreview()">
+                </div>
+                
+                <div class="form-group">
+                    <label for="ctaLink">Link Bottone</label>
+                    <input type="url" id="ctaLink" value="${data.ctaLink || ''}" placeholder="https://" oninput="updateGalleryPreview()">
+                </div>
+                
+                <div class="form-group">
+                    <label for="summaryTitle">📋 Titolo per il Sommario *</label>
+                    <input type="text" id="summaryTitle" required value="${data.summaryTitle || ''}" placeholder="Repubblica Ceca: la magia del Natale">
+                    <small>Questo titolo apparirà nella lista del sommario della rivista</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="darkMode" ${data.darkMode ? 'checked' : ''} onchange="updateGalleryPreview()">
+                        Modalità Scura (sfondo nero)
+                    </label>
+                </div>
+            </div>
+            <div id="blockPreview" style="position: relative;">
+                <!-- Anteprima live verrà inserita qui -->
+            </div>
             </div>
         `,
         
@@ -598,11 +724,52 @@ async function handleBlockFormSubmit(e) {
         blockData.settings.sommario = collectSommarioData();
     }
     
-    // Gallery: converti textarea in array
+    // Gallery: converti textarea in array e raccogli tutti i dati
     if (type === 'gallery') {
         const imagesText = document.getElementById('images').value;
         blockData.images = imagesText.split('\n').filter(url => url.trim());
+        
+        const captionsText = document.getElementById('imageCaptions')?.value || '';
+        blockData.imageCaptions = captionsText.split('\n').filter(cap => cap.trim());
+        
+        blockData.tag = document.getElementById('tag')?.value || '';
+        blockData.intro = document.getElementById('intro')?.value || '';
+        blockData.summaryTitle = document.getElementById('summaryTitle')?.value || '';
+        blockData.ctaText = document.getElementById('ctaText')?.value || '';
+        blockData.ctaLink = document.getElementById('ctaLink')?.value || '';
+        blockData.darkMode = document.getElementById('darkMode')?.checked || false;
+        
+        // Stats
+        blockData.showStats = document.getElementById('showStats')?.checked !== false;
+        blockData.stats = [];
+        if (blockData.showStats) {
+            for (let i = 1; i <= 3; i++) {
+                const number = document.getElementById(`stat${i}Number`)?.value;
+                const label = document.getElementById(`stat${i}Label`)?.value;
+                if (number && label) {
+                    blockData.stats.push({ number, label });
+                }
+            }
+        }
+        
+        // Quote
+        blockData.showQuote = document.getElementById('showQuote')?.checked || false;
+        if (blockData.showQuote) {
+            blockData.quote = {
+                text: document.getElementById('quoteText')?.value || '',
+                author: document.getElementById('quoteAuthor')?.value || ''
+            };
+        }
+        
+        // Features
+        blockData.showFeatures = document.getElementById('showFeatures')?.checked || false;
+        if (blockData.showFeatures) {
+            const featuresText = document.getElementById('features')?.value || '';
+            blockData.features = featuresText.split('\n').filter(f => f.trim());
+        }
+        
         delete blockData.image;
+        delete blockData.content;
     }
     
     // Fluid: gestisci blocchi multipli con immagini
@@ -1546,3 +1713,28 @@ function initAllFluidCroppers() {
         }
     });
 }
+
+// ============================================
+// GALLERY STORY BLOCK HELPERS
+// ============================================
+
+function toggleStatsFields() {
+    const showStats = document.getElementById("showStats").checked;
+    document.getElementById("statsFields").style.display = showStats ? "block" : "none";
+}
+
+function toggleQuoteFields() {
+    const showQuote = document.getElementById("showQuote").checked;
+    document.getElementById("quoteFields").style.display = showQuote ? "block" : "none";
+}
+
+function toggleFeaturesFields() {
+    const showFeatures = document.getElementById("showFeatures").checked;
+    document.getElementById("featuresFields").style.display = showFeatures ? "block" : "none";
+}
+
+function updateGalleryPreview() {
+    // TODO: Implementa anteprima live del blocco gallery
+    console.log("Gallery preview update");
+}
+
