@@ -305,6 +305,11 @@ body {
     padding: 28px 24px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     background: linear-gradient(135deg, rgba(65, 67, 126, 0.3) 0%, rgba(42, 43, 95, 0.2) 100%);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .sidebar-header h2 {
