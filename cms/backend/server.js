@@ -178,17 +178,35 @@ const blockSchema = new mongoose.Schema({
     images: [String], // Per gallery o backgrounds multipli (cover)
     link: String,
     buttonText: String,
-    tag: String, // Per parallasse block
-    intro: String, // Per parallasse block
+    tag: String, // Per parallasse block E gallery block (occhiello)
+    intro: String, // Per parallasse block E gallery block (lead text)
     previewImage: String, // Per parallasse block - immagine iniziale/anteprima
-    summaryTitle: String, // Per parallasse block - titolo da mostrare nel sommario
-    ctaText: String, // Per parallasse block
-    ctaLink: String, // Per parallasse block
+    summaryTitle: String, // Per parallasse block E gallery block - titolo da mostrare nel sommario
+    ctaText: String, // Per parallasse block E gallery block
+    ctaLink: String, // Per parallasse block E gallery block
     fluidBlocks: [{ // Per parallasse block - array di blocchi di testo con immagini
         heading: String,
         text: String,
         highlight: String,
         image: String
+    }],
+    // GALLERY STORY BLOCK - Campi specifici
+    showStats: Boolean, // Mostra/nascondi sezione stats
+    stats: [{ // Array di statistiche animate
+        number: String,
+        label: String
+    }],
+    showQuote: Boolean, // Mostra/nascondi citazione
+    quote: { // Citazione
+        text: String,
+        author: String
+    },
+    showFeatures: Boolean, // Mostra/nascondi lista caratteristiche
+    features: [String], // Lista di features/highlights
+    galleryImages: [{ // Gallery images con crop data
+        url: String,
+        caption: String,
+        cropData: mongoose.Schema.Types.Mixed
     }],
     position: {
         type: Number,
@@ -2053,18 +2071,99 @@ function generateBlockHTML(block) {
     </article>`;
         
         case 'gallery':
-            const images = block.images || [];
+            // Gallery Story Block - Blocco con stats, quote, features e gallery immagini
+            const galleryImages = block.galleryImages || [];
+            const stats = block.stats || [];
+            const features = block.features || [];
+            const quote = block.quote || {};
+            
+            // Genera ID univoco per i controlli immagini
+            const storyId = `story-${block._id}`;
+            
             return `
-    <!-- Gallery Block -->
-    <section class="gallery-block block-${block._id}" ${styleAttr}>
-        ${block.title ? `<h2 class="gallery-title">${block.title}</h2>` : ''}
-        ${block.subtitle ? `<p class="gallery-subtitle">${block.subtitle}</p>` : ''}
-        <div class="gallery-grid" data-columns="${block.settings?.columns || 3}">
-            ${images.map((img, idx) => `
-                <div class="gallery-item">
-                    <img src="${img}" alt="Gallery image ${idx + 1}" loading="lazy">
+    <!-- Gallery Story Block -->
+    <section class="story-section${block.style?.backgroundColor === 'dark' ? ' dark' : ''}" id="${storyId}">
+        <div class="story-container">
+            <!-- COLONNA SINISTRA: TESTO FISSO -->
+            <div class="story-text">
+                ${block.tag ? `<span class="category-tag">${block.tag}</span>` : ''}
+                ${block.title ? `<h2>${block.title}</h2>` : ''}
+                ${block.intro ? `<p class="lead-text">${block.intro}</p>` : ''}
+                
+                ${block.showStats && stats.length > 0 ? `
+                <div class="story-details">
+                    ${stats.map(stat => `
+                    <div class="detail-item">
+                        <strong>${stat.number || ''}</strong>
+                        <span>${stat.label || ''}</span>
+                    </div>
+                    `).join('')}
                 </div>
-            `).join('')}
+                ` : ''}
+                
+                ${block.showQuote && quote.text ? `
+                <blockquote>
+                    "${quote.text}"
+                    ${quote.author ? `<cite>— ${quote.author}</cite>` : ''}
+                </blockquote>
+                ` : ''}
+                
+                ${block.showFeatures && features.length > 0 ? `
+                <ul class="features-list">
+                    ${features.map(feature => `
+                    <li>✓ ${feature}</li>
+                    `).join('')}
+                </ul>
+                ` : ''}
+                
+                ${block.ctaText && block.ctaLink ? `
+                <a href="${block.ctaLink}" class="btn-primary">${block.ctaText} →</a>
+                ` : ''}
+            </div>
+            
+            <!-- COLONNA DESTRA: IMMAGINI CHE SCORRONO -->
+            <div class="story-images">
+                <div class="image-scroll-wrapper" data-story="${block._id}">
+                    ${galleryImages.map((img, idx) => {
+                        // Applica cropData se presente
+                        let imageStyle = '';
+                        if (img.cropData) {
+                            const crop = img.cropData;
+                            imageStyle = `style="object-position: ${crop.x}% ${crop.y}%; width: ${crop.width}%; height: ${crop.height}%;"`;
+                        }
+                        return `
+                    <div class="scroll-image">
+                        <img src="${img.url || ''}" 
+                             alt="${img.caption || `Image ${idx + 1}`}"
+                             ${imageStyle}
+                             onerror="this.style.display='none'">
+                        ${img.caption ? `<div class="image-caption">${img.caption}</div>` : ''}
+                    </div>
+                        `;
+                    }).join('')}
+                </div>
+                
+                ${galleryImages.length > 1 ? `
+                <!-- Controlli immagini -->
+                <div class="image-controls">
+                    <button class="control-btn prev-btn" data-story="${block._id}">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                    </button>
+                    <div class="image-dots" data-story="${block._id}">
+                        ${galleryImages.map((_, idx) => `
+                        <span class="dot ${idx === 0 ? 'active' : ''}" data-index="${idx}"></span>
+                        `).join('')}
+                    </div>
+                    <button class="control-btn next-btn" data-story="${block._id}">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
+                </div>
+                ` : ''}
+            </div>
         </div>
     </section>`;
         
