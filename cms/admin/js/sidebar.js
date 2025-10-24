@@ -122,19 +122,25 @@ function setActivePage(activePage) {
     
     // Mappa delle pagine ai loro ID o href
     const pageMap = {
-        'dashboard': 'index.html',
-        'magazines': 'magazines.html',
-        'users': 'users.html',
-        'permissions': 'permissions.html',
-        'logs': 'logs.html',
-        'developer': 'developer.html',
-        'blocks': 'blocks.html',
-        'articles': 'articles.html'
+        'dashboard': { href: 'index.html' },
+        'magazines': { href: 'magazines.html' },
+        'users': { id: 'usersNavItem' },
+        'permissions': { href: 'permissions.html' },
+        'logs': { href: 'logs.html' },
+        'developer': { id: 'devModeNavItem' },
+        'blocks': { href: 'blocks.html' },
+        'articles': { href: 'articles.html' }
     };
     
-    const targetHref = pageMap[activePage];
-    if (targetHref) {
-        const navItem = document.querySelector(`.nav-item[href="${targetHref}"]`);
+    const target = pageMap[activePage];
+    if (target) {
+        let navItem;
+        if (target.href) {
+            navItem = document.querySelector(`.nav-item[href="${target.href}"]`);
+        } else if (target.id) {
+            navItem = document.getElementById(target.id);
+        }
+        
         if (navItem) {
             navItem.classList.add('active');
         }
