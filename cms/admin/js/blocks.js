@@ -77,6 +77,7 @@ async function loadMagazine() {
 
 // Mostra blocchi
 function displayBlocks() {
+    alert('FUNZIONE DISPLAY BLOCKS CHIAMATA - VERSIONE 7.0');
     const blocksList = document.getElementById('blocksList');
     const emptyState = document.getElementById('emptyState');
     
