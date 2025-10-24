@@ -199,18 +199,22 @@ function getBlockMeta(block) {
     switch(block.type) {
         case 'cover':
             if (block.data?.title) parts.push(`📝 ${block.data.title}`);
+            if (block.data?.subtitle) parts.push(`${block.data.subtitle}`);
             if (block.data?.sommario?.length) parts.push(`📋 ${block.data.sommario.length} voci sommario`);
             if (block.data?.backgrounds?.length) parts.push(`🖼️ ${block.data.backgrounds.length} sfondi`);
             break;
         case 'fluid':
+            if (block.data?.title) parts.push(`📝 ${block.data.title}`);
             if (block.data?.fluidBlocks?.length) parts.push(`📦 ${block.data.fluidBlocks.length} sezioni`);
             break;
         case 'gallery':
             if (block.data?.title) parts.push(`📝 ${block.data.title}`);
+            if (block.data?.subtitle) parts.push(`${block.data.subtitle}`);
             if (block.data?.images?.length) parts.push(`🖼️ ${block.data.images.length} immagini`);
             break;
         case 'carousel':
             if (block.data?.title) parts.push(`📝 ${block.data.title}`);
+            if (block.data?.subtitle) parts.push(`${block.data.subtitle}`);
             if (block.data?.cards?.length) parts.push(`🎴 ${block.data.cards.length} card`);
             break;
     }
