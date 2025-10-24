@@ -2634,6 +2634,11 @@ ${blocksHTML}
             });
         });
     </script>
+    
+    <!-- Carousel Stories Script -->
+    <script>
+${CAROUSEL_JS_SCRIPT}
+    </script>
 </body>
 </html>`;
         
