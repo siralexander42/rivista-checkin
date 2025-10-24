@@ -2132,7 +2132,7 @@ function generateBlockHTML(block) {
                             imageStyle = `style="object-position: ${crop.x}% ${crop.y}%; width: ${crop.width}%; height: ${crop.height}%;"`;
                         }
                         return `
-                    <div class="scroll-image">
+                    <div class="scroll-image${idx === 0 ? ' active' : ''}" style="opacity: ${idx === 0 ? '1' : '0'}; transform: ${idx === 0 ? 'translateY(0) scale(1)' : 'translateY(0) scale(0.95)'}; z-index: ${idx === 0 ? '2' : '1'};">
                         <img src="${img.url || ''}" 
                              alt="${img.caption || `Image ${idx + 1}`}"
                              ${imageStyle}

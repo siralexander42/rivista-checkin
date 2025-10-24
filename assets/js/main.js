@@ -118,11 +118,18 @@ function initCounterAnimation() {
 }
 
 function animateCounter(element) {
-    const text = element.textContent;
+    const text = element.textContent.trim();
     const hasPlus = text.includes('+');
-    const number = parseInt(text.replace(/\D/g, ''));
     
+    // Estrai solo i numeri dal testo
+    const numberMatch = text.match(/\d+/);
+    if (!numberMatch) return;
+    
+    const number = parseInt(numberMatch[0]);
     if (isNaN(number)) return;
+    
+    // Conserva il testo dopo il numero (es: " giorni", "+", ecc)
+    const suffix = text.replace(/\d+/, '').trim();
     
     const duration = 2500;
     const steps = 80;
@@ -140,11 +147,12 @@ function animateCounter(element) {
         const easedProgress = easeOutQuart(progress);
         current = Math.floor(number * easedProgress);
         
-        element.textContent = hasPlus ? current + '+' : current + ' giorni';
+        // Ricomponi il testo con il numero animato e il suffisso
+        element.textContent = suffix ? `${current}${suffix}` : current.toString();
         
         if (step >= steps) {
             clearInterval(timer);
-            element.textContent = text;
+            element.textContent = text; // Ripristina il testo originale
         }
     }, duration / steps);
 }
