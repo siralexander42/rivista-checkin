@@ -1044,14 +1044,14 @@
         /* Gestione layout grid nei form */
         #blockFormContent > div[style*="grid"] {
             display: grid !important;
-            grid-template-columns: 1fr minmax(300px, 380px) !important;
+            grid-template-columns: 1fr 380px !important;
             gap: 24px !important;
             align-items: start !important;
         }
         
         @media (max-width: 1200px) {
             #blockFormContent > div[style*="grid"] {
-                grid-template-columns: 1fr minmax(280px, 320px) !important;
+                grid-template-columns: 1fr 320px !important;
                 gap: 20px !important;
             }
         }
