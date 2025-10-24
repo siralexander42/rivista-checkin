@@ -80,6 +80,15 @@ function displayBlocks() {
     const blocksList = document.getElementById('blocksList');
     const emptyState = document.getElementById('emptyState');
     
+    console.log('=== DISPLAY BLOCKS DEBUG ===');
+    console.log('Numero blocchi:', blocks.length);
+    if (blocks.length > 0) {
+        console.log('Primo blocco completo:', blocks[0]);
+        console.log('Struttura block.data:', blocks[0].data);
+        console.log('Ha block.data.title?', blocks[0].data?.title);
+        console.log('Ha block.title?', blocks[0].title);
+    }
+    
     if (blocks.length === 0) {
         blocksList.style.display = 'none';
         emptyState.style.display = 'flex';
