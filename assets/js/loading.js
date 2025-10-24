@@ -16,6 +16,8 @@
     function initDepartureBoard() {
         const flipLetters = document.querySelectorAll('.flip-letter[data-flips]');
         
+        let maxDuration = 0;
+        
         flipLetters.forEach((letter, index) => {
             const flipsData = letter.getAttribute('data-flips');
             if (!flipsData) return;
@@ -28,6 +30,10 @@
             const baseDelay = 150 + (index * 40); // Delay iniziale per ogni lettera
             const flipDuration = 380; // Durata di ogni flip (molto più lento)
             
+            // Calcola durata totale per questa lettera
+            const totalDuration = baseDelay + (sequence.length * flipDuration);
+            maxDuration = Math.max(maxDuration, totalDuration);
+            
             // Anima ogni flip
             sequence.forEach((char, flipIndex) => {
                 setTimeout(() => {
@@ -36,33 +42,17 @@
                 }, baseDelay + (flipIndex * flipDuration));
             });
         });
-    }
-
-    // Progress bar animation
-    const loadingBar = document.getElementById('loadingBar');
-    if (loadingBar) {
-        let progress = 0;
-        const duration = 4000; // 4 secondi
-        const steps = 80;
-        const increment = 100 / steps;
-        const stepDuration = duration / steps;
-
-        const progressInterval = setInterval(() => {
-            progress += increment;
-            if (progress >= 100) {
-                progress = 100;
-                clearInterval(progressInterval);
+        
+        // Chiudi loading screen dopo che tutte le animazioni sono finite
+        setTimeout(() => {
+            const loadingScreen = document.querySelector('.loading-screen');
+            if (loadingScreen) {
+                loadingScreen.style.opacity = '0';
                 setTimeout(() => {
-                    const loadingScreen = document.querySelector('.loading-screen');
-                    if (loadingScreen) {
-                        loadingScreen.style.opacity = '0';
-                        setTimeout(() => {
-                            loadingScreen.style.display = 'none';
-                        }, 500);
-                    }
-                }, 400);
+                    loadingScreen.style.display = 'none';
+                    document.body.style.overflow = 'auto'; // Riabilita scroll
+                }, 500);
             }
-            loadingBar.style.width = progress + '%';
-        }, stepDuration);
+        }, maxDuration + 600); // Aggiungi un po' di pausa dopo l'ultima lettera
     }
 })();
