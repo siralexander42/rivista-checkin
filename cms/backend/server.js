@@ -1548,8 +1548,156 @@ app.post('/api/admin/blocks/preview', async (req, res) => {
     ${blockHtml}
     
     <script>
+        // === COUNTER ANIMATO ===
+        function animateCounter(element) {
+            const text = element.textContent.trim();
+            const hasPlus = text.includes('+');
+            
+            const numberMatch = text.match(/\\d+/);
+            if (!numberMatch) return;
+            
+            const number = parseInt(numberMatch[0]);
+            if (isNaN(number)) return;
+            
+            const suffix = text.replace(/\\d+/, '').trim();
+            
+            const duration = 2500;
+            const steps = 80;
+            const increment = number / steps;
+            let current = 0;
+            let step = 0;
+            
+            const easeOutQuart = (x) => {
+                return 1 - Math.pow(1 - x, 4);
+            };
+            
+            const timer = setInterval(() => {
+                step++;
+                const progress = step / steps;
+                const easedProgress = easeOutQuart(progress);
+                current = Math.floor(number * easedProgress);
+                
+                element.textContent = suffix ? \`\${current}\${suffix}\` : current.toString();
+                
+                if (step >= steps) {
+                    clearInterval(timer);
+                    element.textContent = text;
+                }
+            }, duration / steps);
+        }
+
+        function initCounterAnimation() {
+            const counters = document.querySelectorAll('.detail-item strong');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !entry.target.classList.contains('counted')) {
+                        entry.target.classList.add('counted');
+                        animateCounter(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.5
+            });
+            
+            counters.forEach(counter => observer.observe(counter));
+        }
+
+        // === CONTROLLI GALLERY ===
+        function initImageControls() {
+            console.log('🎨 Inizializzazione controlli immagini...');
+            
+            document.querySelectorAll('.image-controls').forEach(ctrl => {
+                const storyId = ctrl.querySelector('.image-dots')?.getAttribute('data-story');
+                console.log('📷 Story ID trovato:', storyId);
+                
+                if (!storyId) {
+                    console.error('❌ data-story non trovato per questo controllo');
+                    return;
+                }
+                
+                const wrapper = document.querySelector('.image-scroll-wrapper[data-story="' + storyId + '"]');
+                console.log('📦 Wrapper trovato:', wrapper);
+                
+                if (!wrapper) {
+                    console.error('❌ Wrapper non trovato per story:', storyId);
+                    return;
+                }
+                
+                const images = wrapper.querySelectorAll('.scroll-image');
+                const dots = ctrl.querySelectorAll('.dot');
+                console.log(\`✅ Trovate \${images.length} immagini per story \${storyId}\`);
+                
+                let current = 0;
+
+                function showImage(idx) {
+                    console.log(\`🔄 Cambio immagine: \${current} → \${idx}\`);
+                    
+                    images.forEach((img, i) => {
+                        img.classList.remove('active');
+                        img.style.opacity = '0';
+                        img.style.transform = 'translateY(0) scale(0.95)';
+                    });
+                    
+                    images[idx].classList.add('active');
+                    images[idx].style.opacity = '1';
+                    images[idx].style.transform = 'translateY(0) scale(1)';
+                    images[idx].style.zIndex = '2';
+                    
+                    dots.forEach((dot, i) => {
+                        if (i === idx) {
+                            dot.classList.add('active');
+                        } else {
+                            dot.classList.remove('active');
+                        }
+                    });
+                    
+                    current = idx;
+                }
+
+                const prevBtn = ctrl.querySelector('.prev-btn');
+                const nextBtn = ctrl.querySelector('.next-btn');
+                
+                if (prevBtn) {
+                    prevBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('⬅️ Click prev');
+                        showImage((current - 1 + images.length) % images.length);
+                    };
+                }
+                
+                if (nextBtn) {
+                    nextBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('➡️ Click next');
+                        showImage((current + 1) % images.length);
+                    };
+                }
+                
+                dots.forEach(dot => {
+                    dot.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const idx = Number(dot.getAttribute('data-index'));
+                        console.log('⚫ Click dot:', idx);
+                        showImage(idx);
+                    };
+                });
+                
+                showImage(0);
+            });
+            
+            console.log('✅ Controlli immagini inizializzati');
+        }
+        
         // Script base per il funzionamento del blocco
         document.addEventListener('DOMContentLoaded', function() {
+            // Inizializza counter e gallery
+            initCounterAnimation();
+            initImageControls();
+            
             // IntersectionObserver per Parallasse Block
             const cremonaSections = document.querySelectorAll('.cremona-scroll-section');
             cremonaSections.forEach(section => {
@@ -1833,6 +1981,150 @@ ${blocksHTML}
     
     <!-- Script per Sommario Cover Block -->
     <script>
+        // === COUNTER ANIMATO ===
+        function animateCounter(element) {
+            const text = element.textContent.trim();
+            const hasPlus = text.includes('+');
+            
+            const numberMatch = text.match(/\\d+/);
+            if (!numberMatch) return;
+            
+            const number = parseInt(numberMatch[0]);
+            if (isNaN(number)) return;
+            
+            const suffix = text.replace(/\\d+/, '').trim();
+            
+            const duration = 2500;
+            const steps = 80;
+            const increment = number / steps;
+            let current = 0;
+            let step = 0;
+            
+            const easeOutQuart = (x) => {
+                return 1 - Math.pow(1 - x, 4);
+            };
+            
+            const timer = setInterval(() => {
+                step++;
+                const progress = step / steps;
+                const easedProgress = easeOutQuart(progress);
+                current = Math.floor(number * easedProgress);
+                
+                element.textContent = suffix ? \`\${current}\${suffix}\` : current.toString();
+                
+                if (step >= steps) {
+                    clearInterval(timer);
+                    element.textContent = text;
+                }
+            }, duration / steps);
+        }
+
+        function initCounterAnimation() {
+            const counters = document.querySelectorAll('.detail-item strong');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !entry.target.classList.contains('counted')) {
+                        entry.target.classList.add('counted');
+                        animateCounter(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.5
+            });
+            
+            counters.forEach(counter => observer.observe(counter));
+        }
+
+        // === CONTROLLI GALLERY ===
+        function initImageControls() {
+            console.log('🎨 Inizializzazione controlli immagini...');
+            
+            document.querySelectorAll('.image-controls').forEach(ctrl => {
+                const storyId = ctrl.querySelector('.image-dots')?.getAttribute('data-story');
+                console.log('📷 Story ID trovato:', storyId);
+                
+                if (!storyId) {
+                    console.error('❌ data-story non trovato per questo controllo');
+                    return;
+                }
+                
+                const wrapper = document.querySelector('.image-scroll-wrapper[data-story="' + storyId + '"]');
+                console.log('📦 Wrapper trovato:', wrapper);
+                
+                if (!wrapper) {
+                    console.error('❌ Wrapper non trovato per story:', storyId);
+                    return;
+                }
+                
+                const images = wrapper.querySelectorAll('.scroll-image');
+                const dots = ctrl.querySelectorAll('.dot');
+                console.log(\`✅ Trovate \${images.length} immagini per story \${storyId}\`);
+                
+                let current = 0;
+
+                function showImage(idx) {
+                    console.log(\`🔄 Cambio immagine: \${current} → \${idx}\`);
+                    
+                    images.forEach((img, i) => {
+                        img.classList.remove('active');
+                        img.style.opacity = '0';
+                        img.style.transform = 'translateY(0) scale(0.95)';
+                    });
+                    
+                    images[idx].classList.add('active');
+                    images[idx].style.opacity = '1';
+                    images[idx].style.transform = 'translateY(0) scale(1)';
+                    images[idx].style.zIndex = '2';
+                    
+                    dots.forEach((dot, i) => {
+                        if (i === idx) {
+                            dot.classList.add('active');
+                        } else {
+                            dot.classList.remove('active');
+                        }
+                    });
+                    
+                    current = idx;
+                }
+
+                const prevBtn = ctrl.querySelector('.prev-btn');
+                const nextBtn = ctrl.querySelector('.next-btn');
+                
+                if (prevBtn) {
+                    prevBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('⬅️ Click prev');
+                        showImage((current - 1 + images.length) % images.length);
+                    };
+                }
+                
+                if (nextBtn) {
+                    nextBtn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('➡️ Click next');
+                        showImage((current + 1) % images.length);
+                    };
+                }
+                
+                dots.forEach(dot => {
+                    dot.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const idx = Number(dot.getAttribute('data-index'));
+                        console.log('⚫ Click dot:', idx);
+                        showImage(idx);
+                    };
+                });
+                
+                showImage(0);
+            });
+            
+            console.log('✅ Controlli immagini inizializzati');
+        }
+        
         // Hero background alternation
         function initHeroBackgrounds() {
             const backgrounds = document.querySelectorAll('.hero-bg');
@@ -1883,6 +2175,10 @@ ${blocksHTML}
         
         // Sommario toggle
         document.addEventListener('DOMContentLoaded', function() {
+            // Inizializza controlli gallery e counter
+            initImageControls();
+            initCounterAnimation();
+            
             // Inizializza alternanza sfondi hero
             initHeroBackgrounds();
             
