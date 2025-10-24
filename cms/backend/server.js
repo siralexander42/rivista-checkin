@@ -263,7 +263,7 @@ const magazineSchema = new mongoose.Schema({
         required: true
     },
     
-    // SEO
+    // SEO (Legacy - mantenuti per compatibilità)
     metaTitle: {
         type: String,
         required: true
@@ -275,6 +275,19 @@ const magazineSchema = new mongoose.Schema({
     },
     metaKeywords: [String],
     ogImage: String, // Open Graph image
+    
+    // SEO Avanzato (Nuovo)
+    seo: {
+        metaTitle: String,
+        metaDescription: String,
+        metaKeywords: String,
+        canonicalUrl: String,
+        ogImage: String,
+        robotsMeta: {
+            type: String,
+            default: 'index,follow'
+        }
+    },
     
     // Contenuto
     coverImage: String,
@@ -1233,6 +1246,54 @@ app.get('/api/admin/magazines/:id', authenticateToken, async (req, res) => {
         });
     }
 });
+
+// PUT - Aggiorna impostazioni SEO rivista
+app.put('/api/magazines/:id/seo', authenticateToken, async (req, res) => {
+    try {
+        const magazine = await Magazine.findById(req.params.id);
+        
+        if (!magazine) {
+            return res.status(404).json({ 
+                success: false,
+                error: 'Rivista non trovata' 
+            });
+        }
+        
+        // Aggiorna dati SEO
+        if (req.body.seo) {
+            magazine.seo = {
+                metaTitle: req.body.seo.metaTitle || '',
+                metaDescription: req.body.seo.metaDescription || '',
+                metaKeywords: req.body.seo.metaKeywords || '',
+                canonicalUrl: req.body.seo.canonicalUrl || '',
+                ogImage: req.body.seo.ogImage || '',
+                robotsMeta: req.body.seo.robotsMeta || 'index,follow'
+            };
+            
+            // Aggiorna anche i campi legacy per compatibilità
+            magazine.metaTitle = req.body.seo.metaTitle || magazine.name;
+            magazine.metaDescription = req.body.seo.metaDescription || '';
+            if (req.body.seo.ogImage) {
+                magazine.ogImage = req.body.seo.ogImage;
+            }
+        }
+        
+        await magazine.save();
+        
+        res.json({
+            success: true,
+            message: 'Impostazioni SEO aggiornate con successo',
+            data: magazine
+        });
+    } catch (error) {
+        console.error('Errore PUT /api/magazines/:id/seo:', error);
+        res.status(400).json({ 
+            success: false,
+            error: error.message || 'Errore nell\'aggiornamento delle impostazioni SEO' 
+        });
+    }
+});
+
 
 // GET - Rivista pubblica per slug
 app.get('/api/magazines/slug/:slug', async (req, res) => {

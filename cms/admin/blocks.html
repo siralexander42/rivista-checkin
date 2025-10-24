@@ -52,39 +52,64 @@
         
         <!-- Main Content -->
         <main class="main-content">
-            <!-- Header con info rivista -->
-            <header class="content-header">
-                <div>
-                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                        <button onclick="window.location.href='magazines.html'" class="btn btn-sm btn-secondary">
-                            ← Indietro
-                        </button>
-                        <span style="color: var(--text-light);">|</span>
-                        <span id="magazineEdition" style="color: var(--text-light); font-size: 14px;"></span>
-                    </div>
-                    <h1 id="magazineName">Editor Rivista</h1>
-                    <p style="color: var(--text-light); margin-top: 8px;">
-                        Crea e organizza i contenuti della tua rivista
-                    </p>
-                    
-                    <!-- Toggle Loading Screen -->
-                    <div style="margin-top: 16px; display: flex; align-items: center; gap: 12px; padding: 12px; background: rgba(99, 102, 241, 0.1); border-radius: 8px; border: 1px solid rgba(99, 102, 241, 0.2);">
-                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; flex: 1;">
-                            <input type="checkbox" id="showLoadingScreen" style="width: 18px; height: 18px; cursor: pointer; accent-color: #6366f1;">
-                            <span style="font-weight: 500; font-size: 14px;">✈️ Mostra schermata di caricamento</span>
-                        </label>
-                        <span style="font-size: 12px; color: var(--text-light);">Tabellone aeroporto animato</span>
-                    </div>
+            <!-- Header con info rivista - Modern Design -->
+            <header class="content-header-modern">
+                <!-- Breadcrumb e Info -->
+                <div class="header-top">
+                    <button onclick="window.location.href='magazines.html'" class="btn-back">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Indietro
+                    </button>
+                    <span class="breadcrumb-separator">•</span>
+                    <span id="magazineEdition" class="breadcrumb-text">Edizione 42 • ottobre</span>
                 </div>
-                <div class="header-actions">
-                    <button class="btn btn-secondary" onclick="previewMagazine()">
-                        <svg style="width: 16px; height: 16px; margin-right: 6px;" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 50 50"><path d="M 25 7 C 14.757813 7 6.929688 15.316406 3.613281 23.230469 C 3.425781 23.664063 3.429688 24.160156 3.625 24.59375 C 6.941406 32.507813 14.769531 40.824219 25.011719 40.824219 C 35.253906 40.824219 43.082031 32.507813 46.398438 24.59375 C 46.59375 24.160156 46.597656 23.664063 46.410156 23.230469 C 43.09375 15.316406 35.265625 7 25 7 Z M 25 10 C 33.527344 10 40.664063 16.726563 43.375 23.8125 C 40.675781 30.886719 33.539063 37.613281 25.011719 37.613281 C 16.484375 37.613281 9.347656 30.886719 6.636719 23.8125 C 9.335938 16.726563 16.472656 10 25 10 Z M 25 15 C 21.136719 15 18 18.136719 18 22 C 18 25.863281 21.136719 29 25 29 C 28.863281 29 32 25.863281 32 22 C 32 18.136719 28.863281 15 25 15 Z M 25 19 C 26.746094 19 28 20.253906 28 22 C 28 23.746094 26.746094 25 25 25 C 23.253906 25 22 23.746094 22 22 C 22 20.253906 23.253906 19 25 19 Z"/></svg>
-                        Anteprima
-                    </button>
-                    <button class="btn btn-success" onclick="publishMagazine()">
-                        <svg style="width: 16px; height: 16px; margin-right: 6px;" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 50 50"><path d="M 25 2 C 24.394531 2 23.789063 2.175781 23.265625 2.515625 L 12.964844 9.046875 C 12.355469 9.433594 11.96875 10.109375 11.96875 10.835938 L 11.96875 24.90625 C 11.96875 25.632813 12.355469 26.308594 12.964844 26.695313 L 23.265625 33.226563 C 23.789063 33.566406 24.394531 33.742188 25 33.742188 C 25.605469 33.742188 26.210938 33.566406 26.734375 33.226563 L 37.035156 26.695313 C 37.644531 26.308594 38.03125 25.632813 38.03125 24.90625 L 38.03125 10.835938 C 38.03125 10.109375 37.644531 9.433594 37.035156 9.046875 L 26.734375 2.515625 C 26.210938 2.175781 25.605469 2 25 2 Z M 25 13 L 26 13 L 26 20 L 25 20 Z M 25 22 L 26 22 L 26 23 L 25 23 Z M 4.277344 25.011719 C 3.640625 25.019531 3.035156 25.289063 2.601563 25.765625 C 1.820313 26.609375 1.867188 27.941406 2.710938 28.722656 L 12.90625 38.335938 L 12.929688 38.355469 C 13.359375 38.746094 13.914063 38.964844 14.496094 38.96875 C 15.078125 38.972656 15.636719 38.761719 16.070313 38.375 L 47.285156 9.730469 C 48.085938 8.996094 48.214844 7.707031 47.578125 6.832031 C 46.941406 5.957031 45.667969 5.707031 44.730469 6.214844 L 14.472656 35.042969 L 5.84375 26.898438 C 5.402344 26.484375 4.824219 26.261719 4.222656 26.265625 C 4.574219 26.21875 4.425781 26.21875 4.277344 26.21875 Z"/></svg>
-                        Pubblica
-                    </button>
+                
+                <!-- Titolo e Descrizione -->
+                <div class="header-main">
+                    <div class="header-title-section">
+                        <h1 id="magazineName" class="magazine-title">CHECK-IN #42</h1>
+                        <p class="magazine-subtitle">Crea e organizza i contenuti della tua rivista</p>
+                    </div>
+                    
+                    <div class="header-actions-modern">
+                        <!-- Toggle Loading Screen -->
+                        <div class="toggle-loading-wrapper">
+                            <label class="toggle-loading-label">
+                                <input type="checkbox" id="showLoadingScreen" class="toggle-loading-input">
+                                <span class="toggle-loading-slider"></span>
+                            </label>
+                            <div class="toggle-loading-info">
+                                <span class="toggle-loading-title">✈️ Schermata caricamento</span>
+                                <span class="toggle-loading-desc">Tabellone aeroporto animato</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="action-buttons-group">
+                            <button class="btn-action btn-settings" onclick="showMagazineSettings()" title="Impostazioni rivista">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M19.4 15C19.2669 15.3016 19.2272 15.6362 19.286 15.9606C19.3448 16.285 19.4995 16.5843 19.73 16.82L19.79 16.88C19.976 17.0657 20.1235 17.2863 20.2241 17.5291C20.3248 17.7719 20.3766 18.0322 20.3766 18.295C20.3766 18.5578 20.3248 18.8181 20.2241 19.0609C20.1235 19.3037 19.976 19.5243 19.79 19.71C19.6043 19.896 19.3837 20.0435 19.1409 20.1441C18.8981 20.2448 18.6378 20.2966 18.375 20.2966C18.1122 20.2966 17.8519 20.2448 17.6091 20.1441C17.3663 20.0435 17.1457 19.896 16.96 19.71L16.9 19.65C16.6643 19.4195 16.365 19.2648 16.0406 19.206C15.7162 19.1472 15.3816 19.1869 15.08 19.32C14.7842 19.4468 14.532 19.6572 14.3543 19.9255C14.1766 20.1938 14.0813 20.5082 14.08 20.83V21C14.08 21.5304 13.8693 22.0391 13.4942 22.4142C13.1191 22.7893 12.6104 23 12.08 23C11.5496 23 11.0409 22.7893 10.6658 22.4142C10.2907 22.0391 10.08 21.5304 10.08 21V20.91C10.0723 20.579 9.96512 20.258 9.77251 19.9887C9.5799 19.7194 9.31074 19.5143 9 19.4C8.69838 19.2669 8.36381 19.2272 8.03941 19.286C7.71502 19.3448 7.41568 19.4995 7.18 19.73L7.12 19.79C6.93425 19.976 6.71368 20.1235 6.47088 20.2241C6.22808 20.3248 5.96783 20.3766 5.705 20.3766C5.44217 20.3766 5.18192 20.3248 4.93912 20.2241C4.69632 20.1235 4.47575 19.976 4.29 19.79C4.10405 19.6043 3.95653 19.3837 3.85588 19.1409C3.75523 18.8981 3.70343 18.6378 3.70343 18.375C3.70343 18.1122 3.75523 17.8519 3.85588 17.6091C3.95653 17.3663 4.10405 17.1457 4.29 16.96L4.35 16.9C4.58054 16.6643 4.73519 16.365 4.794 16.0406C4.85282 15.7162 4.81312 15.3816 4.68 15.08C4.55324 14.7842 4.34276 14.532 4.07447 14.3543C3.80618 14.1766 3.49179 14.0813 3.17 14.08H3C2.46957 14.08 1.96086 13.8693 1.58579 13.4942C1.21071 13.1191 1 12.6104 1 12.08C1 11.5496 1.21071 11.0409 1.58579 10.6658C1.96086 10.2907 2.46957 10.08 3 10.08H3.09C3.42099 10.0723 3.742 9.96512 4.0113 9.77251C4.28059 9.5799 4.48572 9.31074 4.6 9C4.73312 8.69838 4.77282 8.36381 4.714 8.03941C4.65519 7.71502 4.50054 7.41568 4.27 7.18L4.21 7.12C4.02405 6.93425 3.87653 6.71368 3.77588 6.47088C3.67523 6.22808 3.62343 5.96783 3.62343 5.705C3.62343 5.44217 3.67523 5.18192 3.77588 4.93912C3.87653 4.69632 4.02405 4.47575 4.21 4.29C4.39575 4.10405 4.61632 3.95653 4.85912 3.85588C5.10192 3.75523 5.36217 3.70343 5.625 3.70343C5.88783 3.70343 6.14808 3.75523 6.39088 3.85588C6.63368 3.95653 6.85425 4.10405 7.04 4.29L7.1 4.35C7.33568 4.58054 7.63502 4.73519 7.95941 4.794C8.28381 4.85282 8.61838 4.81312 8.92 4.68H9C9.29577 4.55324 9.54802 4.34276 9.72569 4.07447C9.90337 3.80618 9.99872 3.49179 10 3.17V3C10 2.46957 10.2107 1.96086 10.5858 1.58579C10.9609 1.21071 11.4696 1 12 1C12.5304 1 13.0391 1.21071 13.4142 1.58579C13.7893 1.96086 14 2.46957 14 3V3.09C14.0013 3.41179 14.0966 3.72618 14.2743 3.99447C14.452 4.26276 14.7042 4.47324 15 4.6C15.3016 4.73312 15.6362 4.77282 15.9606 4.714C16.285 4.65519 16.5843 4.50054 16.82 4.27L16.88 4.21C17.0657 4.02405 17.2863 3.87653 17.5291 3.77588C17.7719 3.67523 18.0322 3.62343 18.295 3.62343C18.5578 3.62343 18.8181 3.67523 19.0609 3.77588C19.3037 3.87653 19.5243 4.02405 19.71 4.21C19.896 4.39575 20.0435 4.61632 20.1441 4.85912C20.2448 5.10192 20.2966 5.36217 20.2966 5.625C20.2966 5.88783 20.2448 6.14808 20.1441 6.39088C20.0435 6.63368 19.896 6.85425 19.71 7.04L19.65 7.1C19.4195 7.33568 19.2648 7.63502 19.206 7.95941C19.1472 8.28381 19.1869 8.61838 19.32 8.92V9C19.4468 9.29577 19.6572 9.54802 19.9255 9.72569C20.1938 9.90337 20.5082 9.99872 20.83 10H21C21.5304 10 22.0391 10.2107 22.4142 10.5858C22.7893 10.9609 23 11.4696 23 12C23 12.5304 22.7893 13.0391 22.4142 13.4142C22.0391 13.7893 21.5304 14 21 14H20.91C20.5882 14.0013 20.2738 14.0966 20.0055 14.2743C19.7372 14.452 19.5268 14.7042 19.4 15Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                Impostazioni
+                            </button>
+                            <button class="btn-action btn-preview" onclick="previewMagazine()">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                Anteprima
+                            </button>
+                            <button class="btn-action btn-publish" onclick="publishMagazine()">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                Pubblica
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </header>
             
@@ -243,6 +268,100 @@
         </div>
     </div>
     
+    <!-- Modal Impostazioni Rivista -->
+    <div id="magazineSettingsModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header-modern">
+                <div>
+                    <h2 class="modal-title-modern">⚙️ Impostazioni Rivista</h2>
+                    <p class="modal-subtitle">Configurazione SEO e metadati</p>
+                </div>
+                <button class="modal-close-modern" onclick="closeMagazineSettings()">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body-modern" style="padding: 32px;">
+                <form id="magazineSettingsForm">
+                    <!-- SEO Score Display -->
+                    <div id="seoScoreContainer" style="margin-bottom: 32px;">
+                        <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 2px solid #86efac; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <h3 style="margin: 0; font-size: 18px; color: #166534;">🎯 SEO Score</h3>
+                                <div id="seoScoreValue" style="font-size: 48px; font-weight: 700; color: #16a34a;">--</div>
+                            </div>
+                            <div id="seoProgress" style="height: 8px; background: #d1fae5; border-radius: 4px; overflow: hidden;">
+                                <div id="seoProgressBar" style="height: 100%; background: linear-gradient(90deg, #16a34a 0%, #22c55e 100%); width: 0%; transition: width 0.5s ease;"></div>
+                            </div>
+                        </div>
+                        <div id="seoIssues"></div>
+                    </div>
+                    
+                    <!-- Meta Title -->
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">
+                            <span>Meta Title</span>
+                            <span class="label-badge" id="titleLength">0/60</span>
+                        </label>
+                        <input type="text" id="metaTitle" class="form-input-modern" maxlength="60" placeholder="Titolo ottimizzato per i motori di ricerca">
+                        <p class="form-hint">Massimo 60 caratteri. Deve essere descrittivo e contenere keywords rilevanti.</p>
+                    </div>
+                    
+                    <!-- Meta Description -->
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">
+                            <span>Meta Description</span>
+                            <span class="label-badge" id="descLength">0/160</span>
+                        </label>
+                        <textarea id="metaDescription" class="form-textarea-modern" maxlength="160" rows="3" placeholder="Descrizione coinvolgente della rivista per i risultati di ricerca"></textarea>
+                        <p class="form-hint">Massimo 160 caratteri. Deve invogliare al click e includere keywords strategiche.</p>
+                    </div>
+                    
+                    <!-- Keywords -->
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">Keywords</label>
+                        <input type="text" id="metaKeywords" class="form-input-modern" placeholder="viaggi, turismo, italia, check-in">
+                        <p class="form-hint">Parole chiave separate da virgola. Max 10 keywords.</p>
+                    </div>
+                    
+                    <!-- Canonical URL -->
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">Canonical URL</label>
+                        <input type="url" id="canonicalUrl" class="form-input-modern" placeholder="https://www.example.com/magazine/42">
+                        <p class="form-hint">URL canonico per evitare duplicati. Lascia vuoto per usare l'URL corrente.</p>
+                    </div>
+                    
+                    <!-- Open Graph Image -->
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">Immagine Social (Open Graph)</label>
+                        <input type="url" id="ogImage" class="form-input-modern" placeholder="https://www.example.com/images/og-image.jpg">
+                        <p class="form-hint">Immagine mostrata quando la rivista viene condivisa sui social (1200x630px consigliato).</p>
+                    </div>
+                    
+                    <!-- Robots Meta -->
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">Robots Meta Tag</label>
+                        <select id="robotsMeta" class="form-select-modern">
+                            <option value="index,follow">Index, Follow (Consigliato)</option>
+                            <option value="noindex,follow">No Index, Follow</option>
+                            <option value="index,nofollow">Index, No Follow</option>
+                            <option value="noindex,nofollow">No Index, No Follow</option>
+                        </select>
+                        <p class="form-hint">Controlla come i motori di ricerca indicizzano questa rivista.</p>
+                    </div>
+                    
+                    <button type="button" class="btn btn-primary-modern" onclick="saveMagazineSettings()" style="width: 100%; margin-top: 24px;">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M13.5 3.5L6 11L2.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Salva Impostazioni
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
     <!-- Modal Modifica Blocco - Modern Design -->
     <div id="editBlockModal" class="modal">
         <div class="modal-content modal-xlarge modal-edit-block">
@@ -290,6 +409,262 @@
     <script src="js/blocks.js?v=9.0"></script>
     
     <style>
+        /* ============================================
+           MODERN HEADER STYLES
+           ============================================ */
+        .content-header-modern {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 16px;
+            padding: 24px 32px;
+            margin-bottom: 32px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+        
+        .header-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: #ffffff;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-back:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+        
+        .breadcrumb-separator {
+            color: #cbd5e1;
+            font-size: 12px;
+        }
+        
+        .breadcrumb-text {
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .header-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+        
+        .header-title-section {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .magazine-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0 0 8px 0;
+            letter-spacing: -0.02em;
+        }
+        
+        .magazine-subtitle {
+            font-size: 15px;
+            color: #64748b;
+            margin: 0;
+            font-weight: 400;
+        }
+        
+        .header-actions-modern {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        
+        /* Toggle Loading Screen Styles */
+        .toggle-loading-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: rgba(99, 102, 241, 0.08);
+            border: 1.5px solid rgba(99, 102, 241, 0.2);
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+        
+        .toggle-loading-wrapper:hover {
+            background: rgba(99, 102, 241, 0.12);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+        
+        .toggle-loading-label {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 26px;
+            cursor: pointer;
+        }
+        
+        .toggle-loading-input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-loading-slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            border-radius: 26px;
+            transition: all 0.3s ease;
+        }
+        
+        .toggle-loading-slider:before {
+            content: "";
+            position: absolute;
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .toggle-loading-input:checked + .toggle-loading-slider {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        }
+        
+        .toggle-loading-input:checked + .toggle-loading-slider:before {
+            transform: translateX(22px);
+        }
+        
+        .toggle-loading-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .toggle-loading-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        .toggle-loading-desc {
+            font-size: 12px;
+            color: #64748b;
+        }
+        
+        /* Action Buttons Group */
+        .action-buttons-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            white-space: nowrap;
+        }
+        
+        .btn-settings {
+            background: #ffffff;
+            color: #475569;
+            border: 1.5px solid #e2e8f0;
+        }
+        
+        .btn-settings:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .btn-preview {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-preview:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+        }
+        
+        .btn-publish {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+        }
+        
+        .btn-publish:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+        }
+        
+        @media (max-width: 1024px) {
+            .header-main {
+                flex-direction: column;
+            }
+            
+            .header-actions-modern {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .action-buttons-group {
+                flex-wrap: wrap;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .content-header-modern {
+                padding: 20px;
+            }
+            
+            .magazine-title {
+                font-size: 24px;
+            }
+            
+            .btn-action {
+                padding: 10px 16px;
+                font-size: 13px;
+            }
+        }
+        
+        /* ============================================
+           END MODERN HEADER STYLES
+           ============================================ */
+        
         /* Blocks Page Styles */
         .add-block-section {
             margin-bottom: 24px;
@@ -1248,12 +1623,448 @@
         .drag-handle:hover {
             color: var(--primary);
         }
+        
+        /* ============================================
+           MAGAZINE SETTINGS MODAL STYLES
+           ============================================ */
+        .form-group-modern {
+            margin-bottom: 24px;
+        }
+        
+        .form-label-modern {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+        
+        .label-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .form-input-modern,
+        .form-textarea-modern,
+        .form-select-modern {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #1e293b;
+            transition: all 0.2s ease;
+            background: #ffffff;
+        }
+        
+        .form-input-modern:focus,
+        .form-textarea-modern:focus,
+        .form-select-modern:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+        
+        .form-textarea-modern {
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
+        }
+        
+        .form-hint {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 6px;
+        }
+        
+        .char-counter {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+        
+        .char-counter.warning {
+            color: #f59e0b;
+        }
+        
+        .char-counter.error {
+            color: #ef4444;
+        }
+        
+        .seo-score-display {
+            background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+            border: 2px solid #c7d2fe;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        
+        .score-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        
+        .score-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .score-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: #6366f1;
+        }
+        
+        .progress-bar-container {
+            width: 100%;
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #22c55e 100%);
+            border-radius: 6px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .seo-issues-container {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 4px;
+        }
+        
+        .seo-issues-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .seo-issues-container::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        
+        .seo-issues-container::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        
+        .seo-issues-container::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        
+        .btn-save-modern {
+            width: 100%;
+            padding: 14px 24px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+        }
+        
+        .btn-save-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+        }
+        
+        .btn-save-modern:active {
+            transform: translateY(0);
+        }
+        
+        /* Toast Notifications */
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+        /* ============================================
+           END MAGAZINE SETTINGS MODAL STYLES
+           ============================================ */
     </style>
+    
+    <!-- SEO Analyzer -->
+    <script src="js/seo-analyzer.js?v=1.0"></script>
+    
     <script>
+        // ============================================
+        // MAGAZINE SETTINGS & SEO MANAGEMENT
+        // ============================================
+        
+        let currentMagazineData = null;
+        
+        /**
+         * Apre il modal delle impostazioni rivista
+         */
+        function showMagazineSettings() {
+            const modal = document.getElementById('magazineSettingsModal');
+            if (!modal) return;
+            
+            // Carica dati rivista corrente
+            loadMagazineSettings();
+            
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+        
+        /**
+         * Chiude il modal delle impostazioni
+         */
+        function closeMagazineSettings() {
+            const modal = document.getElementById('magazineSettingsModal');
+            if (!modal) return;
+            
+            modal.classList.remove('show');
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
+        
+        /**
+         * Carica le impostazioni SEO della rivista
+         */
+        async function loadMagazineSettings() {
+            const magazineId = getMagazineId();
+            if (!magazineId) return;
+            
+            try {
+                const response = await fetch(`/api/admin/magazines/${magazineId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                if (!response.ok) throw new Error('Errore caricamento rivista');
+                
+                const result = await response.json();
+                const magazine = result.data;
+                currentMagazineData = magazine;
+                
+                // Popola form con dati esistenti
+                document.getElementById('metaTitle').value = magazine.seo?.metaTitle || magazine.metaTitle || magazine.name || '';
+                document.getElementById('metaDescription').value = magazine.seo?.metaDescription || magazine.metaDescription || '';
+                document.getElementById('metaKeywords').value = magazine.seo?.metaKeywords || (magazine.metaKeywords ? magazine.metaKeywords.join(', ') : '');
+                document.getElementById('canonicalUrl').value = magazine.seo?.canonicalUrl || '';
+                document.getElementById('ogImage').value = magazine.seo?.ogImage || magazine.ogImage || magazine.coverImage || '';
+                document.getElementById('robotsMeta').value = magazine.seo?.robotsMeta || 'index,follow';
+                
+                // Aggiorna contatori caratteri
+                updateCharCounter('metaTitle', 'titleLength', 60);
+                updateCharCounter('metaDescription', 'descLength', 160);
+                
+                // Esegui analisi SEO iniziale
+                performSEOAnalysis();
+                
+            } catch (error) {
+                console.error('Errore caricamento impostazioni:', error);
+                showNotification('Errore nel caricamento delle impostazioni', 'error');
+            }
+        }
+        
+        /**
+         * Salva le impostazioni SEO della rivista
+         */
+        async function saveMagazineSettings() {
+            const magazineId = getMagazineId();
+            if (!magazineId) return;
+            
+            const seoData = {
+                metaTitle: document.getElementById('metaTitle').value.trim(),
+                metaDescription: document.getElementById('metaDescription').value.trim(),
+                metaKeywords: document.getElementById('metaKeywords').value.trim(),
+                canonicalUrl: document.getElementById('canonicalUrl').value.trim(),
+                ogImage: document.getElementById('ogImage').value.trim(),
+                robotsMeta: document.getElementById('robotsMeta').value
+            };
+            
+            try {
+                const response = await fetch(`/api/magazines/${magazineId}/seo`, {
+                    method: 'PUT',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({ seo: seoData })
+                });
+                
+                if (!response.ok) throw new Error('Errore salvataggio');
+                
+                showNotification('Impostazioni SEO salvate con successo', 'success');
+                closeMagazineSettings();
+                
+            } catch (error) {
+                console.error('Errore salvataggio:', error);
+                showNotification('Errore nel salvataggio delle impostazioni', 'error');
+            }
+        }
+        
+        /**
+         * Esegue l'analisi SEO e aggiorna UI
+         */
+        function performSEOAnalysis() {
+            const seoData = {
+                metaTitle: document.getElementById('metaTitle').value,
+                metaDescription: document.getElementById('metaDescription').value,
+                metaKeywords: document.getElementById('metaKeywords').value,
+                canonicalUrl: document.getElementById('canonicalUrl').value,
+                ogImage: document.getElementById('ogImage').value,
+                robotsMeta: document.getElementById('robotsMeta').value
+            };
+            
+            // Usa l'analizzatore SEO
+            const result = analyzeSEO(seoData);
+            
+            // Renderizza risultati
+            renderSEOResults(result);
+        }
+        
+        /**
+         * Aggiorna il contatore caratteri
+         */
+        function updateCharCounter(inputId, counterId, maxChars) {
+            const input = document.getElementById(inputId);
+            const counter = document.getElementById(counterId);
+            
+            if (!input || !counter) return;
+            
+            const length = input.value.length;
+            counter.textContent = length;
+            
+            // Rimuovi classi precedenti
+            counter.classList.remove('warning', 'error');
+            
+            // Aggiungi classe appropriata
+            if (length > maxChars) {
+                counter.classList.add('error');
+            } else if (length > maxChars * 0.9) {
+                counter.classList.add('warning');
+            }
+            
+            // Riesegui analisi SEO ad ogni modifica
+            performSEOAnalysis();
+        }
+        
+        /**
+         * Ottiene l'ID della rivista corrente dall'URL
+         */
+        function getMagazineId() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id');
+        }
+        
+        /**
+         * Mostra notifica toast
+         */
+        function showNotification(message, type = 'info') {
+            // Rimuovi notifiche precedenti
+            const existing = document.querySelector('.toast-notification');
+            if (existing) existing.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = `toast-notification toast-${type}`;
+            toast.textContent = message;
+            
+            const colors = {
+                success: 'linear-gradient(135deg, #10b981 0%, #22c55e 100%)',
+                error: 'linear-gradient(135deg, #ef4444 0%, #f87171 100%)',
+                info: 'linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%)',
+                warning: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)'
+            };
+            
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 16px 24px;
+                background: ${colors[type] || colors.info};
+                color: white;
+                border-radius: 10px;
+                font-size: 14px;
+                font-weight: 600;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                z-index: 10000;
+                animation: slideInRight 0.3s ease;
+            `;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        
         // Inizializza pagina
         document.addEventListener('DOMContentLoaded', () => {
             // Inizializza sidebar unificata
             initSidebar('blocks');
+            
+            // Setup event listeners per contatori caratteri
+            const metaTitleInput = document.getElementById('metaTitle');
+            const metaDescInput = document.getElementById('metaDescription');
+            
+            if (metaTitleInput) {
+                metaTitleInput.addEventListener('input', () => {
+                    updateCharCounter('metaTitle', 'titleLength', 60);
+                });
+            }
+            
+            if (metaDescInput) {
+                metaDescInput.addEventListener('input', () => {
+                    updateCharCounter('metaDescription', 'descLength', 160);
+                });
+            }
+            
+            // Setup event listeners per analisi SEO real-time
+            const seoInputs = ['metaKeywords', 'canonicalUrl', 'ogImage', 'robotsMeta'];
+            seoInputs.forEach(inputId => {
+                const element = document.getElementById(inputId);
+                if (element) {
+                    element.addEventListener('input', performSEOAnalysis);
+                    element.addEventListener('change', performSEOAnalysis);
+                }
+            });
         });
 
         lucide.createIcons();
