@@ -204,9 +204,6 @@ async function editMagazine(id) {
         document.getElementById('description').value = currentMagazine.description || '';
         document.getElementById('coverImage').value = currentMagazine.coverImage || '';
         document.getElementById('ogImage').value = currentMagazine.ogImage || '';
-        document.getElementById('metaTitle').value = currentMagazine.metaTitle;
-        document.getElementById('metaDescription').value = currentMagazine.metaDescription;
-        document.getElementById('metaKeywords').value = currentMagazine.metaKeywords?.join(', ') || '';
         document.getElementById('status').value = currentMagazine.status;
         document.getElementById('featured').checked = currentMagazine.featured || false;
         
@@ -239,7 +236,6 @@ async function handleFormSubmit(e) {
     e.preventDefault();
     
     const magazineId = document.getElementById('magazineId').value;
-    const keywords = document.getElementById('metaKeywords').value;
     
     const data = {
         name: document.getElementById('name').value,
@@ -250,9 +246,6 @@ async function handleFormSubmit(e) {
         description: document.getElementById('description').value,
         coverImage: document.getElementById('coverImage').value,
         ogImage: document.getElementById('ogImage').value,
-        metaTitle: document.getElementById('metaTitle').value,
-        metaDescription: document.getElementById('metaDescription').value,
-        metaKeywords: keywords ? keywords.split(',').map(k => k.trim()) : [],
         status: document.getElementById('status').value,
         publishDate: document.getElementById('publishDate').value || null,
         featured: document.getElementById('featured').checked

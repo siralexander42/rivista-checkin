@@ -74,24 +74,6 @@
                     </div>
                     
                     <div class="header-actions-modern">
-                        <!-- SEO Score Display -->
-                        <div class="seo-score-badge" id="seoScoreBadge" onclick="showSEODetails()" title="Clicca per dettagli SEO">
-                            <div class="seo-score-icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M9 11L12 14L22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M21 12V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                            <div class="seo-score-info">
-                                <span class="seo-score-label">SEO Score</span>
-                                <div class="seo-score-display-header">
-                                    <span id="seoScoreValue" class="seo-score-number">--</span>
-                                    <span id="seoScoreGrade" class="seo-score-grade">--</span>
-                                </div>
-                            </div>
-                            <div class="seo-score-indicator" id="seoScoreIndicator"></div>
-                        </div>
-                        
                         <!-- Toggle Loading Screen -->
                         <div class="toggle-loading-wrapper">
                             <label class="toggle-loading-label">
@@ -392,43 +374,6 @@
                 </div>
                 
                 <div class="form-section">
-                    <h3>🔍 SEO</h3>
-                    
-                    <div class="form-group">
-                        <label for="metaTitle">Meta Title *</label>
-                        <input 
-                            type="text" 
-                            id="metaTitle" 
-                            required 
-                            placeholder="es: CHECK-IN #42 | La rivista del viaggio"
-                            maxlength="60"
-                        >
-                        <small>Massimo 60 caratteri</small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="metaDescription">Meta Description *</label>
-                        <textarea 
-                            id="metaDescription" 
-                            required
-                            rows="2"
-                            placeholder="Descrizione che appare nei risultati di ricerca..."
-                            maxlength="160"
-                        ></textarea>
-                        <small>Massimo 160 caratteri</small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="metaKeywords">Keywords (separate da virgola)</label>
-                        <input 
-                            type="text" 
-                            id="metaKeywords" 
-                            placeholder="viaggio, turismo, ospitalità, enogastronomia"
-                        >
-                    </div>
-                </div>
-                
-                <div class="form-section">
                     <h3>⚙️ Impostazioni</h3>
                     
                     <div class="form-row">
@@ -469,38 +414,6 @@
                     </div>
                 </div>
             </form>
-        </div>
-    </div>
-    
-    <!-- Modal Dettagli SEO (separato) -->
-    <div id="seoDetailsModal" class="modal">
-        <div class="modal-content modal-large">
-            <div class="modal-header-modern">
-                <div>
-                    <h2 class="modal-title-modern">🎯 Analisi SEO Dettagliata</h2>
-                    <p class="modal-subtitle">Report completo e suggerimenti di ottimizzazione</p>
-                </div>
-                <button class="modal-close-modern" onclick="closeSEODetails()">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                    </svg>
-                </button>
-            </div>
-            <div class="modal-body-modern" style="padding: 32px;">
-                <!-- SEO Score Grande -->
-                <div class="seo-score-display">
-                    <div class="score-header">
-                        <span class="score-label">Punteggio Complessivo</span>
-                        <span id="seoScoreValueModal" class="score-value">--</span>
-                    </div>
-                    <div class="progress-bar-container">
-                        <div id="seoProgressBarModal" class="progress-bar-fill" style="width: 0%;"></div>
-                    </div>
-                </div>
-                
-                <!-- Dettagli Issues -->
-                <div id="seoIssuesModal" class="seo-issues-container"></div>
-            </div>
         </div>
     </div>
     
@@ -635,96 +548,6 @@
             align-items: center;
             gap: 16px;
             flex-wrap: wrap;
-        }
-        
-        /* SEO Score Badge in Header */
-        .seo-score-badge {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 18px;
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            min-width: 180px;
-        }
-        
-        .seo-score-badge:hover {
-            transform: translateY(-2px);
-            border-color: #6366f1;
-            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.15);
-        }
-        
-        .seo-score-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            flex-shrink: 0;
-        }
-        
-        .seo-score-info {
-            flex: 1;
-            min-width: 0;
-        }
-        
-        .seo-score-label {
-            display: block;
-            font-size: 11px;
-            font-weight: 600;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
-        }
-        
-        .seo-score-display-header {
-            display: flex;
-            align-items: baseline;
-            gap: 6px;
-        }
-        
-        .seo-score-number {
-            font-size: 24px;
-            font-weight: 800;
-            color: #1e293b;
-            line-height: 1;
-        }
-        
-        .seo-score-grade {
-            font-size: 14px;
-            font-weight: 700;
-            color: #64748b;
-        }
-        
-        .seo-score-indicator {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #cbd5e1;
-            flex-shrink: 0;
-            transition: all 0.3s ease;
-        }
-        
-        .seo-score-badge.score-excellent .seo-score-indicator {
-            background: #10b981;
-            box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
-        }
-        
-        .seo-score-badge.score-good .seo-score-indicator {
-            background: #f59e0b;
-            box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
-        }
-        
-        .seo-score-badge.score-poor .seo-score-indicator {
-            background: #ef4444;
-            box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
         }
         
         /* Toggle Loading Screen Styles */
@@ -1936,74 +1759,6 @@
             color: #ef4444;
         }
         
-        .seo-score-display {
-            background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
-            border: 2px solid #c7d2fe;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 24px;
-        }
-        
-        .score-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-        
-        .score-label {
-            font-size: 14px;
-            font-weight: 600;
-            color: #475569;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .score-value {
-            font-size: 36px;
-            font-weight: 800;
-            color: #6366f1;
-        }
-        
-        .progress-bar-container {
-            width: 100%;
-            height: 12px;
-            background: #e2e8f0;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-        
-        .progress-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #10b981 0%, #22c55e 100%);
-            border-radius: 6px;
-            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .seo-issues-container {
-            max-height: 400px;
-            overflow-y: auto;
-            padding: 4px;
-        }
-        
-        .seo-issues-container::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        .seo-issues-container::-webkit-scrollbar-track {
-            background: #f1f5f9;
-            border-radius: 4px;
-        }
-        
-        .seo-issues-container::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-        
-        .seo-issues-container::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-        
         .btn-save-modern {
             width: 100%;
             padding: 14px 24px;
@@ -2103,12 +1858,9 @@
            ============================================ */
     </style>
     
-    <!-- SEO Analyzer -->
-    <script src="js/seo-analyzer.js?v=1.0"></script>
-    
     <script>
         // ============================================
-        // MAGAZINE SETTINGS & SEO MANAGEMENT
+        // MAGAZINE SETTINGS MANAGEMENT
         // ============================================
         
         let currentMagazineData = null;
@@ -2140,9 +1892,6 @@
                 document.getElementById('description').value = magazine.description || '';
                 document.getElementById('coverImage').value = magazine.coverImage || '';
                 document.getElementById('ogImage').value = magazine.ogImage || magazine.coverImage || '';
-                document.getElementById('metaTitle').value = magazine.metaTitle || magazine.name || '';
-                document.getElementById('metaDescription').value = magazine.metaDescription || '';
-                document.getElementById('metaKeywords').value = Array.isArray(magazine.metaKeywords) ? magazine.metaKeywords.join(', ') : (magazine.metaKeywords || '');
                 document.getElementById('status').value = magazine.status || 'draft';
                 document.getElementById('featured').checked = magazine.featured || false;
                 
@@ -2189,9 +1938,6 @@
                 description: document.getElementById('description').value.trim(),
                 coverImage: document.getElementById('coverImage').value.trim(),
                 ogImage: document.getElementById('ogImage').value.trim(),
-                metaTitle: document.getElementById('metaTitle').value.trim(),
-                metaDescription: document.getElementById('metaDescription').value.trim(),
-                metaKeywords: document.getElementById('metaKeywords').value.trim().split(',').map(k => k.trim()).filter(k => k),
                 status: document.getElementById('status').value,
                 featured: document.getElementById('featured').checked,
                 publishDate: document.getElementById('publishDate').value || null
@@ -2210,143 +1956,11 @@
                 // Ricarica i dati della rivista per aggiornare UI
                 await loadMagazine();
                 
-                // Aggiorna l'analisi SEO con i nuovi dati
-                performSEOAnalysis();
-                
             } catch (error) {
                 console.error('Errore salvataggio:', error);
                 showNotification('Errore nel salvataggio delle impostazioni', 'error');
             }
         }
-        
-        /**
-         * Esegue l'analisi SEO e aggiorna UI
-         */
-        function performSEOAnalysis() {
-            // Usa i dati dalla rivista caricata se disponibili
-            const seoData = {
-                metaTitle: currentMagazineData?.metaTitle || '',
-                metaDescription: currentMagazineData?.metaDescription || '',
-                metaKeywords: Array.isArray(currentMagazineData?.metaKeywords) ? currentMagazineData.metaKeywords.join(', ') : (currentMagazineData?.metaKeywords || ''),
-                canonicalUrl: currentMagazineData?.canonicalUrl || '',
-                ogImage: currentMagazineData?.ogImage || currentMagazineData?.coverImage || '',
-                robotsMeta: currentMagazineData?.robotsMeta || 'index,follow'
-            };
-            
-            // TODO: Recupera Schema.org data dal backend quando disponibile
-            const schemaData = null;
-            
-            // Usa l'analizzatore SEO con supporto Schema.org
-            const result = analyzeSEO(seoData, schemaData);
-            
-            // Aggiorna badge SEO nell'header
-            updateSEOBadge(result);
-            
-            // Aggiorna modal dettagli SEO se aperto
-            if (document.getElementById('seoDetailsModal')?.classList.contains('show')) {
-                renderSEODetailsModal(result);
-            }
-        }
-        
-        /**
-         * Aggiorna il badge SEO nell'header
-         */
-        function updateSEOBadge(result) {
-            const scoreElement = document.getElementById('seoScoreValue');
-            const gradeElement = document.getElementById('seoScoreGrade');
-            const badgeElement = document.getElementById('seoScoreBadge');
-            
-            if (!scoreElement || !gradeElement || !badgeElement) return;
-            
-            scoreElement.textContent = result.score;
-            gradeElement.textContent = result.grade;
-            
-            // Rimuovi classi score precedenti
-            badgeElement.classList.remove('score-excellent', 'score-good', 'score-poor');
-            
-            // Aggiungi classe basata sul punteggio
-            if (result.score >= 80) {
-                badgeElement.classList.add('score-excellent');
-            } else if (result.score >= 60) {
-                badgeElement.classList.add('score-good');
-            } else {
-                badgeElement.classList.add('score-poor');
-            }
-        }
-        
-        /**
-         * Mostra modal dettagli SEO
-         */
-        function showSEODetails() {
-            // Esegui analisi SEO
-            const seoData = {
-                metaTitle: currentMagazineData?.metaTitle || '',
-                metaDescription: currentMagazineData?.metaDescription || '',
-                metaKeywords: Array.isArray(currentMagazineData?.metaKeywords) ? currentMagazineData.metaKeywords.join(', ') : (currentMagazineData?.metaKeywords || ''),
-                canonicalUrl: currentMagazineData?.canonicalUrl || '',
-                ogImage: currentMagazineData?.ogImage || currentMagazineData?.coverImage || '',
-                robotsMeta: currentMagazineData?.robotsMeta || 'index,follow'
-            };
-            
-            const schemaData = null; // TODO: recuperare da backend
-            const result = analyzeSEO(seoData, schemaData);
-            
-            // Renderizza i dettagli nel modal
-            renderSEODetailsModal(result);
-            
-            // Apri modal
-            const modal = document.getElementById('seoDetailsModal');
-            if (!modal) return;
-            
-            modal.style.display = 'flex';
-            setTimeout(() => modal.classList.add('show'), 10);
-        }
-        
-        /**
-         * Chiude modal dettagli SEO
-         */
-        function closeSEODetails() {
-            const modal = document.getElementById('seoDetailsModal');
-            if (!modal) return;
-            
-            modal.classList.remove('show');
-            setTimeout(() => modal.style.display = 'none', 300);
-        }
-        
-        /**
-         * Renderizza i dettagli SEO nel modal
-         */
-        function renderSEODetailsModal(result) {
-            const scoreValueModal = document.getElementById('seoScoreValueModal');
-            const progressBarModal = document.getElementById('seoProgressBarModal');
-            const issuesModal = document.getElementById('seoIssuesModal');
-            
-            if (scoreValueModal) {
-                scoreValueModal.textContent = result.score;
-                scoreValueModal.style.color = getScoreColor(result.score);
-            }
-            
-            if (progressBarModal) {
-                progressBarModal.style.width = result.score + '%';
-                progressBarModal.style.background = getProgressGradient(result.score);
-            }
-            
-            if (issuesModal) {
-                let html = '';
-                const errors = result.issues.filter(i => i.type === 'error');
-                const warnings = result.issues.filter(i => i.type === 'warning');
-                const successes = result.issues.filter(i => i.type === 'success');
-                const infos = result.issues.filter(i => i.type === 'info');
-                
-                if (errors.length > 0) html += renderIssueGroup('Errori Critici', errors, '#ef4444');
-                if (warnings.length > 0) html += renderIssueGroup('Avvisi', warnings, '#f59e0b');
-                if (successes.length > 0) html += renderIssueGroup('Elementi Ottimali', successes, '#10b981');
-                if (infos.length > 0) html += renderIssueGroup('Suggerimenti', infos, '#3b82f6');
-                
-                issuesModal.innerHTML = html;
-            }
-        }
-
         
         /**
          * Aggiorna il contatore caratteri
@@ -2369,9 +1983,6 @@
             } else if (length > maxChars * 0.9) {
                 counter.classList.add('warning');
             }
-            
-            // Riesegui analisi SEO ad ogni modifica
-            performSEOAnalysis();
         }
         
         /**
@@ -2434,104 +2045,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             // Inizializza sidebar unificata
             initSidebar('blocks');
-            
-            // Carica dati SEO e esegui prima analisi
-            loadMagazineSEOData();
-            
-            // Setup event listeners per contatori caratteri nel modal impostazioni
-            const editMetaTitleInput = document.getElementById('edit_metaTitle');
-            const editMetaDescInput = document.getElementById('edit_metaDescription');
-            
-            if (editMetaTitleInput) {
-                editMetaTitleInput.addEventListener('input', () => {
-                    updateCharCounter('edit_metaTitle', 'edit_titleLength', 60);
-                });
-            }
-            
-            if (editMetaDescInput) {
-                editMetaDescInput.addEventListener('input', () => {
-                    updateCharCounter('edit_metaDescription', 'edit_descLength', 160);
-                });
-            }
         });
-        
-        /**
-         * Carica i dati SEO della rivista all'avvio
-         */
-        async function loadMagazineSEOData() {
-            const magazineId = getMagazineId();
-            if (!magazineId) {
-                // Esegui analisi con dati vuoti
-                performSEOAnalysis();
-                return;
-            }
-            
-            try {
-                const response = await fetch(`/api/admin/magazines/${magazineId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    }
-                });
-                
-                if (response.ok) {
-                    const result = await response.json();
-                    const magazine = result.data;
-                    
-                    // Salva dati magazine per uso globale
-                    currentMagazineData = magazine;
-                    
-                    // Popola i campi nascosti per l'analisi
-                    if (magazine.seo) {
-                        const tempTitle = document.createElement('input');
-                        const tempDesc = document.createElement('input');
-                        const tempKeywords = document.createElement('input');
-                        const tempCanonical = document.createElement('input');
-                        const tempOg = document.createElement('input');
-                        const tempRobots = document.createElement('input');
-                        
-                        tempTitle.id = 'metaTitle';
-                        tempDesc.id = 'metaDescription';
-                        tempKeywords.id = 'metaKeywords';
-                        tempCanonical.id = 'canonicalUrl';
-                        tempOg.id = 'ogImage';
-                        tempRobots.id = 'robotsMeta';
-                        
-                        tempTitle.value = magazine.seo.metaTitle || magazine.metaTitle || '';
-                        tempDesc.value = magazine.seo.metaDescription || magazine.metaDescription || '';
-                        tempKeywords.value = magazine.seo.metaKeywords || '';
-                        tempCanonical.value = magazine.seo.canonicalUrl || '';
-                        tempOg.value = magazine.seo.ogImage || magazine.ogImage || '';
-                        tempRobots.value = magazine.seo.robotsMeta || 'index,follow';
-                        
-                        // Aggiungi al DOM temporaneamente
-                        document.body.appendChild(tempTitle);
-                        document.body.appendChild(tempDesc);
-                        document.body.appendChild(tempKeywords);
-                        document.body.appendChild(tempCanonical);
-                        document.body.appendChild(tempOg);
-                        document.body.appendChild(tempRobots);
-                        
-                        // Esegui analisi
-                        performSEOAnalysis();
-                        
-                        // Rimuovi elementi temporanei
-                        setTimeout(() => {
-                            tempTitle.remove();
-                            tempDesc.remove();
-                            tempKeywords.remove();
-                            tempCanonical.remove();
-                            tempOg.remove();
-                            tempRobots.remove();
-                        }, 100);
-                    } else {
-                        performSEOAnalysis();
-                    }
-                }
-            } catch (error) {
-                console.error('Errore caricamento dati SEO:', error);
-                performSEOAnalysis();
-            }
-        }
 
         lucide.createIcons();
     </script>

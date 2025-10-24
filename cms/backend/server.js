@@ -263,32 +263,6 @@ const magazineSchema = new mongoose.Schema({
         required: true
     },
     
-    // SEO (Legacy - mantenuti per compatibilità)
-    metaTitle: {
-        type: String,
-        required: true
-    },
-    metaDescription: {
-        type: String,
-        required: true,
-        maxlength: 160
-    },
-    metaKeywords: [String],
-    ogImage: String, // Open Graph image
-    
-    // SEO Avanzato (Nuovo)
-    seo: {
-        metaTitle: String,
-        metaDescription: String,
-        metaKeywords: String,
-        canonicalUrl: String,
-        ogImage: String,
-        robotsMeta: {
-            type: String,
-            default: 'index,follow'
-        }
-    },
-    
     // Contenuto
     coverImage: String,
     subtitle: String,
@@ -1247,53 +1221,6 @@ app.get('/api/admin/magazines/:id', authenticateToken, async (req, res) => {
     }
 });
 
-// PUT - Aggiorna impostazioni SEO rivista
-app.put('/api/magazines/:id/seo', authenticateToken, async (req, res) => {
-    try {
-        const magazine = await Magazine.findById(req.params.id);
-        
-        if (!magazine) {
-            return res.status(404).json({ 
-                success: false,
-                error: 'Rivista non trovata' 
-            });
-        }
-        
-        // Aggiorna dati SEO
-        if (req.body.seo) {
-            magazine.seo = {
-                metaTitle: req.body.seo.metaTitle || '',
-                metaDescription: req.body.seo.metaDescription || '',
-                metaKeywords: req.body.seo.metaKeywords || '',
-                canonicalUrl: req.body.seo.canonicalUrl || '',
-                ogImage: req.body.seo.ogImage || '',
-                robotsMeta: req.body.seo.robotsMeta || 'index,follow'
-            };
-            
-            // Aggiorna anche i campi legacy per compatibilità
-            magazine.metaTitle = req.body.seo.metaTitle || magazine.name;
-            magazine.metaDescription = req.body.seo.metaDescription || '';
-            if (req.body.seo.ogImage) {
-                magazine.ogImage = req.body.seo.ogImage;
-            }
-        }
-        
-        await magazine.save();
-        
-        res.json({
-            success: true,
-            message: 'Impostazioni SEO aggiornate con successo',
-            data: magazine
-        });
-    } catch (error) {
-        console.error('Errore PUT /api/magazines/:id/seo:', error);
-        res.status(400).json({ 
-            success: false,
-            error: error.message || 'Errore nell\'aggiornamento delle impostazioni SEO' 
-        });
-    }
-});
-
 
 // GET - Rivista pubblica per slug
 app.get('/api/magazines/slug/:slug', async (req, res) => {
@@ -1333,7 +1260,7 @@ app.get('/api/magazines/published', async (req, res) => {
         const magazines = await Magazine.find({ 
             status: 'published' 
         })
-        .select('name slug edition editionNumber metaTitle metaDescription coverImage publishDate views featured')
+        .select('name slug edition editionNumber coverImage publishDate views featured')
         .sort({ publishDate: -1 });
         
         res.json({
@@ -2235,15 +2162,7 @@ app.post('/api/admin/magazines/:id/generate-html', async (req, res) => {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${magazine.metaTitle || magazine.name}</title>
-    <meta name="description" content="${magazine.metaDescription || ''}">
-    ${magazine.metaKeywords?.length ? `<meta name="keywords" content="${magazine.metaKeywords.join(', ')}">` : ''}
-    
-    <!-- Open Graph -->
-    <meta property="og:title" content="${magazine.metaTitle || magazine.name}">
-    <meta property="og:description" content="${magazine.metaDescription || ''}">
-    ${magazine.ogImage ? `<meta property="og:image" content="${magazine.ogImage}">` : ''}
-    <meta property="og:type" content="website">
+    <title>${magazine.name}</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -3119,15 +3038,7 @@ app.post('/api/admin/magazines/:id/publish', authenticateToken, async (req, res)
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${magazine.metaTitle || magazine.name}</title>
-    <meta name="description" content="${magazine.metaDescription || ''}">
-    ${magazine.metaKeywords?.length ? `<meta name="keywords" content="${magazine.metaKeywords.join(', ')}">` : ''}
-    
-    <!-- Open Graph -->
-    <meta property="og:title" content="${magazine.metaTitle || magazine.name}">
-    <meta property="og:description" content="${magazine.metaDescription || ''}">
-    ${magazine.ogImage ? `<meta property="og:image" content="${magazine.ogImage}">` : ''}
-    <meta property="og:type" content="website">
+    <title>${magazine.name}</title>
     
     <!-- Styles -->
     <link rel="stylesheet" href="assets/css/loading.css">
@@ -3281,7 +3192,7 @@ async function updateIndexPage() {
         const magazines = await Magazine.find({ 
             status: 'published' 
         })
-        .select('name slug edition editionNumber metaTitle metaDescription coverImage publishDate views featured')
+        .select('name slug edition editionNumber coverImage publishDate views featured')
         .sort({ publishDate: -1 });
         
         const magazineCards = magazines.map(mag => `
@@ -3299,7 +3210,6 @@ async function updateIndexPage() {
                     <div class="magazine-info">
                         <h3 class="magazine-name">${mag.name}</h3>
                         <p class="magazine-edition">Edizione ${mag.editionNumber} • ${mag.edition}</p>
-                        ${mag.metaDescription ? `<p class="magazine-description">${mag.metaDescription}</p>` : ''}
                         <div class="magazine-meta">
                             <span>📅 ${new Date(mag.publishDate).toLocaleDateString('it-IT')}</span>
                             <span>👁️ ${mag.views || 0} visite</span>
