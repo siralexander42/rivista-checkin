@@ -2117,20 +2117,34 @@
          * Apre il modal delle impostazioni rivista completo
          */
         async function openEditMagazineModal() {
+            console.log('🔧 Apertura modal impostazioni...');
+            
             const magazineId = getMagazineId();
-            if (!magazineId) return;
+            console.log('📌 Magazine ID:', magazineId);
+            
+            if (!magazineId) {
+                console.error('❌ Nessun magazine ID trovato');
+                alert('Errore: ID rivista non trovato');
+                return;
+            }
             
             try {
+                console.log('📡 Caricamento dati rivista...');
                 const response = await fetch(`/api/admin/magazines/${magazineId}`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }
                 });
-                if (!response.ok) throw new Error('Errore caricamento rivista');
+                
+                if (!response.ok) {
+                    console.error('❌ Errore response:', response.status);
+                    throw new Error('Errore caricamento rivista');
+                }
                 
                 const result = await response.json();
                 const magazine = result.data;
                 currentMagazineData = magazine;
+                console.log('✅ Dati caricati:', magazine);
                 
                 // Popola form completo con dati esistenti (ID senza prefisso edit_)
                 document.getElementById('magazineId').value = magazine._id;
@@ -2153,11 +2167,23 @@
                     document.getElementById('publishDate').value = date.toISOString().slice(0, 16);
                 }
                 
+                console.log('📋 Form popolato, apertura modal...');
+                
                 // Apri modal con lo stesso metodo di magazines.html
-                document.getElementById('magazineSettingsModal').classList.add('active');
+                const modal = document.getElementById('magazineSettingsModal');
+                if (!modal) {
+                    console.error('❌ Modal non trovato nel DOM!');
+                    alert('Errore: Modal non trovato');
+                    return;
+                }
+                
+                console.log('✅ Modal trovato, aggiungo classe active');
+                modal.classList.add('active');
+                console.log('✅ Modal aperto!');
                 
             } catch (error) {
-                console.error('Errore caricamento impostazioni:', error);
+                console.error('❌ Errore caricamento impostazioni:', error);
+                alert('Errore: ' + error.message);
                 showNotification('Errore nel caricamento delle impostazioni', 'error');
             }
         }
