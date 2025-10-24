@@ -433,6 +433,12 @@ https://esempio.com/bg4.jpg" oninput="updateBlockPreview()">${(data.images || []
                 </div>
                 
                 <div class="form-group">
+                    <label for="backgroundImage">🖼️ Immagine di Sfondo Sezione</label>
+                    <input type="url" id="backgroundImage" value="${data.backgroundImage || ''}" placeholder="https://images.unsplash.com/photo-..." oninput="updateGalleryPreview()">
+                    <small>URL dell'immagine di sfondo per l'intera sezione (opzionale - default: immagine generica)</small>
+                </div>
+                
+                <div class="form-group">
                     <label>
                         <input type="checkbox" id="showStats" ${data.showStats ? 'checked' : ''} onchange="toggleStatsFields(); updateGalleryPreview()">
                         📊 Mostra Statistiche/Numbers Animate
@@ -726,6 +732,7 @@ async function handleBlockFormSubmit(e) {
         
         blockData.tag = document.getElementById('tag')?.value || '';
         blockData.intro = document.getElementById('intro')?.value || '';
+        blockData.backgroundImage = document.getElementById('backgroundImage')?.value || '';
         blockData.summaryTitle = document.getElementById('summaryTitle')?.value || '';
         blockData.ctaText = document.getElementById('ctaText')?.value || '';
         blockData.ctaLink = document.getElementById('ctaLink')?.value || '';
