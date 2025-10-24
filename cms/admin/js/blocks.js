@@ -77,18 +77,8 @@ async function loadMagazine() {
 
 // Mostra blocchi
 function displayBlocks() {
-    alert('FUNZIONE DISPLAY BLOCKS CHIAMATA - VERSIONE 7.0');
     const blocksList = document.getElementById('blocksList');
     const emptyState = document.getElementById('emptyState');
-    
-    console.log('=== DISPLAY BLOCKS DEBUG ===');
-    console.log('Numero blocchi:', blocks.length);
-    if (blocks.length > 0) {
-        console.log('Primo blocco completo:', blocks[0]);
-        console.log('Struttura block.data:', blocks[0].data);
-        console.log('Ha block.data.title?', blocks[0].data?.title);
-        console.log('Ha block.title?', blocks[0].title);
-    }
     
     if (blocks.length === 0) {
         blocksList.style.display = 'none';
@@ -120,7 +110,7 @@ function displayBlocks() {
                         <div class="block-card-title-row">
                             <span class="block-card-type">${getBlockTypeName(block.type)}</span>
                             ${!block.visible ? '<span class="block-status-badge hidden">Nascosto</span>' : '<span class="block-status-badge visible">Visibile</span>'}
-                            ${block.data?.title ? `<span class="block-card-title-inline">${block.data.title}</span>` : ''}
+                            ${block.title ? `<span class="block-card-title-inline">${block.title}</span>` : ''}
                         </div>
                         <div class="block-card-meta">
                             ${getBlockMeta(block)}
@@ -217,20 +207,20 @@ function getBlockMeta(block) {
     
     switch(block.type) {
         case 'cover':
-            if (block.data?.subtitle) parts.push(`${block.data.subtitle}`);
-            if (block.data?.sommario?.length) parts.push(`${icons.sommario}${block.data.sommario.length} voci`);
-            if (block.data?.backgrounds?.length) parts.push(`${icons.image}${block.data.backgrounds.length} sfondi`);
+            if (block.subtitle) parts.push(`${block.subtitle}`);
+            if (block.sommario?.length) parts.push(`${icons.sommario}${block.sommario.length} voci`);
+            if (block.backgrounds?.length) parts.push(`${icons.image}${block.backgrounds.length} sfondi`);
             break;
         case 'fluid':
-            if (block.data?.fluidBlocks?.length) parts.push(`${icons.box}${block.data.fluidBlocks.length} sezioni`);
+            if (block.fluidBlocks?.length) parts.push(`${icons.box}${block.fluidBlocks.length} sezioni`);
             break;
         case 'gallery':
-            if (block.data?.subtitle) parts.push(`${block.data.subtitle}`);
-            if (block.data?.images?.length) parts.push(`${icons.image}${block.data.images.length} immagini`);
+            if (block.subtitle) parts.push(`${block.subtitle}`);
+            if (block.images?.length) parts.push(`${icons.image}${block.images.length} immagini`);
             break;
         case 'carousel':
-            if (block.data?.subtitle) parts.push(`${block.data.subtitle}`);
-            if (block.data?.cards?.length) parts.push(`${icons.card}${block.data.cards.length} card`);
+            if (block.subtitle) parts.push(`${block.subtitle}`);
+            if (block.cards?.length) parts.push(`${icons.card}${block.cards.length} card`);
             break;
     }
     
@@ -259,68 +249,68 @@ function toggleBlockCard(header) {
 function getBlockPreview(block) {
     switch (block.type) {
         case 'cover':
-            const sommarioCount = block.data?.sommario?.length || 0;
-            const backgroundsCount = block.data?.backgrounds?.length || 0;
+            const sommarioCount = block.sommario?.length || 0;
+            const backgroundsCount = block.backgrounds?.length || 0;
             return `
-                <h3 style="font-size: 16px; font-weight: 600; color: #0f172a; margin-bottom: 12px;">${block.data?.title || 'Copertina'}</h3>
-                ${block.data?.subtitle ? `<p style="color: #64748b; margin-bottom: 8px;">${block.data.subtitle}</p>` : ''}
+                <h3 style="font-size: 16px; font-weight: 600; color: #0f172a; margin-bottom: 12px;">${block.title || 'Copertina'}</h3>
+                ${block.subtitle ? `<p style="color: #64748b; margin-bottom: 8px;">${block.subtitle}</p>` : ''}
                 ${backgroundsCount > 0 ? `<p style="color: #64748b; font-size: 14px; margin-bottom: 6px;">🖼️ ${backgroundsCount} sfondi</p>` : ''}
                 ${sommarioCount > 0 ? `<p style="color: #64748b; font-size: 14px;">📋 ${sommarioCount} voci sommario</p>` : ''}
             `;
         
         case 'hero':
             return `
-                <h3 style="font-size: 16px; font-weight: 600; color: #0f172a;">${block.data?.title || 'Hero senza titolo'}</h3>
-                ${block.data?.subtitle ? `<p style="color: #64748b; margin-top: 8px;">${block.data.subtitle}</p>` : ''}
-                ${block.data?.image ? `<img src="${block.data.image}" alt="${block.data.title}" style="margin-top: 12px; max-width: 100%; border-radius: 8px;">` : ''}
+                <h3 style="font-size: 16px; font-weight: 600; color: #0f172a;">${block.title || 'Hero senza titolo'}</h3>
+                ${block.subtitle ? `<p style="color: #64748b; margin-top: 8px;">${block.subtitle}</p>` : ''}
+                ${block.image ? `<img src="${block.image}" alt="${block.title}" style="margin-top: 12px; max-width: 100%; border-radius: 8px;">` : ''}
             `;
         
         case 'article':
             return `
-                <h3 style="font-size: 16px; font-weight: 600; color: #0f172a;">${block.data?.title || 'Articolo senza titolo'}</h3>
-                ${block.data?.content ? `<p style="color: #64748b; margin-top: 8px;">${block.data.content.substring(0, 150)}...</p>` : ''}
-                ${block.data?.image ? `<img src="${block.data.image}" alt="${block.data.title}" style="margin-top: 12px; max-width: 100%; border-radius: 8px;">` : ''}
+                <h3 style="font-size: 16px; font-weight: 600; color: #0f172a;">${block.title || 'Articolo senza titolo'}</h3>
+                ${block.content ? `<p style="color: #64748b; margin-top: 8px;">${block.content.substring(0, 150)}...</p>` : ''}
+                ${block.image ? `<img src="${block.image}" alt="${block.title}" style="margin-top: 12px; max-width: 100%; border-radius: 8px;">` : ''}
             `;
         
         case 'gallery':
-            const imagesCount = block.data?.images?.length || 0;
+            const imagesCount = block.images?.length || 0;
             return `
-                <h3 style="font-size: 16px; font-weight: 600; color: #0f172a; margin-bottom: 8px;">${block.data?.title || 'Gallery Story'}</h3>
-                ${block.data?.subtitle ? `<p style="color: #64748b; margin-bottom: 12px;">${block.data.subtitle}</p>` : ''}
+                <h3 style="font-size: 16px; font-weight: 600; color: #0f172a; margin-bottom: 8px;">${block.title || 'Gallery Story'}</h3>
+                ${block.subtitle ? `<p style="color: #64748b; margin-bottom: 12px;">${block.subtitle}</p>` : ''}
                 ${imagesCount > 0 ? `<p style="color: #64748b; font-size: 14px;">🖼️ ${imagesCount} immagini</p>` : ''}
             `;
         
         case 'text':
             return `
-                ${block.data?.title ? `<h3 style="font-size: 16px; font-weight: 600; color: #0f172a; margin-bottom: 8px;">${block.data.title}</h3>` : ''}
-                <p style="color: #64748b;">${block.data?.content?.substring(0, 200) || 'Nessun contenuto'}...</p>
+                ${block.title ? `<h3 style="font-size: 16px; font-weight: 600; color: #0f172a; margin-bottom: 8px;">${block.title}</h3>` : ''}
+                <p style="color: #64748b;">${block.content?.substring(0, 200) || 'Nessun contenuto'}...</p>
             `;
         
         case 'quote':
             return `
-                <p style="font-style: italic; font-size: 16px; color: #475569;">💬 "${block.data?.content || 'Citazione'}"</p>
-                ${block.data?.subtitle ? `<p style="margin-top: 8px; color: #64748b;">— ${block.data.subtitle}</p>` : ''}
+                <p style="font-style: italic; font-size: 16px; color: #475569;">💬 "${block.content || 'Citazione'}"</p>
+                ${block.subtitle ? `<p style="margin-top: 8px; color: #64748b;">— ${block.subtitle}</p>` : ''}
             `;
         
         case 'video':
             return `
-                <h3 style="font-size: 16px; font-weight: 600; color: #0f172a;">${block.data?.title || 'Video'}</h3>
-                ${block.data?.link ? `<p style="color: #64748b; margin-top: 8px;">🎥 ${block.data.link}</p>` : '<p style="color: #94a3b8;">Nessun video collegato</p>'}
+                <h3 style="font-size: 16px; font-weight: 600; color: #0f172a;">${block.title || 'Video'}</h3>
+                ${block.link ? `<p style="color: #64748b; margin-top: 8px;">🎥 ${block.link}</p>` : '<p style="color: #94a3b8;">Nessun video collegato</p>'}
             `;
         
         case 'fluid':
-            const fluidBlocksCount = block.data?.fluidBlocks?.length || 0;
+            const fluidBlocksCount = block.fluidBlocks?.length || 0;
             return `
-                <h3 style="font-size: 16px; font-weight: 600; color: #0f172a; margin-bottom: 8px;">${block.data?.title || 'Parallasse Block'}</h3>
-                ${block.data?.subtitle ? `<p style="color: #64748b; margin-bottom: 12px;">${block.data.subtitle}</p>` : ''}
+                <h3 style="font-size: 16px; font-weight: 600; color: #0f172a; margin-bottom: 8px;">${block.title || 'Parallasse Block'}</h3>
+                ${block.subtitle ? `<p style="color: #64748b; margin-bottom: 12px;">${block.subtitle}</p>` : ''}
                 ${fluidBlocksCount > 0 ? `<p style="color: #64748b; font-size: 14px;">📦 ${fluidBlocksCount} sezioni</p>` : ''}
             `;
         
         case 'carousel':
-            const cardsCount = block.data?.cards?.length || 0;
+            const cardsCount = block.cards?.length || 0;
             return `
-                <h3 style="font-size: 16px; font-weight: 600; color: #0f172a; margin-bottom: 8px;">${block.data?.title || 'Carousel Storie'}</h3>
-                ${block.data?.subtitle ? `<p style="color: #64748b; margin-bottom: 12px;">${block.data.subtitle}</p>` : ''}
+                <h3 style="font-size: 16px; font-weight: 600; color: #0f172a; margin-bottom: 8px;">${block.title || 'Carousel Storie'}</h3>
+                ${block.subtitle ? `<p style="color: #64748b; margin-bottom: 12px;">${block.subtitle}</p>` : ''}
                 ${cardsCount > 0 ? `<p style="color: #64748b; font-size: 14px;">🎴 ${cardsCount} card</p>` : ''}
             `;
         
