@@ -2391,6 +2391,42 @@ ${blocksHTML}
     <script src="assets/js/main.js"></script>
     <script src="assets/js/cremona-scroll.js"></script>
     
+    <!-- Script di inizializzazione gallery e counter -->
+    <script>
+        // Aspetta che main.js sia completamente caricato
+        (function initGalleryAndCounter() {
+            console.log('🔄 Tentativo inizializzazione controlli gallery e counter...');
+            
+            if (typeof initImageControls === 'function' && typeof initCounterAnimation === 'function') {
+                console.log('✅ Funzioni trovate, inizializzo...');
+                
+                // Inizializza controlli gallery
+                initImageControls();
+                
+                // Inizializza counter animation
+                initCounterAnimation();
+                
+                // Forza animazione counter per elementi già visibili
+                document.querySelectorAll('.detail-item strong').forEach(counter => {
+                    if (!counter.classList.contains('counted')) {
+                        const rect = counter.getBoundingClientRect();
+                        const isVisible = rect.top >= 0 && rect.bottom <= window.innerHeight;
+                        
+                        if (isVisible && typeof animateCounter === 'function') {
+                            counter.classList.add('counted');
+                            animateCounter(counter);
+                        }
+                    }
+                });
+                
+                console.log('✅ Inizializzazione completata!');
+            } else {
+                console.log('⏳ Funzioni non ancora disponibili, riprovo tra 100ms...');
+                setTimeout(initGalleryAndCounter, 100);
+            }
+        })();
+    </script>
+    
     <!-- Script aggiuntivo per Sommario Cover Block -->
     <script>
         // Override/integrazione per blocco cover se main.js non lo gestisce già
@@ -2432,34 +2468,6 @@ ${blocksHTML}
                     });
                 }
             });
-            
-            // Forza re-inizializzazione controlli gallery
-            console.log('🔄 Re-inizializzazione controlli gallery...');
-            
-            // Aspetta che main.js sia caricato
-            setTimeout(() => {
-                if (typeof initImageControls === 'function') {
-                    console.log('✅ initImageControls trovata, eseguo...');
-                    initImageControls();
-                } else {
-                    console.error('❌ initImageControls non trovata');
-                }
-                
-                if (typeof initCounterAnimation === 'function') {
-                    console.log('✅ initCounterAnimation trovata, eseguo...');
-                    initCounterAnimation();
-                } else {
-                    console.error('❌ initCounterAnimation non trovata');
-                }
-                
-                // Forza animazione counter se già visibili
-                document.querySelectorAll('.detail-item strong').forEach(counter => {
-                    if (!counter.classList.contains('counted') && typeof animateCounter === 'function') {
-                        counter.classList.add('counted');
-                        animateCounter(counter);
-                    }
-                });
-            }, 500);
         });
     </script>
 </body>
