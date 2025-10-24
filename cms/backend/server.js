@@ -208,6 +208,7 @@ const blockSchema = new mongoose.Schema({
         caption: String,
         cropData: mongoose.Schema.Types.Mixed
     }],
+    backgroundImage: String, // Immagine di sfondo per gallery block
     position: {
         type: Number,
         default: 0
@@ -2125,17 +2126,16 @@ function generateBlockHTML(block) {
             <div class="story-images">
                 <div class="image-scroll-wrapper" data-story="${block._id}">
                     ${galleryImages.map((img, idx) => {
-                        // Applica cropData se presente
-                        let imageStyle = '';
-                        if (img.cropData) {
-                            const crop = img.cropData;
-                            imageStyle = `style="object-position: ${crop.x}% ${crop.y}%; width: ${crop.width}%; height: ${crop.height}%;"`;
+                        // Applica cropData se presente per posizionamento immagine
+                        let imgStyle = 'object-fit: cover;';
+                        if (img.cropData && img.cropData.x !== undefined && img.cropData.y !== undefined) {
+                            imgStyle = `object-fit: cover; object-position: ${img.cropData.x}% ${img.cropData.y}%;`;
                         }
                         return `
                     <div class="scroll-image${idx === 0 ? ' active' : ''}" style="opacity: ${idx === 0 ? '1' : '0'}; transform: ${idx === 0 ? 'translateY(0) scale(1)' : 'translateY(0) scale(0.95)'}; z-index: ${idx === 0 ? '2' : '1'};">
                         <img src="${img.url || ''}" 
                              alt="${img.caption || `Image ${idx + 1}`}"
-                             ${imageStyle}
+                             style="${imgStyle}"
                              onerror="this.style.display='none'">
                         ${img.caption ? `<div class="image-caption">${img.caption}</div>` : ''}
                     </div>
