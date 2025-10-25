@@ -229,7 +229,12 @@
                     <div class="stat-box">
                         <div class="stat-box-header">
                             <div class="stat-icon primary">
-                                📊
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 3v18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M18 17V9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M13 17v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M8 17v-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
                             </div>
                             <div class="stat-label">VISUALIZZAZIONI TOTALI</div>
                         </div>
@@ -242,7 +247,11 @@
                     <div class="stat-box">
                         <div class="stat-box-header">
                             <div class="stat-icon success">
-                                📚
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M12 6h4M12 10h4M12 14h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
                             </div>
                             <div class="stat-label">RIVISTE PUBBLICATE</div>
                         </div>
@@ -255,7 +264,11 @@
                     <div class="stat-box">
                         <div class="stat-box-header">
                             <div class="stat-icon warning">
-                                👥
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
                             </div>
                             <div class="stat-label">UTENTI ATTIVI</div>
                         </div>
@@ -268,7 +281,10 @@
                     <div class="stat-box">
                         <div class="stat-box-header">
                             <div class="stat-icon info">
-                                ⏱️
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
                             </div>
                             <div class="stat-label">TEMPO MEDIO LETTURA</div>
                         </div>
@@ -282,13 +298,25 @@
                 <!-- Grafico Visualizzazioni -->
                 <div class="chart-container">
                     <div class="chart-header">
-                        <h3>📈 Andamento Visualizzazioni</h3>
+                        <h3>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
+                                <path d="M3 3v18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M7 12l4-4 4 4 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M16 7h5v5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Andamento Visualizzazioni
+                        </h3>
                         <p>Visualizzazioni giornaliere negli ultimi 30 giorni</p>
                     </div>
                     <div id="viewsChart" style="height: 300px; display: flex; align-items: center; justify-content: center; color: var(--text-light);">
                         <div style="text-align: center;">
-                            <div style="font-size: 48px; margin-bottom: 12px;">📊</div>
-                            <p>Grafico in sviluppo</p>
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity: 0.3;">
+                                <path d="M3 3v18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M18 17V9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M13 17v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M8 17v-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <p style="margin-top: 16px;">Grafico in sviluppo</p>
                             <p style="font-size: 12px;">Integrazione con Chart.js in arrivo</p>
                         </div>
                     </div>
@@ -297,7 +325,12 @@
                 <!-- Top Riviste -->
                 <div class="table-container">
                     <div class="chart-header">
-                        <h3>🏆 Top Riviste per Visualizzazioni</h3>
+                        <h3>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
+                                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                            </svg>
+                            Top Riviste per Visualizzazioni
+                        </h3>
                         <p>Le riviste più visualizzate nel periodo selezionato</p>
                     </div>
                     <table class="stats-table">
