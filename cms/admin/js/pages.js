@@ -5,7 +5,7 @@ let parentMagazine = null;
 
 // Ottieni ID pagina dalla URL
 const urlParams = new URLSearchParams(window.location.search);
-const pageId = urlParams.get('id');
+const pageId = urlParams.get('page'); // CAMBIATO DA 'id' A 'page'
 
 if (!pageId) {
     alert('ID pagina mancante!');
