@@ -200,87 +200,28 @@ function goBackToMagazine() {
     }
 }
 
-// AGGIUNGI BLOCCO - Mostra blocchi della rivista madre
-async function showBlockTypesModal() {
-    console.log('🔍 showBlockTypesModal chiamato');
-    console.log('📚 parentMagazine:', parentMagazine);
-    console.log('📦 Blocchi:', parentMagazine ? parentMagazine.blocks : 'N/A');
-    
-    if (!parentMagazine) {
-        alert('Rivista madre non caricata. Ricarica la pagina.');
-        return;
-    }
-    
-    if (!parentMagazine.blocks || parentMagazine.blocks.length === 0) {
-        alert(`Nessun blocco disponibile nella rivista madre "${parentMagazine.name}"`);
-        return;
-    }
-    
-    const modal = document.createElement('div');
-    modal.id = 'selectBlockModal';
-    modal.className = 'modal active';
-    modal.innerHTML = `
-        <div class="modal-content" style="max-width: 800px;" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <h2>Seleziona Blocco dalla Rivista Madre</h2>
-                <button class="modal-close" onclick="closeSelectBlockModal()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p style="margin-bottom: 20px; color: #64748b;">Seleziona un blocco da aggiungere:</p>
-                <div style="display: grid; gap: 12px;">
-                    ${parentMagazine.blocks.map((block, index) => `
-                        <div onclick="addBlockFromParent('${block._id}')" style="padding: 16px; border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 12px;">
-                            <div style="font-size: 32px;">${getBlockIconSimple(block.type)}</div>
-                            <div style="flex: 1;">
-                                <div style="font-weight: 600; color: #1e293b;">${block.title || getBlockTypeName(block.type)}</div>
-                                <div style="font-size: 13px; color: #64748b;">${getBlockTypeName(block.type)} • Posizione ${index + 1}</div>
-                            </div>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 5V19M5 12H19" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                    `).join('')}
-                </div>
-            </div>
-        </div>
-    `;
-    modal.onclick = (e) => { if (e.target === modal) closeSelectBlockModal(); };
-    document.body.appendChild(modal);
+// AGGIUNGI BLOCCO - Mostra modal selezione tipo
+function showBlockTypesModal() {
+    const modal = document.getElementById('blockTypesModal');
+    modal.classList.add('active');
     document.body.style.overflow = 'hidden';
 }
 
-function closeSelectBlockModal() {
-    const modal = document.getElementById('selectBlockModal');
-    if (modal) modal.remove();
+function closeBlockTypesModal() {
+    const modal = document.getElementById('blockTypesModal');
+    modal.classList.remove('active');
     document.body.style.overflow = '';
 }
 
-async function addBlockFromParent(parentBlockId) {
-    const parentBlock = parentMagazine.blocks.find(b => b._id === parentBlockId);
-    if (!parentBlock) {
-        alert('Blocco non trovato');
-        return;
-    }
+// Aggiungi nuovo blocco (chiamato dal modal)
+async function addBlock(type) {
+    closeBlockTypesModal();
     
-    closeSelectBlockModal();
+    // Per ora alert, poi dovrai aprire il form di modifica
+    alert(`Creazione blocco tipo "${type}"  - Form in fase di implementazione`);
     
-    try {
-        const newBlock = { ...parentBlock, position: blocks.length, visible: true };
-        delete newBlock._id;
-        
-        const response = await apiRequest(`/admin/child-pages/${pageId}/blocks`, {
-            method: 'POST',
-            body: JSON.stringify(newBlock)
-        });
-        
-        if (response.success) {
-            alert('Blocco aggiunto!');
-            await loadChildPage();
-        }
-    } catch (error) {
-        console.error('Errore:', error);
-        alert('Errore: ' + error.message);
-    }
+    // TODO: Aprire form per compilare i dati del blocco
+    // Poi salvare con: await apiRequest(`/admin/child-pages/${pageId}/blocks`, { method: 'POST', body: JSON.stringify(blockData) });
 }
 
 async function deleteBlock(blockId) {
