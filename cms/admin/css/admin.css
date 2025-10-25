@@ -1,15 +1,7 @@
 /* ============================================
    PAGINE FIGLIE - Blocco e Card
    ============================================ */
-.child-pages-block-card {
-    margin-bottom: 32px;
-    box-shadow: var(--shadow-md);
-    border-radius: var(--radius-lg);
-    border: 1.5px solid var(--border-light);
-    background: var(--bg-white);
-    padding: 0;
-}
-.child-page-card {
+.block-card-modern {
     margin-bottom: 16px;
     box-shadow: var(--shadow-sm);
     border-radius: var(--radius-md);
@@ -17,36 +9,43 @@
     background: var(--bg-white);
     transition: var(--transition);
 }
-.child-page-card .block-card-header {
+.block-card-modern .block-card-header {
     padding: 18px 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 18px;
 }
-.child-page-card .block-card-left {
+.block-card-modern .block-card-left {
     display: flex;
     align-items: center;
     gap: 16px;
+    flex: 1;
 }
-.child-page-card .block-icon-badge {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
+.block-card-modern .block-card-info {
+    flex: 1;
+    min-width: 0;
+}
+.block-card-modern .block-card-title-row {
     display: flex;
     align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.10);
-    background: linear-gradient(135deg,#3C3D8F 0%,#2A2B5F 100%);
+    gap: 8px;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
 }
-.child-page-card .block-card-type {
+.block-card-modern .block-card-type {
     font-size: 16px;
     font-weight: 700;
     color: var(--text-dark);
 }
-.child-page-card .block-status-badge {
-    margin-left: 12px;
-    font-size: 12px;
+.block-card-modern .block-card-meta {
+    font-size: 13px;
+    color: var(--text-light);
+    margin-top: 2px;
+}
+.block-card-modern .block-status-badge {
+    margin-left: 8px;
+    font-size: 11px;
     font-weight: 700;
     padding: 4px 10px;
     border-radius: 8px;
@@ -54,28 +53,34 @@
     background: #f3f4f6;
     color: #64748b;
 }
-.child-page-card .block-status-badge.visible {
+.block-card-modern .block-status-badge.visible {
     background: var(--success);
     color: #fff;
 }
-.child-page-card .block-status-badge.hidden {
+.block-card-modern .block-status-badge.hidden {
     background: #f3f4f6;
     color: #64748b;
 }
-.child-page-card .block-card-meta {
-    font-size: 13px;
-    color: var(--text-light);
-    margin-top: 2px;
-}
-.child-page-card .block-card-right {
+.block-card-modern .block-card-right {
     display: flex;
     align-items: center;
     gap: 8px;
+    flex-shrink: 0;
+}
+.block-card-modern .block-icon-badge {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+    flex-shrink: 0;
 }
 .btn-icon-modern {
     background: none;
     border: none;
-    padding: 6px;
+    padding: 8px;
     border-radius: 8px;
     cursor: pointer;
     transition: background 0.15s;
@@ -85,6 +90,9 @@
 }
 .btn-icon-modern:hover {
     background: #f3f4f6;
+}
+.btn-icon-modern svg {
+    display: block;
 }
 .btn-icon-edit svg {
     color: var(--primary);
@@ -98,6 +106,27 @@
 .btn-icon-expand svg {
     color: var(--primary);
     transition: transform 0.2s;
+}
+
+/* Specifiche child-page-card */
+.child-pages-block-card {
+    margin-bottom: 32px;
+    box-shadow: var(--shadow-md);
+    border-radius: var(--radius-lg);
+    border: 1.5px solid var(--border-light);
+    background: var(--bg-white);
+    padding: 0;
+}
+.child-page-card {
+    margin-bottom: 16px;
+}
+.child-page-card .block-card-header {
+    padding: 18px 24px;
+}
+.child-page-card .block-icon-badge {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
 }
 .child-pages-block-card .block-card-header {
     padding: 22px 32px 18px 32px;
