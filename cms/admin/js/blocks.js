@@ -2626,6 +2626,21 @@ function initCarouselCardCropperByElement(inputElement) {
 // GESTIONE PAGINE FIGLIE IN BLOCKS VIEW
 // ============================================
 
+// Gestisce il click sul pulsante + 
+function handleAddChildPageClick() {
+    const collapseDiv = document.getElementById('child-pages-collapse-blocks');
+    
+    // Se è già espanso, apri il form
+    if (collapseDiv.style.display !== 'none') {
+        showCreateChildPageInBlocks();
+    } else {
+        // Se è collassato, prima espandi poi apri il form
+        toggleChildPagesInBlocks().then(() => {
+            setTimeout(() => showCreateChildPageInBlocks(), 300);
+        });
+    }
+}
+
 // Toggle collassa/espandi pagine figlie
 async function toggleChildPagesInBlocks() {
     const collapseDiv = document.getElementById('child-pages-collapse-blocks');
