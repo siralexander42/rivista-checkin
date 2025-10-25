@@ -22,10 +22,20 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('slug').dataset.manuallyEdited = 'true';
     });
     
-    // Controlla se deve aprire il modal di creazione
+    // Controlla se deve aprire il modal di creazione da localStorage
     if (localStorage.getItem('createNew') === 'true') {
         localStorage.removeItem('createNew');
         setTimeout(() => showCreateModal(), 500);
+    }
+    
+    // Controlla se deve aprire il modal di creazione da parametro URL
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('create') === 'true') {
+        setTimeout(() => {
+            showCreateModal();
+            // Rimuovi il parametro dall'URL senza ricaricare la pagina
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }, 500);
     }
 });
 
