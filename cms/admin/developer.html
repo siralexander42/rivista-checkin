@@ -486,6 +486,9 @@
                 <button class="vscode-tab" data-tab="sidebar">
                     📋 Sidebar
                 </button>
+                <button class="vscode-tab" data-tab="dashboard">
+                    🏠 Dashboard
+                </button>
             </div>
 
             <!-- Editor Area -->
@@ -556,6 +559,29 @@
                             <li>Le voci con icona 🔒 hanno una posizione fissa e non possono essere spostate</li>
                             <li>Le voci con visibilità condizionale mantengono le loro regole di visualizzazione</li>
                             <li>L'ordine viene salvato automaticamente quando rilasci un elemento</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Dashboard -->
+            <div class="tab-content" data-tab="dashboard">
+                <div class="sidebar-order-section">
+                    <h3>🏠 Gestione Dashboard</h3>
+                    <p class="sidebar-order-description">
+                        Riordina i blocchi della dashboard trascinandoli. Le modifiche verranno salvate automaticamente.
+                    </p>
+                    
+                    <div id="dashboardOrderList" class="sidebar-order-list">
+                        <!-- Popolato dinamicamente -->
+                    </div>
+                    
+                    <div style="margin-top: 16px; padding: 12px; background: rgba(0, 122, 204, 0.1); border-radius: 4px; border: 1px solid rgba(0, 122, 204, 0.3);">
+                        <h4 style="margin: 0 0 8px 0; font-size: 12px; color: #4fc1ff;">ℹ️ Blocchi Dashboard</h4>
+                        <ul style="margin: 0; padding-left: 20px; font-size: 11px; color: #858585; line-height: 1.6;">
+                            <li><strong>Performance:</strong> Mostra statistiche di visualizzazione e performance del sito</li>
+                            <li><strong>Valutazione SEO:</strong> Monitora lo stato SEO delle pagine pubblicate</li>
+                            <li><strong>Riviste Recenti:</strong> Visualizza le ultime riviste modificate</li>
                         </ul>
                     </div>
                 </div>
@@ -746,6 +772,11 @@
                 if (tab === 'sidebar') {
                     loadSidebarOrder();
                 }
+                
+                // Load dashboard order when switching to dashboard tab
+                if (tab === 'dashboard') {
+                    loadDashboardOrder();
+                }
             });
         });
 
@@ -923,6 +954,169 @@
 
         // ========================================
         // END SIDEBAR ORDER MANAGEMENT
+        // ========================================
+
+        // ========================================
+        // DASHBOARD ORDER MANAGEMENT
+        // ========================================
+        
+        const dashboardBlocks = [
+            { 
+                id: 'performance', 
+                label: 'Performance', 
+                icon: '📊',
+                description: 'Statistiche di visualizzazione e performance',
+                locked: false 
+            },
+            { 
+                id: 'seo', 
+                label: 'Valutazione SEO', 
+                icon: '🎯',
+                description: 'Monitoraggio stato SEO delle pagine',
+                locked: false 
+            },
+            { 
+                id: 'riviste', 
+                label: 'Riviste Recenti', 
+                icon: '📚',
+                description: 'Ultime riviste modificate',
+                locked: false 
+            }
+        ];
+
+        let currentDashboardOrder = [];
+
+        function loadDashboardOrder() {
+            // Carica ordine salvato o usa quello di default
+            const savedOrder = localStorage.getItem('dashboardOrder');
+            if (savedOrder) {
+                try {
+                    currentDashboardOrder = JSON.parse(savedOrder);
+                } catch (e) {
+                    currentDashboardOrder = dashboardBlocks.map((item, idx) => ({ ...item, order: idx }));
+                }
+            } else {
+                currentDashboardOrder = dashboardBlocks.map((item, idx) => ({ ...item, order: idx }));
+            }
+
+            renderDashboardOrder();
+        }
+
+        function renderDashboardOrder() {
+            const container = document.getElementById('dashboardOrderList');
+            if (!container) return;
+
+            // Ordina per posizione
+            const sorted = [...currentDashboardOrder].sort((a, b) => a.order - b.order);
+
+            container.innerHTML = sorted.map((item, index) => `
+                <div class="sidebar-item" 
+                     draggable="true" 
+                     data-id="${item.id}"
+                     data-order="${index}">
+                    <span class="drag-handle">☰</span>
+                    <div class="sidebar-item-order">${index + 1}</div>
+                    <div class="sidebar-item-content">
+                        <div class="sidebar-item-label">
+                            ${item.icon} ${item.label}
+                        </div>
+                        <div class="sidebar-item-meta">
+                            <span>${item.description}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Aggiungi event listeners per drag and drop
+            setupDashboardDragAndDrop();
+        }
+
+        let draggedDashboardElement = null;
+
+        function setupDashboardDragAndDrop() {
+            const items = document.querySelectorAll('#dashboardOrderList .sidebar-item');
+
+            items.forEach(item => {
+                item.addEventListener('dragstart', handleDashboardDragStart);
+                item.addEventListener('dragend', handleDashboardDragEnd);
+                item.addEventListener('dragover', handleDashboardDragOver);
+                item.addEventListener('drop', handleDashboardDrop);
+                item.addEventListener('dragenter', handleDashboardDragEnter);
+                item.addEventListener('dragleave', handleDashboardDragLeave);
+            });
+        }
+
+        function handleDashboardDragStart(e) {
+            draggedDashboardElement = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.innerHTML);
+        }
+
+        function handleDashboardDragEnd(e) {
+            this.classList.remove('dragging');
+            
+            // Rimuovi tutti gli indicatori drag-over
+            document.querySelectorAll('#dashboardOrderList .sidebar-item').forEach(item => {
+                item.classList.remove('drag-over');
+            });
+        }
+
+        function handleDashboardDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+
+        function handleDashboardDragEnter(e) {
+            if (this !== draggedDashboardElement) {
+                this.classList.add('drag-over');
+            }
+        }
+
+        function handleDashboardDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+
+        function handleDashboardDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+
+            if (draggedDashboardElement !== this) {
+                const draggedId = draggedDashboardElement.dataset.id;
+                const targetId = this.dataset.id;
+
+                // Trova gli indici
+                const draggedIndex = currentDashboardOrder.findIndex(item => item.id === draggedId);
+                const targetIndex = currentDashboardOrder.findIndex(item => item.id === targetId);
+
+                if (draggedIndex !== -1 && targetIndex !== -1) {
+                    // Scambia le posizioni
+                    const temp = currentDashboardOrder[draggedIndex].order;
+                    currentDashboardOrder[draggedIndex].order = currentDashboardOrder[targetIndex].order;
+                    currentDashboardOrder[targetIndex].order = temp;
+
+                    // Salva e re-renderizza
+                    saveDashboardOrder();
+                    renderDashboardOrder();
+                }
+            }
+
+            return false;
+        }
+
+        function saveDashboardOrder() {
+            localStorage.setItem('dashboardOrder', JSON.stringify(currentDashboardOrder));
+            
+            // Mostra notifica
+            showNotification('✅ Ordine dashboard salvato!');
+        }
+
+        // ========================================
+        // END DASHBOARD ORDER MANAGEMENT
         // ========================================
 
         // Init
