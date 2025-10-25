@@ -192,8 +192,17 @@ function goBackToMagazine() {
 
 // AGGIUNGI BLOCCO - Mostra blocchi della rivista madre
 async function showBlockTypesModal() {
-    if (!parentMagazine || !parentMagazine.blocks || parentMagazine.blocks.length === 0) {
-        alert('Nessun blocco disponibile nella rivista madre');
+    console.log('🔍 showBlockTypesModal chiamato');
+    console.log('📚 parentMagazine:', parentMagazine);
+    console.log('📦 Blocchi:', parentMagazine ? parentMagazine.blocks : 'N/A');
+    
+    if (!parentMagazine) {
+        alert('Rivista madre non caricata. Ricarica la pagina.');
+        return;
+    }
+    
+    if (!parentMagazine.blocks || parentMagazine.blocks.length === 0) {
+        alert(`Nessun blocco disponibile nella rivista madre "${parentMagazine.name}"`);
         return;
     }
     
