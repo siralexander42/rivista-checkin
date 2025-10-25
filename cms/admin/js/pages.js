@@ -23,12 +23,18 @@ async function loadChildPage() {
         const response = await apiRequest(`/admin/child-pages/${pageId}`);
         childPage = response.data;
         
+        console.log('📄 Pagina figlia caricata:', childPage);
+        console.log('🔗 parentMagazineId:', childPage.parentMagazineId);
+        
         // Carica info rivista madre
         if (childPage.parentMagazineId) {
+            console.log('📚 Carico rivista madre con ID:', childPage.parentMagazineId);
             const magResponse = await apiRequest(`/admin/magazines/${childPage.parentMagazineId}`);
             parentMagazine = magResponse.data;
             console.log('✅ Rivista madre caricata:', parentMagazine);
             console.log('📦 Blocchi disponibili:', parentMagazine.blocks ? parentMagazine.blocks.length : 0);
+        } else {
+            console.error('❌ childPage.parentMagazineId è undefined/null!');
         }
         
         // Aggiorna header
