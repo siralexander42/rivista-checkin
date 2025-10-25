@@ -211,15 +211,7 @@ function closeBlockTypesModal() {
 }
 
 // Aggiungi nuovo blocco (chiamato dal modal)
-async function addBlock(type) {
-    closeBlockTypesModal();
-    
-    // Per ora alert, poi dovrai aprire il form di modifica
-    alert(`Creazione blocco tipo "${type}"  - Form in fase di implementazione`);
-    
-    // TODO: Aprire form per compilare i dati del blocco
-    // Poi salvare con: await apiRequest(`/admin/child-pages/${pageId}/blocks`, { method: 'POST', body: JSON.stringify(blockData) });
-}
+// La funzione addBlock è definita in blocks.js e verrà usata dal modal
 
 async function deleteBlock(blockId) {
     if (!confirm('Eliminare questo blocco?')) return;
