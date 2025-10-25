@@ -296,6 +296,78 @@
         </div>
     </div>
     
+    <!-- Modal Pagine Figlie -->
+    <div id="childPagesModal" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h2 id="childPagesModalTitle">Pagine Figlie</h2>
+                <button class="modal-close" onclick="closeChildPagesModal()">×</button>
+            </div>
+            
+            <input type="hidden" id="childPagesMagazineId">
+            
+            <!-- Lista Pagine Figlie -->
+            <div id="childPagesList" class="modal-body" style="max-height: 500px; overflow-y: auto;">
+                <div class="loading"></div>
+            </div>
+            
+            <!-- Form Creazione Pagina Figlia -->
+            <div id="createChildPageSection" class="modal-body" style="display: none;">
+                <form id="createChildPageForm" onsubmit="createChildPage(event)">
+                    <div class="form-group">
+                        <label for="childPageName">Nome Pagina *</label>
+                        <input 
+                            type="text" 
+                            id="childPageName" 
+                            required
+                            placeholder="es. Speciale Carnevale Venezia"
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="childPageSlug">URL (slug) *</label>
+                        <input 
+                            type="text" 
+                            id="childPageSlug" 
+                            required
+                            placeholder="es. speciale-carnevale-venezia"
+                            pattern="[a-z0-9-]+"
+                        >
+                        <small>Solo lettere minuscole, numeri e trattini</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="childPageMetaDescription">Meta Description</label>
+                        <textarea 
+                            id="childPageMetaDescription" 
+                            rows="3"
+                            placeholder="Descrizione per SEO e condivisione social (max 160 caratteri)"
+                            maxlength="160"
+                        ></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="cancelCreateChildPage()">
+                            Annulla
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            ✅ Crea Pagina Figlia
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="showCreateChildPageForm()">
+                    ➕ Crea Pagina Figlia
+                </button>
+                <button class="btn btn-secondary" onclick="closeChildPagesModal()">
+                    Chiudi
+                </button>
+            </div>
+        </div>
+    </div>
+    
     <script src="js/auth.js"></script>
     <script src="js/api.js"></script>
     <script src="js/sidebar.js?v=1.0"></script>

@@ -2764,6 +2764,91 @@ tbody td {
     justify-content: center;
 }
 
+/* ============================================
+   CHILD PAGES STYLES
+   ============================================ */
+.child-page-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background: white;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    margin-bottom: 12px;
+    transition: var(--transition);
+}
+
+.child-page-item:hover {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.child-page-info {
+    flex: 1;
+}
+
+.child-page-info h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin: 0 0 8px 0;
+}
+
+.child-page-meta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: var(--text-light);
+}
+
+.child-page-meta .badge {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.child-page-meta .badge-success {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.child-page-meta .badge-warning {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.child-page-meta .badge-secondary {
+    background: #e5e7eb;
+    color: #4b5563;
+}
+
+.child-page-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.child-page-actions .btn-sm {
+    padding: 8px 14px;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+#createChildPageSection {
+    padding: 24px;
+}
+
+#childPagesList .empty-state {
+    border: 2px dashed var(--border-light);
+    border-radius: var(--radius-lg);
+}
+
 /* Fine del CSS - CHECK-IN CMS */
+
+
 
 

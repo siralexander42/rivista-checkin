@@ -178,6 +178,9 @@ function displayMagazines(filteredMagazines = null) {
                     <button class="btn btn-sm btn-primary" onclick="editBlocks('${magazine._id}')" title="Modifica Blocchi">
                         ✏️ Modifica
                     </button>
+                    <button class="btn btn-sm btn-info" onclick="manageChildPages('${magazine._id}')" title="Pagine Figlie">
+                        📄 Pagine
+                    </button>
                     ${magazine.status === 'published' ? `
                     <button class="btn btn-sm btn-success" onclick="window.open('/${magazine.slug}', '_blank')" title="Apri Rivista">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
@@ -294,6 +297,178 @@ async function editMagazine(id) {
 function editBlocks(id) {
     // Reindirizza alla pagina di gestione blocchi
     window.location.href = `blocks.html?magazine=${id}`;
+}
+
+// Gestisci pagine figlie
+async function manageChildPages(magazineId) {
+    try {
+        const response = await apiRequest(`/admin/magazines/${magazineId}/child-pages`);
+        const childPages = response.data;
+        const magazine = magazines.find(m => m._id === magazineId);
+        
+        // Mostra modal con lista pagine figlie
+        showChildPagesModal(magazineId, magazine.name, childPages);
+    } catch (error) {
+        console.error('Errore caricamento pagine figlie:', error);
+        alert('Errore nel caricamento delle pagine figlie');
+    }
+}
+
+// Mostra modal pagine figlie
+function showChildPagesModal(magazineId, magazineName, childPages) {
+    const modal = document.getElementById('childPagesModal');
+    document.getElementById('childPagesModalTitle').textContent = `Pagine Figlie - ${magazineName}`;
+    document.getElementById('childPagesMagazineId').value = magazineId;
+    
+    const list = document.getElementById('childPagesList');
+    
+    if (childPages.length === 0) {
+        list.innerHTML = `
+            <div class="empty-state" style="padding: 40px 20px;">
+                <div class="empty-state-icon">📄</div>
+                <h3>Nessuna pagina figlia</h3>
+                <p>Crea la prima pagina tematica per questa rivista</p>
+            </div>
+        `;
+    } else {
+        list.innerHTML = childPages.map(page => `
+            <div class="child-page-item">
+                <div class="child-page-info">
+                    <h4>${page.name}</h4>
+                    <div class="child-page-meta">
+                        <span class="badge badge-${page.status === 'published' ? 'success' : page.status === 'draft' ? 'warning' : 'secondary'}">
+                            ${page.status === 'published' ? 'Pubblicato' : page.status === 'draft' ? 'Bozza' : 'Archiviato'}
+                        </span>
+                        <span>/${page.slug}</span>
+                        <span>${page.blocks?.length || 0} blocchi</span>
+                        <span>${page.views || 0} views</span>
+                    </div>
+                </div>
+                <div class="child-page-actions">
+                    ${page.status === 'published' ? `
+                        <button class="btn btn-sm btn-secondary" onclick="window.open('${getChildPageUrl(magazineId, page.slug)}', '_blank')" title="Apri pagina">
+                            🔗 URL
+                        </button>
+                    ` : ''}
+                    <button class="btn btn-sm btn-primary" onclick="editChildPage('${page._id}')" title="Modifica">
+                        ✏️ Modifica
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteChildPage('${page._id}', '${page.name}')" title="Elimina">
+                        🗑️
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    modal.classList.add('active');
+}
+
+// Chiudi modal pagine figlie
+function closeChildPagesModal() {
+    document.getElementById('childPagesModal').classList.remove('active');
+    document.getElementById('createChildPageForm').reset();
+    document.getElementById('createChildPageSection').style.display = 'none';
+    document.getElementById('childPagesList').style.display = 'block';
+}
+
+// Mostra form creazione pagina figlia
+function showCreateChildPageForm() {
+    document.getElementById('childPagesList').style.display = 'none';
+    document.getElementById('createChildPageSection').style.display = 'block';
+    
+    // Auto-generate slug
+    document.getElementById('childPageName').addEventListener('input', (e) => {
+        const slugInput = document.getElementById('childPageSlug');
+        if (!slugInput.dataset.manuallyEdited) {
+            slugInput.value = generateSlug(e.target.value);
+        }
+    });
+    
+    document.getElementById('childPageSlug').addEventListener('input', () => {
+        document.getElementById('childPageSlug').dataset.manuallyEdited = 'true';
+    });
+}
+
+// Annulla creazione pagina figlia
+function cancelCreateChildPage() {
+    document.getElementById('createChildPageSection').style.display = 'none';
+    document.getElementById('childPagesList').style.display = 'block';
+    document.getElementById('createChildPageForm').reset();
+}
+
+// Crea pagina figlia
+async function createChildPage(e) {
+    e.preventDefault();
+    
+    const magazineId = document.getElementById('childPagesMagazineId').value;
+    const data = {
+        name: document.getElementById('childPageName').value,
+        slug: document.getElementById('childPageSlug').value,
+        metaDescription: document.getElementById('childPageMetaDescription').value,
+        status: 'draft'
+    };
+    
+    try {
+        const response = await apiRequest(`/admin/magazines/${magazineId}/child-pages`, {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+        
+        alert('✅ Pagina figlia creata con successo!');
+        
+        // Ricarica lista
+        const listResponse = await apiRequest(`/admin/magazines/${magazineId}/child-pages`);
+        const magazine = magazines.find(m => m._id === magazineId);
+        showChildPagesModal(magazineId, magazine.name, listResponse.data);
+        
+        // Reset form
+        document.getElementById('createChildPageForm').reset();
+        document.getElementById('createChildPageSection').style.display = 'none';
+        document.getElementById('childPagesList').style.display = 'block';
+    } catch (error) {
+        console.error('Errore creazione pagina figlia:', error);
+        alert('❌ Errore: ' + error.message);
+    }
+}
+
+// Modifica pagina figlia (redirect a page-blocks.html)
+function editChildPage(pageId) {
+    window.location.href = `page-blocks.html?page=${pageId}`;
+}
+
+// Elimina pagina figlia
+async function deleteChildPage(pageId, pageName) {
+    if (!confirm(`Sei sicuro di voler eliminare "${pageName}"?\n\n⚠️ Questa azione eliminerà anche tutti i blocchi della pagina.`)) {
+        return;
+    }
+    
+    try {
+        await apiRequest(`/admin/child-pages/${pageId}`, {
+            method: 'DELETE'
+        });
+        
+        alert('✅ Pagina figlia eliminata con successo!');
+        
+        // Ricarica lista
+        const magazineId = document.getElementById('childPagesMagazineId').value;
+        const listResponse = await apiRequest(`/admin/magazines/${magazineId}/child-pages`);
+        const magazine = magazines.find(m => m._id === magazineId);
+        showChildPagesModal(magazineId, magazine.name, listResponse.data);
+    } catch (error) {
+        console.error('Errore eliminazione pagina figlia:', error);
+        alert('❌ Errore: ' + error.message);
+    }
+}
+
+// Get URL pubblica pagina figlia
+function getChildPageUrl(magazineId, pageSlug) {
+    const magazine = magazines.find(m => m._id === magazineId);
+    if (!magazine) return '#';
+    
+    // URL formato: /rivista-slug/pagina-slug
+    const baseUrl = window.location.origin;
+    return `${baseUrl}/${magazine.slug}/${pageSlug}`;
 }
 
 // Chiudi modal

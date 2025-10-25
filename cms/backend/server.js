@@ -308,6 +308,70 @@ const magazineSchema = new mongoose.Schema({
 
 const Magazine = mongoose.model('Magazine', magazineSchema);
 
+// Schema per Pagine Figlie (Child Pages) della rivista
+const childPageSchema = new mongoose.Schema({
+    // Riferimento alla rivista madre
+    parentMagazine: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Magazine',
+        required: true
+    },
+    
+    // Metadata
+    name: {
+        type: String,
+        required: [true, 'Il nome della pagina è obbligatorio'],
+        trim: true
+    },
+    slug: {
+        type: String,
+        required: [true, 'Lo slug URL è obbligatorio'],
+        lowercase: true,
+        trim: true
+    },
+    metaDescription: {
+        type: String,
+        trim: true
+    },
+    
+    // Contenuto
+    title: String,
+    subtitle: String,
+    coverImage: String,
+    
+    // Blocchi di contenuto (riusa blockSchema)
+    blocks: [blockSchema],
+    
+    // Stato pubblicazione
+    status: {
+        type: String,
+        enum: ['draft', 'published', 'archived'],
+        default: 'draft'
+    },
+    publishDate: {
+        type: Date
+    },
+    
+    // Statistiche
+    views: {
+        type: Number,
+        default: 0
+    },
+    
+    // Autore
+    author: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }
+}, {
+    timestamps: true
+});
+
+// Indice composto per slug univoco per rivista
+childPageSchema.index({ parentMagazine: 1, slug: 1 }, { unique: true });
+
+const ChildPage = mongoose.model('ChildPage', childPageSchema);
+
 // ============================================
 // MIDDLEWARE AUTENTICAZIONE
 // ============================================
@@ -1511,6 +1575,475 @@ app.put('/api/admin/magazines/:id', authenticateToken, async (req, res) => {
         res.status(400).json({ 
             success: false,
             error: error.message || 'Errore nell\'aggiornamento della rivista' 
+        });
+    }
+});
+
+// ============================================
+// ROTTE GESTIONE PAGINE FIGLIE (CHILD PAGES)
+// ============================================
+
+// GET - Tutte le pagine figlie di una rivista
+app.get('/api/admin/magazines/:magazineId/child-pages', authenticateToken, async (req, res) => {
+    try {
+        const childPages = await ChildPage.find({ 
+            parentMagazine: req.params.magazineId 
+        }).sort({ createdAt: -1 });
+        
+        res.json({
+            success: true,
+            count: childPages.length,
+            data: childPages
+        });
+    } catch (error) {
+        console.error('Errore GET child-pages:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Errore nel recupero delle pagine figlie' 
+        });
+    }
+});
+
+// GET - Singola pagina figlia
+app.get('/api/admin/child-pages/:id', authenticateToken, async (req, res) => {
+    try {
+        const childPage = await ChildPage.findById(req.params.id)
+            .populate('parentMagazine', 'name edition slug');
+        
+        if (!childPage) {
+            return res.status(404).json({ 
+                success: false,
+                error: 'Pagina figlia non trovata' 
+            });
+        }
+        
+        res.json({
+            success: true,
+            data: childPage
+        });
+    } catch (error) {
+        console.error('Errore GET child-page:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Errore nel recupero della pagina figlia' 
+        });
+    }
+});
+
+// POST - Crea nuova pagina figlia
+app.post('/api/admin/magazines/:magazineId/child-pages', authenticateToken, async (req, res) => {
+    try {
+        // Verifica che la rivista madre esista
+        const magazine = await Magazine.findById(req.params.magazineId);
+        if (!magazine) {
+            return res.status(404).json({ 
+                success: false,
+                error: 'Rivista madre non trovata' 
+            });
+        }
+        
+        const childPage = new ChildPage({
+            ...req.body,
+            parentMagazine: req.params.magazineId,
+            author: req.user.id
+        });
+        
+        await childPage.save();
+        
+        res.status(201).json({
+            success: true,
+            message: 'Pagina figlia creata con successo',
+            data: childPage
+        });
+    } catch (error) {
+        console.error('Errore POST child-page:', error);
+        
+        // Gestisci errore di slug duplicato
+        if (error.code === 11000) {
+            return res.status(400).json({ 
+                success: false,
+                error: 'Esiste già una pagina con questo URL per questa rivista' 
+            });
+        }
+        
+        res.status(400).json({ 
+            success: false,
+            error: error.message || 'Errore nella creazione della pagina figlia' 
+        });
+    }
+});
+
+// PUT - Aggiorna pagina figlia
+app.put('/api/admin/child-pages/:id', authenticateToken, async (req, res) => {
+    try {
+        const childPage = await ChildPage.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true, runValidators: true }
+        );
+        
+        if (!childPage) {
+            return res.status(404).json({ 
+                success: false,
+                error: 'Pagina figlia non trovata' 
+            });
+        }
+        
+        res.json({
+            success: true,
+            message: 'Pagina figlia aggiornata con successo',
+            data: childPage
+        });
+    } catch (error) {
+        console.error('Errore PUT child-page:', error);
+        res.status(400).json({ 
+            success: false,
+            error: error.message || 'Errore nell\'aggiornamento della pagina figlia' 
+        });
+    }
+});
+
+// DELETE - Elimina pagina figlia
+app.delete('/api/admin/child-pages/:id', authenticateToken, async (req, res) => {
+    try {
+        const childPage = await ChildPage.findByIdAndDelete(req.params.id);
+        
+        if (!childPage) {
+            return res.status(404).json({ 
+                success: false,
+                error: 'Pagina figlia non trovata' 
+            });
+        }
+        
+        res.json({ 
+            success: true,
+            message: 'Pagina figlia eliminata con successo' 
+        });
+    } catch (error) {
+        console.error('Errore DELETE child-page:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Errore nell\'eliminazione della pagina figlia' 
+        });
+    }
+});
+
+// POST - Aggiungi blocco a pagina figlia
+app.post('/api/admin/child-pages/:id/blocks', authenticateToken, async (req, res) => {
+    try {
+        const childPage = await ChildPage.findById(req.params.id);
+        
+        if (!childPage) {
+            return res.status(404).json({ 
+                success: false,
+                error: 'Pagina figlia non trovata' 
+            });
+        }
+        
+        // Aggiungi il nuovo blocco
+        childPage.blocks.push(req.body);
+        await childPage.save();
+        
+        res.status(201).json({
+            success: true,
+            message: 'Blocco aggiunto con successo',
+            data: childPage
+        });
+    } catch (error) {
+        console.error('Errore POST child-page block:', error);
+        res.status(400).json({ 
+            success: false,
+            error: 'Errore nell\'aggiunta del blocco' 
+        });
+    }
+});
+
+// PUT - Aggiorna blocco in pagina figlia
+app.put('/api/admin/child-pages/:pageId/blocks/:blockId', authenticateToken, async (req, res) => {
+    try {
+        const childPage = await ChildPage.findById(req.params.pageId);
+        
+        if (!childPage) {
+            return res.status(404).json({ 
+                success: false,
+                error: 'Pagina figlia non trovata' 
+            });
+        }
+        
+        const block = childPage.blocks.id(req.params.blockId);
+        if (!block) {
+            return res.status(404).json({ 
+                success: false,
+                error: 'Blocco non trovato' 
+            });
+        }
+        
+        Object.assign(block, req.body);
+        await childPage.save();
+        
+        res.json({
+            success: true,
+            message: 'Blocco aggiornato con successo',
+            data: childPage
+        });
+    } catch (error) {
+        console.error('Errore PUT child-page block:', error);
+        res.status(400).json({ 
+            success: false,
+            error: 'Errore nell\'aggiornamento del blocco' 
+        });
+    }
+});
+
+// DELETE - Elimina blocco da pagina figlia
+app.delete('/api/admin/child-pages/:pageId/blocks/:blockId', authenticateToken, async (req, res) => {
+    try {
+        const childPage = await ChildPage.findById(req.params.pageId);
+        
+        if (!childPage) {
+            return res.status(404).json({ 
+                success: false,
+                error: 'Pagina figlia non trovata' 
+            });
+        }
+        
+        childPage.blocks.id(req.params.blockId).remove();
+        await childPage.save();
+        
+        res.json({
+            success: true,
+            message: 'Blocco eliminato con successo',
+            data: childPage
+        });
+    } catch (error) {
+        console.error('Errore DELETE child-page block:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Errore nell\'eliminazione del blocco' 
+        });
+    }
+});
+
+// PUT - Riordina blocchi in pagina figlia
+app.put('/api/admin/child-pages/:id/blocks/reorder', authenticateToken, async (req, res) => {
+    try {
+        const childPage = await ChildPage.findById(req.params.id);
+        
+        if (!childPage) {
+            return res.status(404).json({ 
+                success: false,
+                error: 'Pagina figlia non trovata' 
+            });
+        }
+        
+        const { blockIds } = req.body;
+        
+        // Riordina i blocchi
+        const reorderedBlocks = blockIds.map(id => 
+            childPage.blocks.id(id)
+        ).filter(block => block !== null);
+        
+        childPage.blocks = reorderedBlocks;
+        await childPage.save();
+        
+        res.json({
+            success: true,
+            message: 'Blocchi riordinati con successo',
+            data: childPage
+        });
+    } catch (error) {
+        console.error('Errore PUT child-page reorder:', error);
+        res.status(400).json({ 
+            success: false,
+            error: 'Errore nel riordinamento dei blocchi' 
+        });
+    }
+});
+
+// GET - Anteprima pubblica pagina figlia (senza auth)
+app.get('/api/child-pages/:magazineSlug/:pageSlug', async (req, res) => {
+    try {
+        const magazine = await Magazine.findOne({ slug: req.params.magazineSlug });
+        
+        if (!magazine) {
+            return res.status(404).json({ 
+                success: false,
+                error: 'Rivista non trovata' 
+            });
+        }
+        
+        const childPage = await ChildPage.findOne({ 
+            parentMagazine: magazine._id,
+            slug: req.params.pageSlug,
+            status: 'published'
+        });
+        
+        if (!childPage) {
+            return res.status(404).json({ 
+                success: false,
+                error: 'Pagina non trovata' 
+            });
+        }
+        
+        // Incrementa views
+        childPage.views += 1;
+        await childPage.save();
+        
+        res.json({
+            success: true,
+            data: childPage
+        });
+    } catch (error) {
+        console.error('Errore GET public child-page:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Errore nel recupero della pagina' 
+        });
+    }
+});
+
+// POST - Genera HTML completo per pagina figlia
+app.post('/api/admin/child-pages/:id/generate-html', authenticateToken, async (req, res) => {
+    try {
+        const childPage = await ChildPage.findById(req.params.id)
+            .populate('parentMagazine', 'name edition slug');
+        
+        if (!childPage) {
+            return res.status(404).json({ 
+                success: false,
+                error: 'Pagina figlia non trovata' 
+            });
+        }
+        
+        // Ordina i blocchi per posizione
+        const sortedBlocks = (childPage.blocks || []).sort((a, b) => a.position - b.position);
+        
+        // Genera HTML per ogni blocco
+        const blocksHTML = sortedBlocks
+            .filter(block => block.visible !== false)
+            .map(block => generateBlockHTML(block))
+            .join('\n\n');
+        
+        // Leggi i CSS inline per l'anteprima
+        const cssPath = path.join(__dirname, '../../assets/css/magazine-generated.css');
+        const cremonaCssPath = path.join(__dirname, '../../assets/css/cremona-scroll.css');
+        const mainCssPath = path.join(__dirname, '../../assets/css/main.css');
+        const carouselCssPath = path.join(__dirname, '../../assets/css/carousel-stories.css');
+        const cremonaJsPath = path.join(__dirname, '../../assets/js/cremona-scroll.js');
+        
+        let inlineCSS = '';
+        let cremonaCSS = '';
+        let mainCSS = '';
+        let carouselCSS = '';
+        let cremonaJS = '';
+        
+        try { inlineCSS = await fs.readFile(cssPath, 'utf8'); } catch (err) { console.warn('magazine-generated.css not found'); }
+        try { cremonaCSS = await fs.readFile(cremonaCssPath, 'utf8'); } catch (err) { console.warn('cremona-scroll.css not found'); }
+        try { mainCSS = await fs.readFile(mainCssPath, 'utf8'); } catch (err) { console.warn('main.css not found'); }
+        try { carouselCSS = await fs.readFile(carouselCssPath, 'utf8'); } catch (err) { console.warn('carousel-stories.css not found'); }
+        try { cremonaJS = await fs.readFile(cremonaJsPath, 'utf8'); } catch (err) { console.warn('cremona-scroll.js not found'); }
+        
+        // Meta description personalizzata o default
+        const metaDescription = childPage.metaDescription || `${childPage.name} - Pagina speciale di ${childPage.parentMagazine.name}`;
+        const pageTitle = `${childPage.name} | ${childPage.parentMagazine.name}`;
+        
+        // Template HTML completo
+        const fullHTML = `<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${pageTitle}</title>
+    <meta name="description" content="${metaDescription}">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:title" content="${pageTitle}">
+    <meta property="og:description" content="${metaDescription}">
+    <meta property="og:type" content="article">
+    ${childPage.coverImage ? `<meta property="og:image" content="${childPage.coverImage}">` : ''}
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Inline Styles -->
+    <style>
+        /* Reset base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: #1f2937;
+            background: #ffffff;
+        }
+        
+        /* Main CSS */
+        ${mainCSS}
+        
+        /* Cremona Scroll CSS */
+        ${cremonaCSS}
+        
+        /* Carousel Stories CSS */
+        ${carouselCSS}
+        
+        /* Magazine Generated CSS */
+        ${inlineCSS}
+    </style>
+</head>
+<body>
+    <!-- Contenuto Pagina Figlia -->
+    <main class="magazine-content">
+        ${blocksHTML}
+    </main>
+    
+    <!-- Scripts -->
+    <script>
+        ${cremonaJS}
+        
+        ${CAROUSEL_JS_SCRIPT}
+    </script>
+</body>
+</html>`;
+        
+        // Salva HTML in preview (opzionale)
+        const previewDir = path.join(__dirname, 'preview');
+        const previewFileName = `child-${childPage._id}.html`;
+        const previewFilePath = path.join(previewDir, previewFileName);
+        
+        try {
+            await fs.mkdir(previewDir, { recursive: true });
+            await fs.writeFile(previewFilePath, fullHTML);
+        } catch (err) {
+            console.warn('Impossibile salvare file preview:', err);
+        }
+        
+        const previewUrl = `/preview/${previewFileName}`;
+        
+        res.json({
+            success: true,
+            html: fullHTML,
+            previewUrl: previewUrl,
+            message: 'HTML generato con successo',
+            childPage: {
+                id: childPage._id,
+                name: childPage.name,
+                slug: childPage.slug,
+                blocksCount: sortedBlocks.length,
+                parentMagazine: childPage.parentMagazine
+            }
+        });
+        
+    } catch (error) {
+        console.error('Errore generazione HTML pagina figlia:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Errore nella generazione dell\'HTML' 
         });
     }
 });
