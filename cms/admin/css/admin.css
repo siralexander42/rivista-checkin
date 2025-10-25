@@ -108,60 +108,177 @@
     transition: transform 0.2s;
 }
 
-/* Specifiche child-page-card */
-.child-pages-block-card {
+/* ============================================
+   SEZIONE PAGINE FIGLIE - Clean & Professional
+   ============================================ */
+
+.child-pages-section {
     margin-bottom: 32px;
-    background: transparent;
-    padding: 0;
-    border: none;
-    box-shadow: none;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
 }
 
+.child-pages-section:hover {
+    border-color: #d1d5db;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* Header della sezione */
 .child-pages-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding-bottom: 20px;
-    border-bottom: 2px solid var(--border-light);
+    justify-content: space-between;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
+    border-bottom: 1px solid #f3f4f6;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
 .child-pages-header:hover {
-    border-bottom-color: var(--primary);
+    background: linear-gradient(135deg, #f3f4f6 0%, #f9fafb 100%);
 }
 
-.child-pages-header:hover .child-pages-header-left svg {
-    transform: scale(1.1);
-    color: var(--primary);
-}
-
-.child-pages-header-left {
+.child-pages-title-group {
     display: flex;
     align-items: center;
     gap: 14px;
+    flex: 1;
 }
 
-.child-pages-header-left svg {
-    transition: all 0.3s ease;
+.child-pages-title-group svg {
+    color: var(--primary);
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
 }
 
-.child-pages-body {
-    padding-top: 24px;
+.child-pages-header:hover .child-pages-title-group svg {
+    transform: scale(1.05);
+}
+
+.child-pages-title-text h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+    margin-bottom: 2px;
+}
+
+.child-pages-title-text p {
+    font-size: 12px;
+    color: #6b7280;
+    margin: 0;
+}
+
+/* Actions nell'header */
+.child-pages-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-add-child-page {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-add-child-page:hover {
+    background: var(--primary-hover);
+    transform: scale(1.05);
+}
+
+.btn-toggle-child-pages {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-toggle-child-pages:hover {
+    background: #f3f4f6;
+    color: var(--primary);
+}
+
+.btn-toggle-child-pages svg {
+    transition: transform 0.3s ease;
+}
+
+.child-pages-section.expanded .btn-toggle-child-pages svg {
+    transform: rotate(180deg);
+}
+
+/* Contenuto espandibile */
+.child-pages-content {
+    padding: 0;
+    background: white;
+}
+
+.child-pages-list {
+    padding: 16px 20px 20px 20px;
 }
 
 .child-page-card {
-    margin-bottom: 16px;
+    margin-bottom: 12px;
+}
+
+.child-page-card:last-child {
+    margin-bottom: 0;
 }
 
 .child-page-card .block-card-header {
-    padding: 18px 24px;
+    padding: 16px 20px;
 }
 
 .child-page-card .block-icon-badge {
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     border-radius: 10px;
+}
+
+/* Loading state */
+.child-pages-list .loading-inline {
+    text-align: center;
+    padding: 32px 20px;
+    color: #9ca3af;
+    font-size: 13px;
+}
+
+/* Empty state */
+.child-pages-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: #9ca3af;
+}
+
+.child-pages-empty svg {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 12px;
+    opacity: 0.3;
+}
+
+.child-pages-empty p {
+    font-size: 14px;
+    margin: 0;
 }
 
 /* ============================================

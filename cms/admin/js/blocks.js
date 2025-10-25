@@ -2629,16 +2629,13 @@ function initCarouselCardCropperByElement(inputElement) {
 // Toggle collassa/espandi pagine figlie
 async function toggleChildPagesInBlocks() {
     const collapseDiv = document.getElementById('child-pages-collapse-blocks');
-    const toggleIcon = document.getElementById('toggle-child-pages-blocks');
+    const section = document.querySelector('.child-pages-section');
     const listDiv = document.getElementById('child-list-blocks');
     
     if (collapseDiv.style.display === 'none') {
         // Espandi
         collapseDiv.style.display = 'block';
-        const card = document.querySelector('.child-pages-block-card');
-        const expandBtn = card?.querySelector('.btn-icon-expand');
-        if (card) card.classList.add('expanded');
-        if (expandBtn) expandBtn.style.transform = 'rotate(180deg)';
+        if (section) section.classList.add('expanded');
         
         // Carica pagine figlie
         try {
@@ -2652,10 +2649,7 @@ async function toggleChildPagesInBlocks() {
     } else {
         // Collassa
         collapseDiv.style.display = 'none';
-        const card = document.querySelector('.child-pages-block-card');
-        const expandBtn = card?.querySelector('.btn-icon-expand');
-        if (card) card.classList.remove('expanded');
-        if (expandBtn) expandBtn.style.transform = 'rotate(0deg)';
+        if (section) section.classList.remove('expanded');
     }
 }
 
