@@ -8,25 +8,25 @@
     <link rel="stylesheet" href="css/admin.css?v=8.0">
     <link rel="stylesheet" href="css/image-cropper.css?v=1.0">
     <style>
-        /* VS Code Theme - Dark Mode */
+        /* VS Code Theme - Deep Blue Professional */
         body {
-            background: #1e1e1e;
-            color: #d4d4d4;
+            background: #0d1117;
+            color: #c9d1d9;
         }
 
         .admin-container {
-            background: #1e1e1e;
+            background: #0d1117;
         }
 
         .main-content {
-            background: #1e1e1e;
+            background: #0d1117;
             margin-left: 280px;
         }
 
         /* VS Code Style Header */
         .page-header {
-            background: #252526;
-            border-bottom: 1px solid #3e3e42;
+            background: #161b22;
+            border-bottom: 1px solid #21262d;
             padding: 16px 24px;
             display: flex;
             justify-content: space-between;
@@ -34,9 +34,9 @@
         }
 
         .page-header h1 {
-            color: #cccccc;
+            color: #58a6ff;
             font-size: 18px;
-            font-weight: 400;
+            font-weight: 500;
             margin: 0;
             display: flex;
             align-items: center;
@@ -44,20 +44,21 @@
         }
 
         .dev-mode-badge {
-            background: #007acc;
+            background: linear-gradient(135deg, #1f6feb 0%, #0969da 100%);
             color: white;
-            padding: 2px 8px;
-            border-radius: 3px;
+            padding: 3px 10px;
+            border-radius: 4px;
             font-size: 10px;
             font-weight: 600;
             letter-spacing: 0.5px;
             text-transform: uppercase;
+            box-shadow: 0 1px 3px rgba(31, 111, 235, 0.3);
         }
 
         /* VS Code Activity Bar (Tabs) */
         .vscode-tabs {
-            background: #252526;
-            border-bottom: 1px solid #3e3e42;
+            background: #161b22;
+            border-bottom: 1px solid #21262d;
             display: flex;
             gap: 0;
             padding: 0;
@@ -65,35 +66,47 @@
         }
 
         .vscode-tab {
-            background: #2d2d30;
+            background: #0d1117;
             border: none;
-            border-right: 1px solid #3e3e42;
-            color: #969696;
-            padding: 10px 20px;
+            border-right: 1px solid #21262d;
+            color: #8b949e;
+            padding: 12px 24px;
             font-size: 13px;
             font-weight: 400;
             cursor: pointer;
-            transition: all 0.15s ease;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             gap: 8px;
             white-space: nowrap;
+            position: relative;
         }
 
         .vscode-tab:hover {
-            background: #2a2d2e;
-            color: #cccccc;
+            background: #161b22;
+            color: #c9d1d9;
         }
 
         .vscode-tab.active {
-            background: #1e1e1e;
-            color: #ffffff;
-            border-top: 1px solid #007acc;
+            background: #0d1117;
+            color: #58a6ff;
+            border-top: 2px solid #1f6feb;
+            font-weight: 500;
+        }
+
+        .vscode-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #0d1117;
         }
 
         /* VS Code Editor Area */
         .vscode-editor {
-            background: #1e1e1e;
+            background: #0d1117;
             padding: 20px 24px;
             min-height: calc(100vh - 200px);
         }
@@ -108,37 +121,38 @@
 
         /* Code Editor */
         .code-editor {
-            background: #1e1e1e;
-            color: #d4d4d4;
+            background: #161b22;
+            color: #c9d1d9;
             font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
             font-size: 14px;
             line-height: 1.6;
             padding: 16px;
-            border-radius: 0;
+            border-radius: 6px;
             overflow-x: auto;
             white-space: pre;
-            border: 1px solid #3e3e42;
+            border: 1px solid #30363d;
         }
 
         /* VS Code Sidebar Panel */
         .vscode-panel {
-            background: #252526;
-            border: 1px solid #3e3e42;
-            border-radius: 4px;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
             margin-bottom: 16px;
         }
 
         .vscode-panel-header {
-            background: #2d2d30;
-            padding: 10px 16px;
-            border-bottom: 1px solid #3e3e42;
+            background: #0d1117;
+            padding: 12px 16px;
+            border-bottom: 1px solid #30363d;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-radius: 6px 6px 0 0;
         }
 
         .vscode-panel-title {
-            color: #cccccc;
+            color: #58a6ff;
             font-size: 13px;
             font-weight: 600;
             display: flex;
@@ -152,43 +166,49 @@
 
         /* VS Code Buttons */
         .vscode-btn {
-            background: #0e639c;
-            border: 1px solid #0e639c;
+            background: linear-gradient(180deg, #1f6feb 0%, #1a5dc9 100%);
+            border: 1px solid #1f6feb;
             color: #ffffff;
-            padding: 6px 14px;
+            padding: 8px 16px;
             font-size: 13px;
-            border-radius: 2px;
+            font-weight: 500;
+            border-radius: 6px;
             cursor: pointer;
-            transition: all 0.15s ease;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(31, 111, 235, 0.2);
         }
 
         .vscode-btn:hover {
-            background: #1177bb;
-            border-color: #1177bb;
+            background: linear-gradient(180deg, #2374f5 0%, #1f6feb 100%);
+            border-color: #2374f5;
+            box-shadow: 0 2px 6px rgba(31, 111, 235, 0.3);
+            transform: translateY(-1px);
         }
 
         .vscode-btn-secondary {
-            background: #3e3e42;
-            border: 1px solid #3e3e42;
-            color: #cccccc;
+            background: #21262d;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            box-shadow: none;
         }
 
         .vscode-btn-secondary:hover {
-            background: #505050;
-            border-color: #505050;
+            background: #30363d;
+            border-color: #484f58;
+            box-shadow: none;
         }
 
         /* Magazine Selector VS Code Style */
         .magazine-selector {
-            background: #252526;
-            border: 1px solid #3e3e42;
+            background: #161b22;
+            border: 1px solid #30363d;
             padding: 16px;
-            border-radius: 4px;
+            border-radius: 6px;
             margin-bottom: 16px;
         }
 
         .magazine-selector label {
-            color: #cccccc;
+            color: #58a6ff;
             font-size: 13px;
             font-weight: 600;
             margin-bottom: 8px;
@@ -196,38 +216,49 @@
         }
 
         .magazine-selector select {
-            background: #3c3c3c;
-            border: 1px solid #3e3e42;
-            color: #cccccc;
-            padding: 6px 12px;
-            border-radius: 2px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            padding: 8px 12px;
+            border-radius: 6px;
             width: 100%;
             max-width: 400px;
             font-size: 13px;
+            transition: all 0.2s ease;
         }
 
         .magazine-selector select:focus {
-            outline: 1px solid #007acc;
-            border-color: #007acc;
+            outline: none;
+            border-color: #1f6feb;
+            box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.1);
         }
 
         /* Block Cards VS Code Style */
         .block-preview-card {
-            background: #252526;
-            border: 1px solid #3e3e42;
-            border-radius: 4px;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
             padding: 16px;
             margin-bottom: 12px;
-            transition: all 0.15s ease;
+            transition: all 0.2s ease;
         }
 
         .block-preview-card:hover {
-            background: #2d2d30;
-            border-color: #007acc;
+            background: #1c2128;
+            border-color: #1f6feb;
+            box-shadow: 0 2px 8px rgba(31, 111, 235, 0.15);
         }
 
         .block-type-label {
-            background: #094771;
+            background: linear-gradient(135deg, #1f6feb 0%, #1a5dc9 100%);
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-block;
             border: 1px solid #007acc;
             color: #4fc3f7;
             padding: 2px 8px;
@@ -241,41 +272,43 @@
         .json-viewer {
             max-height: 500px;
             overflow-y: auto;
-            background: #1e1e1e;
-            border: 1px solid #3e3e42;
-            border-radius: 4px;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
         }
 
         /* Scrollbar VS Code Style */
         .json-viewer::-webkit-scrollbar {
-            width: 14px;
+            width: 12px;
         }
 
         .json-viewer::-webkit-scrollbar-track {
-            background: #1e1e1e;
+            background: #0d1117;
+            border-radius: 6px;
         }
 
         .json-viewer::-webkit-scrollbar-thumb {
-            background: #424242;
-            border-radius: 0;
+            background: #484f58;
+            border-radius: 6px;
+            border: 2px solid #0d1117;
         }
 
         .json-viewer::-webkit-scrollbar-thumb:hover {
-            background: #4e4e4e;
+            background: #6e7681;
         }
 
-        /* Sidebar Order List - VS Code Dark Theme */
+        /* Sidebar Order List - VS Code Deep Blue Theme */
         .sidebar-order-section {
-            background: #252526;
-            border: 1px solid #3e3e42;
-            border-radius: 4px;
-            padding: 16px;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 20px;
             margin-bottom: 20px;
         }
 
         .sidebar-order-section h3 {
-            color: #cccccc;
-            font-size: 13px;
+            color: #58a6ff;
+            font-size: 14px;
             font-weight: 600;
             margin: 0 0 12px 0;
             display: flex;
@@ -284,60 +317,63 @@
         }
 
         .sidebar-order-description {
-            color: #858585;
+            color: #8b949e;
             font-size: 12px;
             margin-bottom: 16px;
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
         .sidebar-order-list {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 6px;
         }
 
         .sidebar-item {
-            background: #2d2d30;
-            border: 1px solid #3e3e42;
-            border-radius: 3px;
-            padding: 10px 12px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 12px;
             display: flex;
             align-items: center;
             gap: 12px;
             cursor: move;
-            transition: all 0.1s ease;
+            transition: all 0.2s ease;
             user-select: none;
         }
 
         .sidebar-item:hover {
-            background: #2a2d2e;
-            border-color: #007acc;
+            background: #161b22;
+            border-color: #1f6feb;
+            box-shadow: 0 2px 6px rgba(31, 111, 235, 0.15);
         }
 
         .sidebar-item.dragging {
-            opacity: 0.5;
-            background: #1e1e1e;
+            opacity: 0.6;
+            background: #1c2128;
+            transform: scale(0.98);
         }
 
         .sidebar-item.drag-over {
-            border-color: #007acc;
+            border-color: #1f6feb;
             border-style: dashed;
-            background: rgba(0, 122, 204, 0.1);
+            background: rgba(31, 111, 235, 0.1);
         }
 
         .sidebar-item.locked {
             cursor: not-allowed;
-            opacity: 0.5;
+            opacity: 0.6;
         }
 
         .sidebar-item.locked:hover {
-            background: #2d2d30;
-            border-color: #3e3e42;
+            background: #0d1117;
+            border-color: #30363d;
+            box-shadow: none;
         }
 
         .drag-handle {
-            font-size: 14px;
-            color: #858585;
+            font-size: 16px;
+            color: #6e7681;
             cursor: grab;
             display: flex;
             align-items: center;
@@ -349,38 +385,40 @@
 
         .sidebar-item.locked .drag-handle {
             cursor: not-allowed;
-            color: #505050;
+            color: #484f58;
         }
 
         .sidebar-item-order {
             display: flex;
             align-items: center;
             justify-content: center;
-            min-width: 28px;
-            height: 28px;
-            background: #5a5a5a;
-            color: #cccccc;
-            border-radius: 3px;
-            font-weight: 600;
-            font-size: 12px;
+            min-width: 32px;
+            height: 32px;
+            background: #21262d;
+            color: #58a6ff;
+            border-radius: 6px;
+            border: 1px solid #30363d;
+            font-weight: 700;
+            font-size: 13px;
             flex-shrink: 0;
         }
 
         .sidebar-item.locked .sidebar-item-order {
-            background: #3e3e42;
-            color: #858585;
+            background: #161b22;
+            color: #6e7681;
+            border-color: #21262d;
         }
 
         .sidebar-item-content {
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 3px;
+            gap: 4px;
         }
 
         .sidebar-item-label {
             font-weight: 500;
-            color: #cccccc;
+            color: #c9d1d9;
             font-size: 13px;
             display: flex;
             align-items: center;
@@ -389,26 +427,28 @@
 
         .sidebar-item-meta {
             font-size: 11px;
-            color: #858585;
+            color: #8b949e;
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
         .visibility-badge {
-            padding: 1px 6px;
-            background: rgba(0, 122, 204, 0.2);
-            color: #4fc1ff;
-            border-radius: 2px;
+            padding: 2px 8px;
+            background: rgba(31, 111, 235, 0.15);
+            color: #58a6ff;
+            border: 1px solid rgba(31, 111, 235, 0.3);
+            border-radius: 4px;
             font-weight: 500;
             font-size: 10px;
         }
 
         .locked-badge {
-            padding: 1px 6px;
-            background: rgba(255, 68, 68, 0.2);
-            color: #f48771;
-            border-radius: 2px;
+            padding: 2px 8px;
+            background: rgba(248, 81, 73, 0.15);
+            color: #f85149;
+            border: 1px solid rgba(248, 81, 73, 0.3);
+            border-radius: 4px;
             font-weight: 500;
             font-size: 10px;
         }
