@@ -27,6 +27,8 @@ async function loadChildPage() {
         if (childPage.parentMagazineId) {
             const magResponse = await apiRequest(`/admin/magazines/${childPage.parentMagazineId}`);
             parentMagazine = magResponse.data;
+            console.log('✅ Rivista madre caricata:', parentMagazine);
+            console.log('📦 Blocchi disponibili:', parentMagazine.blocks ? parentMagazine.blocks.length : 0);
         }
         
         // Aggiorna header
