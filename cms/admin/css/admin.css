@@ -1,4 +1,122 @@
 /* ============================================
+   PAGINE FIGLIE - Blocco e Card
+   ============================================ */
+.child-pages-block-card {
+    margin-bottom: 32px;
+    box-shadow: var(--shadow-md);
+    border-radius: var(--radius-lg);
+    border: 1.5px solid var(--border-light);
+    background: var(--bg-white);
+    padding: 0;
+}
+.child-page-card {
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-sm);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-light);
+    background: var(--bg-white);
+    transition: var(--transition);
+}
+.child-page-card .block-card-header {
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+}
+.child-page-card .block-card-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+.child-page-card .block-icon-badge {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+    background: linear-gradient(135deg,#3C3D8F 0%,#2A2B5F 100%);
+}
+.child-page-card .block-card-type {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+.child-page-card .block-status-badge {
+    margin-left: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 8px;
+    text-transform: uppercase;
+    background: #f3f4f6;
+    color: #64748b;
+}
+.child-page-card .block-status-badge.visible {
+    background: var(--success);
+    color: #fff;
+}
+.child-page-card .block-status-badge.hidden {
+    background: #f3f4f6;
+    color: #64748b;
+}
+.child-page-card .block-card-meta {
+    font-size: 13px;
+    color: var(--text-light);
+    margin-top: 2px;
+}
+.child-page-card .block-card-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.btn-icon-modern {
+    background: none;
+    border: none;
+    padding: 6px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.btn-icon-modern:hover {
+    background: #f3f4f6;
+}
+.btn-icon-edit svg {
+    color: var(--primary);
+}
+.btn-icon-delete svg {
+    color: var(--danger);
+}
+.btn-icon-preview svg {
+    color: var(--primary);
+}
+.btn-icon-expand svg {
+    color: var(--primary);
+    transition: transform 0.2s;
+}
+.child-pages-block-card .block-card-header {
+    padding: 22px 32px 18px 32px;
+    border-bottom: 1.5px solid var(--border-light);
+}
+.child-pages-block-card .block-card-right .btn-primary {
+    font-size: 14px;
+    padding: 8px 14px;
+    height: 38px;
+    border-radius: 10px;
+    gap: 6px;
+}
+.child-pages-block-card .btn-icon-expand {
+    margin-left: 8px;
+}
+.child-pages-block-card .block-card-body {
+    padding: 18px 32px 18px 32px;
+}
+/* ============================================
    CHECK-IN CMS - PROFESSIONAL ADMIN SYSTEM
    Version: 1.0.1 - Updated 22 Oct 2025
    ============================================ */

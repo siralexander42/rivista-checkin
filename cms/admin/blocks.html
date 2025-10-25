@@ -123,25 +123,33 @@
                 
                 <!-- Blocco Collassabile Pagine Figlie -->
                 <div class="child-pages-section-blocks">
-                    <div class="child-pages-toggle-header" onclick="toggleChildPagesInBlocks()">
-                        <div class="child-pages-toggle-title">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M9 12H15M9 16H15M17 21H7C5.89543 21 5 20.1046 5 19V5C5 3.89543 5.89543 3 7 3H12.5858C12.851 3 13.1054 3.10536 13.2929 3.29289L18.7071 8.70711C18.8946 8.89464 19 9.149 19 9.41421V19C19 20.1046 18.1046 21 17 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                            <h3>📄 Pagine Figlie</h3>
+                    <div class="block-card-modern child-pages-block-card">
+                        <div class="block-card-header" onclick="toggleChildPagesInBlocks()">
+                            <div class="block-card-left">
+                                <div class="block-icon-badge" style="background:linear-gradient(135deg,#3C3D8F 0%,#2A2B5F 100%);">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="18" height="18" rx="2" stroke="white" stroke-width="1.5"/><path d="M3 9H21" stroke="white" stroke-width="1.5"/><path d="M9 9V21" stroke="white" stroke-width="1.5"/></svg>
+                                </div>
+                                <div class="block-card-info">
+                                    <div class="block-card-title-row">
+                                        <span class="block-card-type">Pagine Figlie</span>
+                                    </div>
+                                    <div class="block-card-meta">Gestisci le pagine speciali collegate a questa rivista</div>
+                                </div>
+                            </div>
+                            <div class="block-card-right">
+                                <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); showCreateChildPageInBlocks()" style="gap:6px;min-width:0;padding:8px 14px;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 5V19M5 12H19" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    Nuova Pagina Figlia
+                                </button>
+                                <button class="btn-icon-modern btn-icon-expand" title="Espandi/Comprimi">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </button>
+                            </div>
                         </div>
-                        <span class="toggle-icon-blocks" id="toggle-child-pages-blocks">▼</span>
-                    </div>
-                    
-                    <div class="child-pages-collapse-blocks" id="child-pages-collapse-blocks" style="display: none;">
-                        <div class="child-pages-collapse-header">
-                            <p style="margin: 0; color: #64748b; font-size: 14px;">Gestisci le pagine speciali collegate a questa rivista</p>
-                            <button class="btn btn-sm btn-primary" onclick="showCreateChildPageInBlocks()">
-                                ➕ Nuova Pagina Figlia
-                            </button>
-                        </div>
-                        <div class="child-pages-collapse-list" id="child-list-blocks">
-                            <div class="loading-inline">Caricamento...</div>
+                        <div class="block-card-body" id="child-pages-collapse-blocks" style="display:none;">
+                            <div class="child-pages-collapse-list" id="child-list-blocks">
+                                <div class="loading-inline">Caricamento...</div>
+                            </div>
                         </div>
                     </div>
                 </div>
