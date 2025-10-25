@@ -62,16 +62,13 @@ async function loadChildPage() {
 // Mostra blocchi UGUALE ALLA RIVISTA MADRE
 function displayBlocks() {
     const blocksList = document.getElementById('blocksList');
-    const emptyState = document.getElementById('emptyState');
     
     if (blocks.length === 0) {
-        blocksList.style.display = 'none';
-        emptyState.style.display = 'flex';
+        blocksList.innerHTML = '';
         return;
     }
     
     blocksList.style.display = 'flex';
-    emptyState.style.display = 'none';
     
     blocksList.innerHTML = blocks.map((block, index) => {
         const preview = getBlockPreview(block);
