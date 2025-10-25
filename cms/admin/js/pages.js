@@ -25,16 +25,19 @@ async function loadChildPage() {
         
         console.log('📄 Pagina figlia caricata:', childPage);
         console.log('🔗 parentMagazineId:', childPage.parentMagazineId);
+        console.log('🔗 parentMagazine object:', childPage.parentMagazine);
         
-        // Carica info rivista madre
-        if (childPage.parentMagazineId) {
-            console.log('📚 Carico rivista madre con ID:', childPage.parentMagazineId);
-            const magResponse = await apiRequest(`/admin/magazines/${childPage.parentMagazineId}`);
+        // Carica info rivista madre - supporta sia parentMagazineId che parentMagazine._id
+        const magazineId = childPage.parentMagazineId || (childPage.parentMagazine && childPage.parentMagazine._id);
+        
+        if (magazineId) {
+            console.log('📚 Carico rivista madre con ID:', magazineId);
+            const magResponse = await apiRequest(`/admin/magazines/${magazineId}`);
             parentMagazine = magResponse.data;
             console.log('✅ Rivista madre caricata:', parentMagazine);
             console.log('📦 Blocchi disponibili:', parentMagazine.blocks ? parentMagazine.blocks.length : 0);
         } else {
-            console.error('❌ childPage.parentMagazineId è undefined/null!');
+            console.error('❌ Nessun ID rivista madre trovato!');
         }
         
         // Aggiorna header
@@ -189,8 +192,9 @@ async function saveBlocksOrder() {
 }
 
 function goBackToMagazine() {
-    if (childPage && childPage.parentMagazineId) {
-        window.location.href = `blocks.html?magazine=${childPage.parentMagazineId}`;
+    const magazineId = childPage && (childPage.parentMagazineId || (childPage.parentMagazine && childPage.parentMagazine._id));
+    if (magazineId) {
+        window.location.href = `blocks.html?magazine=${magazineId}`;
     } else {
         window.location.href = 'magazines.html';
     }
