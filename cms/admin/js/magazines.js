@@ -154,16 +154,16 @@ function displayMagazines(filteredMagazines = null) {
             : `<div class="compact-avatar">📖</div>`;
         
         // Icona rivista moderna con gradiente
-        const magazineIconHTML = `
-            <div class="block-icon-badge" style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);width:48px;height:48px;border-radius:12px;flex-shrink:0;">
+        const magazineIconHTML = coverImage
+            ? `<img src="${coverImage}" alt="${magazine.name}" style="width:48px;height:48px;border-radius:12px;object-fit:cover;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,0.10);">`
+            : `<div class="block-icon-badge" style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);width:48px;height:48px;border-radius:12px;flex-shrink:0;">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="4" y="4" width="16" height="16" rx="2" stroke="white" stroke-width="2"/>
                     <path d="M4 8H20" stroke="white" stroke-width="2"/>
                     <path d="M8 4V20" stroke="white" stroke-width="2"/>
                     <circle cx="14" cy="14" r="2" fill="white"/>
                 </svg>
-            </div>
-        `;
+            </div>`;
         
         return `
         <div class="block-card-modern magazine-card-item" data-id="${magazine._id}" style="margin-bottom:20px;">

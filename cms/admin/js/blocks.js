@@ -185,7 +185,7 @@ function getBlockIcon(type) {
     const iconConfigs = {
         cover: {
             gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            svg: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="18" height="18" rx="2" stroke="white" stroke-width="1.5"/><path d="M3 9H21" stroke="white" stroke-width="1.5"/><path d="M9 9V21" stroke="white" stroke-width="1.5"/></svg>'
+            svg: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="16" height="16" rx="2" stroke="white" stroke-width="2"/><path d="M4 8H20" stroke="white" stroke-width="2"/><path d="M8 4V20" stroke="white" stroke-width="2"/><circle cx="14" cy="14" r="2" fill="white"/></svg>'
         },
         fluid: {
             gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
