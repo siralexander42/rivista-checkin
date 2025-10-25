@@ -178,8 +178,8 @@ function displayMagazines(filteredMagazines = null) {
                     <button class="btn btn-sm btn-primary" onclick="editBlocks('${magazine._id}')" title="Modifica Blocchi">
                         ✏️ Modifica
                     </button>
-                    <button class="btn btn-sm btn-info" onclick="manageChildPages('${magazine._id}')" title="Pagine Figlie">
-                        📄 Pagine
+                    <button class="btn btn-sm btn-info" onclick="toggleChildPages('${magazine._id}')" title="Pagine Figlie">
+                        📄 Pagine <span class="toggle-icon" id="toggle-${magazine._id}">▼</span>
                     </button>
                     ${magazine.status === 'published' ? `
                     <button class="btn btn-sm btn-success" onclick="window.open('/${magazine.slug}', '_blank')" title="Apri Rivista">
@@ -199,8 +199,187 @@ function displayMagazines(filteredMagazines = null) {
                 </div>
                 </div>
             </div>
+            
+            <!-- Blocco Collassabile Pagine Figlie -->
+            <div class="child-pages-collapse" id="child-pages-${magazine._id}" style="display: none;">
+                <div class="child-pages-collapse-header">
+                    <h4>📄 Pagine Figlie</h4>
+                    <button class="btn btn-sm btn-primary" onclick="showCreateChildPageInline('${magazine._id}')">
+                        ➕ Nuova Pagina
+                    </button>
+                </div>
+                <div class="child-pages-collapse-list" id="child-list-${magazine._id}">
+                    <div class="loading-inline">Caricamento...</div>
+                </div>
+            </div>
         </div>
     `}).join('');
+}
+
+// Toggle collassa/espandi pagine figlie
+async function toggleChildPages(magazineId) {
+    const collapseDiv = document.getElementById(`child-pages-${magazineId}`);
+    const toggleIcon = document.getElementById(`toggle-${magazineId}`);
+    const listDiv = document.getElementById(`child-list-${magazineId}`);
+    
+    if (collapseDiv.style.display === 'none') {
+        // Espandi
+        collapseDiv.style.display = 'block';
+        toggleIcon.textContent = '▲';
+        
+        // Carica pagine figlie
+        try {
+            const response = await apiRequest(`/admin/magazines/${magazineId}/child-pages`);
+            const childPages = response.data;
+            
+            if (childPages.length === 0) {
+                listDiv.innerHTML = `
+                    <div class="empty-state-inline">
+                        <p>📄 Nessuna pagina figlia ancora</p>
+                        <button class="btn btn-sm btn-primary" onclick="showCreateChildPageInline('${magazineId}')">
+                            Crea la prima pagina
+                        </button>
+                    </div>
+                `;
+            } else {
+                listDiv.innerHTML = childPages.map(page => `
+                    <div class="child-page-inline-item">
+                        <div class="child-page-inline-info">
+                            <h5>${page.name}</h5>
+                            <div class="child-page-inline-meta">
+                                <span class="badge badge-${page.status === 'published' ? 'success' : page.status === 'draft' ? 'warning' : 'secondary'}">
+                                    ${page.status === 'published' ? 'Pubblicato' : page.status === 'draft' ? 'Bozza' : 'Archiviato'}
+                                </span>
+                                <span>/${page.slug}</span>
+                                <span>${page.blocks?.length || 0} blocchi</span>
+                            </div>
+                        </div>
+                        <div class="child-page-inline-actions">
+                            ${page.status === 'published' ? `
+                                <button class="btn btn-sm btn-secondary" onclick="window.open('${getChildPageUrl(magazineId, page.slug)}', '_blank')" title="Apri">
+                                    🔗
+                                </button>
+                            ` : ''}
+                            <button class="btn btn-sm btn-primary" onclick="editChildPage('${page._id}')" title="Modifica">
+                                ✏️
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteChildPageInline('${page._id}', '${page.name}', '${magazineId}')" title="Elimina">
+                                🗑️
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        } catch (error) {
+            console.error('Errore caricamento pagine figlie:', error);
+            listDiv.innerHTML = '<div class="error-inline">Errore nel caricamento</div>';
+        }
+    } else {
+        // Collassa
+        collapseDiv.style.display = 'none';
+        toggleIcon.textContent = '▼';
+    }
+}
+
+// Mostra form creazione inline
+function showCreateChildPageInline(magazineId) {
+    const listDiv = document.getElementById(`child-list-${magazineId}`);
+    
+    listDiv.innerHTML = `
+        <div class="child-page-inline-form">
+            <h5>Nuova Pagina Figlia</h5>
+            <form onsubmit="createChildPageInline(event, '${magazineId}')">
+                <div class="form-group-inline">
+                    <label>Nome *</label>
+                    <input type="text" id="inline-name-${magazineId}" required placeholder="es. Speciale Carnevale Venezia">
+                </div>
+                <div class="form-group-inline">
+                    <label>URL (slug) *</label>
+                    <input type="text" id="inline-slug-${magazineId}" required placeholder="es. speciale-carnevale-venezia" pattern="[a-z0-9-]+">
+                </div>
+                <div class="form-group-inline">
+                    <label>Meta Description</label>
+                    <textarea id="inline-meta-${magazineId}" rows="2" maxlength="160" placeholder="Descrizione SEO (max 160 caratteri)"></textarea>
+                </div>
+                <div class="form-actions-inline">
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="cancelCreateInline('${magazineId}')">
+                        Annulla
+                    </button>
+                    <button type="submit" class="btn btn-sm btn-primary">
+                        ✅ Crea
+                    </button>
+                </div>
+            </form>
+        </div>
+    `;
+    
+    // Auto-slug
+    document.getElementById(`inline-name-${magazineId}`).addEventListener('input', (e) => {
+        const slugInput = document.getElementById(`inline-slug-${magazineId}`);
+        if (!slugInput.dataset.manuallyEdited) {
+            slugInput.value = generateSlug(e.target.value);
+        }
+    });
+    
+    document.getElementById(`inline-slug-${magazineId}`).addEventListener('input', () => {
+        document.getElementById(`inline-slug-${magazineId}`).dataset.manuallyEdited = 'true';
+    });
+}
+
+// Crea pagina inline
+async function createChildPageInline(e, magazineId) {
+    e.preventDefault();
+    
+    const data = {
+        name: document.getElementById(`inline-name-${magazineId}`).value,
+        slug: document.getElementById(`inline-slug-${magazineId}`).value,
+        metaDescription: document.getElementById(`inline-meta-${magazineId}`).value,
+        status: 'draft'
+    };
+    
+    try {
+        await apiRequest(`/admin/magazines/${magazineId}/child-pages`, {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+        
+        alert('✅ Pagina creata con successo!');
+        
+        // Ricarica lista
+        toggleChildPages(magazineId); // Chiudi
+        setTimeout(() => toggleChildPages(magazineId), 100); // Riapri e ricarica
+    } catch (error) {
+        console.error('Errore creazione:', error);
+        alert('❌ Errore: ' + error.message);
+    }
+}
+
+// Annulla creazione inline
+async function cancelCreateInline(magazineId) {
+    toggleChildPages(magazineId); // Chiudi
+    setTimeout(() => toggleChildPages(magazineId), 100); // Riapri e ricarica
+}
+
+// Elimina pagina inline
+async function deleteChildPageInline(pageId, pageName, magazineId) {
+    if (!confirm(`Sei sicuro di voler eliminare "${pageName}"?`)) {
+        return;
+    }
+    
+    try {
+        await apiRequest(`/admin/child-pages/${pageId}`, {
+            method: 'DELETE'
+        });
+        
+        alert('✅ Pagina eliminata!');
+        
+        // Ricarica lista
+        toggleChildPages(magazineId); // Chiudi
+        setTimeout(() => toggleChildPages(magazineId), 100); // Riapri e ricarica
+    } catch (error) {
+        console.error('Errore eliminazione:', error);
+        alert('❌ Errore: ' + error.message);
+    }
 }
 
 // Filtra riviste
