@@ -111,40 +111,50 @@
 /* Specifiche child-page-card */
 .child-pages-block-card {
     margin-bottom: 32px;
-    box-shadow: var(--shadow-md);
-    border-radius: var(--radius-lg);
-    border: 1.5px solid var(--border-light);
-    background: var(--bg-white);
+    background: transparent;
     padding: 0;
+    border: none;
+    box-shadow: none;
 }
+
+.child-pages-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border-light);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.child-pages-header:hover {
+    border-bottom-color: var(--primary);
+}
+
+.child-pages-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.child-pages-body {
+    padding: 20px 0;
+}
+
 .child-page-card {
     margin-bottom: 16px;
 }
+
 .child-page-card .block-card-header {
     padding: 18px 24px;
 }
+
 .child-page-card .block-icon-badge {
     width: 40px;
     height: 40px;
     border-radius: 10px;
 }
-.child-pages-block-card .block-card-header {
-    padding: 22px 32px 18px 32px;
-    border-bottom: 1.5px solid var(--border-light);
-}
-.child-pages-block-card .block-card-right .btn-primary {
-    font-size: 14px;
-    padding: 8px 14px;
-    height: 38px;
-    border-radius: 10px;
-    gap: 6px;
-}
-.child-pages-block-card .btn-icon-expand {
-    margin-left: 8px;
-}
-.child-pages-block-card .block-card-body {
-    padding: 18px 32px 18px 32px;
-}
+
 /* ============================================
    CHECK-IN CMS - PROFESSIONAL ADMIN SYSTEM
    Version: 1.0.1 - Updated 22 Oct 2025

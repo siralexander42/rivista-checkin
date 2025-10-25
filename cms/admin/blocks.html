@@ -123,30 +123,33 @@
                 
                 <!-- Blocco Collassabile Pagine Figlie -->
                 <div class="child-pages-section-blocks">
-                    <div class="block-card-modern child-pages-block-card">
-                        <div class="block-card-header" onclick="toggleChildPagesInBlocks()">
-                            <div class="block-card-left">
-                                <div class="block-icon-badge" style="background:linear-gradient(135deg,#3C3D8F 0%,#2A2B5F 100%);">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="18" height="18" rx="2" stroke="white" stroke-width="1.5"/><path d="M3 9H21" stroke="white" stroke-width="1.5"/><path d="M9 9V21" stroke="white" stroke-width="1.5"/></svg>
-                                </div>
-                                <div class="block-card-info">
-                                    <div class="block-card-title-row">
-                                        <span class="block-card-type">Pagine Figlie</span>
-                                    </div>
-                                    <div class="block-card-meta">Gestisci le pagine speciali collegate a questa rivista</div>
+                    <div class="child-pages-block-card">
+                        <div class="child-pages-header" onclick="toggleChildPagesInBlocks()">
+                            <div class="child-pages-header-left">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="color: var(--primary);">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M3 9H21" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M9 9V21" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                <div>
+                                    <span style="font-weight: 600; font-size: 15px; color: var(--text-dark);">Pagine Figlie</span>
+                                    <div style="font-size: 12px; color: var(--text-light); margin-top: 2px;">Gestisci le pagine speciali collegate a questa rivista</div>
                                 </div>
                             </div>
-                            <div class="block-card-right">
-                                <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); showCreateChildPageInBlocks()" style="gap:6px;min-width:0;padding:8px 14px;">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 5V19M5 12H19" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                    Nuova Pagina Figlia
-                                </button>
-                                <button class="btn-icon-modern btn-icon-expand" title="Espandi/Comprimi">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                </button>
-                            </div>
+                            <button class="btn-icon-modern btn-icon-expand" title="Espandi/Comprimi" style="color: var(--primary);">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
                         </div>
-                        <div class="block-card-body" id="child-pages-collapse-blocks" style="display:none;">
+                        <div class="child-pages-body" id="child-pages-collapse-blocks" style="display:none;">
+                            <div style="display: flex; justify-content: flex-end; margin-bottom: 12px;">
+                                <button class="btn-icon-modern" onclick="showCreateChildPageInBlocks()" title="Nuova Pagina Figlia" style="width: 32px; height: 32px; background: var(--primary); color: white; border-radius: 50%;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </div>
                             <div class="child-pages-collapse-list" id="child-list-blocks">
                                 <div class="loading-inline">Caricamento...</div>
                             </div>
