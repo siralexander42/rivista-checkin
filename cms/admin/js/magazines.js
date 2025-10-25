@@ -153,63 +153,75 @@ function displayMagazines(filteredMagazines = null) {
             ? `<img src="${coverImage}" alt="${magazine.name}" class="compact-thumbnail">`
             : `<div class="compact-avatar">📖</div>`;
         
+        // Icona rivista moderna con gradiente
+        const magazineIconHTML = `
+            <div class="block-icon-badge" style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);width:48px;height:48px;border-radius:12px;flex-shrink:0;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="4" y="4" width="16" height="16" rx="2" stroke="white" stroke-width="2"/>
+                    <path d="M4 8H20" stroke="white" stroke-width="2"/>
+                    <path d="M8 4V20" stroke="white" stroke-width="2"/>
+                    <circle cx="14" cy="14" r="2" fill="white"/>
+                </svg>
+            </div>
+        `;
+        
         return `
-        <div class="compact-card" data-id="${magazine._id}">
-            ${thumbnailHTML}
-            
-            <div class="compact-content">
-                <div class="compact-main">
-                    <div class="compact-title">
-                        ${magazine.name}
-                        ${magazine.featured ? '<span style="color: #f59e0b;">⭐</span>' : ''}
-                    </div>
-                    <div class="compact-details">
-                        <span>📅 ${magazine.edition}</span>
-                        <span>📊 ${magazine.blocks?.length || 0} blocchi</span>
-                        <span>👁️ ${magazine.views || 0} visite</span>
+        <div class="block-card-modern magazine-card-item" data-id="${magazine._id}" style="margin-bottom:20px;">
+            <div class="block-card-header">
+                <div class="block-card-left">
+                    ${magazineIconHTML}
+                    
+                    <div class="block-card-info">
+                        <div class="block-card-title-row">
+                            <span class="block-card-type">${magazine.name}</span>
+                            ${magazine.featured ? '<span style="color:#f59e0b;font-size:18px;margin-left:8px;">⭐</span>' : ''}
+                            <span class="block-status-badge ${magazine.status === 'published' ? 'visible' : 'hidden'}">
+                                ${magazine.status === 'published' ? 'PUBBLICATA' : magazine.status === 'draft' ? 'BOZZA' : 'ARCHIVIATA'}
+                            </span>
+                        </div>
+                        <div class="block-card-meta">
+                            ${magazine.edition} • ${magazine.blocks?.length || 0} blocchi • ${magazine.views || 0} visite
+                        </div>
                     </div>
                 </div>
                 
-                <div class="compact-meta">
-                    <span class="compact-badge ${statusClass}">${statusLabel}</span>
-                </div>
-                
-                <div class="compact-actions">
-                    <button class="btn btn-sm btn-primary" onclick="editBlocks('${magazine._id}')" title="Modifica Blocchi">
-                        ✏️ Modifica
-                    </button>
-                    <button class="btn btn-sm btn-info" onclick="toggleChildPages('${magazine._id}')" title="Pagine Figlie">
-                        📄 Pagine <span class="toggle-icon" id="toggle-${magazine._id}">▼</span>
-                    </button>
+                <div class="block-card-right">
                     ${magazine.status === 'published' ? `
-                    <button class="btn btn-sm btn-success" onclick="window.open('/${magazine.slug}', '_blank')" title="Apri Rivista">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
-                            <path d="M18 13v6a2 2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <button class="btn-icon-modern btn-icon-preview" onclick="window.open('/${magazine.slug}', '_blank')" title="Apri Rivista">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             <path d="M15 3h6v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             <path d="M10 14L21 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                     </button>
-                    <button class="btn btn-sm btn-info" onclick="openStatsModal('${magazine._id}', '${magazine.name.replace(/'/g, "\\'")}', ${magazine.views || 0}, ${magazine.blocks?.length || 0})" title="Statistiche">
-                        📊
+                    <button class="btn-icon-modern btn-icon-preview" onclick="openStatsModal('${magazine._id}', '${magazine.name.replace(/'/g, "\\'")}', ${magazine.views || 0}, ${magazine.blocks?.length || 0})" title="Statistiche">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 3v18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M18 17V9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M13 17v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M8 17v-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
                     </button>
                     ` : ''}
-                    <button class="btn btn-sm btn-secondary" onclick="editMagazine('${magazine._id}')" title="Impostazioni">
-                        ⚙️
+                    <button class="btn-icon-modern btn-icon-edit" onclick="editBlocks('${magazine._id}')" title="Modifica Blocchi">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M18.5 2.50001C18.8978 2.10219 19.4374 1.87869 20 1.87869C20.5626 1.87869 21.1022 2.10219 21.5 2.50001C21.8978 2.89784 22.1213 3.43741 22.1213 4.00001C22.1213 4.56262 21.8978 5.10219 21.5 5.50001L12 15L8 16L9 12L18.5 2.50001Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
                     </button>
-                </div>
-                </div>
-            </div>
-            
-            <!-- Blocco Collassabile Pagine Figlie -->
-            <div class="child-pages-collapse" id="child-pages-${magazine._id}" style="display: none;">
-                <div class="child-pages-collapse-header">
-                    <h4>📄 Pagine Figlie</h4>
-                    <button class="btn btn-sm btn-primary" onclick="showCreateChildPageInline('${magazine._id}')">
-                        ➕ Nuova Pagina
+                    <button class="btn-icon-modern" onclick="openChildPagesModal('${magazine._id}', '${magazine.name.replace(/'/g, "\\'")}')" title="Pagine Figlie">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+                            <path d="M3 9H21" stroke="currentColor" stroke-width="2"/>
+                            <path d="M9 9V21" stroke="currentColor" stroke-width="2"/>
+                        </svg>
                     </button>
-                </div>
-                <div class="child-pages-collapse-list" id="child-list-${magazine._id}">
-                    <div class="loading-inline">Caricamento...</div>
+                    <button class="btn-icon-modern" onclick="editMagazine('${magazine._id}')" title="Impostazioni">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                            <path d="M12 1v6m0 6v6m9.66-12.66l-4.24 4.24M6.58 17.42l-4.24 4.24M23 12h-6m-6 0H1m20.66 9.66l-4.24-4.24M6.58 6.58L2.34 2.34" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
