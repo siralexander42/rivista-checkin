@@ -902,15 +902,24 @@
                 const draggedId = draggedElement.dataset.id;
                 const targetId = this.dataset.id;
 
-                // Trova gli indici
-                const draggedIndex = currentSidebarOrder.findIndex(item => item.id === draggedId);
-                const targetIndex = currentSidebarOrder.findIndex(item => item.id === targetId);
+                // Trova gli indici nell'array ordinato
+                const sorted = [...currentSidebarOrder].sort((a, b) => a.order - b.order);
+                const draggedIndex = sorted.findIndex(item => item.id === draggedId);
+                const targetIndex = sorted.findIndex(item => item.id === targetId);
 
                 if (draggedIndex !== -1 && targetIndex !== -1) {
-                    // Scambia le posizioni
-                    const temp = currentSidebarOrder[draggedIndex].order;
-                    currentSidebarOrder[draggedIndex].order = currentSidebarOrder[targetIndex].order;
-                    currentSidebarOrder[targetIndex].order = temp;
+                    // Rimuovi l'elemento trascinato
+                    const [draggedItem] = sorted.splice(draggedIndex, 1);
+                    // Inseriscilo nella nuova posizione
+                    sorted.splice(targetIndex, 0, draggedItem);
+                    
+                    // Riassegna gli order in base alla nuova posizione
+                    sorted.forEach((item, idx) => {
+                        const originalItem = currentSidebarOrder.find(i => i.id === item.id);
+                        if (originalItem) {
+                            originalItem.order = idx;
+                        }
+                    });
 
                     // Salva e re-renderizza
                     saveSidebarOrder();
@@ -1089,15 +1098,24 @@
                 const draggedId = draggedDashboardElement.dataset.id;
                 const targetId = this.dataset.id;
 
-                // Trova gli indici
-                const draggedIndex = currentDashboardOrder.findIndex(item => item.id === draggedId);
-                const targetIndex = currentDashboardOrder.findIndex(item => item.id === targetId);
+                // Trova gli indici nell'array ordinato
+                const sorted = [...currentDashboardOrder].sort((a, b) => a.order - b.order);
+                const draggedIndex = sorted.findIndex(item => item.id === draggedId);
+                const targetIndex = sorted.findIndex(item => item.id === targetId);
 
                 if (draggedIndex !== -1 && targetIndex !== -1) {
-                    // Scambia le posizioni
-                    const temp = currentDashboardOrder[draggedIndex].order;
-                    currentDashboardOrder[draggedIndex].order = currentDashboardOrder[targetIndex].order;
-                    currentDashboardOrder[targetIndex].order = temp;
+                    // Rimuovi l'elemento trascinato
+                    const [draggedItem] = sorted.splice(draggedIndex, 1);
+                    // Inseriscilo nella nuova posizione
+                    sorted.splice(targetIndex, 0, draggedItem);
+                    
+                    // Riassegna gli order in base alla nuova posizione
+                    sorted.forEach((item, idx) => {
+                        const originalItem = currentDashboardOrder.find(i => i.id === item.id);
+                        if (originalItem) {
+                            originalItem.order = idx;
+                        }
+                    });
 
                     // Salva e re-renderizza
                     saveDashboardOrder();
