@@ -2622,3 +2622,200 @@ function initCarouselCardCropperByElement(inputElement) {
     }, 200);
 }
 
+// ============================================
+// GESTIONE PAGINE FIGLIE IN BLOCKS VIEW
+// ============================================
+
+// Toggle collassa/espandi pagine figlie
+async function toggleChildPagesInBlocks() {
+    const collapseDiv = document.getElementById('child-pages-collapse-blocks');
+    const toggleIcon = document.getElementById('toggle-child-pages-blocks');
+    const listDiv = document.getElementById('child-list-blocks');
+    
+    if (collapseDiv.style.display === 'none') {
+        // Espandi
+        collapseDiv.style.display = 'block';
+        toggleIcon.textContent = '▲';
+        
+        // Carica pagine figlie
+        try {
+            const response = await apiRequest(`/admin/magazines/${magazineId}/child-pages`);
+            const childPages = response.data;
+            
+            if (childPages.length === 0) {
+                listDiv.innerHTML = `
+                    <div class="empty-state-inline">
+                        <p>📄 Nessuna pagina figlia ancora</p>
+                        <button class="btn btn-sm btn-primary" onclick="showCreateChildPageInBlocks()">
+                            Crea la prima pagina speciale
+                        </button>
+                    </div>
+                `;
+            } else {
+                listDiv.innerHTML = childPages.map(page => `
+                    <div class="child-page-inline-item">
+                        <div class="child-page-inline-info">
+                            <h5>${page.name}</h5>
+                            <div class="child-page-inline-meta">
+                                <span class="badge badge-${page.status === 'published' ? 'success' : page.status === 'draft' ? 'warning' : 'secondary'}">
+                                    ${page.status === 'published' ? 'Pubblicato' : page.status === 'draft' ? 'Bozza' : 'Archiviato'}
+                                </span>
+                                <span>/${page.slug}</span>
+                                <span>${page.blocks?.length || 0} blocchi</span>
+                            </div>
+                        </div>
+                        <div class="child-page-inline-actions">
+                            ${page.status === 'published' ? `
+                                <button class="btn btn-sm btn-secondary" onclick="window.open(getChildPageUrlInBlocks('${page.slug}'), '_blank')" title="Apri">
+                                    🔗
+                                </button>
+                            ` : ''}
+                            <button class="btn btn-sm btn-primary" onclick="editChildPageInBlocks('${page._id}')" title="Modifica">
+                                ✏️
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteChildPageInBlocks('${page._id}', '${page.name}')" title="Elimina">
+                                🗑️
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        } catch (error) {
+            console.error('Errore caricamento pagine figlie:', error);
+            listDiv.innerHTML = '<div class="error-inline">Errore nel caricamento</div>';
+        }
+    } else {
+        // Collassa
+        collapseDiv.style.display = 'none';
+        toggleIcon.textContent = '▼';
+    }
+}
+
+// Mostra form creazione inline
+function showCreateChildPageInBlocks() {
+    const listDiv = document.getElementById('child-list-blocks');
+    
+    listDiv.innerHTML = `
+        <div class="child-page-inline-form">
+            <h5>Nuova Pagina Figlia</h5>
+            <form onsubmit="createChildPageInBlocks(event)">
+                <div class="form-group-inline">
+                    <label>Nome *</label>
+                    <input type="text" id="inline-name-blocks" required placeholder="es. Speciale Carnevale Venezia">
+                </div>
+                <div class="form-group-inline">
+                    <label>URL (slug) *</label>
+                    <input type="text" id="inline-slug-blocks" required placeholder="es. speciale-carnevale-venezia" pattern="[a-z0-9-]+">
+                </div>
+                <div class="form-group-inline">
+                    <label>Meta Description</label>
+                    <textarea id="inline-meta-blocks" rows="2" maxlength="160" placeholder="Descrizione SEO (max 160 caratteri)"></textarea>
+                </div>
+                <div class="form-actions-inline">
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="cancelCreateInBlocks()">
+                        Annulla
+                    </button>
+                    <button type="submit" class="btn btn-sm btn-primary">
+                        ✅ Crea
+                    </button>
+                </div>
+            </form>
+        </div>
+    `;
+    
+    // Auto-slug generation
+    document.getElementById('inline-name-blocks').addEventListener('input', (e) => {
+        const slugInput = document.getElementById('inline-slug-blocks');
+        if (!slugInput.dataset.manuallyEdited) {
+            slugInput.value = generateSlugSimple(e.target.value);
+        }
+    });
+    
+    document.getElementById('inline-slug-blocks').addEventListener('input', () => {
+        document.getElementById('inline-slug-blocks').dataset.manuallyEdited = 'true';
+    });
+}
+
+// Genera slug semplice
+function generateSlugSimple(text) {
+    return text
+        .toLowerCase()
+        .trim()
+        .replace(/[àáâãäå]/g, 'a')
+        .replace(/[èéêë]/g, 'e')
+        .replace(/[ìíîï]/g, 'i')
+        .replace(/[òóôõö]/g, 'o')
+        .replace(/[ùúûü]/g, 'u')
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+}
+
+// Crea pagina inline
+async function createChildPageInBlocks(e) {
+    e.preventDefault();
+    
+    const data = {
+        name: document.getElementById('inline-name-blocks').value,
+        slug: document.getElementById('inline-slug-blocks').value,
+        metaDescription: document.getElementById('inline-meta-blocks').value,
+        status: 'draft'
+    };
+    
+    try {
+        await apiRequest(`/admin/magazines/${magazineId}/child-pages`, {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+        
+        alert('✅ Pagina creata con successo!');
+        
+        // Ricarica lista
+        toggleChildPagesInBlocks(); // Chiudi
+        setTimeout(() => toggleChildPagesInBlocks(), 100); // Riapri e ricarica
+    } catch (error) {
+        console.error('Errore creazione:', error);
+        alert('❌ Errore: ' + error.message);
+    }
+}
+
+// Annulla creazione inline
+async function cancelCreateInBlocks() {
+    toggleChildPagesInBlocks(); // Chiudi
+    setTimeout(() => toggleChildPagesInBlocks(), 100); // Riapri e ricarica
+}
+
+// Modifica pagina figlia
+function editChildPageInBlocks(pageId) {
+    window.location.href = `page-blocks.html?page=${pageId}`;
+}
+
+// Elimina pagina inline
+async function deleteChildPageInBlocks(pageId, pageName) {
+    if (!confirm(`Sei sicuro di voler eliminare "${pageName}"?`)) {
+        return;
+    }
+    
+    try {
+        await apiRequest(`/admin/child-pages/${pageId}`, {
+            method: 'DELETE'
+        });
+        
+        alert('✅ Pagina eliminata!');
+        
+        // Ricarica lista
+        toggleChildPagesInBlocks(); // Chiudi
+        setTimeout(() => toggleChildPagesInBlocks(), 100); // Riapri e ricarica
+    } catch (error) {
+        console.error('Errore eliminazione:', error);
+        alert('❌ Errore: ' + error.message);
+    }
+}
+
+// Get URL pagina figlia
+function getChildPageUrlInBlocks(pageSlug) {
+    if (!magazine) return '#';
+    const baseUrl = window.location.origin;
+    return `${baseUrl}/${magazine.slug}/${pageSlug}`;
+}
+
