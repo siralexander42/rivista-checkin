@@ -211,7 +211,124 @@ function closeBlockTypesModal() {
 }
 
 // Aggiungi nuovo blocco (chiamato dal modal)
-// La funzione addBlock è definita in blocks.js e verrà usata dal modal
+async function addBlock(type) {
+    closeBlockTypesModal();
+    
+    // Apri il modal di edit per creare un nuovo blocco
+    currentBlock = null;
+    
+    // Reset form
+    document.getElementById('blockForm').reset();
+    document.getElementById('blockId').value = '';
+    document.getElementById('blockType').value = type;
+    document.getElementById('editModalTitle').textContent = `Nuovo Blocco ${getBlockTypeName(type)}`;
+    
+    // Genera form dinamico (funzione semplificata)
+    generateBlockForm(type);
+    
+    document.getElementById('editBlockModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+// Chiudi modal edit blocco
+function closeEditBlockModal() {
+    document.getElementById('editBlockModal').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// Ottieni nome leggibile del tipo blocco
+function getBlockTypeName(type) {
+    const names = {
+        'cover': 'Copertina',
+        'fluid': 'Fluid Block',
+        'gallery': 'Gallery Story',
+        'carousel': 'Carousel Storie'
+    };
+    return names[type] || type;
+}
+
+// Genera form base per il blocco
+function generateBlockForm(type, data = {}) {
+    const formContent = document.getElementById('blockFormContent');
+    
+    // Form semplificato per ora - da espandere con tutti i campi
+    formContent.innerHTML = `
+        <div class="form-section">
+            <div class="form-group-modern">
+                <label class="form-label-modern">Titolo *</label>
+                <input type="text" id="title" class="form-input-modern" required value="${data.title || ''}" placeholder="Inserisci il titolo">
+            </div>
+            
+            <div class="form-group-modern">
+                <label class="form-label-modern">Sottotitolo</label>
+                <input type="text" id="subtitle" class="form-input-modern" value="${data.subtitle || ''}" placeholder="Inserisci il sottotitolo">
+            </div>
+            
+            <div class="form-group-modern">
+                <label class="form-label-modern">Contenuto</label>
+                <textarea id="content" class="form-textarea-modern" rows="6" placeholder="Scrivi qui il contenuto...">${data.content || ''}</textarea>
+            </div>
+            
+            <div class="form-group-modern">
+                <label class="form-label-modern">
+                    <input type="checkbox" id="visible" ${data.visible !== false ? 'checked' : ''}> Blocco visibile
+                </label>
+            </div>
+        </div>
+    `;
+}
+
+let currentBlock = null;
+
+// Salva blocco (creazione o modifica)
+async function handleBlockFormSubmit(e) {
+    e.preventDefault();
+    
+    const blockData = {
+        type: document.getElementById('blockType').value,
+        title: document.getElementById('title')?.value || '',
+        subtitle: document.getElementById('subtitle')?.value || '',
+        content: document.getElementById('content')?.value || '',
+        visible: document.getElementById('visible')?.checked !== false,
+        order: blocks.length
+    };
+    
+    try {
+        const blockId = document.getElementById('blockId').value;
+        
+        if (blockId) {
+            // Modifica blocco esistente
+            await apiRequest(`/admin/child-pages/${pageId}/blocks/${blockId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(blockData)
+            });
+            alert('Blocco aggiornato!');
+        } else {
+            // Crea nuovo blocco
+            await apiRequest(`/admin/child-pages/${pageId}/blocks`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(blockData)
+            });
+            alert('Blocco creato!');
+        }
+        
+        closeEditBlockModal();
+        await loadChildPage();
+    } catch (error) {
+        console.error('Errore salvataggio blocco:', error);
+        alert('Errore nel salvare il blocco: ' + error.message);
+    }
+}
+
+// Aggiungi event listener al form
+document.addEventListener('DOMContentLoaded', () => {
+    const blockForm = document.getElementById('blockForm');
+    if (blockForm) {
+        blockForm.addEventListener('submit', handleBlockFormSubmit);
+    }
+});
 
 async function deleteBlock(blockId) {
     if (!confirm('Eliminare questo blocco?')) return;
