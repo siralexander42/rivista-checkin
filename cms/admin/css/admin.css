@@ -111,17 +111,23 @@
 /* Specifiche child-page-card */
 .child-pages-block-card {
     margin-bottom: 32px;
-    background: transparent;
-    padding: 0;
-    border: none;
-    box-shadow: none;
+    background: white;
+    padding: 24px 32px;
+    border: 1.5px solid var(--border-light);
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.child-pages-block-card:hover {
+    box-shadow: 0 4px 12px rgba(60, 61, 143, 0.08);
 }
 
 .child-pages-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 0;
+    padding-bottom: 16px;
     border-bottom: 1px solid var(--border-light);
     cursor: pointer;
     transition: all 0.3s ease;
@@ -131,14 +137,22 @@
     border-bottom-color: var(--primary);
 }
 
+.child-pages-header:hover .child-pages-header-left svg {
+    transform: scale(1.1);
+}
+
 .child-pages-header-left {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
+}
+
+.child-pages-header-left svg {
+    transition: transform 0.3s ease;
 }
 
 .child-pages-body {
-    padding: 20px 0;
+    padding-top: 20px;
 }
 
 .child-page-card {
