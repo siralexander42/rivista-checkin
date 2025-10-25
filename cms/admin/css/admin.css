@@ -2342,6 +2342,10 @@ tbody td {
     margin: 0;
 }
 
+.chart-header [data-lucide] {
+    stroke-width: 2;
+}
+
 .chart-trend {
     font-size: 13px;
     font-weight: 600;
@@ -2461,9 +2465,10 @@ tbody td {
 }
 
 .seo-icon {
-    width: 32px;
-    height: 32px;
+    width: 32px !important;
+    height: 32px !important;
     flex-shrink: 0;
+    stroke-width: 2;
 }
 
 .seo-metric-content {

@@ -65,28 +65,19 @@
             </div>
             
             <!-- Filtri -->
-            <div class="filters-bar" style="margin-bottom: 24px; padding: 16px; background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center;">
-                    <div style="flex: 1; min-width: 200px;">
-                        <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-dark);">Stato</label>
-                        <select id="statusFilter" class="form-control" onchange="filterAdvs()" style="width: 100%;">
-                            <option value="all">Tutti</option>
-                            <option value="active">Attivi</option>
-                            <option value="scheduled">Programmati</option>
-                            <option value="expired">Scaduti</option>
-                            <option value="draft">Bozze</option>
-                        </select>
-                    </div>
-                    <div style="flex: 1; min-width: 200px;">
-                        <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-dark);">Cliente</label>
-                        <select id="clientFilter" class="form-control" onchange="filterAdvs()" style="width: 100%;">
-                            <option value="all">Tutti i clienti</option>
-                        </select>
-                    </div>
-                    <div style="flex: 1; min-width: 200px;">
-                        <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-dark);">Cerca</label>
-                        <input type="text" id="searchAdv" class="form-control" placeholder="Cerca per titolo..." oninput="filterAdvs()" style="width: 100%;">
-                    </div>
+            <div class="section">
+                <div class="filters">
+                    <select id="statusFilter" onchange="filterAdvs()">
+                        <option value="all">Tutti gli stati</option>
+                        <option value="active">Attivi</option>
+                        <option value="scheduled">Programmati</option>
+                        <option value="expired">Scaduti</option>
+                        <option value="draft">Bozze</option>
+                    </select>
+                    <select id="clientFilter" onchange="filterAdvs()">
+                        <option value="all">Tutti i clienti</option>
+                    </select>
+                    <input type="search" id="searchAdv" placeholder="🔍 Cerca per titolo..." oninput="filterAdvs()">
                 </div>
             </div>
             
