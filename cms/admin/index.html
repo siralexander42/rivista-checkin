@@ -69,10 +69,10 @@
                 </div>
             </header>
             
-            <div class="content-body">
+            <div class="content-body" id="dashboardContent">
                 
                 <!-- Grafici Comparativi Ultimo Numero -->
-                <div class="section">
+                <div class="section dashboard-block" data-block-id="performance">
                     <h2>📊 Performance Ultimo Numero</h2>
                     <div class="charts-grid">
                         <!-- Visualizzazioni -->
@@ -120,7 +120,7 @@
                 </div>
                 
                 <!-- Valutazione SEO -->
-                <div class="section">
+                <div class="section dashboard-block" data-block-id="seo">
                     <h2>🔍 Valutazione SEO - Ultimo Numero</h2>
                     <div class="seo-grid" id="seoGrid">
                         <!-- Popolato via JS -->
@@ -128,7 +128,7 @@
                 </div>
                 
                 <!-- Recent Magazines -->
-                <div class="section">
+                <div class="section dashboard-block" data-block-id="riviste">
                     <div class="section-header">
                         <h2>📖 Riviste Recenti</h2>
                         <a href="magazines.html" class="btn btn-sm btn-secondary">Vedi Tutte</a>
@@ -518,6 +518,9 @@
             // Inizializza sidebar unificata
             initSidebar('dashboard');
             
+            // Riordina i blocchi della dashboard in base alle preferenze salvate
+            reorderDashboardBlocks();
+            
             // Animazione macchina da scrivere per il messaggio di benvenuto
             const user = getCurrentUser();
             if (user && user.name) {
@@ -535,6 +538,38 @@
             
             loadDashboard();
         });
+        
+        // Funzione per riordinare i blocchi della dashboard
+        function reorderDashboardBlocks() {
+            const savedOrder = localStorage.getItem('dashboardOrder');
+            if (!savedOrder) return;
+            
+            try {
+                const orderData = JSON.parse(savedOrder);
+                const container = document.getElementById('dashboardContent');
+                const blocks = Array.from(container.querySelectorAll('.dashboard-block'));
+                
+                console.log('📋 Riordinamento dashboard:', orderData);
+                
+                // Ordina i blocchi in base all'order salvato
+                const sortedOrder = orderData.sort((a, b) => a.order - b.order);
+                
+                // Rimuovi tutti i blocchi dal container
+                blocks.forEach(block => block.remove());
+                
+                // Reinserisci i blocchi nell'ordine corretto
+                sortedOrder.forEach(item => {
+                    const block = blocks.find(b => b.dataset.blockId === item.id);
+                    if (block) {
+                        container.appendChild(block);
+                    }
+                });
+                
+                console.log('✅ Dashboard riordinata');
+            } catch (e) {
+                console.error('❌ Errore riordinamento dashboard:', e);
+            }
+        }
     </script>
     
     <script>

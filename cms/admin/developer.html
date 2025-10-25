@@ -1096,10 +1096,15 @@
                 const draggedId = draggedDashboardElement.dataset.id;
                 const targetId = this.dataset.id;
 
+                console.log('🎯 Dashboard Drop:', { draggedId, targetId });
+
                 // Crea array ordinato
                 const sorted = [...currentDashboardOrder].sort((a, b) => a.order - b.order);
                 const draggedIndex = sorted.findIndex(item => item.id === draggedId);
                 const targetIndex = sorted.findIndex(item => item.id === targetId);
+
+                console.log('📊 Indici:', { draggedIndex, targetIndex });
+                console.log('📋 Before:', sorted.map(i => i.id));
 
                 if (draggedIndex !== -1 && targetIndex !== -1) {
                     // Rimuovi l'elemento trascinato
@@ -1107,11 +1112,15 @@
                     // Inseriscilo nella nuova posizione
                     sorted.splice(targetIndex, 0, draggedItem);
                     
+                    console.log('📋 After:', sorted.map(i => i.id));
+                    
                     // Riassegna gli order e aggiorna l'array principale
                     currentDashboardOrder = sorted.map((item, idx) => ({
                         ...item,
                         order: idx
                     }));
+
+                    console.log('💾 Saving:', currentDashboardOrder);
 
                     // Salva e re-renderizza
                     saveDashboardOrder();
