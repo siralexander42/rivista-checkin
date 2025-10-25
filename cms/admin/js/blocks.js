@@ -2635,51 +2635,16 @@ async function toggleChildPagesInBlocks() {
     if (collapseDiv.style.display === 'none') {
         // Espandi
         collapseDiv.style.display = 'block';
-        toggleIcon.textContent = '▲';
+        const card = document.querySelector('.child-pages-block-card');
+        const expandBtn = card?.querySelector('.btn-icon-expand');
+        if (card) card.classList.add('expanded');
+        if (expandBtn) expandBtn.style.transform = 'rotate(180deg)';
         
         // Carica pagine figlie
         try {
             const response = await apiRequest(`/admin/magazines/${magazineId}/child-pages`);
             const childPages = response.data;
-            
-            if (childPages.length === 0) {
-                listDiv.innerHTML = `
-                    <div class="empty-state-inline">
-                        <p>📄 Nessuna pagina figlia ancora</p>
-                        <button class="btn btn-sm btn-primary" onclick="showCreateChildPageInBlocks()">
-                            Crea la prima pagina speciale
-                        </button>
-                    </div>
-                `;
-            } else {
-                listDiv.innerHTML = childPages.map(page => `
-                    <div class="child-page-inline-item">
-                        <div class="child-page-inline-info">
-                            <h5>${page.name}</h5>
-                            <div class="child-page-inline-meta">
-                                <span class="badge badge-${page.status === 'published' ? 'success' : page.status === 'draft' ? 'warning' : 'secondary'}">
-                                    ${page.status === 'published' ? 'Pubblicato' : page.status === 'draft' ? 'Bozza' : 'Archiviato'}
-                                </span>
-                                <span>/${page.slug}</span>
-                                <span>${page.blocks?.length || 0} blocchi</span>
-                            </div>
-                        </div>
-                        <div class="child-page-inline-actions">
-                            ${page.status === 'published' ? `
-                                <button class="btn btn-sm btn-secondary" onclick="window.open(getChildPageUrlInBlocks('${page.slug}'), '_blank')" title="Apri">
-                                    🔗
-                                </button>
-                            ` : ''}
-                            <button class="btn btn-sm btn-primary" onclick="editChildPageInBlocks('${page._id}')" title="Modifica">
-                                ✏️
-                            </button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteChildPageInBlocks('${page._id}', '${page.name}')" title="Elimina">
-                                🗑️
-                            </button>
-                        </div>
-                    </div>
-                `).join('');
-            }
+            renderChildPagesInBlocks(childPages);
         } catch (error) {
             console.error('Errore caricamento pagine figlie:', error);
             listDiv.innerHTML = '<div class="error-inline">Errore nel caricamento</div>';
@@ -2687,7 +2652,10 @@ async function toggleChildPagesInBlocks() {
     } else {
         // Collassa
         collapseDiv.style.display = 'none';
-        toggleIcon.textContent = '▼';
+        const card = document.querySelector('.child-pages-block-card');
+        const expandBtn = card?.querySelector('.btn-icon-expand');
+        if (card) card.classList.remove('expanded');
+        if (expandBtn) expandBtn.style.transform = 'rotate(0deg)';
     }
 }
 
