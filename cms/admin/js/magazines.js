@@ -209,13 +209,6 @@ function displayMagazines(filteredMagazines = null) {
                             <path d="M18.5 2.50001C18.8978 2.10219 19.4374 1.87869 20 1.87869C20.5626 1.87869 21.1022 2.10219 21.5 2.50001C21.8978 2.89784 22.1213 3.43741 22.1213 4.00001C22.1213 4.56262 21.8978 5.10219 21.5 5.50001L12 15L8 16L9 12L18.5 2.50001Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                     </button>
-                    <button class="btn-icon-modern" onclick="openChildPagesModal('${magazine._id}', '${magazine.name.replace(/'/g, "\\'")}')" title="Pagine Figlie">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
-                            <path d="M3 9H21" stroke="currentColor" stroke-width="2"/>
-                            <path d="M9 9V21" stroke="currentColor" stroke-width="2"/>
-                        </svg>
-                    </button>
                     <button class="btn-icon-modern" onclick="editMagazine('${magazine._id}')" title="Impostazioni">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>

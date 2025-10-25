@@ -902,7 +902,7 @@
                 const draggedId = draggedElement.dataset.id;
                 const targetId = this.dataset.id;
 
-                // Trova gli indici nell'array ordinato
+                // Crea array ordinato
                 const sorted = [...currentSidebarOrder].sort((a, b) => a.order - b.order);
                 const draggedIndex = sorted.findIndex(item => item.id === draggedId);
                 const targetIndex = sorted.findIndex(item => item.id === targetId);
@@ -913,13 +913,11 @@
                     // Inseriscilo nella nuova posizione
                     sorted.splice(targetIndex, 0, draggedItem);
                     
-                    // Riassegna gli order in base alla nuova posizione
-                    sorted.forEach((item, idx) => {
-                        const originalItem = currentSidebarOrder.find(i => i.id === item.id);
-                        if (originalItem) {
-                            originalItem.order = idx;
-                        }
-                    });
+                    // Riassegna gli order e aggiorna l'array principale
+                    currentSidebarOrder = sorted.map((item, idx) => ({
+                        ...item,
+                        order: idx
+                    }));
 
                     // Salva e re-renderizza
                     saveSidebarOrder();
@@ -1098,7 +1096,7 @@
                 const draggedId = draggedDashboardElement.dataset.id;
                 const targetId = this.dataset.id;
 
-                // Trova gli indici nell'array ordinato
+                // Crea array ordinato
                 const sorted = [...currentDashboardOrder].sort((a, b) => a.order - b.order);
                 const draggedIndex = sorted.findIndex(item => item.id === draggedId);
                 const targetIndex = sorted.findIndex(item => item.id === targetId);
@@ -1109,13 +1107,11 @@
                     // Inseriscilo nella nuova posizione
                     sorted.splice(targetIndex, 0, draggedItem);
                     
-                    // Riassegna gli order in base alla nuova posizione
-                    sorted.forEach((item, idx) => {
-                        const originalItem = currentDashboardOrder.find(i => i.id === item.id);
-                        if (originalItem) {
-                            originalItem.order = idx;
-                        }
-                    });
+                    // Riassegna gli order e aggiorna l'array principale
+                    currentDashboardOrder = sorted.map((item, idx) => ({
+                        ...item,
+                        order: idx
+                    }));
 
                     // Salva e re-renderizza
                     saveDashboardOrder();
