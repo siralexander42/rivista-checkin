@@ -8,7 +8,17 @@ const path = require('path');
 require('dotenv').config();
 
 // Import Schema.org generator
-const schemaGenerator = require('./schema-generator');
+let schemaGenerator;
+try {
+    schemaGenerator = require('./schema-generator');
+    console.log('✅ Schema.org generator loaded successfully');
+} catch (error) {
+    console.error('⚠️  Schema.org generator not found, using fallback');
+    schemaGenerator = {
+        generateCompleteSchema: () => ({}),
+        generateSchemaTag: () => ''
+    };
+}
 
 const app = express();
 const PORT = process.env.PORT || 3001;
