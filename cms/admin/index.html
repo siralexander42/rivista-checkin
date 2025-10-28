@@ -207,11 +207,14 @@
     <script src="js/api.js?v=2.0"></script>
     <script src="js/sidebar.js?v=1.0"></script>
     <script>
-        // Dashboard Script v3.0 - Charts & SEO
+        // Dashboard Script v4.0 - Real Analytics
         async function loadDashboard() {
             try {
                 const response = await apiRequest('/admin/magazines');
                 const magazines = response.data;
+                
+                // Carica statistiche reali dal backend
+                const dashboardStats = await apiRequest('/analytics/dashboard');
                 
                 // Prendi le ultime 3 riviste pubblicate
                 const last3Published = magazines
@@ -219,8 +222,8 @@
                     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                     .slice(0, 3);
                 
-                // Genera dati fittizi per i grafici
-                renderCharts(last3Published);
+                // Genera grafici con dati reali
+                renderCharts(dashboardStats, magazines);
                 
                 // Genera valutazioni SEO fittizie
                 renderSEO(last3Published);
@@ -340,70 +343,71 @@
         }
         
         // Renderizza grafici comparativi
-        function renderCharts(magazines) {
-            if (magazines.length === 0) {
+        function renderCharts(dashboardStats, magazines) {
+            if (!dashboardStats || !dashboardStats.topPages || dashboardStats.topPages.length === 0) {
                 ['viewsChart', 'clicksChart', 'timeChart'].forEach(id => {
                     document.getElementById(id).innerHTML = '<p style="text-align: center; color: var(--text-light); padding: 20px;">Nessun dato disponibile</p>';
                 });
                 return;
             }
             
-            // Dati fittizi per visualizzazioni
-            const viewsData = magazines.map((mag, idx) => ({
-                label: mag.name,
-                value: Math.floor(Math.random() * 5000) + 1000,
-                percentage: 100 - (idx * 20)
-            }));
+            // Top 3 pagine per visualizzazioni
+            const topPages = dashboardStats.topPages.slice(0, 3);
+            const maxViews = topPages[0]?.views || 1;
             
-            // Dati fittizi per click
-            const clicksData = magazines.map((mag, idx) => ({
-                label: mag.name,
-                value: Math.floor(Math.random() * 500) + 100,
-                percentage: 100 - (idx * 15)
-            }));
-            
-            // Dati fittizi per tempo (in minuti)
-            const timeData = magazines.map((mag, idx) => ({
-                label: mag.name,
-                value: `${Math.floor(Math.random() * 10) + 3}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`,
-                percentage: 100 - (idx * 25)
-            }));
-            
-            // Renderizza visualizzazioni
-            document.getElementById('viewsChart').innerHTML = viewsData.map(item => `
-                <div class="chart-bar-item">
-                    <div class="chart-bar-label">${item.label.substring(0, 15)}...</div>
-                    <div class="chart-bar-wrapper">
-                        <div class="chart-bar-fill" style="width: ${item.percentage}%">
-                            <span class="chart-bar-value">${item.value.toLocaleString()}</span>
+            // Renderizza visualizzazioni (top pages)
+            document.getElementById('viewsChart').innerHTML = topPages.map(item => {
+                const percentage = (item.views / maxViews) * 100;
+                const pageName = item.path === '/' ? 'Homepage' : item.path.substring(0, 25);
+                return `
+                    <div class="chart-bar-item">
+                        <div class="chart-bar-label">${pageName}</div>
+                        <div class="chart-bar-wrapper">
+                            <div class="chart-bar-fill" style="width: ${percentage}%">
+                                <span class="chart-bar-value">${item.views.toLocaleString()} views</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
             
-            // Renderizza click
-            document.getElementById('clicksChart').innerHTML = clicksData.map(item => `
-                <div class="chart-bar-item">
-                    <div class="chart-bar-label">${item.label.substring(0, 15)}...</div>
-                    <div class="chart-bar-wrapper">
-                        <div class="chart-bar-fill" style="width: ${item.percentage}%">
-                            <span class="chart-bar-value">${item.value.toLocaleString()}</span>
+            // Renderizza device stats
+            const devices = dashboardStats.deviceStats || [];
+            const totalDevices = devices.reduce((sum, d) => sum + d.count, 0);
+            
+            document.getElementById('clicksChart').innerHTML = devices.slice(0, 3).map(item => {
+                const percentage = totalDevices > 0 ? (item.count / totalDevices) * 100 : 0;
+                return `
+                    <div class="chart-bar-item">
+                        <div class="chart-bar-label" style="text-transform: capitalize;">${item.device || 'Unknown'}</div>
+                        <div class="chart-bar-wrapper">
+                            <div class="chart-bar-fill" style="width: ${percentage}%">
+                                <span class="chart-bar-value">${Math.round(percentage)}%</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
             
-            // Renderizza tempo
-            document.getElementById('timeChart').innerHTML = timeData.map(item => `
-                <div class="chart-bar-item">
-                    <div class="chart-bar-label">${item.label.substring(0, 15)}...</div>
-                    <div class="chart-bar-wrapper">
-                        <div class="chart-bar-fill" style="width: ${item.percentage}%">
-                            <span class="chart-bar-value">${item.value}</span>
+            // Renderizza trend ultimi 7 giorni
+            const trend = dashboardStats.dailyTrend?.slice(-7) || [];
+            const maxTrendViews = Math.max(...trend.map(t => t.views || 0), 1);
+            
+            document.getElementById('timeChart').innerHTML = trend.map(item => {
+                const percentage = (item.views / maxTrendViews) * 100;
+                const date = new Date(item.date);
+                const dayLabel = date.toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric' });
+                return `
+                    <div class="chart-bar-item">
+                        <div class="chart-bar-label">${dayLabel}</div>
+                        <div class="chart-bar-wrapper">
+                            <div class="chart-bar-fill" style="width: ${percentage}%">
+                                <span class="chart-bar-value">${item.views} views</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
         
         // Renderizza valutazioni SEO

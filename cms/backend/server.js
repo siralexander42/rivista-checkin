@@ -20,6 +20,9 @@ try {
     };
 }
 
+// Import Analytics tracker
+const analytics = require('./analytics-tracker');
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -2765,6 +2768,53 @@ app.post('/api/admin/magazines/:id/generate-html', async (req, res) => {
         /* Magazine Generated CSS */
         ${inlineCSS}
     </style>
+    
+    <!-- 📊 Analytics Tracking Script -->
+    <script>
+        (function() {
+            // Tracking pageview
+            function trackPageview() {
+                const data = {
+                    url: window.location.href,
+                    path: window.location.pathname,
+                    magazineSlug: '${magazine.slug}',
+                    magazineId: '${magazine._id}',
+                    referrer: document.referrer,
+                    timestamp: new Date().toISOString()
+                };
+                
+                // Send to backend
+                fetch('/api/track/pageview', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                }).catch(err => console.error('Analytics error:', err));
+            }
+            
+            // Track on load
+            if (document.readyState === 'complete') {
+                trackPageview();
+            } else {
+                window.addEventListener('load', trackPageview);
+            }
+            
+            // Track events
+            window.trackEvent = function(eventName, eventData) {
+                fetch('/api/track/event', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        eventName,
+                        eventData,
+                        url: window.location.href,
+                        magazineSlug: '${magazine.slug}',
+                        magazineId: '${magazine._id}',
+                        timestamp: new Date().toISOString()
+                    })
+                }).catch(err => console.error('Event tracking error:', err));
+            };
+        })();
+    </script>
 </head>
 <body>
     ${showLoadingScreen ? `<!-- LOADING SCREEN -->
@@ -4059,6 +4109,163 @@ app.use((err, req, res, next) => {
         success: false,
         error: 'Errore interno del server' 
     });
+});
+
+// ============================================
+// 📊 ANALYTICS ENDPOINTS
+// ============================================
+
+// Track pageview (PUBLIC - no auth)
+app.post('/api/track/pageview', async (req, res) => {
+    try {
+        const { url, path, magazineSlug, magazineId, referrer } = req.body;
+        
+        const pageview = await analytics.trackPageview({
+            url,
+            path,
+            magazineSlug,
+            magazineId,
+            referrer,
+            userAgent: req.headers['user-agent'],
+            ip: req.ip || req.connection.remoteAddress
+        });
+        
+        // Generate/update session
+        const sessionId = req.cookies?.sessionId || `session_${Date.now()}_${Math.random()}`;
+        await analytics.trackSession(sessionId, {
+            ip: req.ip || req.connection.remoteAddress,
+            userAgent: req.headers['user-agent']
+        });
+        
+        res.json({ success: true, sessionId });
+    } catch (error) {
+        console.error('Track pageview error:', error);
+        res.json({ success: false }); // Non bloccare la pagina
+    }
+});
+
+// Track custom event (PUBLIC - no auth)
+app.post('/api/track/event', async (req, res) => {
+    try {
+        const { eventName, eventData, url, magazineSlug, magazineId, sessionId } = req.body;
+        
+        await analytics.trackEvent(eventName, {
+            eventData,
+            url,
+            magazineSlug,
+            magazineId,
+            sessionId
+        });
+        
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Track event error:', error);
+        res.json({ success: false });
+    }
+});
+
+// Get analytics stats (PROTECTED)
+app.get('/api/analytics/stats', authenticateToken, async (req, res) => {
+    try {
+        const { magazineId, startDate, endDate } = req.query;
+        
+        const filters = {};
+        if (magazineId) filters.magazineId = magazineId;
+        if (startDate) filters.startDate = startDate;
+        if (endDate) filters.endDate = endDate;
+        
+        const stats = await analytics.getPageviewStats(filters);
+        const topPages = await analytics.getTopPages(filters, 10);
+        const deviceStats = await analytics.getDeviceStats(filters);
+        const browserStats = await analytics.getBrowserStats(filters);
+        const dailyTrend = await analytics.getDailyTrend(filters, 30);
+        const topReferrers = await analytics.getTopReferrers(filters, 10);
+        
+        res.json({
+            stats,
+            topPages,
+            deviceStats,
+            browserStats,
+            dailyTrend,
+            topReferrers
+        });
+    } catch (error) {
+        console.error('Get analytics stats error:', error);
+        res.status(500).json({ error: 'Errore nel recupero delle statistiche' });
+    }
+});
+
+// Get pageviews for a specific magazine (PROTECTED)
+app.get('/api/analytics/magazine/:magazineId', authenticateToken, async (req, res) => {
+    try {
+        const { magazineId } = req.params;
+        const { startDate, endDate } = req.query;
+        
+        const filters = { magazineId };
+        if (startDate) filters.startDate = startDate;
+        if (endDate) filters.endDate = endDate;
+        
+        const stats = await analytics.getPageviewStats(filters);
+        const topPages = await analytics.getTopPages(filters, 5);
+        const dailyTrend = await analytics.getDailyTrend(filters, 7);
+        
+        res.json({
+            magazineId,
+            ...stats,
+            topPages,
+            dailyTrend
+        });
+    } catch (error) {
+        console.error('Get magazine analytics error:', error);
+        res.status(500).json({ error: 'Errore nel recupero delle statistiche' });
+    }
+});
+
+// Get dashboard overview stats (PROTECTED)
+app.get('/api/analytics/dashboard', authenticateToken, async (req, res) => {
+    try {
+        const today = new Date();
+        const last30Days = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+        const last7Days = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+        
+        // Stats ultimi 30 giorni
+        const stats30Days = await analytics.getPageviewStats({
+            startDate: last30Days,
+            endDate: today
+        });
+        
+        // Stats ultimi 7 giorni
+        const stats7Days = await analytics.getPageviewStats({
+            startDate: last7Days,
+            endDate: today
+        });
+        
+        // Trend giornaliero
+        const dailyTrend = await analytics.getDailyTrend({}, 30);
+        
+        // Top pages
+        const topPages = await analytics.getTopPages({
+            startDate: last30Days,
+            endDate: today
+        }, 5);
+        
+        // Device stats
+        const deviceStats = await analytics.getDeviceStats({
+            startDate: last30Days,
+            endDate: today
+        });
+        
+        res.json({
+            last30Days: stats30Days,
+            last7Days: stats7Days,
+            dailyTrend,
+            topPages,
+            deviceStats
+        });
+    } catch (error) {
+        console.error('Get dashboard stats error:', error);
+        res.status(500).json({ error: 'Errore nel recupero delle statistiche dashboard' });
+    }
 });
 
 // ============================================

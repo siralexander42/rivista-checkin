@@ -322,35 +322,103 @@
                     </div>
                 </div>
 
-                <!-- Top Riviste -->
+                <!-- Top Pagine -->
                 <div class="table-container">
                     <div class="chart-header">
                         <h3>
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
                                 <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
                             </svg>
-                            Top Riviste per Visualizzazioni
+                            Top Pagine per Visualizzazioni
                         </h3>
-                        <p>Le riviste più visualizzate nel periodo selezionato</p>
+                        <p>Le pagine più visualizzate nel periodo selezionato</p>
                     </div>
-                    <table class="stats-table">
+                    <table class="stats-table" id="topPagesTable">
                         <thead>
                             <tr>
                                 <th>Posizione</th>
-                                <th>Rivista</th>
+                                <th>Pagina</th>
                                 <th>Visualizzazioni</th>
-                                <th>Tempo Medio</th>
-                                <th>Tendenza</th>
                             </tr>
                         </thead>
-                        <tbody id="topMagazines">
+                        <tbody>
                             <tr>
-                                <td colspan="5" style="text-align: center; padding: 40px; color: var(--text-light);">
-                                    Nessun dato disponibile
+                                <td colspan="3" style="text-align: center; padding: 40px; color: var(--text-light);">
+                                    Caricamento dati...
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+                
+                <!-- Top Referrer -->
+                <div class="table-container">
+                    <div class="chart-header">
+                        <h3>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
+                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Sorgenti di Traffico
+                        </h3>
+                        <p>Da dove arrivano i visitatori</p>
+                    </div>
+                    <table class="stats-table" id="referrersTable">
+                        <thead>
+                            <tr>
+                                <th>Posizione</th>
+                                <th>Sorgente</th>
+                                <th>Visite</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="3" style="text-align: center; padding: 40px; color: var(--text-light);">
+                                    Caricamento dati...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Stats Device e Browser -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 24px;">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
+                                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                                    <line x1="8" y1="21" x2="16" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    <line x1="12" y1="17" x2="12" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                                Dispositivi
+                            </h3>
+                            <p>Distribuzione per tipo di device</p>
+                        </div>
+                        <div id="deviceStatsContainer" style="padding: 12px 0;">
+                            <p style="text-align: center; color: var(--text-light); padding: 20px;">Caricamento dati...</p>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
+                                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+                                    <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2" fill="none"/>
+                                    <line x1="12" y1="2" x2="12" y2="8" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="12" y1="16" x2="12" y2="22" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="2" y1="12" x2="8" y2="12" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="16" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Browser
+                            </h3>
+                            <p>Browser più utilizzati</p>
+                        </div>
+                        <div id="browserStatsContainer" style="padding: 12px 0;">
+                            <p style="text-align: center; color: var(--text-light); padding: 20px;">Caricamento dati...</p>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -370,27 +438,174 @@
 
         async function loadStats() {
             try {
-                // TODO: Implementare caricamento statistiche reali dal backend
-                // Per ora mostriamo dati di esempio
-                document.getElementById('totalViews').textContent = '12,543';
-                document.getElementById('publishedMags').textContent = '24';
-                document.getElementById('activeUsers').textContent = '156';
-                document.getElementById('avgReadTime').textContent = '8.5 min';
+                // Ottieni periodo selezionato
+                const period = document.getElementById('periodFilter')?.value || '30';
+                const magazineId = document.getElementById('magazineFilter')?.value;
+                
+                // Calcola date in base al periodo
+                const endDate = new Date();
+                const startDate = new Date();
+                startDate.setDate(startDate.getDate() - parseInt(period));
+                
+                // Costruisci query params
+                const params = new URLSearchParams({
+                    startDate: startDate.toISOString(),
+                    endDate: endDate.toISOString()
+                });
+                
+                if (magazineId && magazineId !== 'all') {
+                    params.append('magazineId', magazineId);
+                }
+                
+                // Carica statistiche reali dal backend
+                const stats = await apiRequest(`/analytics/stats?${params.toString()}`);
+                
+                // Aggiorna cards statistiche
+                document.getElementById('totalViews').textContent = formatNumber(stats.stats.totalViews || 0);
+                document.getElementById('publishedMags').textContent = formatNumber(stats.topPages?.length || 0);
+                document.getElementById('activeUsers').textContent = formatNumber(stats.stats.uniqueVisitors || 0);
+                
+                // Calcola tempo medio di lettura (basato su durata sessioni)
+                const avgTime = stats.dailyTrend?.length > 0 
+                    ? calculateAvgReadTime(stats.dailyTrend) 
+                    : '0';
+                document.getElementById('avgReadTime').textContent = `${avgTime} min`;
+                
+                // Aggiorna tabella top pages
+                updateTopPagesTable(stats.topPages || []);
+                
+                // Aggiorna tabella referrer
+                updateReferrersTable(stats.topReferrers || []);
+                
+                // Aggiorna stats device
+                updateDeviceStats(stats.deviceStats || []);
+                
+                // Aggiorna stats browser
+                updateBrowserStats(stats.browserStats || []);
 
                 // Carica riviste per il filtro
                 const response = await apiRequest('/admin/magazines');
                 const magazines = response.magazines || [];
                 const select = document.getElementById('magazineFilter');
+                
+                // Pulisci select e ricostruisci
+                select.innerHTML = '<option value="all">Tutte le riviste</option>';
                 magazines.forEach(mag => {
                     const option = document.createElement('option');
                     option.value = mag._id;
                     option.textContent = mag.name;
+                    if (magazineId === mag._id) option.selected = true;
                     select.appendChild(option);
                 });
 
             } catch (error) {
                 console.error('Errore caricamento statistiche:', error);
+                // Mostra valori di fallback
+                document.getElementById('totalViews').textContent = '0';
+                document.getElementById('publishedMags').textContent = '0';
+                document.getElementById('activeUsers').textContent = '0';
+                document.getElementById('avgReadTime').textContent = '0 min';
             }
+        }
+        
+        function formatNumber(num) {
+            return new Intl.NumberFormat('it-IT').format(num);
+        }
+        
+        function calculateAvgReadTime(trend) {
+            if (!trend || trend.length === 0) return '0';
+            const totalViews = trend.reduce((sum, day) => sum + (day.views || 0), 0);
+            const avgSeconds = totalViews > 0 ? (totalViews * 180) / totalViews : 0; // Stima 3 minuti a vista
+            return Math.round(avgSeconds / 60);
+        }
+        
+        function updateTopPagesTable(pages) {
+            const tbody = document.querySelector('#topPagesTable tbody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            if (pages.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; padding: 20px; color: #999;">Nessun dato disponibile</td></tr>';
+                return;
+            }
+            
+            pages.forEach((page, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td><strong>${page.path || 'Pagina principale'}</strong></td>
+                    <td><span style="color: var(--primary);">${formatNumber(page.views || 0)} visualizzazioni</span></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        function updateReferrersTable(referrers) {
+            const tbody = document.querySelector('#referrersTable tbody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            if (referrers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; padding: 20px; color: #999;">Nessun dato disponibile</td></tr>';
+                return;
+            }
+            
+            referrers.forEach((ref, index) => {
+                const row = document.createElement('tr');
+                const referrerDomain = ref.referrer ? new URL(ref.referrer).hostname : 'Diretto';
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td><strong>${referrerDomain}</strong></td>
+                    <td><span style="color: var(--primary);">${formatNumber(ref.count || 0)} visite</span></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        function updateDeviceStats(devices) {
+            const container = document.getElementById('deviceStatsContainer');
+            if (!container) return;
+            
+            const total = devices.reduce((sum, d) => sum + (d.count || 0), 0);
+            
+            container.innerHTML = devices.map(device => {
+                const percentage = total > 0 ? Math.round((device.count / total) * 100) : 0;
+                return `
+                    <div style="margin-bottom: 12px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                            <span style="text-transform: capitalize;">${device.device || 'Unknown'}</span>
+                            <strong>${percentage}%</strong>
+                        </div>
+                        <div style="background: #f0f0f0; border-radius: 4px; height: 8px; overflow: hidden;">
+                            <div style="background: var(--primary); height: 100%; width: ${percentage}%;"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function updateBrowserStats(browsers) {
+            const container = document.getElementById('browserStatsContainer');
+            if (!container) return;
+            
+            const total = browsers.reduce((sum, b) => sum + (b.count || 0), 0);
+            
+            container.innerHTML = browsers.slice(0, 5).map(browser => {
+                const percentage = total > 0 ? Math.round((browser.count / total) * 100) : 0;
+                return `
+                    <div style="margin-bottom: 12px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                            <span>${browser.browser || 'Unknown'}</span>
+                            <strong>${percentage}%</strong>
+                        </div>
+                        <div style="background: #f0f0f0; border-radius: 4px; height: 8px; overflow: hidden;">
+                            <div style="background: var(--success); height: 100%; width: ${percentage}%;"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
         function exportStats() {
