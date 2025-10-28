@@ -4099,36 +4099,6 @@ app.get('/health', (req, res) => {
 });
 
 // ============================================
-// 404 Handler
-// ============================================
-
-app.use((req, res) => {
-    res.status(404).json({ 
-        success: false,
-        error: 'Endpoint non trovato' 
-    });
-});
-
-// ============================================
-// BLOCK TEMPLATES MANAGEMENT
-// ============================================
-
-const fsPromises = require('fs').promises;
-const pathModule = require('path');
-
-// ============================================
-// ERROR Handler
-// ============================================
-
-app.use((err, req, res, next) => {
-    console.error('Errore server:', err);
-    res.status(500).json({ 
-        success: false,
-        error: 'Errore interno del server' 
-    });
-});
-
-// ============================================
 // 📊 ANALYTICS ENDPOINTS
 // ============================================
 
@@ -4286,6 +4256,29 @@ app.get('/api/analytics/dashboard', authenticateToken, async (req, res) => {
         console.error('Get dashboard stats error:', error);
         res.status(500).json({ error: 'Errore nel recupero delle statistiche dashboard' });
     }
+});
+
+// ============================================
+// 404 Handler
+// ============================================
+
+app.use((req, res) => {
+    res.status(404).json({ 
+        success: false,
+        error: 'Endpoint non trovato' 
+    });
+});
+
+// ============================================
+// ERROR Handler
+// ============================================
+
+app.use((err, req, res, next) => {
+    console.error('Errore server:', err);
+    res.status(500).json({ 
+        success: false,
+        error: 'Errore interno del server' 
+    });
 });
 
 // ============================================
