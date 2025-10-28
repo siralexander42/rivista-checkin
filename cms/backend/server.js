@@ -20,8 +20,25 @@ try {
     };
 }
 
-// Import Analytics tracker
-const analytics = require('./analytics-tracker');
+// Import Analytics tracker with fallback
+let analytics;
+try {
+    analytics = require('./analytics-tracker');
+    console.log('✅ Analytics tracker loaded successfully');
+} catch (error) {
+    console.warn('⚠️ Analytics tracker not found, using fallback');
+    analytics = {
+        trackPageview: async () => ({}),
+        trackSession: async () => ({}),
+        trackEvent: async () => ({}),
+        getPageviewStats: async () => ({ total: 0, unique: 0 }),
+        getTopPages: async () => ([]),
+        getDeviceStats: async () => ([]),
+        getBrowserStats: async () => ([]),
+        getDailyTrend: async () => ([]),
+        getTopReferrers: async () => ([])
+    };
+}
 
 const app = express();
 const PORT = process.env.PORT || 3001;
