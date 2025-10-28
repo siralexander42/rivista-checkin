@@ -462,30 +462,32 @@
                 }
                 
                 // Carica statistiche reali dal backend
-                const stats = await apiRequest(`/analytics/stats?${params.toString()}`);
+                const data = await apiRequest(`/analytics/stats?${params.toString()}`);
+                
+                console.log('📊 Analytics data received:', data); // DEBUG
                 
                 // Aggiorna cards statistiche
-                document.getElementById('totalViews').textContent = formatNumber(stats.stats.totalViews || 0);
-                document.getElementById('publishedMags').textContent = formatNumber(stats.topPages?.length || 0);
-                document.getElementById('activeUsers').textContent = formatNumber(stats.stats.uniqueVisitors || 0);
+                document.getElementById('totalViews').textContent = formatNumber(data.stats?.total || 0);
+                document.getElementById('publishedMags').textContent = formatNumber(data.topPages?.length || 0);
+                document.getElementById('activeUsers').textContent = formatNumber(data.stats?.unique || 0);
                 
                 // Calcola tempo medio di lettura (basato su durata sessioni)
-                const avgTime = stats.dailyTrend?.length > 0 
-                    ? calculateAvgReadTime(stats.dailyTrend) 
+                const avgTime = data.dailyTrend?.length > 0 
+                    ? calculateAvgReadTime(data.dailyTrend) 
                     : '0';
                 document.getElementById('avgReadTime').textContent = `${avgTime} min`;
                 
                 // Aggiorna tabella top pages
-                updateTopPagesTable(stats.topPages || []);
+                updateTopPagesTable(data.topPages || []);
                 
                 // Aggiorna tabella referrer
-                updateReferrersTable(stats.topReferrers || []);
+                updateReferrersTable(data.topReferrers || []);
                 
                 // Aggiorna stats device
-                updateDeviceStats(stats.deviceStats || []);
+                updateDeviceStats(data.deviceStats || []);
                 
                 // Aggiorna stats browser
-                updateBrowserStats(stats.browserStats || []);
+                updateBrowserStats(data.browserStats || []);
 
                 // Carica riviste per il filtro
                 const response = await apiRequest('/admin/magazines');

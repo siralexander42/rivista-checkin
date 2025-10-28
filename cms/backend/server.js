@@ -4199,7 +4199,10 @@ app.get('/api/analytics/stats', authenticateToken, async (req, res) => {
         const topReferrers = await analytics.getTopReferrers(filters, 10);
         
         res.json({
-            stats,
+            stats: {
+                total: stats.totalViews || 0,
+                unique: stats.uniqueVisitors || 0
+            },
             topPages,
             deviceStats,
             browserStats,
