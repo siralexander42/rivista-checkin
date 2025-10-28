@@ -198,6 +198,142 @@
             box-shadow: none;
         }
 
+        /* Schema.org Styles */
+        .schema-block {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .schema-block-header {
+            background: #0d1117;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            border-bottom: 1px solid #30363d;
+            transition: all 0.2s ease;
+        }
+
+        .schema-block-header:hover {
+            background: #161b22;
+        }
+
+        .schema-icon {
+            font-size: 24px;
+        }
+
+        .schema-status {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .schema-status[data-status="valid"] {
+            background: rgba(46, 160, 67, 0.15);
+            color: #3fb950;
+            border: 1px solid rgba(46, 160, 67, 0.3);
+        }
+
+        .schema-status[data-status="warning"] {
+            background: rgba(187, 128, 9, 0.15);
+            color: #d29922;
+            border: 1px solid rgba(187, 128, 9, 0.3);
+        }
+
+        .schema-status[data-status="error"] {
+            background: rgba(248, 81, 73, 0.15);
+            color: #f85149;
+            border: 1px solid rgba(248, 81, 73, 0.3);
+        }
+
+        .schema-chevron {
+            transition: transform 0.2s ease;
+            stroke: #6e7681;
+        }
+
+        .schema-block.expanded .schema-chevron {
+            transform: rotate(180deg);
+        }
+
+        .schema-block-content {
+            display: none;
+            padding: 16px;
+            border-top: 1px solid #21262d;
+        }
+
+        .schema-block.expanded .schema-block-content {
+            display: block;
+        }
+
+        .schema-actions {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .schema-btn {
+            background: #21262d;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .schema-btn:hover {
+            background: #30363d;
+            border-color: #484f58;
+            transform: translateY(-1px);
+        }
+
+        .schema-json {
+            background: #0d1117;
+            color: #c9d1d9;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            padding: 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+            white-space: pre;
+            border: 1px solid #21262d;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .schema-json::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .schema-json::-webkit-scrollbar-track {
+            background: #0d1117;
+        }
+
+        .schema-json::-webkit-scrollbar-thumb {
+            background: #30363d;
+            border-radius: 4px;
+        }
+
+        .schema-json::-webkit-scrollbar-thumb:hover {
+            background: #484f58;
+        }
+
         /* Magazine Selector VS Code Style */
         .magazine-selector {
             background: #161b22;
@@ -517,6 +653,9 @@
                 <button class="vscode-tab active" data-tab="blocks">
                     📦 Blocchi
                 </button>
+                <button class="vscode-tab" data-tab="schema">
+                    📊 Schema.org SEO
+                </button>
                 <button class="vscode-tab" data-tab="json">
                     🔧 JSON Editor
                 </button>
@@ -540,6 +679,81 @@
                         <div style="text-align: center; padding: 60px 20px; color: #858585;">
                             <div style="font-size: 64px; margin-bottom: 16px;">📦</div>
                             <p>Seleziona una rivista per vedere i blocchi</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Schema.org SEO -->
+                <div class="tab-content" data-tab="schema">
+                    <div class="sidebar-order-section">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <div>
+                                <h3>📊 Schema.org Structured Data</h3>
+                                <p class="sidebar-order-description">
+                                    Visualizza e modifica gli schema.org JSON-LD per ogni blocco. Migliora il SEO della rivista.
+                                </p>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="vscode-btn-secondary" onclick="validateAllSchemas()" title="Valida tutti gli schema">
+                                    ✅ Valida Tutti
+                                </button>
+                                <button class="vscode-btn-secondary" onclick="copyAllSchemas()" title="Copia JSON completo">
+                                    📋 Copia Tutto
+                                </button>
+                                <button class="vscode-btn" onclick="testSchemaOnGoogle()" title="Testa su Google Rich Results">
+                                    🔍 Test Google
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Schema Rivista -->
+                        <div id="magazineSchemaSection" style="display: none;">
+                            <div class="schema-block">
+                                <div class="schema-block-header" onclick="toggleSchemaBlock(this)">
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <span class="schema-icon">📚</span>
+                                        <div>
+                                            <h4 style="margin: 0; color: #cccccc; font-size: 14px;">Magazine Schema</h4>
+                                            <p style="margin: 0; font-size: 11px; color: #858585;">PublicationIssue + Organization</p>
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span class="schema-status" data-status="valid">✅ Valido</span>
+                                        <svg class="schema-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="schema-block-content">
+                                    <div class="schema-actions">
+                                        <button onclick="copySchema('magazine')" class="schema-btn">📋 Copia</button>
+                                        <button onclick="editSchema('magazine')" class="schema-btn">✏️ Modifica</button>
+                                        <button onclick="validateSchema('magazine')" class="schema-btn">✅ Valida</button>
+                                        <button onclick="viewSchemaInfo('PublicationIssue')" class="schema-btn">ℹ️ Info Schema</button>
+                                    </div>
+                                    <pre class="schema-json" id="schema-magazine"></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Schema Blocchi -->
+                        <div id="blocksSchemaList">
+                            <div style="text-align: center; padding: 60px 20px; color: #858585;">
+                                <div style="font-size: 48px; margin-bottom: 16px;">📊</div>
+                                <p>Seleziona una rivista per vedere gli schema.org</p>
+                            </div>
+                        </div>
+
+                        <!-- SEO Tips -->
+                        <div style="margin-top: 32px; padding: 20px; background: #1e1e1e; border-left: 4px solid #007acc; border-radius: 4px;">
+                            <h4 style="margin: 0 0 12px 0; color: #007acc; font-size: 13px;">💡 SEO Tips</h4>
+                            <ul style="margin: 0; padding-left: 20px; color: #cccccc; font-size: 12px; line-height: 1.8;">
+                                <li>Ogni blocco genera automaticamente il suo schema.org specifico</li>
+                                <li>Gli URL devono essere <strong>assoluti</strong> (https://...)</li>
+                                <li>Le immagini devono avere minimo 1200x675px per Rich Snippets</li>
+                                <li>Usa Google Rich Results Test per validare: <a href="https://search.google.com/test/rich-results" target="_blank" style="color: #4fc3f7;">Testa qui</a></li>
+                                <li>Monitora gli errori in Google Search Console dopo 24-48h dalla pubblicazione</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -725,6 +939,9 @@
                     </div>
                 </div>
             `).join('');
+            
+            // 📊 Genera anche gli schema.org quando si caricano i blocchi
+            generateSchemasClientSide();
         }
 
         // Aggiorna JSON
@@ -1180,6 +1397,390 @@
 
         // ========================================
         // END DASHBOARD ORDER MANAGEMENT
+        // ========================================
+
+        // ========================================
+        // SCHEMA.ORG MANAGEMENT
+        // ========================================
+
+        let currentSchemas = null;
+
+        // Mappa tipo blocco -> tipo schema.org
+        const schemaTypeMap = {
+            'cover': 'WebPage',
+            'hero': 'WebPageElement',
+            'article': 'Article',
+            'gallery': 'Article + ImageGallery',
+            'text': 'CreativeWork',
+            'quote': 'Quotation',
+            'video': 'VideoObject',
+            'fluid': 'Article',
+            'carousel': 'ItemList',
+            'custom': 'CreativeWork'
+        };
+
+        // Icone per tipo schema
+        const schemaIconMap = {
+            'cover': '🏠',
+            'hero': '🎯',
+            'article': '📰',
+            'gallery': '🖼️',
+            'text': '📝',
+            'quote': '💬',
+            'video': '🎥',
+            'fluid': '📜',
+            'carousel': '🎠',
+            'custom': '⚙️'
+        };
+
+        // Genera schema lato client
+        function generateSchemasClientSide() {
+            if (!currentMagazine) return;
+
+            const baseUrl = 'https://www.checkin-magazine.it';
+            
+            // Schema rivista
+            const magazineSchema = {
+                "@context": "https://schema.org",
+                "@type": "PublicationIssue",
+                "@id": `${baseUrl}/${currentMagazine.slug}`,
+                "issueNumber": currentMagazine.edition || "1",
+                "name": currentMagazine.name,
+                "description": currentMagazine.description || currentMagazine.metaDescription || "La rivista del viaggio",
+                "datePublished": currentMagazine.publishDate || currentMagazine.createdAt,
+                "publisher": {
+                    "@type": "Organization",
+                    "name": "CHECK-IN Magazine",
+                    "url": baseUrl
+                }
+            };
+
+            // Schema organization
+            const organizationSchema = {
+                "@context": "https://schema.org",
+                "@type": "Organization",
+                "@id": baseUrl,
+                "name": "CHECK-IN Magazine",
+                "url": baseUrl,
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": "https://www.italiaatavola.net/images/testate/checkin-testata-hd.svg"
+                }
+            };
+
+            // Schema per ogni blocco
+            const blockSchemas = (currentMagazine.blocks || [])
+                .filter(b => b.visible !== false)
+                .map(block => generateBlockSchema(block, currentMagazine));
+
+            currentSchemas = {
+                magazine: magazineSchema,
+                organization: organizationSchema,
+                blocks: blockSchemas
+            };
+
+            displaySchemas();
+        }
+
+        // Genera schema per singolo blocco
+        function generateBlockSchema(block, magazine) {
+            const baseUrl = 'https://www.checkin-magazine.it';
+            const commonProps = {
+                author: {
+                    "@type": "Organization",
+                    "name": "CHECK-IN Magazine"
+                },
+                publisher: {
+                    "@type": "Organization",
+                    "name": "CHECK-IN Magazine"
+                },
+                datePublished: magazine.publishDate || magazine.createdAt
+            };
+
+            switch (block.type) {
+                case 'article':
+                    return {
+                        "@context": "https://schema.org",
+                        "@type": "Article",
+                        "@id": `${baseUrl}/${magazine.slug}#article-${block._id}`,
+                        "headline": block.title,
+                        "articleBody": stripHtml(block.content),
+                        "image": block.image,
+                        ...commonProps
+                    };
+                
+                case 'gallery':
+                    return {
+                        "@context": "https://schema.org",
+                        "@type": "Article",
+                        "@id": `${baseUrl}/${magazine.slug}#gallery-${block._id}`,
+                        "headline": block.title,
+                        "mainEntity": {
+                            "@type": "ImageGallery",
+                            "numberOfItems": (block.galleryImages || []).length
+                        },
+                        ...commonProps
+                    };
+                
+                case 'video':
+                    return {
+                        "@context": "https://schema.org",
+                        "@type": "VideoObject",
+                        "@id": `${baseUrl}/${magazine.slug}#video-${block._id}`,
+                        "name": block.title,
+                        "embedUrl": block.link,
+                        ...commonProps
+                    };
+                
+                case 'carousel':
+                    return {
+                        "@context": "https://schema.org",
+                        "@type": "ItemList",
+                        "@id": `${baseUrl}/${magazine.slug}#carousel-${block._id}`,
+                        "name": block.title,
+                        "numberOfItems": (block.cards || []).length
+                    };
+                
+                default:
+                    return {
+                        "@context": "https://schema.org",
+                        "@type": "CreativeWork",
+                        "@id": `${baseUrl}/${magazine.slug}#${block.type}-${block._id}`,
+                        "name": block.title,
+                        ...commonProps
+                    };
+            }
+        }
+
+        // Visualizza gli schema nella UI
+        function displaySchemas() {
+            if (!currentSchemas) return;
+
+            // Mostra sezione magazine schema
+            const magazineSection = document.getElementById('magazineSchemaSection');
+            magazineSection.style.display = 'block';
+            
+            const magazineSchemaEl = document.getElementById('schema-magazine');
+            const combinedMagazineSchema = {
+                ...currentSchemas.organization,
+                ...currentSchemas.magazine
+            };
+            magazineSchemaEl.textContent = JSON.stringify(combinedMagazineSchema, null, 2);
+
+            // Visualizza schema blocchi
+            const blocksContainer = document.getElementById('blocksSchemaList');
+            
+            if (!currentSchemas.blocks || currentSchemas.blocks.length === 0) {
+                blocksContainer.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #858585;">
+                        <div style="font-size: 48px; margin-bottom: 12px;">📊</div>
+                        <p>Nessun blocco visibile per generare schema.org</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            let blockIndex = 0;
+            currentMagazine.blocks.forEach((block) => {
+                if (block.visible === false) return;
+
+                const schema = currentSchemas.blocks[blockIndex];
+                blockIndex++;
+                
+                if (!schema) return;
+
+                const blockTypeName = getBlockTypeName(block.type);
+                const schemaType = schemaTypeMap[block.type] || 'Schema';
+                const icon = schemaIconMap[block.type] || '📦';
+
+                html += `
+                    <div class="schema-block" id="schema-block-${block._id}">
+                        <div class="schema-block-header" onclick="toggleSchemaBlock(this)">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <span class="schema-icon">${icon}</span>
+                                <div>
+                                    <h4 style="margin: 0; color: #cccccc; font-size: 14px;">${block.title || blockTypeName}</h4>
+                                    <p style="margin: 0; font-size: 11px; color: #858585;">${schemaType}</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span class="schema-status" data-status="valid">✅ Valido</span>
+                                <svg class="schema-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="schema-block-content">
+                            <div class="schema-actions">
+                                <button onclick="copySchema('block-${block._id}')" class="schema-btn">📋 Copia</button>
+                                <button onclick="editBlockSchema('${block._id}')" class="schema-btn">✏️ Modifica Blocco</button>
+                                <button onclick="validateSchema('block-${block._id}')" class="schema-btn">✅ Valida</button>
+                                <button onclick="viewSchemaInfo('${schemaType}')" class="schema-btn">ℹ️ Info Schema</button>
+                            </div>
+                            <pre class="schema-json" id="schema-block-${block._id}-json">${JSON.stringify(schema, null, 2)}</pre>
+                        </div>
+                    </div>
+                `;
+            });
+
+            blocksContainer.innerHTML = html;
+        }
+
+        // Toggle espansione schema block
+        function toggleSchemaBlock(header) {
+            const block = header.closest('.schema-block');
+            block.classList.toggle('expanded');
+        }
+
+        // Copia schema negli appunti
+        async function copySchema(id) {
+            let schemaText;
+            
+            if (id === 'magazine') {
+                const el = document.getElementById('schema-magazine');
+                schemaText = el.textContent;
+            } else {
+                const el = document.getElementById(`schema-${id}-json`);
+                schemaText = el.textContent;
+            }
+
+            try {
+                await navigator.clipboard.writeText(schemaText);
+                showNotification('📋 Schema copiato negli appunti!');
+            } catch (err) {
+                console.error('Errore copia:', err);
+                alert('Errore durante la copia');
+            }
+        }
+
+        // Copia tutti gli schema
+        async function copyAllSchemas() {
+            if (!currentSchemas) {
+                alert('Nessuno schema generato');
+                return;
+            }
+
+            const completeSchema = {
+                "@context": "https://schema.org",
+                "@graph": [
+                    currentSchemas.organization,
+                    currentSchemas.magazine,
+                    ...currentSchemas.blocks
+                ]
+            };
+
+            try {
+                await navigator.clipboard.writeText(JSON.stringify(completeSchema, null, 2));
+                showNotification('📋 Tutti gli schema copiati negli appunti!');
+            } catch (err) {
+                console.error('Errore copia:', err);
+                alert('Errore durante la copia');
+            }
+        }
+
+        // Valida schema singolo
+        async function validateSchema(id) {
+            let schemaText;
+            
+            if (id === 'magazine') {
+                const el = document.getElementById('schema-magazine');
+                schemaText = el.textContent;
+            } else {
+                const el = document.getElementById(`schema-${id}-json`);
+                schemaText = el.textContent;
+            }
+
+            try {
+                const schema = JSON.parse(schemaText);
+                
+                // Validazioni base
+                if (!schema['@context']) {
+                    alert('❌ Manca @context');
+                    return;
+                }
+                
+                if (!schema['@type']) {
+                    alert('❌ Manca @type');
+                    return;
+                }
+
+                showNotification('✅ Schema valido (validazione base)');
+                
+                // Apri validator ufficiale
+                const validatorUrl = 'https://validator.schema.org/';
+                window.open(validatorUrl, '_blank');
+                
+            } catch (err) {
+                alert('❌ JSON non valido: ' + err.message);
+            }
+        }
+
+        // Valida tutti gli schema
+        function validateAllSchemas() {
+            if (!currentSchemas) {
+                alert('Nessuno schema generato');
+                return;
+            }
+
+            let errors = 0;
+            let warnings = 0;
+
+            // Validazione base per tutti gli schema
+            [currentSchemas.organization, currentSchemas.magazine, ...currentSchemas.blocks].forEach(schema => {
+                if (!schema['@context']) errors++;
+                if (!schema['@type']) errors++;
+                if (!schema['@id']) warnings++;
+            });
+
+            if (errors > 0) {
+                alert(`❌ Trovati ${errors} errori critici`);
+            } else if (warnings > 0) {
+                alert(`⚠️ Trovati ${warnings} warning (manca @id)`);
+            } else {
+                showNotification('✅ Tutti gli schema sono validi!');
+            }
+        }
+
+        // Apri Google Rich Results Test
+        function testSchemaOnGoogle() {
+            if (!currentMagazine) {
+                alert('Seleziona prima una rivista');
+                return;
+            }
+
+            const url = `https://www.checkin-magazine.it/${currentMagazine.slug}`;
+            const googleTestUrl = `https://search.google.com/test/rich-results?url=${encodeURIComponent(url)}`;
+            
+            window.open(googleTestUrl, '_blank');
+            
+            showNotification('🔍 Apertura Google Rich Results Test...');
+        }
+
+        // Modifica blocco (reindirizza alla pagina blocchi)
+        function editBlockSchema(blockId) {
+            if (!currentMagazine) return;
+            window.location.href = `blocks.html?magazine=${currentMagazine._id}#block-${blockId}`;
+        }
+
+        // Mostra info su schema.org type
+        function viewSchemaInfo(schemaType) {
+            // Rimuovi spazi e caratteri speciali
+            const cleanType = schemaType.split(' ')[0].split('+')[0];
+            const url = `https://schema.org/${cleanType}`;
+            window.open(url, '_blank');
+        }
+
+        // Helper: rimuovi HTML tags
+        function stripHtml(html) {
+            if (!html) return '';
+            const tmp = document.createElement('div');
+            tmp.innerHTML = html;
+            return tmp.textContent || tmp.innerText || '';
+        }
+
+        // ========================================
+        // END SCHEMA.ORG MANAGEMENT
         // ========================================
 
         // Init

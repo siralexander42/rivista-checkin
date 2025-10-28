@@ -7,6 +7,9 @@ const fs = require('fs').promises;
 const path = require('path');
 require('dotenv').config();
 
+// Import Schema.org generator
+const schemaGenerator = require('./schema-generator');
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -2689,13 +2692,34 @@ app.post('/api/admin/magazines/:id/generate-html', async (req, res) => {
             console.warn('cremona-scroll.js not found');
         }
         
+        // 🎯 GENERA SCHEMA.ORG JSON-LD
+        const completeSchema = schemaGenerator.generateCompleteSchema(magazine);
+        const schemaTag = schemaGenerator.generateSchemaTag(completeSchema);
+        
         // Template HTML completo con CSS inline
         const fullHTML = `<!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${magazine.name}</title>
+    <title>${magazine.name} | CHECK-IN Magazine</title>
+    <meta name="description" content="${magazine.description || magazine.metaDescription || 'La rivista del viaggio'}">
+    
+    <!-- 📊 Schema.org Structured Data for SEO -->
+    ${schemaTag}
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="${magazine.name}">
+    <meta property="og:description" content="${magazine.description || magazine.metaDescription || 'La rivista del viaggio'}">
+    <meta property="og:url" content="https://www.checkin-magazine.it/${magazine.slug}">
+    ${magazine.coverImage ? `<meta property="og:image" content="${magazine.coverImage}">` : ''}
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="${magazine.name}">
+    <meta name="twitter:description" content="${magazine.description || magazine.metaDescription || 'La rivista del viaggio'}">
+    ${magazine.coverImage ? `<meta name="twitter:image" content="${magazine.coverImage}">` : ''}
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -3566,12 +3590,35 @@ app.post('/api/admin/magazines/:id/publish', authenticateToken, async (req, res)
             .map(block => generateBlockHTML(block))
             .join('\n\n');
         
+        // 🎯 GENERA SCHEMA.ORG JSON-LD
+        const completeSchema = schemaGenerator.generateCompleteSchema(magazine);
+        const schemaTag = schemaGenerator.generateSchemaTag(completeSchema);
+        
         const fullHTML = `<!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${magazine.name}</title>
+    <title>${magazine.name} | CHECK-IN Magazine</title>
+    <meta name="description" content="${magazine.description || magazine.metaDescription || 'La rivista del viaggio'}">
+    
+    <!-- 📊 Schema.org Structured Data for SEO -->
+    ${schemaTag}
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="${magazine.name}">
+    <meta property="og:description" content="${magazine.description || magazine.metaDescription || 'La rivista del viaggio'}">
+    <meta property="og:url" content="https://www.checkin-magazine.it/${magazine.slug}">
+    ${magazine.coverImage ? `<meta property="og:image" content="${magazine.coverImage}">` : ''}
+    <meta property="og:site_name" content="CHECK-IN Magazine">
+    <meta property="og:locale" content="it_IT">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="${magazine.name}">
+    <meta name="twitter:description" content="${magazine.description || magazine.metaDescription || 'La rivista del viaggio'}">
+    ${magazine.coverImage ? `<meta name="twitter:image" content="${magazine.coverImage}">` : ''}
     
     <!-- Styles -->
     <link rel="stylesheet" href="assets/css/loading.css">
