@@ -53,36 +53,85 @@
 }
 
 /* ============================================
-   LAYOUT
+   LAYOUT SEMPLIFICATO
    ============================================ */
-.creator-layout {
-    display: grid;
-    grid-template-columns: 300px 1fr 320px;
-    gap: 0;
-    flex: 1;
-    overflow: hidden;
-}
-
-.creator-sidebar {
-    background: #252526;
-    border-right: 1px solid #3c3c3c;
-    padding: 20px;
+.simple-creator-layout {
+    padding: 24px;
+    max-height: calc(90vh - 140px);
     overflow-y: auto;
 }
 
-.creator-main {
+.creator-section {
+    background: #252526;
+    border: 1px solid #3c3c3c;
+    border-radius: 6px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.creator-section h3 {
+    color: #d4d4d4;
+    font-size: 16px;
+    margin: 0 0 16px 0;
+}
+
+.code-editor {
+    width: 100%;
     background: #1e1e1e;
-    padding: 20px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
+    border: 1px solid #3c3c3c;
+    color: #d4d4d4;
+    font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 12px;
+    border-radius: 4px;
+    resize: vertical;
 }
 
-.creator-preview {
-    background: #252526;
-    border-left: 1px solid #3c3c3c;
-    padding: 20px;
-    overflow-y: auto;
+.code-editor::placeholder {
+    color: #858585;
+}
+
+/* Variabili */
+.variable-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr auto;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.variable-row input,
+.variable-row select {
+    background: #3c3c3c;
+    border: 1px solid #555;
+    color: #d4d4d4;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.variable-row button {
+    background: #f48771;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-add-variable {
+    background: #0e639c;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+.btn-add-variable:hover {
+    background: #1177bb;
 }
 
 /* ============================================
