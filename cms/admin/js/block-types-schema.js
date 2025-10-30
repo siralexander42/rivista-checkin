@@ -515,16 +515,26 @@ const BLOCK_TYPES_SCHEMA = {
             ]
           },
           {
+            id: 'googleMapsUrl',
+            type: 'text',
+            label: 'Link Google Maps del luogo *',
+            required: true,
+            placeholder: 'https://www.google.com/maps/place/Ristorante+.../@43.6990473,10.3869316,17z/',
+            help: 'Coordinate estratte automaticamente da URL. Apri Google Maps > cerca luogo > Share > Copy link'
+          },
+          {
             id: 'positionLeft',
             type: 'text',
-            label: 'Posizione Left (%)',
-            placeholder: '28'
+            label: 'Posizione Left (%) - opzionale',
+            placeholder: '28',
+            help: 'Usa solo se vuoi posizionare manualmente (sovrascrive coordinate da URL)'
           },
           {
             id: 'positionTop',
             type: 'text',
-            label: 'Posizione Top (%)',
-            placeholder: '68'
+            label: 'Posizione Top (%) - opzionale',
+            placeholder: '68',
+            help: 'Usa solo se vuoi posizionare manualmente (sovrascrive coordinate da URL)'
           },
           {
             id: 'image',
@@ -539,7 +549,8 @@ const BLOCK_TYPES_SCHEMA = {
           {
             id: 'linkUrl',
             type: 'text',
-            label: 'Link'
+            label: 'Link CTA',
+            placeholder: '#articolo-ristorante'
           },
           {
             id: 'linkText',

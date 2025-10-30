@@ -2847,15 +2847,23 @@ function generateGeographicPlacesFields(places = []) {
                 </select>
             </div>
             
+            <div class="form-group">
+                <label>🔗 Link Google Maps del luogo *</label>
+                <input type="url" class="geo-place-maps-url" placeholder="https://www.google.com/maps/place/Ristorante+.../@43.6990473,10.3869316,17z/" value="${place.googleMapsUrl || ''}" style="width: 100%;">
+                <small>Apri Google Maps, cerca il luogo, Share > Copy link. Le coordinate verranno estratte automaticamente</small>
+            </div>
+            
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                 <div class="form-group">
-                    <label>Posizione Left (%)</label>
+                    <label>Posizione Left (%) - opzionale</label>
                     <input type="number" class="geo-place-left" placeholder="28" value="${place.positionLeft || ''}" style="width: 100%;" min="0" max="100">
+                    <small>Lascia vuoto per usare coordinate da URL</small>
                 </div>
                 
                 <div class="form-group">
-                    <label>Posizione Top (%)</label>
+                    <label>Posizione Top (%) - opzionale</label>
                     <input type="number" class="geo-place-top" placeholder="68" value="${place.positionTop || ''}" style="width: 100%;" min="0" max="100">
+                    <small>Lascia vuoto per usare coordinate da URL</small>
                 </div>
             </div>
             
@@ -2912,15 +2920,23 @@ function addGeographicPlace() {
                 </select>
             </div>
             
+            <div class="form-group">
+                <label>🔗 Link Google Maps del luogo *</label>
+                <input type="url" class="geo-place-maps-url" placeholder="https://www.google.com/maps/place/Ristorante+.../@43.6990473,10.3869316,17z/" style="width: 100%;">
+                <small>Apri Google Maps, cerca il luogo, Share > Copy link. Le coordinate verranno estratte automaticamente</small>
+            </div>
+            
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                 <div class="form-group">
-                    <label>Posizione Left (%)</label>
+                    <label>Posizione Left (%) - opzionale</label>
                     <input type="number" class="geo-place-left" placeholder="28" style="width: 100%;" min="0" max="100">
+                    <small>Lascia vuoto per usare coordinate da URL</small>
                 </div>
                 
                 <div class="form-group">
-                    <label>Posizione Top (%)</label>
+                    <label>Posizione Top (%) - opzionale</label>
                     <input type="number" class="geo-place-top" placeholder="68" style="width: 100%;" min="0" max="100">
+                    <small>Lascia vuoto per usare coordinate da URL</small>
                 </div>
             </div>
             
@@ -2982,8 +2998,9 @@ function collectGeographicPlacesData() {
         places.push({
             name: field.querySelector('.geo-place-name')?.value.trim() || '',
             category: field.querySelector('.geo-place-category')?.value || 'restaurant',
-            positionLeft: field.querySelector('.geo-place-left')?.value.trim() || '50',
-            positionTop: field.querySelector('.geo-place-top')?.value.trim() || '50',
+            googleMapsUrl: field.querySelector('.geo-place-maps-url')?.value.trim() || '',
+            positionLeft: field.querySelector('.geo-place-left')?.value.trim() || '',
+            positionTop: field.querySelector('.geo-place-top')?.value.trim() || '',
             image: field.querySelector('.geo-place-image')?.value.trim() || '',
             description: field.querySelector('.geo-place-description')?.value.trim() || '',
             linkUrl: field.querySelector('.geo-place-link')?.value.trim() || '',

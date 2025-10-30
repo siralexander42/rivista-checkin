@@ -3648,6 +3648,36 @@ function generateBlockHTML(block) {
             const geoMapSubtitle = block.mapSubtitle || '📍 Clicca sui marker per scoprire di più';
             const geoMapEmbedUrl = block.mapEmbedUrl || '';
             
+            // Helper: Estrae coordinate da URL Google Maps
+            function extractCoordinatesFromGoogleMapsUrl(url) {
+                if (!url) return null;
+                
+                // Pattern: @lat,lng,zoom oppure !3d[lat]!4d[lng]
+                const patterns = [
+                    /@(-?\d+\.\d+),(-?\d+\.\d+)/,  // Formato @lat,lng
+                    /!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/ // Formato alternativo
+                ];
+                
+                for (const pattern of patterns) {
+                    const match = url.match(pattern);
+                    if (match) {
+                        return {
+                            lat: parseFloat(match[1]),
+                            lng: parseFloat(match[2])
+                        };
+                    }
+                }
+                return null;
+            }
+            
+            // Helper: Converti coordinate in posizione % sulla mappa (semplificato)
+            // Questo è un calcolo approssimativo - in produzione useresti proiezioni geografiche reali
+            function coordinatesToMapPosition(coords, mapBounds) {
+                // Per ora uso posizionamento manuale, ma in futuro si può calcolare
+                // basandosi sui bounds della mappa embed
+                return null; // Ritorna null per usare posizionamento manuale
+            }
+            
             // Split title in words for animation
             const titleWords = geoTitle.split(' ');
             
@@ -3727,11 +3757,33 @@ function generateBlockHTML(block) {
                     ${geoPlaces.map((place, idx) => {
                         const placeId = `place-${block._id}-${idx}`;
                         const categoryEmoji = place.category === 'hotel' ? '🏨' : '🍽️';
+                        
+                        // Determina posizione: usa manuale se specificata, altrimenti prova estrazione coordinate
+                        let posLeft = place.positionLeft;
+                        let posTop = place.positionTop;
+                        
+                        // Se non c'è posizionamento manuale, prova a estrarre da URL
+                        if (!posLeft || !posTop) {
+                            const coords = extractCoordinatesFromGoogleMapsUrl(place.googleMapsUrl);
+                            if (coords) {
+                                // Per ora uso coordinate di default, ma in futuro si può calcolare
+                                // In produzione: convertire coords geografiche in % sulla mappa embed
+                                posLeft = posLeft || '50';
+                                posTop = posTop || '50';
+                                console.log(`📍 Coordinate estratte per ${place.name}:`, coords);
+                            } else {
+                                // Fallback al centro
+                                posLeft = posLeft || '50';
+                                posTop = posTop || '50';
+                            }
+                        }
+                        
                         return `
-                    <!-- Marker ${idx + 1} -->
+                    <!-- Marker ${idx + 1}: ${place.name} -->
                     <div class="custom-marker ${place.category || 'restaurant'}" 
-                         data-location="${placeId}" 
-                         style="left: ${place.positionLeft || 50}%; top: ${place.positionTop || 50}%;">
+                         data-location="${placeId}"
+                         data-coords='${place.googleMapsUrl ? JSON.stringify(extractCoordinatesFromGoogleMapsUrl(place.googleMapsUrl)) : '{}'}'
+                         style="left: ${posLeft}%; top: ${posTop}%;">
                         <div class="marker-icon">
                             <span class="marker-emoji">${categoryEmoji}</span>
                         </div>
