@@ -403,6 +403,165 @@ const BLOCK_TYPES_SCHEMA = {
         }
       ]
     }
+  },
+
+  // ============================================
+  // GEOGRAPHIC BLOCK - Mappa interattiva
+  // ============================================
+  geographic: {
+    id: 'geographic',
+    name: 'Geographic',
+    description: 'Destinazione geografica con hero, stories e Google Maps con marker',
+    icon: '🗺️',
+    category: 'interactive',
+    tags: ['Mappa', 'Destinazione', 'Google Maps'],
+    gradient: 'linear-gradient(135deg, #ff3366 0%, #ff6b8a 100%)',
+    
+    fields: [
+      {
+        id: 'heroImages',
+        type: 'image-list',
+        label: 'Immagini Hero',
+        required: true,
+        multiple: true,
+        help: 'Immagini rotanti in background (min 1, max 5)'
+      },
+      {
+        id: 'preTitle',
+        type: 'text',
+        label: 'Pre-titolo',
+        placeholder: 'Speciale'
+      },
+      {
+        id: 'title',
+        type: 'text',
+        label: 'Titolo Destinazione',
+        required: true,
+        placeholder: 'LAGO DI GARDA'
+      },
+      {
+        id: 'subtitle',
+        type: 'text',
+        label: 'Sottotitolo',
+        placeholder: 'In continuo movimento tra tradizione e innovazione'
+      },
+      {
+        id: 'stories',
+        type: 'repeater',
+        label: 'Stories',
+        fields: [
+          {
+            id: 'image',
+            type: 'image',
+            label: 'Immagine',
+            required: true
+          },
+          {
+            id: 'title',
+            type: 'text',
+            label: 'Titolo',
+            required: true
+          },
+          {
+            id: 'description',
+            type: 'textarea',
+            label: 'Descrizione'
+          },
+          {
+            id: 'tags',
+            type: 'text',
+            label: 'Tag (separati da virgola)',
+            placeholder: '#Tag1, #Tag2'
+          }
+        ]
+      },
+      {
+        id: 'mapTitle',
+        type: 'text',
+        label: 'Titolo Mappa',
+        placeholder: 'ESPLORA LA DESTINAZIONE'
+      },
+      {
+        id: 'mapSubtitle',
+        type: 'text',
+        label: 'Sottotitolo Mappa',
+        placeholder: '📍 Clicca sui marker'
+      },
+      {
+        id: 'mapEmbedUrl',
+        type: 'textarea',
+        label: 'URL Embed Google Maps',
+        required: true,
+        help: 'Google Maps > Share > Embed a map'
+      },
+      {
+        id: 'places',
+        type: 'repeater',
+        label: 'Luoghi (Marker)',
+        fields: [
+          {
+            id: 'name',
+            type: 'text',
+            label: 'Nome Luogo',
+            required: true
+          },
+          {
+            id: 'category',
+            type: 'select',
+            label: 'Categoria',
+            options: [
+              { value: 'restaurant', label: '🍽️ Ristorante' },
+              { value: 'hotel', label: '🏨 Hotel' }
+            ]
+          },
+          {
+            id: 'positionLeft',
+            type: 'text',
+            label: 'Posizione Left (%)',
+            placeholder: '28'
+          },
+          {
+            id: 'positionTop',
+            type: 'text',
+            label: 'Posizione Top (%)',
+            placeholder: '68'
+          },
+          {
+            id: 'image',
+            type: 'image',
+            label: 'Immagine Popup'
+          },
+          {
+            id: 'description',
+            type: 'textarea',
+            label: 'Descrizione'
+          },
+          {
+            id: 'linkUrl',
+            type: 'text',
+            label: 'Link'
+          },
+          {
+            id: 'linkText',
+            type: 'text',
+            label: 'Testo Link',
+            placeholder: 'Scopri di più →'
+          }
+        ]
+      }
+    ],
+    
+    defaultData: {
+      heroImages: [],
+      preTitle: 'Destinazione',
+      title: 'Nuova Destinazione',
+      subtitle: '',
+      stories: [],
+      mapTitle: 'ESPLORA LA DESTINAZIONE',
+      mapSubtitle: '📍 Clicca sui marker per scoprire di più',
+      mapEmbedUrl: '',
+      places: []
+    }
   }
 };
 

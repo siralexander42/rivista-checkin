@@ -391,7 +391,8 @@ function getBlockTypeName(type) {
     const names = {
         cover: 'Copertina', hero: 'Hero', article: 'Articolo',
         gallery: 'Gallery', text: 'Testo', quote: 'Citazione',
-        video: 'Video', fluid: 'Parallasse', carousel: 'Carousel'
+        video: 'Video', fluid: 'Parallasse', carousel: 'Carousel',
+        geographic: 'Geographic'
     };
     return names[type] || type;
 }
@@ -399,7 +400,8 @@ function getBlockTypeName(type) {
 function getBlockIconSimple(type) {
     const icons = {
         cover: '🎨', hero: '🌟', article: '📰', gallery: '🖼️',
-        text: '📝', quote: '💬', video: '🎥', fluid: '🌊', carousel: '🎠'
+        text: '📝', quote: '💬', video: '🎥', fluid: '🌊', carousel: '🎠',
+        geographic: '🗺️'
     };
     return icons[type] || '📦';
 }
@@ -441,6 +443,10 @@ function getBlockIcon(type) {
         video: {
             gradient: 'linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%)',
             svg: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.75 15.02L15.5 11.75L9.75 8.48V15.02Z" stroke="white" stroke-width="1.5"/></svg>'
+        },
+        geographic: {
+            gradient: 'linear-gradient(135deg, #ff3366 0%, #ff6b8a 100%)',
+            svg: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2Z" stroke="white" stroke-width="1.5"/><circle cx="12" cy="9" r="2.5" stroke="white" stroke-width="1.5"/></svg>'
         }
     };
     

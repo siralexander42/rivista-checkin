@@ -339,6 +339,19 @@ function getBlockPreview(block) {
                 ${cardsCount > 0 ? `<p style="color: #64748b; font-size: 14px;">🎴 ${cardsCount} card</p>` : ''}
             `;
         
+        case 'geographic':
+            const storiesCount = block.stories?.length || 0;
+            const placesCount = block.places?.length || 0;
+            return `
+                <h3 style="font-size: 16px; font-weight: 600; color: #0f172a; margin-bottom: 8px;">${block.title || 'Geographic'}</h3>
+                ${block.subtitle ? `<p style="color: #64748b; margin-bottom: 8px;">${block.subtitle}</p>` : ''}
+                <p style="color: #64748b; font-size: 14px;">
+                    ${storiesCount > 0 ? `📖 ${storiesCount} stories` : ''}
+                    ${storiesCount > 0 && placesCount > 0 ? ' • ' : ''}
+                    ${placesCount > 0 ? `📍 ${placesCount} luoghi` : ''}
+                </p>
+            `;
+        
         default:
             return '<p style="color: #94a3b8;">Blocco personalizzato</p>';
     }
@@ -851,6 +864,89 @@ https://esempio.com/bg4.jpg" oninput="updateBlockPreview()">${(data.images || []
                 <div class="form-group">
                     <label for="summaryTitle">📋 Titolo per il Sommario *</label>
                     <input type="text" id="summaryTitle" required value="${data.summaryTitle || ''}" placeholder="Storie dal mondo">
+                    <small>Questo titolo apparirà nella lista del sommario della rivista</small>
+                </div>
+            </div>
+            <div id="blockPreview" style="position: relative;">
+                <!-- Anteprima live verrà inserita qui -->
+            </div>
+            </div>
+        `,
+        
+        geographic: `
+            <div style="display: grid; grid-template-columns: 1fr 400px; gap: 24px; align-items: start;">
+                <div class="form-section">
+                <h4 style="margin-bottom: 16px;">🗺️ Geographic - Destinazione con Mappa</h4>
+                <p style="color: var(--text-light); margin-bottom: 24px; line-height: 1.6;">
+                    Blocco destinazione geografica con hero animato, stories e mappa Google Maps interattiva.
+                </p>
+                
+                <h4 style="margin: 24px 0 16px 0;">🎬 Hero Section</h4>
+                
+                <div class="form-group">
+                    <label for="heroImages">Immagini Hero (una per riga) *</label>
+                    <textarea id="heroImages" rows="3" required placeholder="https://esempio.com/hero1.jpg
+https://esempio.com/hero2.jpg
+https://esempio.com/hero3.jpg">${(data.heroImages || []).join('\n')}</textarea>
+                    <small>Le immagini si alterneranno in automatico nel background</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="preTitle">Pre-titolo</label>
+                    <input type="text" id="preTitle" value="${data.preTitle || 'Destinazione'}" placeholder="Speciale">
+                </div>
+                
+                <div class="form-group">
+                    <label for="title">Titolo Destinazione *</label>
+                    <input type="text" id="title" required value="${data.title || ''}" placeholder="LAGO DI GARDA">
+                </div>
+                
+                <div class="form-group">
+                    <label for="subtitle">Sottotitolo</label>
+                    <input type="text" id="subtitle" value="${data.subtitle || ''}" placeholder="In continuo movimento tra tradizione e innovazione">
+                </div>
+                
+                <h4 style="margin: 32px 0 16px 0; padding-top: 24px; border-top: 2px solid rgba(255, 51, 102, 0.2);">📖 Stories</h4>
+                
+                <div id="geographicStoriesList">
+                    ${generateGeographicStoriesFields(data.stories || [])}
+                </div>
+                
+                <button type="button" onclick="addGeographicStory()" class="btn btn-secondary" style="margin-top: 12px;">
+                    + Aggiungi Story
+                </button>
+                
+                <h4 style="margin: 32px 0 16px 0; padding-top: 24px; border-top: 2px solid rgba(255, 51, 102, 0.2);">🗺️ Mappa Google</h4>
+                
+                <div class="form-group">
+                    <label for="mapTitle">Titolo Mappa</label>
+                    <input type="text" id="mapTitle" value="${data.mapTitle || 'ESPLORA LA DESTINAZIONE'}" placeholder="IL LAGO DI GARDA TI ASPETTA">
+                </div>
+                
+                <div class="form-group">
+                    <label for="mapSubtitle">Sottotitolo Mappa</label>
+                    <input type="text" id="mapSubtitle" value="${data.mapSubtitle || '📍 Clicca sui marker per scoprire di più'}" placeholder="Clicca sui marker">
+                </div>
+                
+                <div class="form-group">
+                    <label for="mapEmbedUrl">URL Embed Google Maps *</label>
+                    <textarea id="mapEmbedUrl" rows="3" required placeholder="https://www.google.com/maps/embed?pb=...">${data.mapEmbedUrl || ''}</textarea>
+                    <small>Vai su Google Maps > Share > Embed a map > copia URL</small>
+                </div>
+                
+                <h4 style="margin: 32px 0 16px 0; padding-top: 24px; border-top: 2px solid rgba(255, 51, 102, 0.2);">📍 Marker/Luoghi</h4>
+                
+                <div id="geographicPlacesList">
+                    ${generateGeographicPlacesFields(data.places || [])}
+                </div>
+                
+                <button type="button" onclick="addGeographicPlace()" class="btn btn-secondary" style="margin-top: 12px;">
+                    + Aggiungi Luogo
+                </button>
+                
+                <div class="form-group" style="margin-top: 32px; padding-top: 24px; border-top: 2px solid rgba(255, 51, 102, 0.2);">
+                    <label for="summaryTitle">📋 Titolo per il Sommario *</label>
+                    <input type="text" id="summaryTitle" required value="${data.summaryTitle || ''}" placeholder="Lago di Garda">
                     <small>Questo titolo apparirà nella lista del sommario della rivista</small>
                 </div>
             </div>
@@ -1694,6 +1790,18 @@ function collectCurrentBlockData() {
         data.infiniteScroll = document.getElementById('infiniteScroll')?.checked || false;
     }
     
+    if (type === 'geographic') {
+        const heroImagesText = document.getElementById('heroImages')?.value || '';
+        data.heroImages = heroImagesText.split('\n').filter(url => url.trim());
+        data.preTitle = document.getElementById('preTitle')?.value || 'Destinazione';
+        data.mapTitle = document.getElementById('mapTitle')?.value || '';
+        data.mapSubtitle = document.getElementById('mapSubtitle')?.value || '';
+        data.mapEmbedUrl = document.getElementById('mapEmbedUrl')?.value || '';
+        data.stories = collectGeographicStoriesData();
+        data.places = collectGeographicPlacesData();
+        data.summaryTitle = document.getElementById('summaryTitle')?.value || '';
+    }
+    
     return data;
 }
 
@@ -1708,6 +1816,8 @@ function getBlockTypeName(type) {
         quote: 'Citazione',
         video: 'Video',
         fluid: 'Parallasse Block',
+        carousel: 'Carousel Storie',
+        geographic: 'Geographic',
         custom: 'Blocco Personalizzato'
     };
     return names[type] || type;
@@ -2620,6 +2730,268 @@ function initCarouselCardCropperByElement(inputElement) {
         });
         console.log('Carousel cropper creato per index:', index);
     }, 200);
+}
+
+// ============================================
+// GEOGRAPHIC BLOCK FUNCTIONS
+// ============================================
+
+// Genera campi per le stories del blocco geographic
+function generateGeographicStoriesFields(stories = []) {
+    if (stories.length === 0) {
+        return '<p style="color: #94a3b8; font-size: 14px; padding: 20px; text-align: center; background: rgba(148, 163, 184, 0.1); border-radius: 8px;">Nessuna story. Clicca "Aggiungi Story"</p>';
+    }
+    
+    return stories.map((story, index) => `
+        <div class="geographic-story-field" style="background: rgba(255, 51, 102, 0.05); border-radius: 12px; margin-bottom: 16px; border: 1px solid rgba(255, 51, 102, 0.2); padding: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <strong style="color: #ff3366; font-size: 14px;">📖 Story ${index + 1}</strong>
+                <button type="button" onclick="removeGeographicStory(this)" class="btn btn-sm btn-danger" style="padding: 4px 8px;">×</button>
+            </div>
+            
+            <div class="form-group">
+                <label>Immagine *</label>
+                <input type="url" class="geo-story-image" placeholder="https://..." value="${story.image || ''}" style="width: 100%;">
+            </div>
+            
+            <div class="form-group">
+                <label>Titolo *</label>
+                <input type="text" class="geo-story-title" placeholder="Ristoranti in Movimento" value="${story.title || ''}" style="width: 100%;">
+            </div>
+            
+            <div class="form-group">
+                <label>Descrizione</label>
+                <textarea class="geo-story-description" rows="2" placeholder="Breve descrizione..." style="width: 100%;">${story.description || ''}</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Tag (separati da virgola)</label>
+                <input type="text" class="geo-story-tags" placeholder="#Tag1, #Tag2, #Tag3" value="${story.tags || ''}" style="width: 100%;">
+            </div>
+        </div>
+    `).join('');
+}
+
+// Aggiungi story geographic
+function addGeographicStory() {
+    const container = document.getElementById('geographicStoriesList');
+    const currentContent = container.innerHTML;
+    
+    if (currentContent.includes('Nessuna story')) {
+        container.innerHTML = '';
+    }
+    
+    const index = container.children.length;
+    container.innerHTML += `
+        <div class="geographic-story-field" style="background: rgba(255, 51, 102, 0.05); border-radius: 12px; margin-bottom: 16px; border: 1px solid rgba(255, 51, 102, 0.2); padding: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <strong style="color: #ff3366; font-size: 14px;">📖 Story ${index + 1}</strong>
+                <button type="button" onclick="removeGeographicStory(this)" class="btn btn-sm btn-danger" style="padding: 4px 8px;">×</button>
+            </div>
+            
+            <div class="form-group">
+                <label>Immagine *</label>
+                <input type="url" class="geo-story-image" placeholder="https://..." style="width: 100%;">
+            </div>
+            
+            <div class="form-group">
+                <label>Titolo *</label>
+                <input type="text" class="geo-story-title" placeholder="Ristoranti in Movimento" style="width: 100%;">
+            </div>
+            
+            <div class="form-group">
+                <label>Descrizione</label>
+                <textarea class="geo-story-description" rows="2" placeholder="Breve descrizione..." style="width: 100%;"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Tag (separati da virgola)</label>
+                <input type="text" class="geo-story-tags" placeholder="#Tag1, #Tag2, #Tag3" style="width: 100%;">
+            </div>
+        </div>
+    `;
+}
+
+// Rimuovi story geographic
+function removeGeographicStory(button) {
+    button.closest('.geographic-story-field').remove();
+    const container = document.getElementById('geographicStoriesList');
+    if (container.children.length === 0) {
+        container.innerHTML = '<p style="color: #94a3b8; font-size: 14px; padding: 20px; text-align: center; background: rgba(148, 163, 184, 0.1); border-radius: 8px;">Nessuna story. Clicca "Aggiungi Story"</p>';
+    }
+}
+
+// Genera campi per i luoghi/marker del blocco geographic
+function generateGeographicPlacesFields(places = []) {
+    if (places.length === 0) {
+        return '<p style="color: #94a3b8; font-size: 14px; padding: 20px; text-align: center; background: rgba(148, 163, 184, 0.1); border-radius: 8px;">Nessun luogo. Clicca "Aggiungi Luogo"</p>';
+    }
+    
+    return places.map((place, index) => `
+        <div class="geographic-place-field" style="background: rgba(255, 51, 102, 0.05); border-radius: 12px; margin-bottom: 16px; border: 1px solid rgba(255, 51, 102, 0.2); padding: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <strong style="color: #ff3366; font-size: 14px;">📍 Luogo ${index + 1}</strong>
+                <button type="button" onclick="removeGeographicPlace(this)" class="btn btn-sm btn-danger" style="padding: 4px 8px;">×</button>
+            </div>
+            
+            <div class="form-group">
+                <label>Nome Luogo *</label>
+                <input type="text" class="geo-place-name" placeholder="Ristorante Fratelli Leali" value="${place.name || ''}" style="width: 100%;">
+            </div>
+            
+            <div class="form-group">
+                <label>Categoria</label>
+                <select class="geo-place-category" style="width: 100%;">
+                    <option value="restaurant" ${place.category === 'restaurant' ? 'selected' : ''}>🍽️ Ristorante</option>
+                    <option value="hotel" ${place.category === 'hotel' ? 'selected' : ''}>🏨 Hotel</option>
+                </select>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div class="form-group">
+                    <label>Posizione Left (%)</label>
+                    <input type="number" class="geo-place-left" placeholder="28" value="${place.positionLeft || ''}" style="width: 100%;" min="0" max="100">
+                </div>
+                
+                <div class="form-group">
+                    <label>Posizione Top (%)</label>
+                    <input type="number" class="geo-place-top" placeholder="68" value="${place.positionTop || ''}" style="width: 100%;" min="0" max="100">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Immagine Popup</label>
+                <input type="url" class="geo-place-image" placeholder="https://..." value="${place.image || ''}" style="width: 100%;">
+            </div>
+            
+            <div class="form-group">
+                <label>Descrizione</label>
+                <textarea class="geo-place-description" rows="2" placeholder="Descrizione del luogo..." style="width: 100%;">${place.description || ''}</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Link</label>
+                <input type="url" class="geo-place-link" placeholder="#articolo" value="${place.linkUrl || ''}" style="width: 100%;">
+            </div>
+            
+            <div class="form-group">
+                <label>Testo Link</label>
+                <input type="text" class="geo-place-linktext" placeholder="Scopri di più →" value="${place.linkText || 'Scopri di più →'}" style="width: 100%;">
+            </div>
+        </div>
+    `).join('');
+}
+
+// Aggiungi luogo geographic
+function addGeographicPlace() {
+    const container = document.getElementById('geographicPlacesList');
+    const currentContent = container.innerHTML;
+    
+    if (currentContent.includes('Nessun luogo')) {
+        container.innerHTML = '';
+    }
+    
+    const index = container.children.length;
+    container.innerHTML += `
+        <div class="geographic-place-field" style="background: rgba(255, 51, 102, 0.05); border-radius: 12px; margin-bottom: 16px; border: 1px solid rgba(255, 51, 102, 0.2); padding: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <strong style="color: #ff3366; font-size: 14px;">📍 Luogo ${index + 1}</strong>
+                <button type="button" onclick="removeGeographicPlace(this)" class="btn btn-sm btn-danger" style="padding: 4px 8px;">×</button>
+            </div>
+            
+            <div class="form-group">
+                <label>Nome Luogo *</label>
+                <input type="text" class="geo-place-name" placeholder="Ristorante Fratelli Leali" style="width: 100%;">
+            </div>
+            
+            <div class="form-group">
+                <label>Categoria</label>
+                <select class="geo-place-category" style="width: 100%;">
+                    <option value="restaurant">🍽️ Ristorante</option>
+                    <option value="hotel">🏨 Hotel</option>
+                </select>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div class="form-group">
+                    <label>Posizione Left (%)</label>
+                    <input type="number" class="geo-place-left" placeholder="28" style="width: 100%;" min="0" max="100">
+                </div>
+                
+                <div class="form-group">
+                    <label>Posizione Top (%)</label>
+                    <input type="number" class="geo-place-top" placeholder="68" style="width: 100%;" min="0" max="100">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Immagine Popup</label>
+                <input type="url" class="geo-place-image" placeholder="https://..." style="width: 100%;">
+            </div>
+            
+            <div class="form-group">
+                <label>Descrizione</label>
+                <textarea class="geo-place-description" rows="2" placeholder="Descrizione del luogo..." style="width: 100%;"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Link</label>
+                <input type="url" class="geo-place-link" placeholder="#articolo" style="width: 100%;">
+            </div>
+            
+            <div class="form-group">
+                <label>Testo Link</label>
+                <input type="text" class="geo-place-linktext" placeholder="Scopri di più →" value="Scopri di più →" style="width: 100%;">
+            </div>
+        </div>
+    `;
+}
+
+// Rimuovi luogo geographic
+function removeGeographicPlace(button) {
+    button.closest('.geographic-place-field').remove();
+    const container = document.getElementById('geographicPlacesList');
+    if (container.children.length === 0) {
+        container.innerHTML = '<p style="color: #94a3b8; font-size: 14px; padding: 20px; text-align: center; background: rgba(148, 163, 184, 0.1); border-radius: 8px;">Nessun luogo. Clicca "Aggiungi Luogo"</p>';
+    }
+}
+
+// Raccogli dati stories geographic
+function collectGeographicStoriesData() {
+    const fields = document.querySelectorAll('.geographic-story-field');
+    const stories = [];
+    
+    fields.forEach((field) => {
+        stories.push({
+            image: field.querySelector('.geo-story-image')?.value.trim() || '',
+            title: field.querySelector('.geo-story-title')?.value.trim() || '',
+            description: field.querySelector('.geo-story-description')?.value.trim() || '',
+            tags: field.querySelector('.geo-story-tags')?.value.trim() || ''
+        });
+    });
+    
+    return stories;
+}
+
+// Raccogli dati places geographic
+function collectGeographicPlacesData() {
+    const fields = document.querySelectorAll('.geographic-place-field');
+    const places = [];
+    
+    fields.forEach((field) => {
+        places.push({
+            name: field.querySelector('.geo-place-name')?.value.trim() || '',
+            category: field.querySelector('.geo-place-category')?.value || 'restaurant',
+            positionLeft: field.querySelector('.geo-place-left')?.value.trim() || '50',
+            positionTop: field.querySelector('.geo-place-top')?.value.trim() || '50',
+            image: field.querySelector('.geo-place-image')?.value.trim() || '',
+            description: field.querySelector('.geo-place-description')?.value.trim() || '',
+            linkUrl: field.querySelector('.geo-place-link')?.value.trim() || '',
+            linkText: field.querySelector('.geo-place-linktext')?.value.trim() || 'Scopri di più →'
+        });
+    });
+    
+    return places;
 }
 
 // ============================================

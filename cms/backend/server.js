@@ -3636,6 +3636,134 @@ function generateBlockHTML(block) {
         </div>
     </section>`;
         
+        case 'geographic':
+            // Geographic Block - Destinazione con hero, stories e mappa Google Maps
+            const geoHeroImages = block.heroImages || [];
+            const geoStories = block.stories || [];
+            const geoPlaces = block.places || [];
+            const geoPreTitle = block.preTitle || 'Destinazione';
+            const geoTitle = block.title || 'Destinazione';
+            const geoSubtitle = block.subtitle || '';
+            const geoMapTitle = block.mapTitle || 'ESPLORA LA DESTINAZIONE';
+            const geoMapSubtitle = block.mapSubtitle || '📍 Clicca sui marker per scoprire di più';
+            const geoMapEmbedUrl = block.mapEmbedUrl || '';
+            
+            // Split title in words for animation
+            const titleWords = geoTitle.split(' ');
+            
+            return `
+    <!-- Geographic Block - Lago di Garda Style -->
+    <section class="garda-movement-section" id="geographic-${block._id}">
+        <!-- Hero -->
+        <div class="movement-hero">
+            <div class="movement-image-stack">
+                ${geoHeroImages.map((img, idx) => `
+                <div class="movement-img ${idx === 0 ? 'active' : ''}" style="background-image: url('${img}');"></div>
+                `).join('')}
+            </div>
+            <div class="movement-title-container">
+                <span class="movement-pre">${geoPreTitle}</span>
+                <h1 class="movement-main-title">
+                    ${titleWords.map(word => `<span class="movement-word">${word}</span>`).join('')}
+                </h1>
+                ${geoSubtitle ? `<p class="movement-subtitle">${geoSubtitle}</p>` : ''}
+            </div>
+        </div>
+
+        <!-- Stories Grid -->
+        ${geoStories.length > 0 ? `
+        <div class="movement-grid">
+            ${geoStories.map((story, idx) => {
+                const storyTags = story.tags ? story.tags.split(',').map(t => t.trim()) : [];
+                return `
+            <article class="movement-card" data-aos="fade-up" data-aos-delay="${idx * 100}">
+                <div class="movement-card-number">${String(idx + 1).padStart(2, '0')}</div>
+                ${story.image ? `
+                <div class="movement-card-image">
+                    <img src="${story.image}" alt="${story.title || ''}">
+                </div>
+                ` : ''}
+                <div class="movement-card-content">
+                    ${story.title ? `<h3>${story.title}</h3>` : ''}
+                    ${story.description ? `<p>${story.description}</p>` : ''}
+                    ${storyTags.length > 0 ? `
+                    <div class="movement-tags">
+                        ${storyTags.map(tag => `<span>${tag}</span>`).join('')}
+                    </div>
+                    ` : ''}
+                </div>
+            </article>
+                `;
+            }).join('')}
+        </div>
+        ` : ''}
+
+        <!-- Map Footer -->
+        <div class="movement-footer">
+            <div class="map-header">
+                <div class="map-title-animated">
+                    <h2 class="typewriter-title">${geoMapTitle}</h2>
+                </div>
+                <p class="map-subtitle">
+                    <span class="subtitle-icon bounce-icon">📍</span>
+                    ${geoMapSubtitle}
+                </p>
+            </div>
+            
+            <div class="garda-map-container">
+                <!-- Google Maps Embed -->
+                ${geoMapEmbedUrl ? `
+                <iframe src="${geoMapEmbedUrl}" 
+                        class="google-map"
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+                ` : '<div style="height:450px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;color:#999;">Mappa non configurata</div>'}
+                
+                <!-- Custom Markers Overlay -->
+                ${geoPlaces.length > 0 ? `
+                <div class="markers-overlay">
+                    ${geoPlaces.map((place, idx) => {
+                        const placeId = `place-${block._id}-${idx}`;
+                        const categoryEmoji = place.category === 'hotel' ? '🏨' : '🍽️';
+                        return `
+                    <!-- Marker ${idx + 1} -->
+                    <div class="custom-marker ${place.category || 'restaurant'}" 
+                         data-location="${placeId}" 
+                         style="left: ${place.positionLeft || 50}%; top: ${place.positionTop || 50}%;">
+                        <div class="marker-icon">
+                            <span class="marker-emoji">${categoryEmoji}</span>
+                        </div>
+                        <div class="marker-tooltip">${place.name}</div>
+                    </div>
+                        `;
+                    }).join('')}
+                </div>
+                
+                <!-- Popup Cards -->
+                ${geoPlaces.map((place, idx) => {
+                    const placeId = `place-${block._id}-${idx}`;
+                    return `
+                <div class="map-popup" id="popup-${placeId}" data-location="${placeId}">
+                    <div class="popup-header">
+                        <span class="popup-category ${place.category || 'restaurant'}">${place.category === 'hotel' ? 'Hotel' : 'Ristorante'}</span>
+                        <button class="popup-close">×</button>
+                    </div>
+                    <div class="popup-body">
+                        ${place.image ? `<img src="${place.image}" alt="${place.name}" class="popup-image">` : ''}
+                        <h3 class="popup-title">${place.name}</h3>
+                        ${place.description ? `<p class="popup-description">${place.description}</p>` : ''}
+                        ${place.linkUrl ? `<a href="${place.linkUrl}" class="popup-cta">${place.linkText || 'Scopri di più →'}</a>` : ''}
+                    </div>
+                </div>
+                    `;
+                }).join('')}
+                ` : ''}
+            </div>
+        </div>
+    </section>`;
+        
         case 'custom':
             return `
     <!-- Custom Block -->
