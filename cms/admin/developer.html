@@ -945,15 +945,121 @@
         <div class="block-creator-container">
             <div class="block-creator-header">
                 <h2 class="block-creator-title">✨ Block Type Creator</h2>
-                <button class="btn-close-modal" onclick="blockCreator.close()">
+                <button class="btn-close-modal" onclick="closeBlockCreator()">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
                         <line x1="6" y1="6" x2="18" y2="18"></line>
                     </svg>
                 </button>
             </div>
-            <div id="blockCreatorContent">
-                <!-- Popolato da JavaScript -->
+            
+            <div class="creator-layout">
+                <!-- Sidebar: Proprietà Blocco -->
+                <div class="creator-sidebar">
+                    <h3 style="margin: 0 0 20px 0; color: #d4d4d4; font-size: 16px;">⚙️ Proprietà Blocco</h3>
+                    
+                    <div class="form-group">
+                        <label>Nome Blocco *</label>
+                        <input type="text" id="blockName" placeholder="es: Hero Animato">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Descrizione</label>
+                        <textarea id="blockDescription" rows="3" placeholder="Descrivi a cosa serve questo blocco..."></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Icona</label>
+                            <input type="text" id="blockIcon" value="📦" maxlength="2" style="text-align: center; font-size: 24px;">
+                        </div>
+                        <div class="form-group">
+                            <label>Categoria</label>
+                            <select id="blockCategory">
+                                <option value="hero">Hero</option>
+                                <option value="content" selected>Content</option>
+                                <option value="media">Media</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Gradiente Header</label>
+                        <select id="blockGradient" onchange="updateGradientPreview()">
+                            <option value="linear-gradient(135deg, #667eea 0%, #764ba2 100%)">Purple</option>
+                            <option value="linear-gradient(135deg, #f093fb 0%, #f5576c 100%)">Pink</option>
+                            <option value="linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)">Blue</option>
+                            <option value="linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)">Green</option>
+                            <option value="linear-gradient(135deg, #fa709a 0%, #fee140 100%)">Sunset</option>
+                        </select>
+                        <div id="gradientPreview" style="height: 60px; border-radius: 6px; margin-top: 8px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tags (separati da virgola)</label>
+                        <input type="text" id="blockTags" placeholder="Animato, Premium, Hero">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Schema.org Type</label>
+                        <select id="blockSchemaType">
+                            <option value="">Nessuno</option>
+                            <option value="Article">Article</option>
+                            <option value="NewsArticle">NewsArticle</option>
+                            <option value="BlogPosting">BlogPosting</option>
+                            <option value="ImageGallery">ImageGallery</option>
+                            <option value="ImageObject">ImageObject</option>
+                            <option value="VideoObject">VideoObject</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Main: Field Editor -->
+                <div class="creator-main">
+                    <div class="creator-header">
+                        <h3 style="margin: 0; color: #d4d4d4; font-size: 16px;">📝 Campi del Blocco</h3>
+                        <button class="btn-add-field" onclick="addNewField()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Aggiungi Campo
+                        </button>
+                    </div>
+
+                    <div class="fields-container" id="fieldsContainer">
+                        <div class="empty-fields">
+                            <div style="font-size: 48px; margin-bottom: 12px;">📋</div>
+                            <p>Nessun campo aggiunto</p>
+                            <p style="font-size: 12px; color: #858585;">Clicca "Aggiungi Campo" per iniziare</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preview -->
+                <div class="creator-preview">
+                    <h3 style="margin: 0 0 16px 0; color: #d4d4d4; font-size: 16px;">👁️ Preview</h3>
+                    <div class="preview-card" id="previewCard">
+                        <div class="block-type-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            <div class="block-type-icon">📦</div>
+                            <span class="block-custom-badge">CUSTOM</span>
+                        </div>
+                        <div class="block-type-body">
+                            <h3 class="block-type-title">Nuovo Blocco</h3>
+                            <p class="block-type-description">Descrizione blocco</p>
+                            <div class="block-type-tags"></div>
+                            <div class="block-type-meta">
+                                <span class="block-meta-item">📋 0 campi</span>
+                                <span class="block-meta-item">📁 content</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="creator-footer">
+                <button class="btn-creator btn-cancel" onclick="closeBlockCreator()">Annulla</button>
+                <button class="btn-creator btn-save" onclick="saveNewBlock()">✨ Crea Blocco</button>
             </div>
         </div>
     </div>

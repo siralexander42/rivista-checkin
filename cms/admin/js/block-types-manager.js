@@ -54,6 +54,7 @@ class BlockTypesManager {
             category: data.category || 'content',
             tags: data.tags || [],
             gradient: data.gradient || 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            schemaType: data.schemaType || '',
             fields: data.fields || [],
             defaultData: data.defaultData || {},
             isCustom: true,

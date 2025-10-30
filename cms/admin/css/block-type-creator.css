@@ -224,7 +224,8 @@
 .field-label,
 .field-id,
 .field-type,
-.field-help {
+.field-help,
+.field-variable {
     background: #3c3c3c;
     border: 1px solid #555;
     color: #d4d4d4;
@@ -242,10 +243,19 @@
     color: #4ec9b0;
 }
 
-.field-help {
+.field-help,
+.field-variable {
     width: 100%;
     font-style: italic;
     color: #858585;
+}
+
+.field-variable {
+    font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+    color: #4ec9b0;
+    background: #2a2d2e;
+    font-size: 11px;
+    margin-top: 6px;
 }
 
 .field-required {
