@@ -5,7 +5,13 @@
 
 class BlockTypesManager {
     constructor() {
-        this.schema = BLOCK_TYPES_SCHEMA;
+        // Verifica che lo schema sia disponibile
+        if (typeof BLOCK_TYPES_SCHEMA === 'undefined') {
+            console.error('BLOCK_TYPES_SCHEMA non trovato! Assicurati che block-types-schema.js sia caricato prima.');
+            this.schema = {};
+        } else {
+            this.schema = BLOCK_TYPES_SCHEMA;
+        }
         this.customBlocks = this.loadCustomBlocks();
         this.allBlocks = { ...this.schema, ...this.customBlocks };
     }
