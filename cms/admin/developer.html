@@ -7,6 +7,8 @@
     <link rel="icon" type="image/png" href="https://www.italiaatavola.net/images/contenutiarticoli/logo_check-in-favicon.png">
     <link rel="stylesheet" href="css/admin.css?v=8.0">
     <link rel="stylesheet" href="css/image-cropper.css?v=1.0">
+    <link rel="stylesheet" href="css/block-types-manager.css?v=1.0">
+    <link rel="stylesheet" href="css/block-type-creator.css?v=1.0">
     <style>
         /* VS Code Theme - Deep Blue Professional */
         body {
@@ -651,7 +653,10 @@
             <!-- Tabs VS Code Style -->
             <div class="vscode-tabs">
                 <button class="vscode-tab active" data-tab="blocks">
-                    📦 Blocchi
+                    📦 Block Types
+                </button>
+                <button class="vscode-tab" data-tab="magazine-blocks">
+                    📚 Blocchi Rivista
                 </button>
                 <button class="vscode-tab" data-tab="schema">
                     📊 Schema.org SEO
@@ -673,8 +678,48 @@
             <!-- Editor Area -->
             <div class="vscode-editor">
 
-                <!-- Tab: Blocchi -->
+                <!-- Tab: Block Types Manager -->
                 <div class="tab-content active" data-tab="blocks">
+                    <!-- Toolbar -->
+                    <div class="block-manager-toolbar">
+                        <div class="toolbar-left">
+                            <div class="toolbar-search">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <path d="m21 21-4.35-4.35"></path>
+                                </svg>
+                                <input type="text" id="blockSearchInput" placeholder="Cerca tipo di blocco..." oninput="filterBlockTypes()">
+                            </div>
+                            <div class="toolbar-filter">
+                                <select id="categoryFilter" onchange="filterBlockTypes()">
+                                    <option value="">Tutte le categorie</option>
+                                    <option value="hero">Hero</option>
+                                    <option value="content">Content</option>
+                                    <option value="media">Media</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="toolbar-right">
+                            <button class="btn-toolbar btn-toolbar-secondary" onclick="importBlockSchema()">
+                                📥 Importa
+                            </button>
+                            <button class="btn-toolbar btn-toolbar-secondary" onclick="exportBlockSchema()">
+                                📤 Esporta
+                            </button>
+                            <button class="btn-toolbar" onclick="openBlockTypeCreator()">
+                                ➕ Nuovo Tipo
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Grid Blocchi -->
+                    <div class="block-types-grid" id="blockTypesGrid">
+                        <!-- Popolato da JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Tab: Blocchi Rivista (vecchio contenuto) -->
+                <div class="tab-content" data-tab="magazine-blocks">
                     <div id="blocksList">
                         <div style="text-align: center; padding: 60px 20px; color: #858585;">
                             <div style="font-size: 64px; margin-bottom: 16px;">📦</div>
@@ -845,9 +890,80 @@
         </main>
     </div>
 
+    <!-- Modal: View Block Type -->
+    <div id="blockTypeViewModal" class="block-view-modal">
+        <div class="block-view-content">
+            <div class="block-view-header">
+                <div class="block-view-title-group">
+                    <span class="block-view-icon" id="viewBlockIcon">📦</span>
+                    <div>
+                        <h2 class="block-view-title" id="viewBlockName">Nome Blocco</h2>
+                        <p class="block-view-description" id="viewBlockDescription">Descrizione blocco</p>
+                    </div>
+                </div>
+                <button class="btn-close-modal" onclick="document.getElementById('blockTypeViewModal').classList.remove('active')">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="block-view-body">
+                <div class="block-view-section">
+                    <h3>Informazioni</h3>
+                    <div class="block-meta-grid">
+                        <div class="block-meta-item">
+                            <div class="block-meta-label">Categoria</div>
+                            <div class="block-meta-value" id="viewBlockCategory">-</div>
+                        </div>
+                        <div class="block-meta-item">
+                            <div class="block-meta-label">Tags</div>
+                            <div class="block-meta-value" id="viewBlockTags">-</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="block-view-section">
+                    <h3>Campi (Fields)</h3>
+                    <div id="viewBlockFields">
+                        <!-- Popolato da JavaScript -->
+                    </div>
+                </div>
+
+                <div class="block-view-section">
+                    <h3>Schema JSON</h3>
+                    <div class="json-preview">
+                        <pre id="viewBlockJSON">{}</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Block Type Creator -->
+    <div id="blockCreatorModal" class="block-creator-modal">
+        <div class="block-creator-container">
+            <div class="block-creator-header">
+                <h2 class="block-creator-title">✨ Block Type Creator</h2>
+                <button class="btn-close-modal" onclick="blockCreator.close()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div id="blockCreatorContent">
+                <!-- Popolato da JavaScript -->
+            </div>
+        </div>
+    </div>
+
     <script src="js/auth.js"></script>
     <script src="js/api.js"></script>
     <script src="js/sidebar.js?v=1.0"></script>
+    <script src="js/block-types-schema.js"></script>
+    <script src="js/block-types-manager.js"></script>
+    <script src="js/block-type-creator.js"></script>
     <script>
         // Inizializza sidebar
         document.addEventListener('DOMContentLoaded', () => {
@@ -1781,6 +1897,56 @@
 
         // ========================================
         // END SCHEMA.ORG MANAGEMENT
+        // ========================================
+
+        // ========================================
+        // BLOCK TYPES MANAGER - HELPER FUNCTIONS
+        // ========================================
+
+        /**
+         * Filtra blocchi per ricerca e categoria
+         */
+        function filterBlockTypes() {
+            const searchTerm = document.getElementById('blockSearchInput').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const cards = document.querySelectorAll('.block-type-card');
+
+            cards.forEach(card => {
+                const blockId = card.getAttribute('data-block-id');
+                const block = blockTypesManager.getBlockType(blockId);
+                
+                if (!block) {
+                    card.style.display = 'none';
+                    return;
+                }
+
+                const matchesSearch = !searchTerm || 
+                    block.name.toLowerCase().includes(searchTerm) ||
+                    block.description.toLowerCase().includes(searchTerm) ||
+                    block.tags.some(tag => tag.toLowerCase().includes(searchTerm));
+
+                const matchesCategory = !categoryFilter || block.category === categoryFilter;
+
+                card.style.display = (matchesSearch && matchesCategory) ? 'block' : 'none';
+            });
+        }
+
+        /**
+         * Apre l'editor per modificare un blocco custom
+         */
+        function editBlockType(id) {
+            alert(`Editor per blocco "${id}" in arrivo!\n\nQui potrai modificare:\n- Nome e descrizione\n- Campi (aggiungi/rimuovi/riordina)\n- Validazioni\n- Dati di default`);
+        }
+
+        /**
+         * Apre il creator per nuovo tipo di blocco
+         */
+        function openBlockTypeCreator() {
+            alert(`Block Type Creator in arrivo!\n\nPotrai creare nuovi tipi di blocco con:\n- Visual field editor (drag & drop)\n- Preview in tempo reale\n- Validazioni custom\n- Export/import`);
+        }
+
+        // ========================================
+        // END BLOCK TYPES MANAGER
         // ========================================
 
         // Init

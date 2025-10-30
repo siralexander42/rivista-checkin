@@ -1,0 +1,402 @@
+/**
+ * BLOCK TYPE CREATOR STYLES
+ * Editor visuale per creare e modificare tipi di blocco
+ */
+
+/* ============================================
+   MODAL CREATOR
+   ============================================ */
+.block-creator-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 10001;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.block-creator-modal.active {
+    display: flex;
+}
+
+.block-creator-container {
+    background: #1e1e1e;
+    border: 1px solid #3c3c3c;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 1400px;
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.block-creator-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid #3c3c3c;
+    background: #252526;
+}
+
+.block-creator-title {
+    color: #d4d4d4;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* ============================================
+   LAYOUT
+   ============================================ */
+.creator-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr 320px;
+    gap: 0;
+    flex: 1;
+    overflow: hidden;
+}
+
+.creator-sidebar {
+    background: #252526;
+    border-right: 1px solid #3c3c3c;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.creator-main {
+    background: #1e1e1e;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.creator-preview {
+    background: #252526;
+    border-left: 1px solid #3c3c3c;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+/* ============================================
+   FORM GROUPS
+   ============================================ */
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    color: #d4d4d4;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group input[type="text"],
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    background: #3c3c3c;
+    border: 1px solid #555;
+    color: #d4d4d4;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: inherit;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #0e639c;
+    box-shadow: 0 0 0 2px rgba(14, 99, 156, 0.2);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+/* ============================================
+   FIELD EDITOR
+   ============================================ */
+.creator-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #3c3c3c;
+}
+
+.btn-add-field {
+    background: #0e639c;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+}
+
+.btn-add-field:hover {
+    background: #1177bb;
+}
+
+.fields-container {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.empty-fields {
+    text-align: center;
+    padding: 60px 20px;
+    color: #858585;
+}
+
+.field-editor-item {
+    background: #252526;
+    border: 1px solid #3c3c3c;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    display: flex;
+    cursor: move;
+    transition: all 0.2s;
+}
+
+.field-editor-item:hover {
+    border-color: #555;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.field-drag-handle {
+    background: #2a2d2e;
+    color: #858585;
+    padding: 12px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #3c3c3c;
+    cursor: grab;
+    user-select: none;
+    font-size: 18px;
+    line-height: 1;
+}
+
+.field-drag-handle:active {
+    cursor: grabbing;
+}
+
+.field-editor-content {
+    flex: 1;
+    padding: 12px;
+}
+
+.field-editor-row {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr 1.5fr auto auto;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.field-label,
+.field-id,
+.field-type,
+.field-help {
+    background: #3c3c3c;
+    border: 1px solid #555;
+    color: #d4d4d4;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.field-label {
+    font-weight: 500;
+}
+
+.field-id {
+    font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+    color: #4ec9b0;
+}
+
+.field-help {
+    width: 100%;
+    font-style: italic;
+    color: #858585;
+}
+
+.field-required {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #d4d4d4;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.field-required input[type="checkbox"] {
+    cursor: pointer;
+}
+
+.btn-delete-field {
+    background: transparent;
+    border: none;
+    color: #858585;
+    padding: 6px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.btn-delete-field:hover {
+    background: #f48771;
+    color: white;
+}
+
+/* ============================================
+   PREVIEW CARD
+   ============================================ */
+.preview-card {
+    background: #252526;
+    border: 1px solid #3c3c3c;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.preview-card .block-type-header {
+    height: 100px;
+}
+
+.preview-card .block-type-icon {
+    font-size: 40px;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.creator-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px;
+    border-top: 1px solid #3c3c3c;
+    background: #252526;
+}
+
+.btn-creator {
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+
+.btn-cancel {
+    background: #3c3c3c;
+    color: #d4d4d4;
+}
+
+.btn-cancel:hover {
+    background: #505050;
+}
+
+.btn-save {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.btn-save:hover {
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    transform: translateY(-1px);
+}
+
+/* ============================================
+   SCROLLBAR
+   ============================================ */
+.creator-sidebar::-webkit-scrollbar,
+.creator-main::-webkit-scrollbar,
+.creator-preview::-webkit-scrollbar,
+.fields-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.creator-sidebar::-webkit-scrollbar-track,
+.creator-main::-webkit-scrollbar-track,
+.creator-preview::-webkit-scrollbar-track,
+.fields-container::-webkit-scrollbar-track {
+    background: #1e1e1e;
+}
+
+.creator-sidebar::-webkit-scrollbar-thumb,
+.creator-main::-webkit-scrollbar-thumb,
+.creator-preview::-webkit-scrollbar-thumb,
+.fields-container::-webkit-scrollbar-thumb {
+    background: #424242;
+    border-radius: 4px;
+}
+
+.creator-sidebar::-webkit-scrollbar-thumb:hover,
+.creator-main::-webkit-scrollbar-thumb:hover,
+.creator-preview::-webkit-scrollbar-thumb:hover,
+.fields-container::-webkit-scrollbar-thumb:hover {
+    background: #4e4e4e;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 1200px) {
+    .creator-layout {
+        grid-template-columns: 260px 1fr 280px;
+    }
+}
+
+@media (max-width: 992px) {
+    .creator-layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr auto;
+    }
+
+    .creator-sidebar,
+    .creator-preview {
+        border: none;
+        border-bottom: 1px solid #3c3c3c;
+        max-height: 300px;
+    }
+
+    .field-editor-row {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+
+    .field-required {
+        justify-content: flex-start;
+    }
+}
